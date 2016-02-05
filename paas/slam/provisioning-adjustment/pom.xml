@@ -108,7 +108,16 @@
 	<artifactId>jackson-databind</artifactId>
 	<version>2.5.4</version>
 </dependency>
-       
+    <dependency>
+  <groupId>org.slf4j</groupId>
+ <artifactId>slf4j-log4j12</artifactId>
+ <version>1.7.5</version>
+</dependency>
+<dependency>
+	<groupId>org.apache.activemq</groupId>
+	<artifactId>activemq-all</artifactId>
+	<version>5.11.1</version>
+</dependency>   
 	
 <!--  -->
 
@@ -226,6 +235,7 @@
 									org.eclipse.persistence.*,
 									javax.xml.namespace,
 									org.apache.qpid.*,
+									org.apache.activemq.*,
 									com.fasterxml.jackson.*,
 									antlr.* 
 						  </Export-Package>

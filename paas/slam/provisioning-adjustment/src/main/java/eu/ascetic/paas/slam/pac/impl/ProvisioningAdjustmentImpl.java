@@ -52,16 +52,11 @@ package eu.ascetic.paas.slam.pac.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.Scanner;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Message;
-import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
@@ -75,7 +70,6 @@ import javax.jms.TopicSubscriber;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -88,6 +82,7 @@ import org.slasoi.gslam.core.control.Policy;
 import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
 
 import eu.ascetic.paas.slam.pac.PaasViolationChecker;
+import eu.ascetic.paas.slam.pac.amqp.AmqpMessageReceiver;
 import eu.ascetic.paas.slam.pac.applicationmanager.ModelConverter;
 import eu.ascetic.paas.slam.pac.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.slam.pac.applicationmanager.model.Deployment;
@@ -198,33 +193,37 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 */
 	private void retrieveApplicationEvents() {
 		try{
+			
+			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.16:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
+			
+			
 
-			// Getting JMS connection from the server
-			logger.info("Reading application events from ACTIVEMQ: "+properties.getProperty(ACTIVEMQ_URL));
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
-			Connection connection = connectionFactory.createConnection();
-
-			// need to setClientID value, any string value you wish
-			connection.setClientID("PaaS SLAM Application Event Listener");
-
-			logger.info("Starting connection...");
-
-			connection.start();
-
-			logger.info("Creating session...");
-
-			Session session = connection.createSession(false,
-					Session.AUTO_ACKNOWLEDGE);
-
-			logger.info("Registering to the topic: "+properties.getProperty(DEPLOYED_APPS_QUEUE));
-
-			Topic topic = session.createTopic(properties.getProperty(DEPLOYED_APPS_QUEUE));
-
-			logger.info("Creating subscriber on the channel: "+properties.getProperty(ACTIVEMQ_CHANNEL));
-			//need to use createDurableSubscriber() method instead of createConsumer() for topic
-			// MessageConsumer consumer = session.createConsumer(topic);
-			MessageConsumer consumer = session.createDurableSubscriber(topic,
-					properties.getProperty(ACTIVEMQ_CHANNEL));
+//			// Getting JMS connection from the server
+//			logger.info("Reading application events from ACTIVEMQ: "+properties.getProperty(ACTIVEMQ_URL));
+//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+//			Connection connection = connectionFactory.createConnection();
+//
+//			// need to setClientID value, any string value you wish
+//			connection.setClientID("PaaS SLAM Application Event Listener");
+//
+//			logger.info("Starting connection...");
+//
+//			connection.start();
+//
+//			logger.info("Creating session...");
+//
+//			Session session = connection.createSession(false,
+//					Session.AUTO_ACKNOWLEDGE);
+//
+//			logger.info("Registering to the topic: "+properties.getProperty(DEPLOYED_APPS_QUEUE));
+//
+//			Topic topic = session.createTopic(properties.getProperty(DEPLOYED_APPS_QUEUE));
+//
+//			logger.info("Creating subscriber on the channel: "+properties.getProperty(ACTIVEMQ_CHANNEL));
+//			//need to use createDurableSubscriber() method instead of createConsumer() for topic
+//			// MessageConsumer consumer = session.createConsumer(topic);
+//			MessageConsumer consumer = session.createDurableSubscriber(topic,
+//					properties.getProperty(ACTIVEMQ_CHANNEL));
 
 			MessageListener listener = new MessageListener() {
 				public void onMessage(Message message) {
@@ -252,7 +251,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 				}
 			};
 
-			consumer.setMessageListener(listener);
+			receiver.setMessageConsumer(listener);
+//			consumer.setMessageListener(listener);
 			//connection.close();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -281,7 +281,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 			HttpEntity entity = response.getEntity();
 			String responseString = EntityUtils.toString(entity, "UTF-8");
-			//			logger.debug("Response string from the ApplicationManager: "+responseString);
+						logger.debug("Response string from the ApplicationManager: "+responseString);
 
 			Deployment deployment = ModelConverter.xmlDeploymentToObject(responseString);
 			logger.debug("Deployment Id: "+deployment.getId());
@@ -355,6 +355,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 					"\t\"Frequency\" : 10000\n" +
 					"}");
 			messageProducer.send(message);
+			
+			logger.debug("Message sent: "+message);
 
 			System.out.println("Message sent");
 
@@ -473,4 +475,39 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		logger.info("Getting policies");
 		return null;
 	}
+	
+	
+	public static void main(String[] args) {
+		String appId = "davidgpTestApp";
+		String deploymentId = "752";
+		String slaId = "UNKNOWN";
+
+			try {
+				HttpClient client = new DefaultHttpClient();
+				String appManagerUrl = "http://192.168.3.16/application-manager";
+				HttpGet request = new HttpGet(appManagerUrl+"/applications/"+appId+"/deployments/"+deploymentId);
+				HttpResponse response = client.execute(request);
+
+				//			System.out.println("status: " + response.getStatusLine());
+				//			System.out.println("headers: " + response.getAllHeaders());
+				//			System.out.println("body:" + response.getEntity());
+
+				HttpEntity entity = response.getEntity();
+				String responseString = EntityUtils.toString(entity, "UTF-8");
+				System.out.println("Response string from the ApplicationManager: "+responseString);
+
+				Deployment deployment = ModelConverter.xmlDeploymentToObject(responseString);
+				System.out.println("Deployment Id: "+deployment.getId());
+				System.out.println("SLA Agreement: "+deployment.getSlaAgreement());
+
+				slaId = deployment.getSlaAgreement();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				slaId = "UNKNOWN";
+			}
+
+			System.out.println(slaId);
+		}
+	
 }

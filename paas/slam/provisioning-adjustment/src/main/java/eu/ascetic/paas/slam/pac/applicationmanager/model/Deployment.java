@@ -74,7 +74,7 @@ public class Deployment {
 	private String startDate;
 	@XmlElement(name = "end-date", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String endDate;
-	@XmlElement(name = "sla-agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
+	@XmlElement(name = "sla_agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String slaAgreement;
 	@XmlElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String ovf;
