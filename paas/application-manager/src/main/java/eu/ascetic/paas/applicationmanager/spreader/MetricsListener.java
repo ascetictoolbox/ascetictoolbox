@@ -8,6 +8,10 @@ import javax.jms.TextMessage;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
+import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
+import eu.ascetic.paas.applicationmanager.amqp.model.VM;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.spreader.model.Converter;
 import eu.ascetic.paas.applicationmanager.spreader.model.IaaSMessage;
 
@@ -37,6 +41,7 @@ public class MetricsListener implements MessageListener {
 	protected String user;
 	protected String password;
 	private String topic;
+	private AmqpMessageReceiver receiver;
 	
 	public MetricsListener(String amqpUrl, String topic) {
 		this.topic = topic;
@@ -47,7 +52,8 @@ public class MetricsListener implements MessageListener {
 			
 			try {
 				// We setup the listener
-				AmqpMessageReceiver receiver = new AmqpMessageReceiver(host, user, password,  topic, true);
+				// Topic has to have this format: vm.*.item.<metric_name>
+				receiver = new AmqpMessageReceiver(host, user, password,  topic, true);
 				receiver.setMessageConsumer(this);
 				
 			} catch(Exception ex) {
@@ -72,13 +78,37 @@ public class MetricsListener implements MessageListener {
     public void onMessage(Message message) {
         try {
         	TextMessage textMessage = (TextMessage) message;
-        	logger.debug("Message received for destionation: " + textMessage.getJMSDestination());
-        	IaaSMessage im = Converter.iaasMessageFromJSONToObject(textMessage.getText());
+        	String destination = textMessage.getJMSDestination().toString();
+        	logger.debug("Message received for destionation: " + destination);
+        	String text = (String) textMessage.getText();
+        	logger.debug("Text Message: " + text);
         	
+        	IaaSMessage im = Converter.iaasMessageFromJSONToObject(text);
+        	
+        	String vmID = destination.split(".")[1];
+        	
+        	VM vm = new VM();
+        	vm.setIaasVmId(vmID);
+        	vm.setMetricName(im.getName());
+        	vm.setUnits(im.getUnits());
+        	vm.setValue(im.getValue());
+        	vm.setTimestamp(im.getTimestamp());
+        	
+        	ApplicationManagerMessage amM = new ApplicationManagerMessage();
+        	amM.addVM(vm);
+        	
+        	logger.debug("Message to be sent: " + ModelConverter.applicationManagerMessageToJSON(amM));
+        	
+        	// We send the created message //TODO change this topic... 
+        	AmqpProducer.sendMessage("testing", amM);   
         	
         } catch (JMSException e) {
             logger.info("Error receiving message from: " + host + " to the topic: " + topic);
             logger.info(e.getMessage());
         }
+	}
+	
+	public void close() throws JMSException {
+		receiver.close();
 	}
 }

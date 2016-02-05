@@ -35,11 +35,11 @@ public class SpreaderBean {
 	private static Logger logger = Logger.getLogger(SpreaderBean.class);
 	
 	public SpreaderBean() {
-		logger.info("Initializing the Spreader IaaS Monitoring Bean");
-		
-		//Getting an initial list of providers
-		PRClient prClient = new PRClient();
-		List<Provider> providers = prClient.getProviders();
+//		logger.info("Initializing the Spreader IaaS Monitoring Bean");
+//		
+//		//Getting an initial list of providers
+//		PRClient prClient = new PRClient();
+//		List<Provider> providers = prClient.getProviders();
 		
 	}
 	

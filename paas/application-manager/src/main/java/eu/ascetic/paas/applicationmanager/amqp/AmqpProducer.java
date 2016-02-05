@@ -47,7 +47,7 @@ public class AmqpProducer {
 	 * @param topic to where the message it is going to be sent i.e.: application.111.deployment.222
 	 * @param message JSON object representation of the message to be sent
 	 */
-	protected static void sendMessage(String topic, ApplicationManagerMessage message) {
+	public static void sendMessage(String topic, ApplicationManagerMessage message) {
 		
 		if(Configuration.enableAMQP != null && Configuration.enableAMQP.equals("yes")) {
 		

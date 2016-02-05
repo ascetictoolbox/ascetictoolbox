@@ -113,6 +113,9 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 						// We set the SLA UUID in the document... 
 						deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
 						deployment.setSlaUUID(slaAgreement.getUuid());
+						// TODO Delete this after luca tests!!!
+						deployment.setSlaUUID("3909eaee-5500-4c43-af02-3792f9b6414f");
+						
 						deploymentDAO.update(deployment);
 						
 						agreementDAO.update(agreement);

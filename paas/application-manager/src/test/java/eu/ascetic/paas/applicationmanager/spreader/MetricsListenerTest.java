@@ -4,6 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import eu.ascetic.amqp.client.AmqpMessageProducer;
+import eu.ascetic.amqp.client.AmqpMessageReceiver;
+import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
+import eu.ascetic.paas.applicationmanager.amqp.AmqpListListener;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
+
 /**
  * Copyright 2016 ATOS SPAIN S.A. 
  * 
@@ -24,7 +30,7 @@ import org.junit.Test;
  * 
  * Tests Message Listener to each one of the ActiveMQ IaaS messages
  */
-public class MetricsListenerTest {
+public class MetricsListenerTest extends AbstractTest {
 
 	@Test
 	public void amqpUrlParserTest() {
@@ -51,5 +57,34 @@ public class MetricsListenerTest {
 		assertEquals(null, ml.user);
 		assertEquals(null, ml.password);
 		assertEquals(null, ml.host);
+	}
+	
+	//@Test
+	public void onMessageTest() throws Exception {
+		MetricsListener metricsListener = new MetricsListener("amqp://" + Configuration.amqpUsername + ":" + Configuration.amqpPassword + "@" + Configuration.amqpAddress, 
+															  "vm.*.item.power");
+		
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "testing", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// We send the message with our AmqpProducer
+		String json = "{\n" 
+				+ "   \"name\" : \"name\",\n" 
+				+ "   \"value\" : 0.1,\n"
+				+ "   \"units\" : \"units\",\n"
+				+ "   \"timestamp\" : 22\n"
+			+ "}";
+		AmqpMessageProducer producer = new AmqpMessageProducer(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword, "vm.489c0769-2ad3-4f76-a5d0-dedff0877f09.item.power", true);
+		producer.sendMessage(json);
+		producer.close();
+		
+		// We verify the response was correclty sended...
+		Thread.sleep(5000l);
+		
+		assertEquals(1, listener.getTextMessages().size());
+		
+		receiver.close();
+		metricsListener.close();
 	}
 }

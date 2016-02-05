@@ -54,7 +54,7 @@ public class ApplicationRest extends AbstractRest {
 	 * @return a list of applications stored in the database fitting the respective query params, by default this does not return the terminated applications
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML + ";qs=1")
 	public Response getApplications() {
 		logger.info("GET request to path: /applications  in XML format");
 		// TODO it is necessary to implement a lot of query params here
@@ -78,7 +78,7 @@ public class ApplicationRest extends AbstractRest {
 	 * in json format
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON + ";qs=0.5")
 	public Response getApplicationsJSON() {
 		logger.info("GET request to path: /applications in JSON format");
 		
@@ -129,7 +129,7 @@ public class ApplicationRest extends AbstractRest {
 	 */
 	@GET
 	@Path("{application_name}")
-	@Produces(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_XML + ";qs=1")
 	public Response getApplication(@PathParam("application_name") String applicationName) {
 		logger.info("GET request to path: /applications/" + applicationName + " in XML format");
 		
@@ -146,7 +146,7 @@ public class ApplicationRest extends AbstractRest {
 	 */
 	@GET
 	@Path("{application_name}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON + ";qs=0.5")
 	public Response getApplicationJSON(@PathParam("application_name") String applicationName) {
 		logger.info("GET request to path: /applications/" + applicationName + " in JSON format");
 		
