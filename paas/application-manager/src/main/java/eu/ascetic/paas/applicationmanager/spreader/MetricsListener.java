@@ -85,8 +85,9 @@ public class MetricsListener implements MessageListener {
         	
         	IaaSMessage im = Converter.iaasMessageFromJSONToObject(text);
         	
-        	String vmID = destination.split(".")[1];
-        	
+        	System.out.println("DESTINATION: " + destination);
+        	String vmID = destination.split("\\.")[1];
+        	        	
         	VM vm = new VM();
         	vm.setIaasVmId(vmID);
         	vm.setMetricName(im.getName());
@@ -94,8 +95,11 @@ public class MetricsListener implements MessageListener {
         	vm.setValue(im.getValue());
         	vm.setTimestamp(im.getTimestamp());
         	
+        	logger.debug("creé el nuevo mensaje");
+        	
         	ApplicationManagerMessage amM = new ApplicationManagerMessage();
         	amM.addVM(vm);
+        	       	
         	
         	logger.debug("Message to be sent: " + ModelConverter.applicationManagerMessageToJSON(amM));
         	

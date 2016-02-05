@@ -59,7 +59,7 @@ public class MetricsListenerTest extends AbstractTest {
 		assertEquals(null, ml.host);
 	}
 	
-	//@Test
+	@Test
 	public void onMessageTest() throws Exception {
 		MetricsListener metricsListener = new MetricsListener("amqp://" + Configuration.amqpUsername + ":" + Configuration.amqpPassword + "@" + Configuration.amqpAddress, 
 															  "vm.*.item.power");
@@ -80,7 +80,7 @@ public class MetricsListenerTest extends AbstractTest {
 		producer.close();
 		
 		// We verify the response was correclty sended...
-		Thread.sleep(5000l);
+		Thread.sleep(2000l);
 		
 		assertEquals(1, listener.getTextMessages().size());
 		
