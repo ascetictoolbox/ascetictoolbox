@@ -18,6 +18,7 @@ package eu.ascetic.vmic.api.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -668,7 +669,6 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Remote System call executing boot-image.sh script
         String commandName = runtimePath + "/scripts/boot-image.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add(runtimePath);
         arguments.add(imagePath);
         arguments.add(operatingSystem);
 
@@ -746,8 +746,11 @@ public class VirtualMachineImageConstructor implements Runnable {
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        for (Map.Entry<String, Map<String, String>> softwareDependenciesEntry : softwareDependencies
-                .entrySet()) {
+        // TreeMap so we can operate over the dependencies in reverse order
+        TreeMap<String, Map<String, String>> treeMap = new TreeMap<String, Map<String, String>>();
+        treeMap.putAll(softwareDependencies);
+        
+        for (Map.Entry<String, Map<String, String>> softwareDependenciesEntry : treeMap.entrySet()) {
 
             String packageUri = softwareDependenciesEntry.getKey();
             Map<String, String> attributes = softwareDependenciesEntry
@@ -878,7 +881,6 @@ public class VirtualMachineImageConstructor implements Runnable {
         String commandName = runtimePath
                 + "/scripts/shutdown-virtual-machine.sh";
         ArrayList<String> arguments = new ArrayList<String>();
-        arguments.add(runtimePath);
         // Add the VMs IP
         arguments.add(virtualMachineAddress);
 
