@@ -1,7 +1,8 @@
 #!/bin/bash
 
-RUNTIME_DIR=$1
-IP=$2
+IP=$1
+
+RUNTIME_DIR="$(cd $(dirname $0); cd .. ; pwd -P)"
 
 SHUTDOWN_TIMEOUT=60
 

@@ -3,11 +3,13 @@
 BOOTSTRAP_IP=$1
 OS=$2
 
+RUNTIME_DIR="$(cd $(dirname $0); cd .. ; pwd -P)"
+cd $RUNTIME_DIR/chef-repo
+
 # Bootstrap chef agent to chef server
 if [ "$OS" == "windows" ]
 then
-  cd /mnt/cephfs/ascetic/vmic/runtime/chef-repo
-  knife bootstrap windows winrm $BOOTSTRAP_IP -x Administrator -P 'password' --winrm-authentication-protocol basic --msi-url 'http://10.0.0.1:8080/chef-windows-11.18.6-1.windows.msi' -N vmic-test
+  knife bootstrap windows winrm $BOOTSTRAP_IP -x Administrator -P 'password' --winrm-authentication-protocol basic --msi-url 'http://10.0.0.1:8080/chef-windows-11.18.6-1.windows.msi' -N vmic-$(echo $BOOSTRAP_IP | cut -d'.' -f 4)
   if [ $? -ne 0 ]
   then
     echo "Error bootstrapping windows base image to chef server"
@@ -15,8 +17,7 @@ then
   fi
 elif [ "$OS" == "linux" ]
 then
-  cd /mnt/cephfs/ascetic/vmic/runtime/chef-repo
-  knife bootstrap $BOOTSTRAP_IP -x root -P 'password' -N vmic-test --bootstrap-url 'http://10.0.0.1:8080/install.sh'
+  knife bootstrap $BOOTSTRAP_IP -x root -P 'password' -N vmic-$(echo $BOOTSTRAP_IP | cut -d'.' -f 4) --bootstrap-url 'http://10.0.0.1:8080/install.sh'
   if [ $? -ne 0 ]
   then
     echo "Error bootstrapping linux base image to chef server"
