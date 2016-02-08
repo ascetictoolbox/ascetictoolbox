@@ -277,6 +277,11 @@
    			<artifactId>spring-webmvc</artifactId>
    			<version>4.1.0.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
 		
 		<!-- ASCETiC Dependencies -->
 		<dependency>
@@ -284,11 +289,31 @@
 			<artifactId>application-manager-datamodel</artifactId>
 			<version>0.22-SNAPSHOT</version>
 		</dependency>
+		
+			<!-- ASCETiC AMQP 1.0 Client -->
+		<dependency>
+			<groupId>eu.ascetic.utils</groupId>
+			<artifactId>ascetic-qpid-amqp-client</artifactId>
+			<version>0.3-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+			<version>5.11.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-amqp</artifactId>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 

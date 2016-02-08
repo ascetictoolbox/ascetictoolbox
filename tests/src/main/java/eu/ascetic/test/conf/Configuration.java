@@ -29,6 +29,8 @@ public class Configuration {
 	private static Logger logger = Logger.getLogger(Configuration.class);
 	// PaaS Variables
 	public static String applicationManagerURL = "";
+	public static int queueSize = 100;
+	public static String paasActiveMQUrl = "amqp://guest:guest@localhost:5672";
 	
 	static {
         try {
@@ -42,6 +44,7 @@ public class Configuration {
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
         	// PaaS Variables
         	applicationManagerURL = config.getString("application.manager.url");
+        	paasActiveMQUrl = config.getString("paas.activemq.url");
         }
         catch (Exception e) {
             logger.info("Error loading ASCETiC Tests configuration file");
