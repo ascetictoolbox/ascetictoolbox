@@ -3693,6 +3693,10 @@ tests/src/main/resources/config.properties -text
 tests/src/main/resources/config.stable.properties -text
 tests/src/main/resources/config.test.properties -text
 tests/src/test/java/eu/ascetic/test/paas/applicationmanager/ApplicationManagerTest.java -text
+tests/src/test/java/eu/ascetic/test/paas/applicationmanager/amqp/AbstractTests.java -text
+tests/src/test/java/eu/ascetic/test/paas/applicationmanager/amqp/AppManagerAmqpListListenerUnitTests.java -text
+tests/src/test/java/eu/ascetic/test/paas/applicationmanager/amqp/AppManagerAmqpMessageUnitTests.java -text
+tests/src/test/java/eu/ascetic/test/paas/applicationmanager/amqp/AppManagerAmqpReceiverUnitTests.java -text
 tests/src/test/resources/jndi.properties -text
 tests/src/test/resources/log4j.properties -text
 use-cases/atc/newsasset/kpi-modelling/.project -text
