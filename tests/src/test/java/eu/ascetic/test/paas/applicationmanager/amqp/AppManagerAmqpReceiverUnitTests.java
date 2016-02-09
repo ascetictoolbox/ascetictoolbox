@@ -1,12 +1,10 @@
 package eu.ascetic.test.paas.applicationmanager.amqp;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import eu.ascetic.amqp.client.AmqpMessageProducer;
-import eu.ascetic.amqp.client.AmqpMessageReceiver;
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.test.conf.Configuration;

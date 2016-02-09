@@ -50,6 +50,7 @@ public class AppManagerAmqpListListener implements MessageListener {
 		
 		try {
 			String destination = textMessage.getJMSDestination().toString();
+			logger.info("Got message for: " + destination);
 			
 			if(destination.startsWith("APPLICATION.")) {
 				AppManagerAmqpMessage newMessage = new AppManagerAmqpMessage();

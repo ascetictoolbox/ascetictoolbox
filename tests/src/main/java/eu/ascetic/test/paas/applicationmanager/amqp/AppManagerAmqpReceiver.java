@@ -74,5 +74,15 @@ public class AppManagerAmqpReceiver {
 		this.user = parts[1].substring(2);
 	}
 	
-
+	public String getUrl() {
+		return url;
+	}
+	
+	public String getUser() {
+		return user;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
 }
