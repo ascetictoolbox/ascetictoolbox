@@ -16,11 +16,12 @@
 package eu.ascetic.vmic.api.core;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
@@ -536,9 +537,9 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Iterate over every virtual system image
         for (int i = 0; i < ovfDefinitionParser.getImageNumber(); i++) {
 
-            //Reset the VM IP
+            // Reset the VM IP
             virtualMachineAddress = null;
-            
+
             // Fetch parsed OVF attributes relevant for online image
             // generation.
             String newImagePath = ovfDefinitionParser.getImagePath(i);
@@ -694,9 +695,8 @@ public class VirtualMachineImageConstructor implements Runnable {
     /**
      * Install chef client via SSH into a Virtual Machine.
      * 
-     * @param operatingSystemType
-     *            The installed OS to select.
      * @param operatingSystem
+     *            The installed OS to select.
      * @throws ProgressException
      *             Thrown on failure.
      */
@@ -739,21 +739,18 @@ public class VirtualMachineImageConstructor implements Runnable {
      *             Thrown on failure.
      */
     private void uploadCookbooks(
-            Map<String, Map<String, String>> softwareDependencies)
+            LinkedHashMap<String, LinkedHashMap<String, String>> softwareDependencies)
             throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
                         .getConfiguration());
 
-        // TreeMap so we can operate over the dependencies in reverse order
-        TreeMap<String, Map<String, String>> treeMap = new TreeMap<String, Map<String, String>>();
-        treeMap.putAll(softwareDependencies);
-        
-        for (Map.Entry<String, Map<String, String>> softwareDependenciesEntry : treeMap.entrySet()) {
+        for (Map.Entry<String, LinkedHashMap<String, String>> softwareDependenciesEntry : softwareDependencies
+                .entrySet()) {
 
             String packageUri = softwareDependenciesEntry.getKey();
-            Map<String, String> attributes = softwareDependenciesEntry
+            LinkedHashMap<String, String> attributes = softwareDependenciesEntry
                     .getValue();
 
             // Remote System call executing upload-cookbooks script
@@ -769,7 +766,9 @@ public class VirtualMachineImageConstructor implements Runnable {
                     .entrySet()) {
                 String attributeName = attributesEentry.getKey();
                 String attributeValue = attributesEentry.getValue();
-                arguments.add(attributeName + ":" + attributeValue);
+                byte[] encodedBytes = Base64.encodeBase64((attributeName
+                        + " = " + attributeValue).getBytes());
+                arguments.add(new String(encodedBytes));
             }
 
             try {
@@ -794,6 +793,8 @@ public class VirtualMachineImageConstructor implements Runnable {
      * Deploys chef cookbook(s) to server and agent deployed in a Virtual
      * Machine, installing required software for image.
      * 
+     * @param operatingSystem
+     *            The installed OS to select.
      * @throws ProgressException
      *             Thrown on failure.
      */
@@ -809,6 +810,7 @@ public class VirtualMachineImageConstructor implements Runnable {
         ArrayList<String> arguments = new ArrayList<String>();
         // Add the VMs IP
         arguments.add(virtualMachineAddress);
+        arguments.add(operatingSystem);
 
         try {
             systemCallRemote.runCommand(commandName, arguments);
@@ -870,8 +872,7 @@ public class VirtualMachineImageConstructor implements Runnable {
      * @throws ProgressException
      *             Thrown on failure.
      */
-    private void shutdownVirtualMachine()
-            throws ProgressException {
+    private void shutdownVirtualMachine() throws ProgressException {
 
         SystemCallRemote systemCallRemote = new SystemCallRemote(
                 System.getProperty("user.home"), vmicApi.getGlobalState()
@@ -904,8 +905,7 @@ public class VirtualMachineImageConstructor implements Runnable {
      * Attempts to clean up after a failure during online image generation.
      * 
      */
-    private void onlineCleanUpOnError()
-            throws ProgressException {
+    private void onlineCleanUpOnError() throws ProgressException {
         if (virtualMachineAddress != null) {
             // Try to clean up: shutdown VM and clean chef server
             try {

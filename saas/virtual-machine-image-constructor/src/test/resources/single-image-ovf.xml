@@ -3,8 +3,6 @@
   <ovf:DiskSection>
     <ovf:Info>List of the virtual disks used.</ovf:Info>
     <ovf:Disk ovf:diskId="NA-HAProxy-img-disk" ovf:fileRef="NA-HAProxy-img" ovf:format="raw" ovf:capacityAllocationUnits="byte" ovf:capacity="2148532224" />
-    <ovf:Disk ovf:diskId="NA-Oracle-img-disk" ovf:fileRef="NA-Oracle-img" ovf:format="raw" ovf:capacityAllocationUnits="byte" ovf:capacity="4295000064" />
-    <ovf:Disk ovf:diskId="NA-Files-img-disk" ovf:fileRef="NA-Files-img" ovf:format="raw" ovf:capacityAllocationUnits="byte" ovf:capacity="4295000064" />
     <ovf:Disk ovf:diskId="NA-Server-img-disk" ovf:fileRef="NA-Server-img" ovf:format="raw" ovf:capacityAllocationUnits="byte" ovf:capacity="4295000064" />
   </ovf:DiskSection>
   <ovf:VirtualSystemCollection ovf:id="NewsAssetMultitenantSmallMedium">
@@ -15,6 +13,7 @@
       <ovf:Version>1.0</ovf:Version>
       <ovf:Property ovf:key="asceticVmicMode" ovf:type="uint32" ovf:value="online" />
     </ovf:ProductSection>
+    <!--
     <ovf:VirtualSystem ovf:id="NA-HAProxy">
       <ovf:Info>HAProxyTest Virtual System</ovf:Info>
       <ovf:Name>NA-HAProxy</ovf:Name>
@@ -36,24 +35,26 @@
         <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="chef-cookbook" />
         <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_0" ovf:type="uint32" ovf:value="1" />
         <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_0_0" ovf:type="string" ovf:value="CPU" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="test1" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="value1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="default['cpu']['test1']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="'value1'" />
         <ovf:Property ovf:key="asceticSoftwareDependencyId_1" ovf:type="string" ovf:value="BuildEssential" />
         <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_1" ovf:type="string" ovf:value="http://localhost:8080/build-essential.tar.gz" />
         <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_1" ovf:type="string" ovf:value="" />
         <ovf:Property ovf:key="asceticSoftwareDependencyType_1" ovf:type="string" ovf:value="chef-cookbook" />
         <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_1" ovf:type="uint32" ovf:value="1" />
         <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_1_0" ovf:type="string" ovf:value="BuildEssential" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_1_0" ovf:type="string" ovf:value="test1" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_1_0" ovf:type="string" ovf:value="value1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_1_0" ovf:type="string" ovf:value="default['build-essential']['test1']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_1_0" ovf:type="string" ovf:value="'value1'" />
         <ovf:Property ovf:key="asceticSoftwareDependencyId_2" ovf:type="string" ovf:value="HAProxy" />
         <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_2" ovf:type="string" ovf:value="http://localhost:8080/haproxy.tar.gz" />
         <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_2" ovf:type="string" ovf:value="" />
         <ovf:Property ovf:key="asceticSoftwareDependencyType_2" ovf:type="string" ovf:value="chef-cookbook" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_2" ovf:type="uint32" ovf:value="1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_2" ovf:type="uint32" ovf:value="2" />
         <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_2_0" ovf:type="string" ovf:value="HAProxy" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_2_0" ovf:type="string" ovf:value="test1" />
-        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_2_0" ovf:type="string" ovf:value="value1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_2_0" ovf:type="string" ovf:value="default['haproxy']['member_port']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_2_0" ovf:type="string" ovf:value="8080" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_2_1" ovf:type="string" ovf:value="default['haproxy']['members']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_2_1" ovf:type="string" ovf:value="[{ &quot;hostname&quot; =&gt; &quot;localhost&quot;, &quot;ipaddress&quot; =&gt; &quot;127.0.0.1&quot; }]" />
       </ovf:ProductSection>
       <ovf:VirtualHardwareSection>
         <ovf:Info>Description of virtual hardware requirements.</ovf:Info>
@@ -85,6 +86,82 @@
           <rasd:Description>VM Disk</rasd:Description>
           <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
           <rasd:HostResource>ovf:/disk/NA-HAProxy-img-disk</rasd:HostResource>
+          <rasd:InstanceID>4</rasd:InstanceID>
+          <rasd:ResourceType>17</rasd:ResourceType>
+        </ovf:Item>
+      </ovf:VirtualHardwareSection>
+    </ovf:VirtualSystem>
+    -->
+    <ovf:VirtualSystem ovf:id="NA-Server">
+      <ovf:Info>NA-Server Virtual System</ovf:Info>
+      <ovf:Name>NA-Server</ovf:Name>
+      <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
+        <ovf:Info>Description of NA-Server Operating System.</ovf:Info>
+      </ovf:OperatingSystemSection>
+      <ovf:ProductSection>
+        <ovf:Info>Product configuration for the NA-Server VirtualSystem.</ovf:Info>
+        <ovf:Product>NA-Server</ovf:Product>
+        <ovf:Version>2.0</ovf:Version>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="2" />
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="10" />
+        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1" />
+        <ovf:Property ovf:key="asceticAssociatePublicIp" ovf:type="string" ovf:value="true" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyNumber" ovf:type="uint32" ovf:value="3" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_0" ovf:type="string" ovf:value="ChefHandler" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_0" ovf:type="string" ovf:value="http://localhost:8080/chef_handler.tar.gz" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_0" ovf:type="string" ovf:value="" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="chef-cookbook" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_0" ovf:type="uint32" ovf:value="1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_0_0" ovf:type="string" ovf:value="ChefHandler" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="default['chef_handler']['test1']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="'value1'" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_1" ovf:type="string" ovf:value="Windows" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_1" ovf:type="string" ovf:value="http://localhost:8080/windows.tar.gz" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_1" ovf:type="string" ovf:value="" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_1" ovf:type="string" ovf:value="chef-cookbook" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_1" ovf:type="uint32" ovf:value="1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_1_0" ovf:type="string" ovf:value="Windows" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_1_0" ovf:type="string" ovf:value="default['windows']['test1']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_1_0" ovf:type="string" ovf:value="'value1'" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_2" ovf:type="string" ovf:value="NewsAssetServer" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_2" ovf:type="string" ovf:value="http://localhost:8080/na-server.tar.gz" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_2" ovf:type="string" ovf:value="" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_2" ovf:type="string" ovf:value="chef-cookbook" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_2" ovf:type="uint32" ovf:value="1" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_2_0" ovf:type="string" ovf:value="NewsAssetOracle" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_2_0" ovf:type="string" ovf:value="default['na-server']['test1']" />
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_2_0" ovf:type="string" ovf:value="'value1'" />
+      </ovf:ProductSection>
+      <ovf:VirtualHardwareSection>
+        <ovf:Info>Description of virtual hardware requirements.</ovf:Info>
+        <ovf:Item>
+          <rasd:Description>Number of virtual CPUs</rasd:Description>
+          <rasd:ElementName>virtual CPU</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:ResourceType>3</rasd:ResourceType>
+          <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+          <rasd:Description>CPU Speed</rasd:Description>
+          <rasd:ElementName>2GHz CPU speed reservation</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:Reservation>2000</rasd:Reservation>
+          <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+          <rasd:ResourceType>3</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+          <rasd:Description>Memory Size</rasd:Description>
+          <rasd:ElementName>8192MB of memory</rasd:ElementName>
+          <rasd:InstanceID>2</rasd:InstanceID>
+          <rasd:ResourceType>4</rasd:ResourceType>
+          <rasd:VirtualQuantity>8192</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM Disk</rasd:Description>
+          <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Server-img-disk</rasd:HostResource>
           <rasd:InstanceID>4</rasd:InstanceID>
           <rasd:ResourceType>17</rasd:ResourceType>
         </ovf:Item>

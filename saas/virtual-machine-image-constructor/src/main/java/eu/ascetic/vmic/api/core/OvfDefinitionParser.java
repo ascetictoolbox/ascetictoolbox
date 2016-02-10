@@ -16,9 +16,8 @@
 package eu.ascetic.vmic.api.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -53,7 +52,7 @@ public class OvfDefinitionParser {
     private List<String> imageNames;
     private List<String> imageScripts;
     private List<OperatingSystemType> imageOperatingSystems;
-    private List<Map<String, Map<String, String>>> imageSoftwareDependencies;
+    private List<LinkedHashMap<String, LinkedHashMap<String, String>>> imageSoftwareDependencies;
 
     private VmicApi vmicApi;
 
@@ -94,7 +93,7 @@ public class OvfDefinitionParser {
         imageNames = new ArrayList<String>();
         imageScripts = new ArrayList<String>();
         imageOperatingSystems = new ArrayList<OperatingSystemType>();
-        imageSoftwareDependencies = new ArrayList<Map<String, Map<String, String>>>();
+        imageSoftwareDependencies = new ArrayList<LinkedHashMap<String, LinkedHashMap<String, String>>>();
     }
 
     /**
@@ -196,7 +195,7 @@ public class OvfDefinitionParser {
 
                     Integer softwareDendencyNumber = productSection
                             .getSoftwareDependencyNumber();
-                    HashMap<String, Map<String, String>> softwareDependencies = new HashMap<String, Map<String, String>>();
+                    LinkedHashMap<String, LinkedHashMap<String,String>> softwareDependencies = new LinkedHashMap<String, LinkedHashMap<String, String>>();
 
                     LOGGER.debug("Number of software depenencies for image "
                             + imageName + " is : " + softwareDendencyNumber);
@@ -208,7 +207,7 @@ public class OvfDefinitionParser {
                                 .getSoftwareDependencyPackageUri(j);
                         LOGGER.debug("Found package for " + imageName
                                 + ", URI is : " + packageUri);
-                        Map<String, String> attributes = new HashMap<String, String>();
+                        LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
                         // Get attributes describing the package (e.g. chef
                         // cookbook attributes)
                         for (int k = 0; k < packageAttributeNumber; k++) {
@@ -219,7 +218,7 @@ public class OvfDefinitionParser {
                                     .getSoftwareDependencyPackageAttributeValue(
                                             j, k);
                             LOGGER.debug("Found attribute for package, key:value is: "
-                                    + key + ":" + value);
+                                    + key + " = " + value);
                             attributes.put(key, value);
                         }
                         softwareDependencies.put(packageUri, attributes);
@@ -410,12 +409,12 @@ public class OvfDefinitionParser {
      * @param i
      *            The index i of the image defined by the order in which the
      *            disks appears in the OVF
-     * @return A Map describing the software dependencies of type: Map&ltString
-     *         <i>packageUri</i>, Map <i>attributes</i>&gt, where
-     *         <i>attributes</i> is a nested Map of type: Map&ltString
+     * @return A LinkedHashMap describing the software dependencies of type: LinkedHashMap&ltString
+     *         <i>packageUri</i>, LinkedHashMap <i>attributes</i>&gt, where
+     *         <i>attributes</i> is a nested LinkedHashMap of type: LinkedHashMap&ltString
      *         <i>attributeKey</i>, String <i>attributeValue</i>&gt
      */
-    public Map<String, Map<String, String>> getImageSoftwareDependencies(int i) {
+    public LinkedHashMap<String, LinkedHashMap<String, String>> getImageSoftwareDependencies(int i) {
         return imageSoftwareDependencies.get(i);
     }
 }
