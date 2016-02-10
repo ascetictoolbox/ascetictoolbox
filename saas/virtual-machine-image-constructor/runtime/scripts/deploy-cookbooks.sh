@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CHEF_CLIENT_IP=$1
-# FIXME: Add argument to know if its a windows or linux VM
+OS=$2
 
 RUNTIME_DIR="$(cd $(dirname $0); cd .. ; pwd -P)"
 cd $RUNTIME_DIR/chef-repo
@@ -21,14 +21,30 @@ while true; do
     T=$((T+1))
     if [ $T -gt $RETRIES ]; then
       echo "Error: node not registered after $RETRIES retries"
-      break
+      exit 1
     fi
   else
     break
   fi
 done
 
-# FIXME: Statment to switch between windows or linux chef-client
-knife ssh "name:$NODE_NAME" 'chef-client' -x root -P 'password' -a ipaddress
+# Execute chef-client
+if [ "$OS" == "windows" ]
+then
+  knife winrm "name:$NODE_NAME" 'chef-client' -x Administrator -P 'password' --winrm-authentication-protocol basic -a ipaddress --no-color
+  if [ $? -ne 0 ]
+  then
+    echo "Error invoking chef-client via winrm"
+    exit 1
+  fi
+elif [ "$OS" == "linux" ]
+then
+  knife ssh "name:$NODE_NAME" 'chef-client' -x root -P 'password' -a ipaddress --no-color
+  if [ $? -ne 0 ]
+  then
+    echo "Error invoking chef-client via ssh"
+    exit 1
+  fi
+fi
 
 exit 0

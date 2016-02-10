@@ -5,7 +5,7 @@ OS="$2"
 RUNTIME_DIR="$(cd $(dirname $0); cd .. ; pwd -P)"
 INSTALL_DIR="$(dirname $RUNTIME_DIR)"
 
-INIT_TIMEOUT=180
+INIT_TIMEOUT=90
 
 if [ "$OS" == "windows" ]
 then

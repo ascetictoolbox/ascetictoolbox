@@ -13,16 +13,18 @@ COOKBOOK="$(echo "${COOKBOOK_URI##*/}")"
 COOKBOOK_NAME="$(echo $COOKBOOK | cut -d'.' -f1)"
 
 # Download cookbook
-wget $COOKBOOK_URI -P $COOKBOOKS
+wget -q $COOKBOOK_URI -P $COOKBOOKS
 
 # Extract cookbook to workspace
 tar zxvf $COOKBOOKS$COOKBOOK -C $COOKBOOKS
 rm $COOKBOOKS$COOKBOOK
 
-# TODO: Add default attributes from input arguments skipping first 2
+# Add base64 encoded default attributes from input arguments skipping first 2
 for i in ${@:3}
 do
-  echo $i
+  ATTRIBUTE="$(echo $i | base64 --decode)"
+  echo "Decoded attribute: $ATTRIBUTE"
+  echo $ATTRIBUTE >> $COOKBOOKS$COOKBOOK_NAME/attributes/default.rb
 done
 
 # Upload the cookbook
