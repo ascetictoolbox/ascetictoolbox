@@ -1,6 +1,8 @@
 package eu.ascetic.test.paas.applicationmanager.client;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -11,9 +13,9 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.common.net.MediaType;
-
+import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Root;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.test.conf.Configuration;
 
 /**
@@ -51,12 +53,43 @@ public class ApplicationManagerClient {
 	}
 	
 	/**
+	 * It creates a deployment of an Application from an OVF
+	 * @param ovf 
+	 * @return the deployment information
+	 */
+	public static Application createDeployment(String ovf) {
+		String applicationString = postMethod(Configuration.applicationManagerURL + "/applications", ovf);
+		logger.info("Application: ");
+		logger.info(applicationString);
+		
+		Application application = ModelConverter.xmlApplicationToObject(applicationString);
+		
+		return application;
+	}
+	
+	/**
+	 * Deletes a deployment.
+	 * @param applicationName
+	 * @param deploymentID
+	 */
+	public static void deleteDeployment(String applicationName, String deploymentId) {
+	    final String uri = Configuration.applicationManagerURL + "/applications/{appname}/deployments/{id}";
+	     
+	    Map<String, String> params = new HashMap<String, String>();
+	    params.put("appname", applicationName);
+	    params.put("id", deploymentId);
+	     
+	    RestTemplate restTemplate = new RestTemplate();
+	    restTemplate.delete ( uri,  params );
+	}
+	
+	/**
 	 * Old Post using HttpClient, for uploading the ovf.
 	 * @param url
 	 * @param payload
 	 * @return
 	 */
-	private String postMethod(String url, String payload) {
+	private static String postMethod(String url, String payload) {
 		HttpClient httpClient = new HttpClient();
 		
 		logger.info("Starting POST method to url: " + url);

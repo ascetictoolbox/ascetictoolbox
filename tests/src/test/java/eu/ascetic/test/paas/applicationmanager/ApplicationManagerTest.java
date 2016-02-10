@@ -4,6 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +19,8 @@ import org.junit.Test;
 
 import eu.ascetic.amqp.client.AmqpMessageProducer;
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
+import eu.ascetic.paas.applicationmanager.model.Application;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.test.conf.Configuration;
 import eu.ascetic.test.paas.applicationmanager.amqp.AppManagerAmqpMessage;
@@ -45,6 +55,8 @@ public class ApplicationManagerTest {
 	private int deploymentId;
 	private boolean deploys;
 	private String testName;
+	private String threeTierWebAppOvfFile = "webapp-ovf.xml";
+	private String threeTierWebAppOvfString;
 	
 	private void setup(boolean deploys, String testName) {
 		this.testName = testName;
@@ -53,6 +65,11 @@ public class ApplicationManagerTest {
 		logger.info(" STARTING TEST: " + this.testName + ", CREATES A DEPLOYMENT? " + this.deploys); 
 	}
 
+	@Before
+	public void loadOvfFile() throws IOException, URISyntaxException {
+		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
+		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+	}
 	
 	/**
 	 * This test checks before executing any tests that App Manager and PaaS ActiveMQ are running.
@@ -114,9 +131,71 @@ public class ApplicationManagerTest {
 	}
 	
 	@Test
-	public void deployAnApplication() {
-		setup(true, "Deployment of a simple application");
-		logger.info("I will see this message if everything is ok...");
+	public void applicationLifecycle() throws InterruptedException {
+		setup(true, "Lifecycle of a simple application");
+		
+		logger.info("###### SETTING UP THE LISTENER FOR THE QUEUE ######");
+		AppManagerAmqpReceiver receiver = new AppManagerAmqpReceiver();
+		
+		logger.info("###### DEPLOYING APPLICATION #######");
+		Application application =  ApplicationManagerClient.createDeployment(threeTierWebAppOvfString);
+		Deployment deployment = application.getDeployments().get(0);
+		logger.info("Deployment with ID: " + deployment.getId());
+		this.deploymentId = deployment.getId();
+		
+		logger.info("###### CHECKING SUBMITTED STATUS ########");
+		boolean wasSubmitted = waitingForState(application, "SUBMITTED", receiver);
+		if(!wasSubmitted) {
+			fail("Application was not submitted after waiting for 5 minutes");
+		}
+		
+		logger.info("###### CHECKING NEGOTIATED STATUS ########");
+		boolean wasNegotiated = waitingForState(application, "NEGOTIATED", receiver);
+		if(!wasNegotiated) {
+			fail("Application was not NEGOTIATED after waiting at least for 5 minutes after SUBMITTED");
+		}
+		
+		logger.info("###### CHECKING CONTEXTUALIZED STATUS ########");
+		boolean wasContextualized = waitingForState(application, "CONTEXTUALIZED", receiver);
+		if(!wasContextualized) {
+			fail("Application was not CONTEXTUALIZED after waiting at least for 5 minutes after NEGOTIATED");
+		}
+		
+		logger.info("###### CHECKING DEPLOYED STATUS ########");
+		boolean wasDeployed = waitingForState(application, "DEPLOYED", receiver);
+		if(!wasDeployed) {
+			fail("Application was not DEPLOYED after waiting at least for 5 minutes after CONTEXTUALIZED");
+		}
+		
+		logger.info("###### DELETING THE DEPLOYMENT ########");
+		ApplicationManagerClient.deleteDeployment(application.getName(), "" + deploymentId);
+	
+		logger.info("###### CHECKING TERMINATED STATUS ########");
+		boolean wasTerminated = waitingForState(application, "TERMINATED", receiver);
+		if(!wasTerminated) {
+			fail("Application was not TERMINATED after waiting at least for 5 minutes");
+		}
+	}
+	
+	private boolean waitingForState(Application application, String state, AppManagerAmqpReceiver receiver) throws InterruptedException {
+		boolean reachedThatState = false;
+		
+		AppManagerAmqpMessage message = new AppManagerAmqpMessage();
+		message.setApplicationId(application.getName());
+		message.setDeploymentId("" + deploymentId);
+		message.setStatus(state);
+		
+		for(int i = 0; i <= 20; i++) {
+			if(receiver.contains(message)) {
+				logger.info("Found message for state " + state);
+				reachedThatState = true;
+				i = 100;
+			}
+			
+			Thread.sleep(30000l);
+		}
+		
+		return reachedThatState;
 	}
 	
 	@After
@@ -128,5 +207,17 @@ public class ApplicationManagerTest {
 		} else {
 			logger.info("Test did not deploy anything, no need to clean up... ");
 		}
+	}
+	
+	/**
+	 * It just reads a file form the disk... 
+	 * @param path
+	 * @param encoding
+	 * @return
+	 * @throws IOException
+	 */
+	protected String readFile(String path, Charset encoding) throws IOException {
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded, encoding);
 	}
 }
