@@ -3692,6 +3692,7 @@ tests/src/main/java/eu/ascetic/test/paas/applicationmanager/client/ApplicationMa
 tests/src/main/resources/config.properties -text
 tests/src/main/resources/config.stable.properties -text
 tests/src/main/resources/config.test.properties -text
+tests/src/main/resources/webapp-ovf.xml -text
 tests/src/test/java/eu/ascetic/test/paas/applicationmanager/ApplicationManagerTest.java -text
 tests/src/test/java/eu/ascetic/test/paas/applicationmanager/amqp/AbstractTests.java -text
 tests/src/test/java/eu/ascetic/test/paas/applicationmanager/amqp/AppManagerAmqpListListenerUnitTests.java -text
