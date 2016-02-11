@@ -279,7 +279,7 @@ public class VmicApiTest extends TestCase {
 
             // Read the testing OVF
             //URL url = getClass().getClassLoader().getResource("atc-ovf.xml");
-            URL url = getClass().getClassLoader().getResource("single-image-ovf.xml");
+            URL url = getClass().getClassLoader().getResource("django-test-ovf.xml");
             String ovfDefinitionAsString = null;
             try {
                 ovfDefinitionAsString = new String(Files.readAllBytes(Paths
