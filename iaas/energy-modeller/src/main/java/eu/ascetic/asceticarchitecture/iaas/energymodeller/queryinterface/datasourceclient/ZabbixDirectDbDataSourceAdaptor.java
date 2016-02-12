@@ -25,6 +25,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.VM_PHYSICAL_HOST_NAME_2;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -147,6 +148,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
      */
     private String vmGroup = "Virtual machines";
     private String hostGroup = "Hypervisors";
+    private String fileStorage = "DFS";
     private static boolean onlyAvailableHosts = false;
     private static final String CONFIG_FILE = "energy-modeller-db-zabbix.properties";
     private static final Logger DB_LOGGER = Logger.getLogger(ZabbixDirectDbDataSourceAdaptor.class.getName());
@@ -188,6 +190,8 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             config.setProperty("iaas.energy.modeller.vm.group", vmGroup);
             hostGroup = config.getString("iaas.energy.modeller.host.group", hostGroup);
             config.setProperty("iaas.energy.modeller.host.group", hostGroup);
+            fileStorage = config.getString("iaas.energy.modeller.dfs.group", fileStorage);
+            config.setProperty("iaas.energy.modeller.dfs.group", fileStorage);
             onlyAvailableHosts = config.getBoolean("iaas.energy.zabbix.only.available.hosts", onlyAvailableHosts);
             config.setProperty("iaas.energy.zabbix.only.available.hosts", onlyAvailableHosts);
             if (onlyAvailableHosts) {
@@ -237,6 +241,30 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
                 for (ArrayList<Object> hostData : results) {
                     Host answer = new Host(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
                     answer = fullyDescribeHost(answer, getHostData(answer).getMetrics().values());
+                    return answer;
+                }
+            }
+        } catch (SQLException ex) {
+            DB_LOGGER.log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    @Override
+    public FileStorageNode getFileStorageByName(String hostname) {
+        connection = getConnection(connection);
+        if (connection == null) {
+            return null;
+        }
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                ALL_ZABBIX_HOSTS + FILTER_BY_GROUP + FILTER_BY_NAME)) {
+            preparedStatement.setString(1, fileStorage);
+            preparedStatement.setString(2, hostname);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
+                for (ArrayList<Object> hostData : results) {
+                    FileStorageNode answer = new FileStorageNode(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
+                    answer = (FileStorageNode) fullyDescribeHost(answer, getHostData(answer).getMetrics().values());
                     return answer;
                 }
             }
@@ -378,13 +406,17 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
 
     @Override
     public List<Host> getHostList() {
+        return getHostList(hostGroup);
+    }
+
+    public List<Host> getHostList(String groupName) {
         List<Host> answer = new ArrayList<>();
         connection = getConnection(connection);
         if (connection == null) {
             return null;
         }
-        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS + FILTER_BY_GROUP)) {
-            preparedStatement.setString(1, hostGroup);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS + FILTER_BY_GROUP);) {
+            preparedStatement.setString(1, groupName);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
                 for (ArrayList<Object> hostData : results) {
@@ -402,20 +434,20 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
     }
 
     @Override
-    public List<Host> getHostList(String groupName) {
-        List<Host> answer = new ArrayList<>();
+    public List<FileStorageNode> getFileStorageList() {
+        List<FileStorageNode> answer = new ArrayList<>();
         connection = getConnection(connection);
         if (connection == null) {
             return null;
         }
-        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS + FILTER_BY_GROUP);) {
-            preparedStatement.setString(1, groupName);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS + FILTER_BY_GROUP)) {
+            preparedStatement.setString(1, hostGroup);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-                for (ArrayList<Object> hostData : results) {
-                    Host host = new Host(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
-                    host = fullyDescribeHost(host, getHostData(host).getMetrics().values());
-                    answer.add(host);
+                for (ArrayList<Object> storageData : results) {
+                    FileStorageNode fileStore = new FileStorageNode(((Long) storageData.get(0)).intValue(), (String) storageData.get(1));
+                    fileStore = (FileStorageNode) fullyDescribeHost(fileStore, getHostData(fileStore).getMetrics().values());
+                    answer.add(fileStore);
                 }
             } catch (SQLException ex) {
                 DB_LOGGER.log(Level.SEVERE, null, ex);
@@ -443,6 +475,10 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
                         Host host = new Host(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
                         host = fullyDescribeHost(host, getHostData(host).getMetrics().values());
                         answer.add(host);
+                    } else if (hostData.get(2).equals(hostGroup)) {
+                        FileStorageNode host = new FileStorageNode(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
+                        host = (FileStorageNode) fullyDescribeHost(host, getHostData(host).getMetrics().values());
+                        answer.add(host);
                     } else {
                         VmDeployed vm = new VmDeployed(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
                         vm = fullyDescribeVM(vm, getVmData(vm).getMetrics().values());
@@ -460,30 +496,9 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
 
     @Override
     public List<VmDeployed> getVmList() {
-        List<VmDeployed> answer = new ArrayList<>();
-        connection = getConnection(connection);
-        if (connection == null) {
-            return null;
-        }
-        try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS + FILTER_BY_GROUP)) {
-            preparedStatement.setString(1, vmGroup);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
-                for (ArrayList<Object> hostData : results) {
-                    VmDeployed vm = new VmDeployed(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
-                    vm = fullyDescribeVM(vm, getVmData(vm).getMetrics().values());
-                    answer.add(vm);
-                }
-            } catch (SQLException ex) {
-                DB_LOGGER.log(Level.SEVERE, null, ex);
-            }
-        } catch (SQLException ex) {
-            DB_LOGGER.log(Level.SEVERE, null, ex);
-        }
-        return answer;
+        return getVmList(vmGroup);
     }
 
-    @Override
     public List<VmDeployed> getVmList(String groupName) {
         List<VmDeployed> answer = new ArrayList<>();
         connection = getConnection(connection);

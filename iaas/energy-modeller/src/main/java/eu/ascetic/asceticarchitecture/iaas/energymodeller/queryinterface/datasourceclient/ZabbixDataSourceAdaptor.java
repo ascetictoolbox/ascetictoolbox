@@ -34,6 +34,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
@@ -97,6 +98,12 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         return convert(host);
     }
 
+    @Override
+    public FileStorageNode getFileStorageByName(String hostname) {
+        Host host = client.getHostByName(hostname);
+        return convertToFileStorage(host);
+    }
+
     /**
      * This returns a host given its unique name.
      *
@@ -126,7 +133,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         return hosts;
     }
 
-    @Override
     public List<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> getHostList(String groupName) {
         List<Host> hostsList = client.getAllHosts();
         ArrayList<eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host> hosts = new ArrayList<>();
@@ -136,6 +142,18 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
             }
         }
         return hosts;
+    }
+
+    @Override
+    public List<FileStorageNode> getFileStorageList() {
+        List<Host> hostsList = client.getAllHosts();
+        ArrayList<FileStorageNode> fileStorage = new ArrayList<>();
+        for (Host h : hostsList) {
+            if (hostFilter.isHost(h)) {
+                fileStorage.add(convertToFileStorage(h));
+            }
+        }
+        return fileStorage;
     }
 
     /**
@@ -155,7 +173,6 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         return vms;
     }
 
-    @Override
     public List<VmDeployed> getVmList(String groupName) {
         List<Host> hostsList = client.getAllHosts();
         ArrayList<VmDeployed> vms = new ArrayList<>();
@@ -192,6 +209,27 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         String hostname = host.getHost();
         int hostId = Integer.parseInt(host.getHostid());
         eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host answer = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(hostId, hostname);
+        answer.setAvailable("1".equals(host.getAvailable()));
+        List<Item> items = client.getItemsFromHost(host.getHost());
+        if (items != null) {
+            for (Item item : items) {
+                if (item.getKey().equals(MEMORY_TOTAL_KPI_NAME)) { //Convert to Mb
+                    //Original value given in bytes. 1024 * 1024 = 1048576
+                    answer.setRamMb((int) (Double.valueOf(item.getLastValue()) / 1048576));
+                }
+                if (item.getKey().equals(DISK_TOTAL_KPI_NAME)) { //Convert to Mb            
+                    //Original value given in bytes. 1024 * 1024 * 1024 = 1073741824
+                    answer.setDiskGb((Double.valueOf(item.getLastValue()) / 1073741824));
+                }
+            }
+        }
+        return answer;
+    }
+
+    private FileStorageNode convertToFileStorage(Host host) {
+        String hostname = host.getHost();
+        int hostId = Integer.parseInt(host.getHostid());
+        FileStorageNode answer = new FileStorageNode(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
         List<Item> items = client.getItemsFromHost(host.getHost());
         if (items != null) {

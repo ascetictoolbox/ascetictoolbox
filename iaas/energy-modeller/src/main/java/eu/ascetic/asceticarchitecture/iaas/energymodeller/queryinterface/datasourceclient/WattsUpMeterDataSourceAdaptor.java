@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -280,6 +281,11 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
+    public FileStorageNode getFileStorageByName(String hostname) {
+        return null;
+    }
+
+    @Override
     public VmDeployed getVmByName(String name) {
         return null;
     }
@@ -292,19 +298,12 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public List<Host> getHostList(String groupName) {
-        List<Host> answer = new ArrayList<>();
-        answer.add(host);
-        return answer;
-    }
-    
-    @Override
-    public List<VmDeployed> getVmList() {
+    public List<FileStorageNode> getFileStorageList() {
         return new ArrayList<>();
     }
 
     @Override
-    public List<VmDeployed> getVmList(String groupName) {
+    public List<VmDeployed> getVmList() {
         return new ArrayList<>();
     }
 

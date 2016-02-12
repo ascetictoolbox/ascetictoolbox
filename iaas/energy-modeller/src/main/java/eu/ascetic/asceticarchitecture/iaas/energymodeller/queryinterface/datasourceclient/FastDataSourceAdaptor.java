@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -25,8 +26,8 @@ import java.util.logging.Logger;
 
 /**
  * This directly connects to a Zabbix database and scavenges the data required
- * directly, but also uses the Zabbix API in cases where the DB route fails. 
- * This thus eliminates some overheads of using the API but allows it as a 
+ * directly, but also uses the Zabbix API in cases where the DB route fails.
+ * This thus eliminates some overheads of using the API but allows it as a
  * fallback method.
  *
  * @author Richard Kavanagh
@@ -67,12 +68,22 @@ public class FastDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public List<Host> getHostList(String groupName) {
+    public List<FileStorageNode> getFileStorageList() {
         try {
-            return zabbixDbRoute.getHostList(groupName);
+            return zabbixDbRoute.getFileStorageList();
         } catch (Exception ex) {
             Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
-            return zabbixAPI.getHostList(groupName);
+            return zabbixAPI.getFileStorageList();
+        }
+    }
+
+    @Override
+    public FileStorageNode getFileStorageByName(String hostname) {
+        try {
+            return zabbixDbRoute.getFileStorageByName(hostname);
+        } catch (Exception ex) {
+            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
+            return zabbixAPI.getFileStorageByName(hostname);
         }
     }
 
@@ -95,18 +106,6 @@ public class FastDataSourceAdaptor implements HostDataSource {
             return zabbixAPI.getVmList();
         }
     }
-
-    @Override
-    public List<VmDeployed> getVmList(String groupName) {
-        try {
-            return zabbixDbRoute.getVmList(groupName);
-        } catch (Exception ex) {
-            Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
-            return zabbixAPI.getVmList(groupName);
-        }
-    }
-    
-    
 
     @Override
     public HostMeasurement getHostData(Host host) {

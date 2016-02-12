@@ -16,6 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -36,6 +37,14 @@ public interface HostDataSource {
      * @return The object representation of a host in the energy modeller.
      */
     public Host getHostByName(String hostname);
+    
+    /**
+     * This returns a host that's dedicated to files storage given its unique name.
+     *
+     * @param hostname The name of the host to get.
+     * @return The object representation of a file storage host in the energy modeller.
+     */    
+    public FileStorageNode getFileStorageByName(String hostname);
 
     /**
      * This returns a host given its unique name.
@@ -51,15 +60,6 @@ public interface HostDataSource {
      * @return A list of hosts for the energy modeller.
      */
     public List<Host> getHostList();
-    
-    /**
-     * This gets the list of hosts from a named group.
-     *
-     * @param groupName The name of the group that is associated with
-     * the hosts
-     * @return The list of hosts that relate to the associated group.
-     */    
-    public List<Host> getHostList(String groupName);
 
     /**
      * This provides a list of hosts and VMs for the energy modeller
@@ -68,20 +68,18 @@ public interface HostDataSource {
     public List<EnergyUsageSource> getHostAndVmList();
     
     /**
+     * This provides a list of file storage hosts for the energy modeller
+     *
+     * @return A list of file storage hosts for the energy modeller.
+     */    
+    public List<FileStorageNode> getFileStorageList();    
+    
+    /**
      * This provides a list of VMs for the energy modeller
      *
      * @return A list of vms for the energy modeller.
      */
     public List<VmDeployed> getVmList();
-    
-    /**
-     * This gets the list of vms from a named group.
-     *
-     * @param groupName The name of the group that is associated with
-     * the virtual machines
-     * @return The list of virtual machines that relate to the associated group.
-     */  
-    public List<VmDeployed> getVmList(String groupName);
 
     /**
      * This provides for the named host all the information that is available.
