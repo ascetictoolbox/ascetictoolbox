@@ -475,7 +475,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
                         Host host = new Host(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
                         host = fullyDescribeHost(host, getHostData(host).getMetrics().values());
                         answer.add(host);
-                    } else if (hostData.get(2).equals(hostGroup)) {
+                    } else if (hostData.get(2).equals(fileStorage)) {
                         FileStorageNode host = new FileStorageNode(((Long) hostData.get(0)).intValue(), (String) hostData.get(1));
                         host = (FileStorageNode) fullyDescribeHost(host, getHostData(host).getMetrics().values());
                         answer.add(host);
