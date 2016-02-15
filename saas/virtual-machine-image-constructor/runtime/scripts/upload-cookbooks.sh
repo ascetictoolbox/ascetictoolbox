@@ -9,15 +9,29 @@ RUNTIME_DIR="$(cd $(dirname $0); cd .. ; pwd -P)"
 cd $RUNTIME_DIR/chef-repo
 COOKBOOKS="./cookbooks/"
 
-COOKBOOK="$(echo "${COOKBOOK_URI##*/}")"
-COOKBOOK_NAME="$(echo $COOKBOOK | cut -d'.' -f1)"
+COOKBOOK="$CHEF_CLIENT_IP-$(echo "${COOKBOOK_URI##*/}")"
+COOKBOOK_NAME="$(echo $COOKBOOK | cut -d'.' -f1-4)"
+COOKBOOK_ORIGINAL_NAME="$(echo $COOKBOOK_NAME | cut -d'-' -f2-)"
 
 # Download cookbook
-wget -q $COOKBOOK_URI -P $COOKBOOKS
+wget -q $COOKBOOK_URI -O $COOKBOOKS$COOKBOOK
 
 # Extract cookbook to workspace
-tar zxvf $COOKBOOKS$COOKBOOK -C $COOKBOOKS
-rm $COOKBOOKS$COOKBOOK
+mkdir $COOKBOOKS$COOKBOOK_NAME
+tar zxvf $COOKBOOKS$COOKBOOK -C $COOKBOOKS$COOKBOOK_NAME --strip-components=1
+rm -r $COOKBOOKS$COOKBOOK
+
+# Change the version number to be VM specific
+if [ -f $COOKBOOKS$COOKBOOK_NAME/metadata.rb ]
+then 
+  sed -i -e "s/version*\s'*.*'/version          '$(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4 )'/g" $COOKBOOKS$COOKBOOK_NAME/metadata.rb
+elif [ -f $COOKBOOKS$COOKBOOK_NAME/metadata.json ]
+then
+  sed -i -e "s/\"version\":\"*.*\",\"description\"/\"version\":\"$(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4 )\",\"description\"/g" $COOKBOOKS$COOKBOOK_NAME/metadata.json
+else
+  echo "Error: no metadata file found"
+  exit 1
+fi
 
 # Add base64 encoded default attributes from input arguments skipping first 2
 for i in ${@:3}
@@ -31,6 +45,6 @@ done
 knife upload $COOKBOOKS$COOKBOOK_NAME
 
 # Add the cookbook to the VMs (node) runlist using its IP
-knife node run_list add vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) recipe[$COOKBOOK_NAME]
+knife node run_list add vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) recipe[$COOKBOOK_ORIGINAL_NAME@$(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4 )]
 
 exit 0

@@ -4,7 +4,7 @@ IP=$1
 
 RUNTIME_DIR="$(cd $(dirname $0); cd .. ; pwd -P)"
 
-SHUTDOWN_TIMEOUT=40
+SHUTDOWN_TIMEOUT=30
 
 # Shutdown VM
 virsh shutdown $IP

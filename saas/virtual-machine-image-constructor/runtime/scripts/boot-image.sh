@@ -13,7 +13,9 @@ then
   
   # 1) Copy the base image reporting progress / performance
   mkdir -p "$(dirname $IMAGE_PATH)"
-  echo "Copying windows base image via efficient inplace partial file delta encoding"
+  #echo "Copying windows base image via efficient inplace partial file delta encoding"
+  echo "Copying windows base image"
+  sudo su - root -c "rm -f $IMAGE_PATH"
   sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/windows/win-2k3.raw.img $IMAGE_PATH"
   if [ $? -ne 0 ]
   then
@@ -68,7 +70,11 @@ then
         else
           # First time we've reached the timeout so try rebooting
           echo "OS init timeout reached, rebooting VM with IP $IP"
-          virsh reboot $IP
+          #virsh reboot $IP
+          virsh destroy $IP # FIXME: rebooting does not work nested KVM locks up
+          cd $INSTALL_DIR/base-images/windows
+          virsh create $IMAGE_PATH.xml
+          cd ../../runtime/chef-repo
           REBOOT=1
           # Reset the start time
           START_TIME=$(date +%s)
@@ -93,7 +99,9 @@ then
 
   # 1) Copy the base image reporting progress / performance
   mkdir -p "$(dirname $IMAGE_PATH)"
-  echo "Copying linux base image via efficient inplace partial file delta encoding"
+  #echo "Copying linux base image via efficient inplace partial file delta encoding"
+  echo "Copying linux base image"
+  sudo su - root -c "rm -f $IMAGE_PATH"
   sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/linux/deb-wheezy.raw.img $IMAGE_PATH"
   if [ $? -ne 0 ]
   then
