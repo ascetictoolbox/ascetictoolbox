@@ -35,10 +35,15 @@ public class EventDataConverter {
 
     static {
         OPERATOR_MAPPING.put("less_than", EventData.Operator.LT);
+        OPERATOR_MAPPING.put("LESS", EventData.Operator.LT);
         OPERATOR_MAPPING.put("less_than_or_equals", EventData.Operator.LTE);
+        OPERATOR_MAPPING.put("LESS_EQUAL", EventData.Operator.LTE);
         OPERATOR_MAPPING.put("equals", EventData.Operator.EQ);
+        OPERATOR_MAPPING.put("EQUALS", EventData.Operator.EQ);
         OPERATOR_MAPPING.put("greater_than", EventData.Operator.GT);
+        OPERATOR_MAPPING.put("GREATER", EventData.Operator.GT);
         OPERATOR_MAPPING.put("greater_than_or_equals", EventData.Operator.GTE);
+        OPERATOR_MAPPING.put("GREATER_EQUAL", EventData.Operator.GTE);
         OPERATOR_MAPPING.put(null, null);
         OPERATOR_MAPPING.put("", null);
     }
