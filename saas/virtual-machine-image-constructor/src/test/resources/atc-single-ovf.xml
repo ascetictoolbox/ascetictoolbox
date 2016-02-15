@@ -10,7 +10,7 @@
       <ovf:Info>Product configuration for then entire VirtualSystemCollection.</ovf:Info>
       <ovf:Product>product</ovf:Product>
       <ovf:Version>1.0</ovf:Version>
-      <ovf:Property ovf:key="asceticVmicMode" ovf:type="uint32" ovf:value="online" />
+      <ovf:Property ovf:key="asceticVmicMode" ovf:type="string" ovf:value="online" />
     </ovf:ProductSection>
     <ovf:VirtualSystem ovf:id="NA-HAProxy">
       <ovf:Info>HAProxyTest Virtual System</ovf:Info>
