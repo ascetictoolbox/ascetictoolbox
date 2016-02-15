@@ -22,20 +22,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-        <parent>
-		<groupId>eu</groupId>
-		<artifactId>ascetic</artifactId>
+	<parent>
+	        <groupId>eu.ascetic</groupId>
+		<artifactId>tests</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
 
 	<groupId>eu.ascetic.tests</groupId>
-	<artifactId>ascetic-test-collection</artifactId>
+	<artifactId>application_manager</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>ASCETiC System Test Collection</name>
+	<name>ASCETiC Application Manager Test Collection</name>
 	<url>http://www.ascetic.eu</url>
 
 	<properties>

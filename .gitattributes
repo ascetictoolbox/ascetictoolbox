@@ -3701,6 +3701,7 @@ tests/application_manager/src/test/java/eu/ascetic/test/paas/applicationmanager/
 tests/application_manager/src/test/resources/jndi.properties -text
 tests/application_manager/src/test/resources/log4j.properties -text
 tests/application_manager/src/test/resources/webapp-ovf.xml -text
+tests/pom.xml -text
 use-cases/atc/newsasset/kpi-modelling/.project -text
 use-cases/atc/newsasset/kpi-modelling/LICENSE.TXT -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text
