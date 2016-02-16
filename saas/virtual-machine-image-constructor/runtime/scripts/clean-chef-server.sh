@@ -8,7 +8,7 @@ cd $RUNTIME_DIR/chef-repo
 # Using run list of node remove uploaded cookbooks from server and workspace
 while read -r COOKBOOK; do
   # Server clean up
-  knife cookbook delete $COOKBOOK $(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4) -y
+  knife cookbook delete $COOKBOOK $(echo $CHEF_CLIENT_IP | cut -d'.' -f4).0.0 -y
   # Workspace clean up
   rm -r ./cookbooks/$CHEF_CLIENT_IP-$COOKBOOK
 done <<< "$(knife node show vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) -r | grep recipe | cut -d'[' -f2 | cut -d'@' -f1)"

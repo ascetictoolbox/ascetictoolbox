@@ -24,13 +24,13 @@ rm -r $COOKBOOKS$COOKBOOK
 # Change the version number to be VM specific
 if [ -f $COOKBOOKS$COOKBOOK_NAME/metadata.rb ]
 then 
-  sed -i -e "s/version*\s'*.*'/version          '$(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4 )'/g" $COOKBOOKS$COOKBOOK_NAME/metadata.rb
-elif [ -f $COOKBOOKS$COOKBOOK_NAME/metadata.json ]
+  sed -i -e "s/version\s\+['\"].\{2,10\}['\"]/version '$(echo $CHEF_CLIENT_IP | cut -d'.' -f4).0.0'/1" $COOKBOOKS$COOKBOOK_NAME/metadata.rb
+fi
+
+if [ -f $COOKBOOKS$COOKBOOK_NAME/metadata.json ]
 then
-  sed -i -e "s/\"version\":\"*.*\",\"description\"/\"version\":\"$(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4 )\",\"description\"/g" $COOKBOOKS$COOKBOOK_NAME/metadata.json
-else
-  echo "Error: no metadata file found"
-  exit 1
+  jq -c '. + { "version": "'$(echo $CHEF_CLIENT_IP | cut -d'.' -f4)'.0.0" }' $COOKBOOKS$COOKBOOK_NAME/metadata.json > $COOKBOOKS$COOKBOOK_NAME/metadata.json.tmp
+  mv $COOKBOOKS$COOKBOOK_NAME/metadata.json.tmp $COOKBOOKS$COOKBOOK_NAME/metadata.json
 fi
 
 # Add base64 encoded default attributes from input arguments skipping first 2
@@ -45,6 +45,6 @@ done
 knife upload $COOKBOOKS$COOKBOOK_NAME
 
 # Add the cookbook to the VMs (node) runlist using its IP
-knife node run_list add vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) recipe[$COOKBOOK_ORIGINAL_NAME@$(echo $CHEF_CLIENT_IP | cut -d'.' -f2-4 )]
+knife node run_list add vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) recipe[$COOKBOOK_ORIGINAL_NAME@$(echo $CHEF_CLIENT_IP | cut -d'.' -f4).0.0]
 
 exit 0
