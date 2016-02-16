@@ -2,10 +2,10 @@
   <node type="vm" name="NA-HAProxy" minNumCore="2" maxCoreMin="2" prefNumCore="2" minCPUfreq="500MHz" maxCPUfreq="2100MHz" prefCPUfreq="1GHz" minSizeMin="1024MB" maxMemSize="4096MB" prefMemSize="2048MB" minDiskSize="10GB" maxDiskSize="20GB" prefDiskSize="10GB" minInstance="1" maxInstance="1" prefInstance="1">
     <base-dependency OS="Linux" />
     <software_install name="CPU" chefURI="http://localhost:8080/cpu.tar.gz">
-      <attribute name="default['cpu']['test1']" value="value1" />
+      <attribute name="default['cpu']['test1']" value="'value1'" />
     </software_install>
     <software_install name="BuildEssential" chefURI="http://localhost:8080/build-essential.tar.gz">
-      <attribute name="default['build-essential']['test1']" value="value1" />
+      <attribute name="default['build-essential']['test1']" value="'value1'" />
     </software_install>
     <software_install name="HAProxy" chefURI="http://localhost:8080/haproxy.tar.gz">
       <attribute name="default['haproxy']['member_port']" value="8080" />
