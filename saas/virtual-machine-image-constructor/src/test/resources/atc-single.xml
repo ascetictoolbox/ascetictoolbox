@@ -10,7 +10,7 @@
     <software_install name="HAProxy" chefURI="http://localhost:8080/haproxy.tar.gz">
       <attribute name="default['haproxy']['member_port']" value="8080" />
       <!-- WARNING: attribute names and values need to be properly escaped! See example bellow -->
-      <attribute name="[{ &quot;hostname&quot; =&gt; &quot;localhost&quot;, &quot;ipaddress&quot; =&gt; &quot;127.0.0.1&quot; }]" value="8080" />
+      <attribute name="default['haproxy']['members']" value="[{ &quot;hostname&quot; =&gt; &quot;localhost&quot;, &quot;ipaddress&quot; =&gt; &quot;127.0.0.1&quot; }]" />
     </software_install>
   </node>
 </application-config>
