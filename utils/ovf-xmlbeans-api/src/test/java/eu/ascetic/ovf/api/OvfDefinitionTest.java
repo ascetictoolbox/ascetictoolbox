@@ -23,6 +23,8 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlOptionCharEscapeMap;
 import org.apache.xmlbeans.XmlOptions;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
@@ -219,7 +221,7 @@ public class OvfDefinitionTest extends TestCase {
                 .getVirtualSystemAtIndex(1)
                 .getProductSectionAtIndex(0)
                 .addSoftwareDependencyPackageAttribute(softwareDependencyIndex,
-                        "workload-name", "name",
+                        "workload-name\"", "<name>",
                         "small set of low activity multi-tenant customers");
 
         assertNotNull(ovfDefinition
@@ -519,6 +521,15 @@ public class OvfDefinitionTest extends TestCase {
             options.setSaveSuggestedPrefixes(suggestedPrefixes);
             // Make sure name spaces are aggressively resolved
             options.setSaveAggressiveNamespaces();
+            
+            XmlOptionCharEscapeMap escapes = new XmlOptionCharEscapeMap();
+            try {
+                escapes.addMapping('>', XmlOptionCharEscapeMap.PREDEF_ENTITY);
+            } catch (XmlException e) {
+                e.printStackTrace();
+            }
+            
+            options.setSaveSubstituteCharacters(escapes);
 
             out.write(ovfDefinition.xmlText(options));
             System.out.println(fileName + ".xml was written to "

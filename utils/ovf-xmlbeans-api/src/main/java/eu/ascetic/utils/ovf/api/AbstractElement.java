@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.xmlbeans.XmlError;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
+import org.apache.xmlbeans.XmlOptionCharEscapeMap;
 import org.apache.xmlbeans.XmlOptions;
 
 /**
@@ -84,6 +86,14 @@ public abstract class AbstractElement<T extends XmlObject> {
         options.setSaveSuggestedPrefixes(suggestedPrefixes);
         // Make sure name spaces are aggressively resolved
         options.setSaveAggressiveNamespaces();
+        XmlOptionCharEscapeMap escapes = new XmlOptionCharEscapeMap();
+        try {
+            escapes.addMapping('>', XmlOptionCharEscapeMap.PREDEF_ENTITY);
+        } catch (XmlException e) {
+            e.printStackTrace();
+        }
+        options.setSaveSubstituteCharacters(escapes);
+        
         return delegate.xmlText(options);
     }
 
