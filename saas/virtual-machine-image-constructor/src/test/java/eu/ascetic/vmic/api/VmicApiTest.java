@@ -201,6 +201,7 @@ public class VmicApiTest extends TestCase {
                 }
             }
 
+            double previousProgess = -1.0;
             // Poll the progress data until completion...
             while (true) {
 
@@ -217,14 +218,20 @@ public class VmicApiTest extends TestCase {
                     assertFalse(progressDataImage.isError());
                     return;
                 } else {
-                    LOGGER.info("TEST: progressDataImageObject total progress is: "
-                            + progressDataImage.getTotalProgress());
-                    LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
-                            + progressDataImage.getPhaseName(progressDataImage
-                                    .getCurrentPhaseId())
-                            + ", % is: "
-                            + progressDataImage.getHistory().get(
-                                    progressDataImage.getCurrentPhaseId()));
+                    double currentProgress = progressDataImage
+                            .getTotalProgress();
+                    if (currentProgress > previousProgess) {
+                        LOGGER.info("TEST: progressDataImageObject total progress is: "
+                                + currentProgress);
+                        LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
+                                + progressDataImage
+                                        .getPhaseName(progressDataImage
+                                                .getCurrentPhaseId())
+                                + ", % is: "
+                                + progressDataImage.getHistory().get(
+                                        progressDataImage.getCurrentPhaseId()));
+                        previousProgess = currentProgress;
+                    }
                 }
 
                 // 250ms delay between polling...
