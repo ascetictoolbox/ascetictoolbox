@@ -31,6 +31,8 @@ import eu.ascetic.paas.slam.poc.impl.provider.negotiation.ws.BZNegotiationStub.I
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.ws.BZNegotiationStub.InitiateNegotiationResponse;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.ws.BZNegotiationStub.Negotiate;
 import eu.ascetic.paas.slam.poc.impl.provider.negotiation.ws.BZNegotiationStub.NegotiateResponse;
+import eu.ascetic.paas.slam.poc.impl.provider.negotiation.ws.BZNegotiationStub.Renegotiate;
+import eu.ascetic.paas.slam.poc.impl.provider.negotiation.ws.BZNegotiationStub.RenegotiateResponse;
 import eu.ascetic.paas.slam.poc.impl.provider.translation.SlaTranslator;
 import eu.ascetic.paas.slam.poc.impl.provider.translation.SlaTranslatorImpl;
 
@@ -56,6 +58,26 @@ public class NegotiationWsClient implements NegotiationClient {
 		}
 	}
 	
+	
+	@Override
+	public String renegotiate(String endpoint, String uuid) {
+		
+		try {
+			BZNegotiationStub stub = new BZNegotiationStub(endpoint);
+			
+			Renegotiate doc = new Renegotiate();
+			
+			doc.setSlaID(uuid);
+			
+			RenegotiateResponse resp = stub.renegotiate(doc);
+			
+			return resp.get_return();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	
 	@Override

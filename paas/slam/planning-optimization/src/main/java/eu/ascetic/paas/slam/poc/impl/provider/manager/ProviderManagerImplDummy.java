@@ -87,7 +87,7 @@ public class ProviderManagerImplDummy implements ProviderManager {
 	
 	
 	@Override
-	public SLATemplate[] negotiate(String endPoint, SLATemplate slaTemplate) throws SubNegotiationException {
+	public SLATemplate[] negotiate(String endPoint, SLATemplate slaTemplate, String IaasRenegotiationUUID) throws SubNegotiationException {
 		NegotiationClient nc = new NegotiationWsClient();
 		
 		Party providerParty = getProviderParty(slaTemplate); 

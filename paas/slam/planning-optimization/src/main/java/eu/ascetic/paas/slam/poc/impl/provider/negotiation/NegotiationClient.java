@@ -26,5 +26,7 @@ public interface NegotiationClient {
 	public String initiateNegotiation(String endpoint, SLATemplate slaTemplate);
 	
 	public SLA createAgreement(String endpoint, SLATemplate slaTemplate, String negotiationId);
+
+	String renegotiate(String endpoint, String uuid);
 	
 }

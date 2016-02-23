@@ -29,7 +29,7 @@ public interface ProviderManager {
 	
 	public String[] getProvidersList(SLATemplate slat);
 
-	public SLATemplate[] negotiate(String endpoint, SLATemplate slaTemplate) 
+	public SLATemplate[] negotiate(String endpoint, SLATemplate slaTemplate, String IaaSRenegotiationUUID) 
 		throws SubNegotiationException;
 	
 	public SLA createAgreement(SLATemplate slaTemplate) 

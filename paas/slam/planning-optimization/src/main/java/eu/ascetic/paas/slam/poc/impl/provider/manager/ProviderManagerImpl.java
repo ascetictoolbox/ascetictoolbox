@@ -36,7 +36,9 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slasoi.gslam.core.negotiation.SLARegistry;
 import org.slasoi.slamodel.primitives.STND;
+import org.slasoi.slamodel.primitives.UUID;
 import org.slasoi.slamodel.sla.InterfaceDeclr;
 import org.slasoi.slamodel.sla.Party;
 import org.slasoi.slamodel.sla.SLA;
@@ -113,7 +115,7 @@ public class ProviderManagerImpl implements ProviderManager {
 	
 	@Override
 	public SLATemplate[] negotiate(String provEndpoint, 
-			SLATemplate slaTemplate) throws SubNegotiationException {
+			SLATemplate slaTemplate, String IaaSrenegotiationUUID) throws SubNegotiationException {
 		
 		Party slaTemplateParty = getProviderParty(slaTemplate); 
 		String fedEndpoint = slaTemplateParty.getPropertyValue(GSLAM_EPR);
@@ -124,7 +126,23 @@ public class ProviderManagerImpl implements ProviderManager {
 		slaTemplateParty.setPropertyValue(GSLAM_EPR, provEndpoint);
 
 		NegotiationClient nc = new NegotiationWsClient();
-		String negSession = nc.initiateNegotiation(provEndpoint, slaTemplate);
+		String negSession = "";
+		
+		/*
+		 * GESTIONE RINEGOZIAZIONE
+		 */
+		if (IaaSrenegotiationUUID==null) {
+			LOGGER.debug("Invoking initiateNegotiation at IaaS level");
+			negSession = nc.initiateNegotiation(provEndpoint, slaTemplate);
+		}
+		else {
+			LOGGER.debug("Invoking renegotiation at IaaS level");
+			negSession = nc.renegotiate(provEndpoint, IaaSrenegotiationUUID);
+		}
+		/*
+		 * FINE GESTIONE RINEGOZIAZIONE
+		 */
+		
 		SLATemplate[] retSlats = nc.negotiate(provEndpoint, slaTemplate, negSession);
 
 		for (SLATemplate retSlat : retSlats) {

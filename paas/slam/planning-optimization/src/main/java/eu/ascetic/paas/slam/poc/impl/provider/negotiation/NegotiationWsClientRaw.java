@@ -132,5 +132,11 @@ public class NegotiationWsClientRaw implements NegotiationClient {
 		}
 	};
 
+	@Override
+	public String renegotiate(String endpoint, String uuid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

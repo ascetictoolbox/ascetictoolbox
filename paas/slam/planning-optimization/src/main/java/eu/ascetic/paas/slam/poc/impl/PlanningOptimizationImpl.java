@@ -51,6 +51,8 @@ package eu.ascetic.paas.slam.poc.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.core.context.SLAMContextAware;
@@ -72,6 +74,7 @@ import org.slasoi.gslam.core.poc.PlanningOptimization;
 import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.primitives.TIME;
 import org.slasoi.slamodel.primitives.UUID;
+import org.slasoi.slamodel.sla.InterfaceDeclr;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.SLATemplate;
 
@@ -106,7 +109,7 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 	 */
 	public PlanningOptimizationImpl() {
 		ConfigManager cm = ConfigManager.getInstance();
-		
+
 		String algorithm = cm.getAlgorithmClass();
 		if (algorithm.equalsIgnoreCase("eu.ascetic.paas.slam.poc.impl.provider.selection.algorithms.PriceSelection")) {
 			LOGGER.debug("Price Selection Algorithm chosen.");
@@ -120,7 +123,7 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 			LOGGER.debug("Unknown selection Algorithm. Choosing Price Selection...");
 			offerSelector = new PriceSelection();
 		}
-		
+
 		dsAssestmentAndCustomized = new DomainSpecAssessmentAndCustomize();
 		dsINotification = new POCINotification();
 		dsIPlanStatus = new POCIPlanStatus();
@@ -188,23 +191,23 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 		 */
 		@SuppressWarnings("finally")
 		public SLA createAgreement(String negotiationID, SLATemplate slaTemplate) {
-			
+
 			boolean renegotiationFlag = false;
 			SLA[] asceticSLAs = null;
 			SLA asceticSLA = null;
 			SLA sla = null;
 			try {
-				
+
 				// prepares in advance PaaS SLA ID (used by P-SLAM for violation messages forwarding)
 				UUID paasSLAId = new UUID(java.util.UUID.randomUUID().toString());
-				
+
 				slaTemplate.setPropertyValue(new STND("PaaSSlaId"), paasSLAId.toString());
-				
+
 				// creates agreement with the provider 
 				sla = providerManager.createAgreement(slaTemplate);
-				
+
 				SLARegistry slaRegistry = context.getSLARegistry();
-				
+
 				asceticSLAs = slaRegistry.getIQuery().getSLA(new UUID[] { new UUID(negotiationID) });
 				if (asceticSLAs != null && asceticSLAs.length > 0) {
 					renegotiationFlag = true;
@@ -212,23 +215,23 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 					LOGGER.info("*** SLA found with ID = " + asceticSLA.getUuid().getValue());
 				}
 
-			    // set SLA ID
-		        sla.setUuid(paasSLAId);
-		        // set AgreedAt
-		        sla.setAgreedAt(new TIME(SLAT2SLAImpl.getCurrentTime_yyyyMMMddHH_mm_ss()));
-		        // create now time
-		        sla.setAgreedAt(new TIME(SLAT2SLAImpl.getCurrentTime_yyyyMMMddHH_mm_ss()));
-		        // set effective From
-		        sla.setEffectiveFrom(new TIME(SLAT2SLAImpl.getEffectiveFromTime_yyyyMMMddHH_mm_ss()));
-		        // set effective Until
-		        sla.setEffectiveUntil(new TIME(SLAT2SLAImpl.getEffectiveUntilTime_yyyyMMMddHH_mm_ss()));
-		        
-		        //sla.setPropertyValue(PlanHandlerImpl.PLAN_ID_SLA, java.util.UUID.randomUUID().toString());
+				// set SLA ID
+				sla.setUuid(paasSLAId);
+				// set AgreedAt
+				sla.setAgreedAt(new TIME(SLAT2SLAImpl.getCurrentTime_yyyyMMMddHH_mm_ss()));
+				// create now time
+				sla.setAgreedAt(new TIME(SLAT2SLAImpl.getCurrentTime_yyyyMMMddHH_mm_ss()));
+				// set effective From
+				sla.setEffectiveFrom(new TIME(SLAT2SLAImpl.getEffectiveFromTime_yyyyMMMddHH_mm_ss()));
+				// set effective Until
+				sla.setEffectiveUntil(new TIME(SLAT2SLAImpl.getEffectiveUntilTime_yyyyMMMddHH_mm_ss()));
+
+				//sla.setPropertyValue(PlanHandlerImpl.PLAN_ID_SLA, java.util.UUID.randomUUID().toString());
 
 				LOGGER.info("SLA is created successfully!");
 				LOGGER.info("The SLA can be fully/partially monitored by monitoring manager.");
 				LOGGER.info("Start to register SLA into SLA registry...");
-				
+
 				SLARegistry registry = context.getSLARegistry();
 				IRegister register = registry.getIRegister();
 				if (renegotiationFlag == false) {
@@ -240,7 +243,7 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 					register.update(asceticSLA.getUuid(), sla, null, SLAState.OBSERVED);
 					LOGGER.info("Own SLA updated successfully in SLA registry.");
 				}
-				
+
 				// invoking service to set minimumLoA
 				Integer loa = SlaTemplateEntitiesParser.getMinimumLoAValue(slaTemplate);
 
@@ -258,7 +261,7 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 			}
 		}
 
-		
+
 		/**
 		 * Customer invokes this method for starting a negotiation
 		 * 
@@ -272,16 +275,59 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 
 			/*** 1. call provider registry the get the provider list ***/
 			String[] providerEndpoints = providerManager.getProvidersList(slaTemplate);
-//			System.out.println("Endpoint IaaS da file di configurazione...");
-//			String[] providerEndpoints = {ConfigManager.getInstance().getDefaultIaasProvider()};
-			
+			//			System.out.println("Endpoint IaaS da file di configurazione...");
+			//			String[] providerEndpoints = {ConfigManager.getInstance().getDefaultIaasProvider()};
+
 			List<SLATemplate[]> providerSlats = new ArrayList<SLATemplate[]>();
+
+			String iaasSlaId = null;
+			/*
+			 * GESTIONE RINEGOZIAZIONE
+			 */
+			SLA[] asceticSLAs = null;
+			SLA asceticSLA = null;
+			SLA sla = null;
+			try {
+
+				//				slaTemplate.setPropertyValue(new STND("PaaSSlaId"), paasSLAId.toString());
+				SLARegistry slaRegistry = context.getSLARegistry();			
+				asceticSLAs = slaRegistry.getIQuery().getSLA(new UUID[] { new UUID(negotiationID) });
+				
+				//renegotiation = true
+				if (asceticSLAs != null && asceticSLAs.length > 0) {
+					asceticSLA = asceticSLAs[0];
+					LOGGER.info("*** SLA found with ID = " + asceticSLA.getUuid().getValue());
+					
+					//recovering iaas sla id
+					for (InterfaceDeclr i:asceticSLA.getInterfaceDeclrs()) {
+						String slaproviderlist = i.getPropertyValue(new STND("SLA-ProvidersList"));
+						String pattern = "\\\"sla-id\\\":\\\"(.+)\\\",\\\"provider-uuid\\\":\\\"[\\d+]\\\"";
+						Pattern r = Pattern.compile(pattern);
+						Matcher m = r.matcher(slaproviderlist);
+						if (m.find( )) {
+							 iaasSlaId = m.group(1);
+							 LOGGER.info("Found IaaS SLA ID (IaaS renegotiationID): " + iaasSlaId);
+					      } else {
+					    	  LOGGER.info("NO IaaS SLA ID found");
+					      }
+//						System.out.println(slaproviderlist.substring(slaproviderlist.indexOf("\"", 6)));
+					}
+				}
+			} catch (Exception e) {
+				LOGGER.debug(e);
+			}
+			/*
+			 * FINE GESTIONE RINEGOZIAZIONE
+			 */
 
 			/*** 2. foreach provider in the list, make a negotiation round and save the SLA ***/
 			for (String providerEndpoint : providerEndpoints) {
-			System.out.println("Interrogo endpoint "+providerEndpoint);
+				System.out.println("Interrogo endpoint "+providerEndpoint);
 				try {
-					SLATemplate[] slats = providerManager.negotiate(providerEndpoint, slaTemplate);
+					//iaasSLaId == null --> initiateNegotiation
+					//iaasSlaId != null --> renegotiation
+					SLATemplate[] slats = providerManager.negotiate(providerEndpoint, slaTemplate, iaasSlaId);
+
 					providerSlats.add(slats);
 				} catch (SubNegotiationException e) {
 					LOGGER.error(e);
@@ -447,18 +493,18 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 	protected INotification dsINotification;
 	protected IPlanStatus dsIPlanStatus;
 	protected IReplan dsIReplan;
-	
+
 
 	private ProviderManager providerManager = new ProviderManagerImpl();
-	
+
 	private OfferSelector offerSelector;
 
 	protected SLAManagerContext context;
-	
-	
-	
+
+
+
 	private void setMinimumLoa(int loa, SLATemplate slaTemplate) {
-		
+
 		String userUuid = SlaTemplateEntitiesParser.getRootPropertyValue(slaTemplate, "UserUUID");
 		LOGGER.info("User uuid: " + userUuid);
 		String appUuid = SlaTemplateEntitiesParser.getRootPropertyValue(slaTemplate, "AppUUID");
@@ -467,10 +513,10 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 		PaaSApiManager fedApiManager = PaaSApiManager.getInstance();
 		fedApiManager.setMinimumLoa(loa, userUuid, appUuid);
 	}
-	
-	
+
+
 	private static final Logger LOGGER = Logger.getLogger(PlanningOptimizationImpl.class);
-	
-		
-	
+
+
+
 }

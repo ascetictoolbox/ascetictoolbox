@@ -71,13 +71,24 @@ public class ProviderNegotiationWsTest {
 	    SLASOITemplateParser slasoieTemplatParser = new SLASOITemplateParser();
 	    SLATemplate slat = slasoieTemplatParser.parseTemplate(slatXml);		
 	    System.out.println("Sending initiateNegotiation SOAP request...");
-	    String hexCode = nc.initiateNegotiation("http://10.4.0.16:" + serverPort + requestUrl, slat);
+	    String hexCode = nc.initiateNegotiation("http://192.168.3.16:" + serverPort + requestUrl, slat);
 
 	    System.out.println("Negotiation ID: "+hexCode);
 	    Assert.assertNotNull(hexCode);
 	    return hexCode;
     }
     
+    
+    //@Test
+    public String testRenegotiateWs() throws Exception {
+		
+	    System.out.println("Sending renegotiate SOAP request...");
+	    String hexCode = nc.renegotiate("http://192.168.3.16:" + serverPort + requestUrl, "7808e1c6-a74d-43c2-b4a5-4f465921f5cc");
+
+	    System.out.println("Renegotiation ID: "+hexCode);
+	    Assert.assertNotNull(hexCode);
+	    return hexCode;
+    }
     
     
     //@Test
@@ -90,7 +101,7 @@ public class ProviderNegotiationWsTest {
 	    SLASOITemplateParser parser = new SLASOITemplateParser();
 	    SLATemplate slat = parser.parseTemplate(slatXml);		
 	    System.out.println("Sending negotiate SOAP request...");
-	    SLATemplate[] slats = nc.negotiate("http://10.4.0.16:" + serverPort + requestUrl, slat, negId);
+	    SLATemplate[] slats = nc.negotiate("http://192.168.3.16:" + serverPort + requestUrl, slat, negId);
 
 
 	    SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
@@ -111,7 +122,7 @@ public class ProviderNegotiationWsTest {
 	    try {
 	    SLATemplate slat = parser.parseTemplate(slatXml);		
 	    System.out.println("Sending create agreement SOAP request...");
-	     sla = nc.createAgreement("http://10.4.0.16:" + serverPort + requestUrl, slat, negId);
+	     sla = nc.createAgreement("http://192.168.3.16:" + serverPort + requestUrl, slat, negId);
     } catch (Exception ex) {
 		System.out.println("Known expection during SLA parsing: the operation was successful indeed.");
 	}
@@ -122,7 +133,8 @@ public class ProviderNegotiationWsTest {
     
     //@Test
     public void testWorkflow() throws Exception {
-    	String hex = testInitiateNegotiationWs();
+    	//String hex = testInitiateNegotiationWs();
+    	String hex = testRenegotiateWs();
     	String slat = testNegotiationWs(hex);
      	SLA sla = testCreateAgreementWs(hex, slat);
     }
