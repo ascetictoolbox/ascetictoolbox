@@ -37,7 +37,7 @@ import eu.ascetic.iaas.slamanager.poc.manager.negotiation.translator.SlaTranslat
 
 public class ProviderNegotiationWsTest {
 
-	private static final String serverAddress = "10.4.0.15";
+	private static final String serverAddress = "192.168.3.17";
 
 	private static final int serverPort = 8080;
 
@@ -108,7 +108,7 @@ public class ProviderNegotiationWsTest {
 		SLASOITemplateParser parser = new SLASOITemplateParser();
 		SLATemplate slat = parser.parseTemplate(slatXml);
 		System.out.println("Sending create agreement SOAP request...");
-		SLA sla = negotiationClient.createAgreement("http://10.4.0.15:" + serverPort + requestUrl, slat, negId);
+		SLA sla = negotiationClient.createAgreement("http://192.168.3.17:" + serverPort + requestUrl, slat, negId);
 		System.out.println("SLA:");
 		System.out.println(sla);
 		Assert.assertNotNull(sla);
