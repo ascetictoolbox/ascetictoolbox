@@ -51,6 +51,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import eu.ascetic.paas.slam.pac.amqp.AmqpMessageProducer;
+import eu.ascetic.paas.slam.pac.amqp.AmqpMessageReceiver;
 import eu.ascetic.paas.slam.pac.applicationmanager.ModelConverter;
 import eu.ascetic.paas.slam.pac.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.slam.pac.events.Value;
@@ -346,7 +348,7 @@ public class PaasViolationChecker implements Runnable {
 							}
 
 
-							logger.info("Getting SLA...");
+							logger.info("Getting SLA...(SLA ID "+slaId+")");
 							SLA sla = null;
 							GetSLAClient gsc = new GetSLAClient(properties.getProperty(BUSINESS_REPORTING_URL),slaId);
 							try {
@@ -464,29 +466,35 @@ public class PaasViolationChecker implements Runnable {
 		
 		try{
 
-			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
-			Connection connection = connectionFactory.createConnection();
-			connection.start();
-
-			// JMS messages are sent and received using a Session. We will
-			// create here a non-transactional session object. If you want
-			// to use transactions you should set the first parameter to 'true'
-			Session session = connection.createSession(false,
-					Session.AUTO_ACKNOWLEDGE);
-
-			Topic topic = session.createTopic("paas-slam.monitoring."+slaId+"."+appId+".violationNotified");
-
-			MessageProducer producer = session.createProducer(topic);
-
-
-			TextMessage message = session.createTextMessage();
-
-			message.setText(violationMessage);
-
-			producer.send(message);
-			logger.info("Sent message '" + message.getText() + "'");
-
-			connection.close();
+			AmqpMessageProducer producer = new AmqpMessageProducer("192.168.3.16:5673", "guest", "guest", "paas-slam.monitoring."+slaId+"."+appId+".violationNotified", true);
+			
+			producer.sendMessage(violationMessage);
+			
+//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+//			Connection connection = connectionFactory.createConnection();
+//			connection.start();
+//
+//			// JMS messages are sent and received using a Session. We will
+//			// create here a non-transactional session object. If you want
+//			// to use transactions you should set the first parameter to 'true'
+//			Session session = connection.createSession(false,
+//					Session.AUTO_ACKNOWLEDGE);
+//
+//			Topic topic = session.createTopic("paas-slam.monitoring."+slaId+"."+appId+".violationNotified");
+//
+//			MessageProducer producer = session.createProducer(topic);
+//
+//
+//			TextMessage message = session.createTextMessage();
+//
+//			message.setText(violationMessage);
+//
+//			producer.send(message);
+//			logger.info("Sent message '" + message.getText() + "'");
+//
+//			connection.close();
+			
+			producer.close();
 		}catch(Exception e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -494,91 +502,97 @@ public class PaasViolationChecker implements Runnable {
 		}
 	}
 
-	/*
-	 * parse sla test
-	 */
+//	/*
+//	 * parse sla test
+//	 */
+//	public static void main(String[] args) {
+//
+//		String TERM_POWER_USAGE_PER_APP = "power_usage_per_app";
+//		String TERM_ENERGY_USAGE_PER_APP = "energy_usage_per_app";
+//
+//		logger.info("Getting SLA...");
+//		SLA sla = null;
+//		HashMap<String,String> measuredValues = new HashMap<String,String>();		
+//		measuredValues.put("power_usage_per_app", "45");
+//		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl", null);
+//		try {
+//			sla = gsc.getSLA();
+//			List<MeasurableAgreementTerm> mis = gsc.getMeasurableTerms(sla);
+//			for (MeasurableAgreementTerm m:mis) {
+//				boolean violated = false;
+//
+//
+//				if (m.getName().equalsIgnoreCase(TERM_POWER_USAGE_PER_APP)) {
+//					if (measuredValues.containsKey(TERM_POWER_USAGE_PER_APP)) {
+//						if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
+//							if (!m.getValue().equals(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP)))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
+//							if (!(m.getValue()<(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
+//							if (!(m.getValue()<=(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
+//							if (!(m.getValue()>(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
+//							if (!(m.getValue()>=(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
+//							}
+//						}
+//					}
+//				}
+//
+//				if (m.getName().equalsIgnoreCase(TERM_ENERGY_USAGE_PER_APP)) {
+//					if (measuredValues.containsKey(TERM_ENERGY_USAGE_PER_APP)) {
+//						if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
+//							if (!m.getValue().equals(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP)))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
+//							if (!(m.getValue()<(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
+//							if (!(m.getValue()<=(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
+//							if (!(m.getValue()>(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
+//							}
+//						}
+//						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
+//							if (!(m.getValue()>=(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
+//								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
+//							}
+//						}
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//	}
+
 	public static void main(String[] args) {
-
-		String TERM_POWER_USAGE_PER_APP = "power_usage_per_app";
-		String TERM_ENERGY_USAGE_PER_APP = "energy_usage_per_app";
-
-		logger.info("Getting SLA...");
-		SLA sla = null;
-		HashMap<String,String> measuredValues = new HashMap<String,String>();		
-		measuredValues.put("power_usage_per_app", "45");
-		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl", null);
-		try {
-			sla = gsc.getSLA();
-			List<MeasurableAgreementTerm> mis = gsc.getMeasurableTerms(sla);
-			for (MeasurableAgreementTerm m:mis) {
-				boolean violated = false;
-
-
-				if (m.getName().equalsIgnoreCase(TERM_POWER_USAGE_PER_APP)) {
-					if (measuredValues.containsKey(TERM_POWER_USAGE_PER_APP)) {
-						if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
-							if (!m.getValue().equals(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP)))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
-							if (!(m.getValue()<(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
-							if (!(m.getValue()<=(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
-							if (!(m.getValue()>(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
-							if (!(m.getValue()>=(new Double(measuredValues.get(TERM_POWER_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(TERM_POWER_USAGE_PER_APP)+" Condition: "+m); violated = true;
-							}
-						}
-					}
-				}
-
-				if (m.getName().equalsIgnoreCase(TERM_ENERGY_USAGE_PER_APP)) {
-					if (measuredValues.containsKey(TERM_ENERGY_USAGE_PER_APP)) {
-						if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
-							if (!m.getValue().equals(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP)))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
-							if (!(m.getValue()<(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
-							if (!(m.getValue()<=(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
-							if (!(m.getValue()>(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
-							}
-						}
-						else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
-							if (!(m.getValue()>=(new Double(measuredValues.get(TERM_ENERGY_USAGE_PER_APP))))) {
-								System.out.println("Violation detected. Value: "+measuredValues.get(measuredValues)+" Condition: "+m); violated = true;
-							}
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		PaasViolationChecker p = new PaasViolationChecker(null, null, null, null, null, false);
+		p.notifyViolation("prova");
+		
+		
 	}
-
 
 }

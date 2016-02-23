@@ -1765,6 +1765,7 @@ paas/slam/profile4osgi/eu/ascetic/paas/slam/slam/0.1.SNAPSHOT/slam-0.1.SNAPSHOT.
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/PaasViolationChecker.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/amqp/AmqpAbstract.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/amqp/AmqpExceptionListener.java -text
+paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/amqp/AmqpMessageProducer.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/amqp/AmqpMessageReceiver.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/applicationmanager/ModelConverter.java -text
 paas/slam/provisioning-adjustment/src/main/java/eu/ascetic/paas/slam/pac/applicationmanager/amqp/model/ApplicationManagerMessage.java -text

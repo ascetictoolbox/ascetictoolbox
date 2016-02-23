@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -50,11 +52,13 @@ import org.slasoi.slamodel.core.TypeConstraintExpr;
 import org.slasoi.slamodel.primitives.CONST;
 import org.slasoi.slamodel.primitives.Expr;
 import org.slasoi.slamodel.primitives.ID;
+import org.slasoi.slamodel.primitives.STND;
 import org.slasoi.slamodel.primitives.ValueExpr;
 import org.slasoi.slamodel.sla.AgreementTerm;
 import org.slasoi.slamodel.sla.Customisable;
 import org.slasoi.slamodel.sla.Guaranteed;
 import org.slasoi.slamodel.sla.Guaranteed.State;
+import org.slasoi.slamodel.sla.InterfaceDeclr;
 import org.slasoi.slamodel.sla.SLA;
 import org.slasoi.slamodel.sla.VariableDeclr;
 import org.w3c.dom.Document;
@@ -62,7 +66,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import eu.ascetic.paas.slam.pac.impl.provider.translation.AsceticAgreementTerm;
 import eu.ascetic.paas.slam.pac.impl.provider.translation.MeasurableAgreementTerm;
 import eu.ascetic.paas.slam.pac.impl.provider.translation.SlaTranslator;
 import eu.ascetic.paas.slam.pac.impl.provider.translation.SlaTranslatorImpl;
@@ -98,7 +101,7 @@ public class GetSLAClient {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		
 		//testing purposes, remove...
-//		String slaId = "cbf1f8e2-4d90-46f4-be60-7a198f4def39";
+		//String slaId = "fe5f67da-c649-4c64-8929-2e765e3d9f4f";
 		
 		String xmlInput =
 				" <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:rep=\"http://reportingWS.businessManager.slasoi.org\">"+
@@ -314,9 +317,22 @@ public class GetSLAClient {
 	
 
 	public static void main(String[] args) {
-		GetSLAClient gsc = new GetSLAClient("http://10.4.0.16:8080/services/BusinessManager_Reporting?wsdl",null);
+		GetSLAClient gsc = new GetSLAClient("http://192.168.3.16:8080/services/BusinessManager_Reporting?wsdl",null);
 		try {
-			gsc.getSLA();
+			SLA sla = gsc.getSLA();
+			for (InterfaceDeclr i:sla.getInterfaceDeclrs()) {
+				String slaproviderlist = i.getPropertyValue(new STND("SLA-ProvidersList"));
+				System.out.println(slaproviderlist);
+				String pattern = "\\\"sla-id\\\":\\\"(.+)\\\",\\\"provider-uuid\\\":\\\"[\\d+]\\\"";
+				Pattern r = Pattern.compile(pattern);
+				Matcher m = r.matcher(slaproviderlist);
+				if (m.find( )) {
+			         System.out.println("Found value: " + m.group(1) );
+			      } else {
+			         System.out.println("NO MATCH");
+			      }
+//				System.out.println(slaproviderlist.substring(slaproviderlist.indexOf("\"", 6)));
+			}
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
