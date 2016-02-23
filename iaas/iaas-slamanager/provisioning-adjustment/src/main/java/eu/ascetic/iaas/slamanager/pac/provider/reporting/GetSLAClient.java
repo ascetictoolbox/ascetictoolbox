@@ -155,7 +155,7 @@ public class GetSLAClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.debug("SLA recovered and parsed"+sla);
+		logger.debug("SLA recovered and parsed.");
 		
 		
 		//Write the SOAP message formatted to the console.
@@ -303,9 +303,12 @@ public class GetSLAClient {
 			} 
 			else {
 				Expr expr = (Expr) v.getExpr();
+				
 				if (expr instanceof FunctionalExpr) {
+					
 					FunctionalExpr fu = (FunctionalExpr) expr;
 					ValueExpr ve = fu.getParameters()[0];
+					
 					ovfId = ve.toString();
 					variablesVs.put(v.getVar().getValue(), ovfId);
 				}
