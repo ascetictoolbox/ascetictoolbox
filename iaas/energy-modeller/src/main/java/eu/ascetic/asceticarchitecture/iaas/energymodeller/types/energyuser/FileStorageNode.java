@@ -15,10 +15,14 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
- * This class stores the basic data for physical machine, that has been 
- * allocated to the use of the distributed file system (DFS). 
- * This represents a DFS host in the energy modeller.
+ * This class stores the basic data for physical machine, that has been
+ * allocated to the use of the distributed file system (DFS). This represents a
+ * DFS host in the energy modeller.
  *
  * An important similar class is!
  *
@@ -33,9 +37,67 @@ public class FileStorageNode extends Host {
      *
      * @param id The host id
      * @param hostName The host name
-     */    
+     */
     public FileStorageNode(int id, String hostName) {
         super(id, hostName);
     }
+
+    /**
+     * This converts a host list into a file storage node list. It filters all
+     * none file storage hosts from the list.
+     *
+     * @param hostList The host list to convert to file storage.
+     * @return The new File storage list.
+     */
+    public static Collection<FileStorageNode> hostListToFileStorageList(Collection<Host> hostList) {
+        Collection<FileStorageNode> answer = new ArrayList<>();
+        for (Host current : hostList) {
+            if (current.getClass().equals(FileStorageNode.class)) {
+                answer.add((FileStorageNode) current);
+            }
+        }
+        return answer;
+    }  
+
+    /**
+     * This converts a host list into a file storage node list. It filters all
+     * none file storage hosts from the list.
+     *
+     * @param hostList The host list to convert to file storage.
+     * @return The new File storage list.
+     */
+    public static List<FileStorageNode> hostListToFileStorageList(List<Host> hostList) {
+        List<FileStorageNode> answer = new ArrayList<>();
+        for (Host current : hostList) {
+            if (current.getClass().equals(FileStorageNode.class)) {
+                answer.add((FileStorageNode) current);
+            }
+        }
+        return answer;
+    }    
     
+    /**
+     * This converts a file storage list into a host list.
+     *
+     * @param fileList The file storage list to convert to hosts.
+     * @return The new host list.
+     */
+    public static List<Host> fileStorageListToHostList(List<FileStorageNode> fileList) {
+        List<Host> answer = new ArrayList<>();
+        answer.addAll(fileList);
+        return answer;
+    }
+    
+    /**
+     * This converts a file storage list into a host list.
+     *
+     * @param fileList The file storage list to convert to hosts.
+     * @return The new host list.
+     */
+    public static Collection<Host> fileStorageListToHostList(Collection<FileStorageNode> fileList) {
+        Collection<Host> answer = new ArrayList<>();
+        answer.addAll(fileList);
+        return answer;
+    }    
+
 }
