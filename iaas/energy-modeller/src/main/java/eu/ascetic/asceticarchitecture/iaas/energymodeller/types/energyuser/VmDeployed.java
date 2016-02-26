@@ -195,6 +195,20 @@ public class VmDeployed extends VM {
     public void setAllocatedTo(Host allocatedTo) {
         this.allocatedTo = allocatedTo;
     }
+    
+    /**
+     * This returns the idle power consumption of this VM given it's host's 
+     * idle power consumption and the amount of VMs that are on the same host.
+     * @param vmCount The count of VMs to share the energy between
+     * @return The idle power consumption of a VM given the count of other VMs
+     * present.
+     */
+    public double getIdlePowerConsumption(int vmCount) {
+        if (getAllocatedTo() == null) {
+            return 0;
+        }
+        return getAllocatedTo().getIdlePowerConsumption() / ((double) vmCount);
+    }    
 
     @Override
     public boolean equals(Object obj) {
