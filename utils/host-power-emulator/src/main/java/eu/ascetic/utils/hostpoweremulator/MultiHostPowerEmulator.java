@@ -27,6 +27,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.ioutils.Settings;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -47,9 +48,14 @@ public class MultiHostPowerEmulator implements Runnable {
     private final DatabaseConnector database = new DefaultDatabaseConnector();
     private boolean running = true;
     private int pollInterval = 1;
-    private String loggerOutputFile = "EstimatedHostPowerData.txt";    
+    private String loggerOutputFile = "EstimatedHostPowerData.txt";
     private String outputName = "estimated-power";
-    private String predictorName = "CpuOnlyBestFitEnergyPredictor";    
+    private String predictorName = "CpuOnlyBestFitEnergyPredictor";
+    /**
+     * Enables host discovery during run i.e. not just at the start It is faster
+     * without need for continual host discovery
+     */
+    private boolean autoHostDiscovery = false;
     private final Settings settings = new Settings(PROPS_FILE_NAME);
     private static final String PROPS_FILE_NAME = "watt-meter-emulator.properties";
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
@@ -62,14 +68,15 @@ public class MultiHostPowerEmulator implements Runnable {
      */
     public MultiHostPowerEmulator() {
         pollInterval = settings.getInt("poll_interval", pollInterval);
-        loggerOutputFile = settings.getString("output_filename", loggerOutputFile);        
+        loggerOutputFile = settings.getString("output_filename", loggerOutputFile);
         outputName = settings.getString("output_name", outputName);
         predictorName = settings.getString("predictor", predictorName);
+        autoHostDiscovery = settings.getBoolean("auto_host_discovery", autoHostDiscovery);
         if (settings.isChanged()) {
             settings.save(PROPS_FILE_NAME);
         }
     }
-    
+
     /**
      * This allows the power estimator to be set
      *
@@ -95,7 +102,7 @@ public class MultiHostPowerEmulator implements Runnable {
             Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.WARNING, "The predictor specified did not work", ex);
         }
         return answer;
-    }      
+    }
 
     /**
      * This runs the emulation tool.
@@ -154,21 +161,16 @@ public class MultiHostPowerEmulator implements Runnable {
         Thread loggerThread = new Thread(logger);
         loggerThread.setDaemon(true);
         loggerThread.start();
-        database.getHostCalibrationData(hosts);
-        EnergyPredictorInterface predictor = getPredictor(predictorName);       
-        for (Host host : hosts) {
-            if (!host.isCalibrated()) {
-                continue;
-            }
-            System.out.println("Host: " + host.toString());
-            predictor.printFitInformation(host);
-            System.out.println("");
-        }
+        EnergyPredictorInterface predictor = getPredictor(predictorName);
+        getHostCalibrationData(hosts, predictor);
         /**
          * The main phase is to monitor the host and to report its estimated
          * host energy usage, in the event calibration data is available.
          */
         while (running) {
+            if (autoHostDiscovery) {
+                hosts = updateHostsList(hosts, predictor, logger);
+            }
             List<HostMeasurement> mesurements = source.getHostData(hosts);
             for (HostMeasurement measurement : mesurements) {
                 double power;
@@ -185,6 +187,68 @@ public class MultiHostPowerEmulator implements Runnable {
                 Logger.getLogger(HostPowerEmulator.class.getName()).log(Level.SEVERE, "The power emulator was interupted.", ex);
             }
         }
+    }
+
+    /**
+     * This collects host calibration data from the database
+     *
+     * @param hosts The list of hosts to calibrate.
+     * @param predictor The predictor used to give performance information for
+     * the host's fit
+     * @return The list of hosts that have calibration data
+     */
+    private List<Host> getHostCalibrationData(List<Host> hosts, EnergyPredictorInterface predictor) {
+        database.getHostCalibrationData(hosts);
+        for (Host host : hosts) {
+            if (!host.isCalibrated()) {
+                hosts.remove(host);
+                continue;
+            }
+            System.out.println("Host: " + host.toString());
+            predictor.printFitInformation(host);
+            System.out.println("");
+        }
+        return hosts;
+    }
+
+    /**
+     * This updates the hosts list and ensures when a host disappears that its
+     * last reported value is zero.
+     *
+     * @param hosts The previous list of hosts
+     * @return The new list of hosts
+     */
+    private List<Host> updateHostsList(List<Host> hosts, EnergyPredictorInterface predictor, HostPowerLogger logger) {
+        //The fresh copy of the host list.
+        List<Host> newHostList = source.getHostList();
+        //Hosts that have newly been discovered i.e. needs calibration data from DB
+        List<Host> addedHosts = getHostListDifference(hosts, newHostList);
+        //List of hosts that have disapeared. Needs zeroing
+        List<Host> removedHosts = getHostListDifference(newHostList, hosts);
+        //This will not add hosts that aren't calibrated
+        hosts.addAll(getHostCalibrationData(addedHosts, predictor));
+        for (Host removedHost : removedHosts) {
+            logger.printToFile(logger.new Pair(removedHost, 0));
+        }
+        hosts.removeAll(removedHosts);
+        return hosts;
+    }
+
+    /**
+     * This compares a two list of hosts and shows whats been added
+     *
+     * @param originalList The new list of hosts.
+     * @return The list of hosts that were otherwise unknown to the data
+     * gatherer.
+     */
+    private List<Host> getHostListDifference(List<Host> newList, List<Host> originalList) {
+        List<Host> answer = new ArrayList<>();
+        for (Host host : originalList) {
+            if (!newList.contains(host)) {
+                answer.add(host);
+            }
+        }
+        return answer;
     }
 
     /**
