@@ -1,0 +1,279 @@
+<!-- 
+ * 
+ * Copyright 2016 ATOS SPAIN S.A. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author: David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @email david.garciaperez@atos.net 
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+	        <groupId>eu.ascetic</groupId>
+		<artifactId>tests</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+
+	<groupId>eu.ascetic.tests</groupId>
+	<artifactId>vmm</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>ASCETiC Virtual Machine Manager Test Collection</name>
+	<url>http://www.ascetic.eu</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<ciManagement>
+		<system>hudson</system>
+		<url>https://ascetic-jenkins.cit.tu-berlin.de/job/${jenkins.project.name}</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<recipients>raimon.bosch@bsc.es</recipients>
+				</configuration>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>false</sendOnWarning>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+	
+	<!-- Configures the different profiles to build the test for the different ASCETiC environments -->
+ 	<profiles>
+ 		<!--  Development profile -->
+    	<profile>
+     		<id>dev</id>
+     		<activation>
+	            <activeByDefault>true</activeByDefault>
+	        </activation>
+     		<build>
+       		<plugins>
+         		<plugin>
+           			<artifactId>maven-antrun-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>compile</phase>
+               				<goals>
+                 				<goal>run</goal>
+               				</goals>
+               				<configuration>
+                 				<tasks>
+                   					<delete file="${project.build.outputDirectory}/config.properties"/>
+                   					<copy file="src/main/resources/config.properties"
+                         				tofile="${project.build.outputDirectory}/config.properties"/>
+                 				</tasks>
+               				</configuration>
+             			</execution>
+           			</executions>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-surefire-plugin</artifactId>
+           				<configuration>
+             				<skip>false</skip>
+           				</configuration>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-jar-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>package</phase>
+               				<goals>
+                 				<goal>jar</goal>
+               				</goals>
+               				<configuration>
+                 				<classifier>test</classifier>
+               				</configuration>	
+             			</execution>
+           			</executions>
+         		</plugin>
+       		</plugins>
+     		</build>
+   		</profile>
+    	<!-- The configuration of the stable profile -->
+    	<profile>
+     		<id>stable</id>
+     		<build>
+       		<plugins>
+         		<plugin>
+           			<artifactId>maven-antrun-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>compile</phase>
+               				<goals>
+                 				<goal>run</goal>
+               				</goals>
+               				<configuration>
+                 				<tasks>
+                   					<delete file="${project.build.outputDirectory}/config.properties"/>
+                   					<copy file="src/main/resources/config.stable.properties"
+                         				tofile="${project.build.outputDirectory}/config.properties"/>
+                 				</tasks>
+               				</configuration>
+             			</execution>
+           			</executions>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-surefire-plugin</artifactId>
+           				<configuration>
+             				<skip>false</skip>
+           				</configuration>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-jar-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>package</phase>
+               				<goals>
+                 				<goal>jar</goal>
+               				</goals>
+               				<configuration>
+                 				<classifier>test</classifier>
+               				</configuration>	
+             			</execution>
+           			</executions>
+         		</plugin>
+       		</plugins>
+     		</build>
+   		</profile>
+    	<!-- The configuration of the test profile -->   	
+    	<profile>
+     		<id>test</id>
+     		<build>
+       		<plugins>
+         		<plugin>
+           			<artifactId>maven-antrun-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>compile</phase>
+               				<goals>
+                 				<goal>run</goal>
+               				</goals>
+               				<configuration>
+                 				<tasks>
+                   					<delete file="${project.build.outputDirectory}/config.properties"/>
+                   					<copy file="src/main/resources/config.test.properties"
+                         				tofile="${project.build.outputDirectory}/config.properties"/>
+                 				</tasks>
+               				</configuration>
+             			</execution>
+           			</executions>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-surefire-plugin</artifactId>
+           				<configuration>
+             				<skip>false</skip>
+           				</configuration>
+         		</plugin>
+         		<plugin>
+           			<artifactId>maven-jar-plugin</artifactId>
+           			<executions>
+             			<execution>
+               				<phase>package</phase>
+               				<goals>
+                 				<goal>jar</goal>
+               				</goals>
+               				<configuration>
+                 				<classifier>test</classifier>
+               				</configuration>	
+             			</execution>
+           			</executions>
+         		</plugin>
+       		</plugins>
+     		</build>
+   		</profile>
+	</profiles>
+
+	<build>       
+		<plugins>
+			<plugin>
+				<!-- Default jar with main method to run unit tests on testbed. -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- General -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+</project>

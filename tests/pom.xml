@@ -19,7 +19,9 @@
 
 	<modules>
 	    <!-- PaaS Modules -->
-		<module>application_manager</module>
+	    <module>application_manager</module>
+            <!-- IaaS Modules -->
+            <module>vmm</module>
   	</modules>
 
         <url>http://www.ascetic.eu</url>
