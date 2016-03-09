@@ -3700,9 +3700,11 @@ tests/application_manager/src/test/resources/webapp-ovf.xml -text
 tests/pom.xml -text
 tests/vmm/README.md -text
 tests/vmm/pom.xml -text
+tests/vmm/src/main/java/eu/ascetic/test/conf/VMMConf.java -text
 tests/vmm/src/main/resources/config.properties -text
 tests/vmm/src/main/resources/config.stable.properties -text
 tests/vmm/src/main/resources/config.test.properties -text
+tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/DeployAndMigrateTest.java -text
 tests/vmm/src/test/resources/log4j.properties -text
 use-cases/atc/newsasset/kpi-modelling/.project -text
 use-cases/atc/newsasset/kpi-modelling/LICENSE.TXT -text
