@@ -19,6 +19,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.ESTIMATED_POWER_KPI_NAME;
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
+import java.util.List;
 
 /**
  * This represents a single snapshot of the data from a data source.
@@ -134,6 +135,19 @@ public class HostMeasurement extends Measurement {
             }
         }
         return -1;
+    }
+    
+    /**
+     * This takes a list of host measurements and sums the power consumption
+     * @param toSum The list to sum together
+     * @return The total power of the list of host measurements
+     */
+    public static double sumPower(List<HostMeasurement> toSum) {
+        double answer = 0;
+        for (HostMeasurement item : toSum) {
+            answer = answer + item.getPower(true);
+        }
+        return answer;
     }    
 
     /**

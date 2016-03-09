@@ -24,7 +24,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.worklo
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor.WorkloadEstimator;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostDataSource;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.WattsUpMeterDataSourceAdaptor;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDataSourceAdaptor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
@@ -51,6 +51,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     private static final String DEFAULT_DATA_SOURCE_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient";
     private static final String DEFAULT_WORKLOAD_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor";
     private double defaultAssumedCpuUsage = 0.6; //assumed 60 percent usage, by default
+    private double defaultPowerOverheadPerHost = 0; //Overhead from DFS etc
     private HostDataSource source = null;
     protected DatabaseConnector database = null;
     private boolean considerIdleEnergy = true;
@@ -93,6 +94,8 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             setEnergyShareRule(shareRule);
             considerIdleEnergy = config.getBoolean("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
             config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
+            defaultPowerOverheadPerHost = config.getDouble("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
+            config.setProperty("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
             if (defaultAssumedCpuUsage == -1) {
                 String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
                 config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
@@ -130,12 +133,12 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             }
         } catch (ClassNotFoundException ex) {
             if (source == null) {
-                source = new ZabbixDataSourceAdaptor();
+                source = new ZabbixDirectDbDataSourceAdaptor();
             }
             Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (source == null) {
-                source = new ZabbixDataSourceAdaptor();
+                source = new ZabbixDirectDbDataSourceAdaptor();
             }
             Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
         }
@@ -360,8 +363,8 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
      */
     protected double getCpuUtilisation(Host host) {
         return workloadEstimator.getCpuUtilisation(host, null);
-    }    
-    
+    }
+
     /**
      * This provides an average of the recent CPU utilisation for a given host,
      * based upon the CPU utilisation time window set for the energy predictor.
@@ -394,6 +397,25 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             if (answer == null || predictor.getRootMeanSquareError(host) < answer.getRootMeanSquareError(host)) {
                 answer = predictor;
             }
+        }
+        return answer;
+    }
+
+    /**
+     * This predicts the total amount of energy used by a general service hosts.
+     * The overhead is calculated on a per host basis.
+     *
+     * @param timePeriod The time period the prediction is for
+     * @return The predicted energy usage.
+     */
+    public EnergyUsagePrediction getGeneralHostPredictedEnergy(TimePeriod timePeriod) {
+        EnergyUsagePrediction answer = new EnergyUsagePrediction();
+        answer.setAvgPowerUsed(defaultPowerOverheadPerHost);
+        if (timePeriod != null) {
+            answer.setTotalEnergyUsed(defaultPowerOverheadPerHost * ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
+            answer.setDuration(timePeriod);
+        } else {
+            answer.setTotalEnergyUsed(defaultPowerOverheadPerHost * 1.0); //W * Hrs
         }
         return answer;
     }

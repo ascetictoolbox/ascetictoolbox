@@ -17,7 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.dataso
 
 import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.KpiList.POWER_KPI_NAME;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.GeneralPurposePowerConsumer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -281,7 +281,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public FileStorageNode getFileStorageByName(String hostname) {
+    public GeneralPurposePowerConsumer getGeneralPowerConsumerByName(String hostname) {
         return null;
     }
 
@@ -298,7 +298,7 @@ public class WattsUpMeterDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public List<FileStorageNode> getFileStorageList() {
+    public List<GeneralPurposePowerConsumer> getGeneralPowerConsumerList() {
         return new ArrayList<>();
     }
 

@@ -16,7 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.GeneralPurposePowerConsumer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -68,22 +68,22 @@ public class FastDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public List<FileStorageNode> getFileStorageList() {
+    public List<GeneralPurposePowerConsumer> getGeneralPowerConsumerList() {
         try {
-            return zabbixDbRoute.getFileStorageList();
+            return zabbixDbRoute.getGeneralPowerConsumerList();
         } catch (Exception ex) {
             Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
-            return zabbixAPI.getFileStorageList();
+            return zabbixAPI.getGeneralPowerConsumerList();
         }
     }
 
     @Override
-    public FileStorageNode getFileStorageByName(String hostname) {
+    public GeneralPurposePowerConsumer getGeneralPowerConsumerByName(String hostname) {
         try {
-            return zabbixDbRoute.getFileStorageByName(hostname);
+            return zabbixDbRoute.getGeneralPowerConsumerByName(hostname);
         } catch (Exception ex) {
             Logger.getLogger(FastDataSourceAdaptor.class.getName()).log(Level.INFO, "Performing fallback to Zabbix API", ex);
-            return zabbixAPI.getFileStorageByName(hostname);
+            return zabbixAPI.getGeneralPowerConsumerByName(hostname);
         }
     }
 

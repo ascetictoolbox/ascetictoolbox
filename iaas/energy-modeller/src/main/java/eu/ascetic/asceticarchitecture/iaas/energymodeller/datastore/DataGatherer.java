@@ -21,6 +21,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.HostMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.VmMeasurement;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.GeneralPurposePowerConsumer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
@@ -50,6 +51,7 @@ public class DataGatherer implements Runnable {
     private boolean running = true;
     private int faultCount = 0;
     private HashMap<String, Host> knownHosts = new HashMap<>();
+    private HashMap<String, GeneralPurposePowerConsumer> knownGeneralPurposeNodes = new HashMap<>();
     private HashMap<String, VmDeployed> knownVms = new HashMap<>();
     private final HashMap<Host, Long> lastTimeStampSeen = new HashMap<>();
     private static final String CONFIG_FILE = "energy-modeller-data-gatherer.properties";
@@ -103,9 +105,15 @@ public class DataGatherer implements Runnable {
     private void populateHostList() {
         Collection<Host> hosts = datasource.getHostList();
         database.setHosts(hosts);
+        Collection<GeneralPurposePowerConsumer> generalPurposeNodes = datasource.getGeneralPowerConsumerList();
+        database.setHosts(GeneralPurposePowerConsumer.generalPurposeHostListToHostList(generalPurposeNodes));
         //Ensure calibration data is recovered from the db.
         for (Host host : hosts) {
             checkAndCalibrateHost(host);
+        }
+        //Ensure calibration data is recovered from the db for general purpose nodes (such as file storage).
+        for (GeneralPurposePowerConsumer generalNode : generalPurposeNodes) {
+            checkAndCalibrateHost((Host) generalNode);
         }
         Collection<VmDeployed> vms = datasource.getVmList();
         vms = database.getVMProfileData(vms);
@@ -113,6 +121,11 @@ public class DataGatherer implements Runnable {
         for (Host host : hosts) {
             if (!knownHosts.containsKey(host.getHostName())) {
                 knownHosts.put(host.getHostName(), host);
+            }
+        }
+        for (GeneralPurposePowerConsumer host : generalPurposeNodes) {
+            if (!knownGeneralPurposeNodes.containsKey(host.getHostName())) {
+                knownGeneralPurposeNodes.put(host.getHostName(), host);
             }
         }
         for (VmDeployed vm : vms) {
@@ -178,6 +191,50 @@ public class DataGatherer implements Runnable {
     }
 
     /**
+     * This filters a list of energy users and returns only the list of hosts
+     * that are used as file storage.
+     *
+     * @param energyUsers The list of energy users
+     * @return The list of hosts.
+     */
+    private List<GeneralPurposePowerConsumer> getGeneralPurposeNodeList(List<EnergyUsageSource> input) {
+        ArrayList<GeneralPurposePowerConsumer> answer = new ArrayList<>();
+        for (EnergyUsageSource item : input) {
+            if (item.getClass().equals(GeneralPurposePowerConsumer.class)) {
+                answer.add((GeneralPurposePowerConsumer) item);
+            }
+        }
+        return answer;
+    }
+    
+    /**
+     * This returns the overhead from the general purpose hosts that provide
+     * services to other hosts' VMs. i.e. DFS, or cooling etc.
+     * @return The power consumption of all general purpose nodes (i.e. not 
+     * hypervisors).
+     */
+    public double getGeneralPurposeHostsPowerConsumption() {
+        return getGeneralPurposeHostsPowerConsumption(null);
+    }    
+    
+    /**
+     * This returns the overhead from the general purpose hosts that provide
+     * services to other hosts' VMs. i.e. DFS, or cooling etc.
+     * @param generalNodeMeasurements The list of host measurements for the 
+     * general purpose nodes. If null the current list of known hosts will be used
+     * instead.
+     * @return  The power consumption of current general purpose hosts.
+     */
+    private double getGeneralPurposeHostsPowerConsumption(List<HostMeasurement> generalNodeMeasurements) {
+        if (generalNodeMeasurements == null) {
+            List<GeneralPurposePowerConsumer> generalPurposeList = new ArrayList<>();
+            generalPurposeList.addAll(knownGeneralPurposeNodes.values());
+            generalNodeMeasurements = datasource.getHostData(GeneralPurposePowerConsumer.generalPurposeHostListToHostList(generalPurposeList));
+        }
+        return HostMeasurement.sumPower(generalNodeMeasurements) / knownHosts.size();
+    }
+
+    /**
      * This filters a list of energy users and returns only the list of vms that
      * have been deployed
      *
@@ -212,10 +269,13 @@ public class DataGatherer implements Runnable {
                 List<EnergyUsageSource> energyConsumers = datasource.getHostAndVmList();
                 List<Host> hostList = getHostList(energyConsumers);
                 refreshKnownHostList(hostList);
+                List<GeneralPurposePowerConsumer> generalPurposeList = getGeneralPurposeNodeList(energyConsumers);
+                refreshKnownGeneralPurposeNodesList(generalPurposeList);
                 List<VmDeployed> vmList = getVMList(energyConsumers);
                 refreshKnownVMList(vmList);
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Obtaining specific host information");
                 List<HostMeasurement> measurements = datasource.getHostData(hostList);
+                List<HostMeasurement> generalNodeMeasurements = datasource.getHostData(GeneralPurposePowerConsumer.generalPurposeHostListToHostList(generalPurposeList));
                 for (HostMeasurement measurement : measurements) {
                     Host host = knownHosts.get(measurement.getHost().getHostName());
                     /**
@@ -232,7 +292,7 @@ public class DataGatherer implements Runnable {
                      * written to backing store as clean as possible.
                      */
                     if (performDataGathering) {
-                        gatherMeasurements(host, measurement, vmList, vmUsageLogger);
+                        gatherMeasurements(host, measurement, getGeneralPurposeHostsPowerConsumption(generalNodeMeasurements), vmList, vmUsageLogger);
                     }
                 }
                 try {
@@ -257,7 +317,7 @@ public class DataGatherer implements Runnable {
             }
         }
     }
-
+    
     /**
      * This method gathers and writes host measurements to disk and to the
      * background database for future usage.
@@ -267,7 +327,7 @@ public class DataGatherer implements Runnable {
      * @param vmList The list of VMs that are currently running
      * @param vmUsageLogger The logger that is used to write VM data to disk.
      */
-    private void gatherMeasurements(Host host, HostMeasurement measurement, List<VmDeployed> vmList, VmEnergyUsageLogger vmUsageLogger) {
+    private void gatherMeasurements(Host host, HostMeasurement measurement, double hostOffset, List<VmDeployed> vmList, VmEnergyUsageLogger vmUsageLogger) {
         if (lastTimeStampSeen.get(host) == null || measurement.getClock() > lastTimeStampSeen.get(host)) {
             lastTimeStampSeen.put(host, measurement.getClock());
             Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Writing out host information");
@@ -291,6 +351,7 @@ public class DataGatherer implements Runnable {
                 database.writeHostVMHistoricData(host, measurement.getClock(), fraction);
                 if (vmUsageLogger != null) {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Logging out to Zabbix file");
+                    fraction.setHostPowerOffset(hostOffset);
                     vmUsageLogger.printToFile(vmUsageLogger.new Pair(measurement, fraction));
                 }
             }
@@ -317,6 +378,21 @@ public class DataGatherer implements Runnable {
         HashMap<String, Host> answer = new HashMap<>();
         for (Host host : hostList) {
             answer.put(host.getHostName(), host);
+        }
+        return answer;
+    }
+
+    /**
+     * The hash map gives a faster way to find a specific host. This converts
+     * from a raw list of hosts into the indexed structure.
+     *
+     * @param generalHostList The host list
+     * @return The hashed host list
+     */
+    private HashMap<String, GeneralPurposePowerConsumer> generalHostToHashMap(List<GeneralPurposePowerConsumer> generalHostList) {
+        HashMap<String, GeneralPurposePowerConsumer> answer = new HashMap<>();
+        for (GeneralPurposePowerConsumer node : generalHostList) {
+            answer.put(node.getHostName(), node);
         }
         return answer;
     }
@@ -372,6 +448,44 @@ public class DataGatherer implements Runnable {
         for (Host host : newList) {
             if (!knownHosts.containsKey(host.getHostName())) {
                 answer.add(host);
+            }
+        }
+        return answer;
+    } 
+
+    /**
+     * This sets and refreshes the knownHosts list in the data gatherer.
+     *
+     * @param generalHostList The list of host gained from the data source.
+     */
+    private void refreshKnownGeneralPurposeNodesList(List<GeneralPurposePowerConsumer> generalHostList) {
+        //Perform a refresh to make sure the host has been written to backing store
+        if (knownGeneralPurposeNodes == null) {
+            knownGeneralPurposeNodes = generalHostToHashMap(generalHostList);
+            database.setHosts(GeneralPurposePowerConsumer.generalPurposeHostListToHostList(generalHostList));
+        } else {
+            List<GeneralPurposePowerConsumer> newGeneralPurposeHosts = discoverNewGeneralPurposeNode(generalHostList);
+            database.setHosts(GeneralPurposePowerConsumer.generalPurposeHostListToHostList(newGeneralPurposeHosts));
+            for (GeneralPurposePowerConsumer generalPurposeHost : newGeneralPurposeHosts) {
+                generalPurposeHost = (GeneralPurposePowerConsumer) checkAndCalibrateHost(generalPurposeHost);
+                knownGeneralPurposeNodes.put(generalPurposeHost.getHostName(), generalPurposeHost);
+            }
+        }
+    }
+
+    /**
+     * This compares a list of general purpose nodes (such as storage) 
+     * that has been found to the known list of general nodes.
+     *
+     * @param newList The new list of general purpose nodes.
+     * @return The list of general purpose nodes that were otherwise unknown 
+     * to the data gatherer.
+     */
+    private List<GeneralPurposePowerConsumer> discoverNewGeneralPurposeNode(List<GeneralPurposePowerConsumer> newList) {
+        List<GeneralPurposePowerConsumer> answer = new ArrayList<>();
+        for (GeneralPurposePowerConsumer general : newList) {
+            if (!knownGeneralPurposeNodes.containsKey(general.getHostName())) {
+                answer.add(general);
             }
         }
         return answer;
@@ -448,6 +562,17 @@ public class DataGatherer implements Runnable {
         return knownHosts;
     }
 
+    /**
+     * This provides the list of known hosts that have been tasked for general
+     * purposes of the datacenter. i.e. Distributed file system etc.
+     *
+     * @return The list of known hosts that are allocated to general tasks,
+     * i.e. supporting roles i.e. not hypervisors.
+     */
+    public HashMap<String, GeneralPurposePowerConsumer> getGeneralPurposeHostList() {
+        return knownGeneralPurposeNodes;
+    }
+    
     /**
      * This gets the named host from the known host list.
      *

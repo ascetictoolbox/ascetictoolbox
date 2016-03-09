@@ -574,12 +574,14 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             return;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load) VALUES (?, ?, ? , ?);")) {
+                "INSERT INTO vm_measurement (host_id, vm_id, clock, cpu_load, power_overhead) VALUES (?, ?, ? , ?, ?);")) {
             preparedStatement.setInt(1, host.getId());
+            double averageOverhead = load.getHostPowerOffset() / load.getVMs().size();
             for (VmDeployed vm : load.getVMs()) {
                 preparedStatement.setInt(2, vm.getId());
                 preparedStatement.setLong(3, time);
                 preparedStatement.setDouble(4, load.getFraction(vm));
+                preparedStatement.setDouble(5, averageOverhead);              
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
@@ -621,7 +623,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 long start = timePeriod.getStartTimeInSeconds();
                 long end = timePeriod.getEndTimeInSeconds();
                 preparedStatement = connection.prepareStatement(
-                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm "
+                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load, power_overhead FROM vm_measurement, vm "
                         + "WHERE vm_measurement.vm_id = vm.vm_id "
                         + "and vm_measurement.host_id = ? "
                         + " AND clock >= ? AND clock <= ?;");
@@ -629,7 +631,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 preparedStatement.setLong(3, end);
             } else {
                 preparedStatement = connection.prepareStatement(
-                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load FROM vm_measurement, vm "
+                        "SELECT host_id, vm_measurement.vm_id, vm_name, clock, cpu_load, power_overhead FROM vm_measurement, vm "
                         + "WHERE vm_measurement.vm_id = vm.vm_id "
                         + "and vm_measurement.host_id = ?;");
             }
@@ -645,10 +647,12 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                         currentHostLoadFraction = new HostVmLoadFraction(host, currentClock);
                         VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
                         currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+                        currentHostLoadFraction.setHostPowerOffset((double) measurement.get(5)); //power overhead is fifth item
                         answer.add(currentHostLoadFraction);
                     } else {
                         VmDeployed vm = getVM((int) measurement.get(1), (String) measurement.get(2), host, vmCache);
                         currentHostLoadFraction.addFraction(vm, (double) measurement.get(4)); //load is the fourth item
+                        currentHostLoadFraction.setHostPowerOffset((double) measurement.get(5)); //overhead power is fifth item
                     }
                     lastClock = currentClock;
                 }

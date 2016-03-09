@@ -59,6 +59,19 @@ public class CurrentUsageRecord extends EnergyUsageRecord {
      * This creates a record that indicates a current amount of energy in use.
      * @param energyUser either a VM, a host or a VM -> host mapping
      * @param power The power this energy user is consuming
+     */
+    public CurrentUsageRecord(EnergyUsageSource energyUser, double power) {
+        addEnergyUser(energyUser);
+        this.power = power;
+        this.current = -1;
+        this.voltage = -1;        
+        time = new GregorianCalendar();
+    }      
+    
+    /**
+     * This creates a record that indicates a current amount of energy in use.
+     * @param energyUser either a VM, a host or a VM -> host mapping
+     * @param power The power this energy user is consuming
      * @param current The current this energy user is using
      * @param voltage The voltage this energy user is using
      */
@@ -84,6 +97,19 @@ public class CurrentUsageRecord extends EnergyUsageRecord {
         this.voltage = voltage;
         time = new GregorianCalendar();
     }
+    
+    /**
+     * This creates a record that indicates a current amount of energy in use.
+     * @param energyUser either a VM, a host or a VM -> host mapping
+     * @param power The power this energy user is consuming
+     */
+    public CurrentUsageRecord(HashSet<EnergyUsageSource> energyUser, double power) {
+        addEnergyUser(energyUser);
+        this.power = power;
+        this.current = -1;
+        this.voltage = -1;
+        time = new GregorianCalendar();
+    }    
 
     /**
      * Gets the power that was in use.

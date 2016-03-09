@@ -32,6 +32,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.ZabbixDirectDbDataSourceAdaptor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.OVFConverterFactory;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.GeneralPurposePowerConsumer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -489,7 +491,7 @@ public class EnergyModeller {
     }
 
     /**
-     * This returns the energy usage for a named virtual machine.
+     * This returns the power consumption for a named virtual machine.
      *
      * @param vm A reference to the VM
      * @return The current power usage record for the named VM.
@@ -564,6 +566,20 @@ public class EnergyModeller {
      */
     public CurrentUsageRecord getCurrentEnergyForHost(Host host) {
         CurrentUsageRecord answer = datasource.getCurrentEnergyUsage(host);
+        return answer;
+    }
+    
+    /**
+     * This gets the current overhead caused by other physical hosts that provide
+     * utilities to the other physical hosts, such as Distributed file systems.
+     * @return 
+     */
+    public CurrentUsageRecord getCurrentGeneralPowerConsumerOverhead() {
+        double power = dataGatherer.getGeneralPurposeHostsPowerConsumption();
+        Collection<GeneralPurposePowerConsumer> consumers = dataGatherer.getGeneralPurposeHostList().values();
+        HashSet<EnergyUsageSource> usageSources = new HashSet<>();
+        usageSources.addAll(consumers);
+        CurrentUsageRecord answer = new CurrentUsageRecord(usageSources, power);
         return answer;
     }
 

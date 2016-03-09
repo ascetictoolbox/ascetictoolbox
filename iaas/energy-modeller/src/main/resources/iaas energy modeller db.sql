@@ -84,7 +84,8 @@ CREATE TABLE IF NOT EXISTS vm_measurement
      host_id INT NOT NULL,
      vm_id   INT NOT NULL,
      clock     BIGINT UNSIGNED,
-     cpu_load    DOUBLE
+     cpu_load    DOUBLE,
+	 power_overhead    DOUBLE
   );
 
 ALTER TABLE vm_measurement

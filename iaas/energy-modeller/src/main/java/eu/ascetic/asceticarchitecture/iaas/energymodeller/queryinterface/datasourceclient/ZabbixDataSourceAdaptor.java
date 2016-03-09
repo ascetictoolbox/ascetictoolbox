@@ -34,7 +34,7 @@ import static eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.NameBeginsFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient.hostvmfilter.ZabbixHostVMFilter;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.GeneralPurposePowerConsumer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
@@ -99,9 +99,9 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public FileStorageNode getFileStorageByName(String hostname) {
+    public GeneralPurposePowerConsumer getGeneralPowerConsumerByName(String hostname) {
         Host host = client.getHostByName(hostname);
-        return convertToFileStorage(host);
+        return convertToGeneralPowerStorage(host);
     }
 
     /**
@@ -145,12 +145,12 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
     }
 
     @Override
-    public List<FileStorageNode> getFileStorageList() {
+    public List<GeneralPurposePowerConsumer> getGeneralPowerConsumerList() {
         List<Host> hostsList = client.getAllHosts();
-        ArrayList<FileStorageNode> fileStorage = new ArrayList<>();
+        ArrayList<GeneralPurposePowerConsumer> fileStorage = new ArrayList<>();
         for (Host h : hostsList) {
             if (hostFilter.isHost(h)) {
-                fileStorage.add(convertToFileStorage(h));
+                fileStorage.add(convertToGeneralPowerStorage(h));
             }
         }
         return fileStorage;
@@ -226,10 +226,10 @@ public class ZabbixDataSourceAdaptor implements HostDataSource {
         return answer;
     }
 
-    private FileStorageNode convertToFileStorage(Host host) {
+    private GeneralPurposePowerConsumer convertToGeneralPowerStorage(Host host) {
         String hostname = host.getHost();
         int hostId = Integer.parseInt(host.getHostid());
-        FileStorageNode answer = new FileStorageNode(hostId, hostname);
+        GeneralPurposePowerConsumer answer = new GeneralPurposePowerConsumer(hostId, hostname);
         answer.setAvailable("1".equals(host.getAvailable()));
         List<Item> items = client.getItemsFromHost(host.getHost());
         if (items != null) {

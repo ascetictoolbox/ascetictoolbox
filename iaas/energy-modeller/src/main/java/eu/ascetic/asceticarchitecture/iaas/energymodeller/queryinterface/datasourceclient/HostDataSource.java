@@ -16,7 +16,7 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasourceclient;
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.EnergyUsageSource;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.FileStorageNode;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.GeneralPurposePowerConsumer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.CurrentUsageRecord;
@@ -39,12 +39,13 @@ public interface HostDataSource {
     public Host getHostByName(String hostname);
     
     /**
-     * This returns a host that's dedicated to files storage given its unique name.
+     * This returns a host that's dedicated to the data centers general services,
+     * such as a distributed file system given its unique name.
      *
      * @param hostname The name of the host to get.
-     * @return The object representation of a file storage host in the energy modeller.
+     * @return The object representation of a general purpose host in the energy modeller.
      */    
-    public FileStorageNode getFileStorageByName(String hostname);
+    public GeneralPurposePowerConsumer getGeneralPowerConsumerByName(String hostname);
 
     /**
      * This returns a host given its unique name.
@@ -68,11 +69,13 @@ public interface HostDataSource {
     public List<EnergyUsageSource> getHostAndVmList();
     
     /**
-     * This provides a list of file storage hosts for the energy modeller
+     * This provides a list of file general power consumers hosts for the 
+     * energy modeller
      *
-     * @return A list of file storage hosts for the energy modeller.
+     * @return A list of power consumers that provide general services for 
+     * physical hosts, i.e. distributed file systems etc.
      */    
-    public List<FileStorageNode> getFileStorageList();    
+    public List<GeneralPurposePowerConsumer> getGeneralPowerConsumerList();    
     
     /**
      * This provides a list of VMs for the energy modeller

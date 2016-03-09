@@ -24,7 +24,6 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsag
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import java.io.File;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -78,7 +77,7 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
-        return predictTotalEnergy(host, getCpuUtilisation(host, virtualMachines), duration);
+        return predictTotalEnergy(host, duration);
     }
 
     /**
@@ -92,9 +91,12 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
      * @return The prediction of the energy to be used.
      */
     @Override
-    public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
+   public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
         EnergyDivision division = getEnergyUsage(host, virtualMachines);
-        EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, getCpuUtilisation(host, virtualMachines), timePeriod);
+        EnergyUsagePrediction hostAnswer = predictTotalEnergy(host, timePeriod);
+        EnergyUsagePrediction generalHostsAnswer = getGeneralHostPredictedEnergy(timePeriod);
+        double generalPower = generalHostsAnswer.getAvgPowerUsed() / (double) virtualMachines.size();
+        double generalEnergy = generalHostsAnswer.getTotalEnergyUsed() / (double) virtualMachines.size();
         hostAnswer.setAvgPowerUsed(hostAnswer.getTotalEnergyUsed()
                 / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
@@ -102,15 +104,15 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
         //Find the fraction to be associated with the VM
         double vmsEnergyFraction = division.getEnergyUsage(hostAnswer.getTotalEnergyUsed(), vm);
         division.setConsiderIdleEnergy(isConsiderIdleEnergy());
-        answer.setTotalEnergyUsed(vmsEnergyFraction);
+        answer.setTotalEnergyUsed(vmsEnergyFraction + generalEnergy);
         double vmsPowerFraction = division.getEnergyUsage(hostAnswer.getAvgPowerUsed(), vm);
-        answer.setAvgPowerUsed(vmsPowerFraction);
+        answer.setAvgPowerUsed(vmsPowerFraction + generalPower);
         return answer;
     }
 
     @Override
     public double predictPowerUsed(Host host) {
-        return getAveragePowerHost(host, observationTime);
+        return getAverageHostPower(host, observationTime);
     }
 
     /**
@@ -121,7 +123,7 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
      * @param duration The time in seconds before now to get the average for
      * @return The average power of the host
      */
-    private double getAveragePowerHost(Host host, long duration) {
+    private double getAverageHostPower(Host host, long duration) {
         double answer = 0;
         double count = 0;
         /**
@@ -139,7 +141,6 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
                 answer = answer + power.getPower();
                 count = count + 1;
             }
-            TimePeriod period = new TimePeriod(data.get(0).getTime() / 1000l, data.get(data.size() - 1).getTime() / 1000l);
         return answer / count;
     }
 
@@ -152,11 +153,10 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
      * This predicts the total amount of energy used by a host.
      *
      * @param host The host to get the energy prediction for
-     * @param usageCPU The amount of CPU load placed on the host
      * @param timePeriod The time period the prediction is for
      * @return The predicted energy usage.
      */
-    private EnergyUsagePrediction predictTotalEnergy(Host host, double usageCPU, TimePeriod timePeriod) {
+    private EnergyUsagePrediction predictTotalEnergy(Host host, TimePeriod timePeriod) {
         EnergyUsagePrediction answer = new EnergyUsagePrediction(host);
         double powerUsed = predictPowerUsed(host);
         answer.setAvgPowerUsed(powerUsed);

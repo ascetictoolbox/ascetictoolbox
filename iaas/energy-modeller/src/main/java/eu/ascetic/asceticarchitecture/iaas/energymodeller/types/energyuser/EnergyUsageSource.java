@@ -18,7 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 /**
  * The base class for an entity in the system which energy usage is attributed
  * to.
- * @author Richard
+ * @author Richard Kavanagh
  */
 public abstract class EnergyUsageSource {
     

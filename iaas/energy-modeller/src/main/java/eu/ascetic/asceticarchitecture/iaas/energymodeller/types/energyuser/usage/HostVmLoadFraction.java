@@ -27,7 +27,9 @@ import java.util.logging.Logger;
 
 /**
  * This is a record of what fraction of the load on a host was caused by a given
- * VM.
+ * VM. There is the opportunity to add and additional amount, that is power 
+ * attributed from other sources such as cooling, DFS or others factors in the
+ * data center.
  *
  * @author Richard Kavanagh
  */
@@ -36,6 +38,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     private final Host host;
     private final long time;
     private HashMap<VmDeployed, Double> fraction = new HashMap<>();
+    private double hostPowerOffset = 0; 
 
     /**
      * This creates a new host vm load fraction record.
@@ -220,6 +223,26 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     @Override
     public int compareTo(HostVmLoadFraction loadFraction) {
         return Long.valueOf(this.time).compareTo(loadFraction.getTime());
+    }
+    
+    /**
+     * This sets and additional offset based upon cooling and other sources, 
+     * power consumption that is attributed to the data center as a whole.
+     * i.e. Distributed file system nodes, cooling etc.
+     * @return The offset which to apply to this host power measurement
+     */
+    public double getHostPowerOffset() {
+        return hostPowerOffset;
+    }    
+    
+    /**
+     * This sets and additional offset based upon cooling and other sources, 
+     * power consumption that is attributed to the data center as a whole.
+     * i.e. Distributed file system nodes, cooling etc.
+     * @param offset The offset
+     */
+    public void setHostPowerOffset(double offset) {
+        hostPowerOffset = offset;
     }
 
 }

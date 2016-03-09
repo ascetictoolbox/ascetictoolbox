@@ -89,6 +89,7 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
                 vm.setAllocatedTo(hostMeasurement.getHost());
             }
             double powerVal = division.getEnergyUsage(formatDouble(hostMeasurement.getPower(true), 1), vm);
+            powerVal = powerVal + vmLoadFraction.getHostPowerOffset();
             if (!Double.isNaN(powerVal) && powerVal > 0) {
                 store.add(vm.getName());
                 store.append("power");
