@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Richard Kavanagh
  */
-public class BootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimator {
+public class BootAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloadEstimator {
 
     private int bootHistoryBucketSize = 500;
 
@@ -37,7 +37,7 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimat
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with disk refs
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasDiskReferences(virtualMachines)) {
+        if (hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getDiskImages().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
@@ -67,7 +67,7 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimat
                 List<VmLoadHistoryBootRecord> bootRecord = database.getAverageCPUUtilisationBootTraceForDisk(
                         disk.getDiskImage(),
                         bootHistoryBucketSize);
-                answer = answer + AbstractWorkloadEstimator.getBootHistoryValue(bootRecord,
+                answer = answer + getBootHistoryValue(bootRecord,
                         bootHistoryBucketSize,
                         (VmDeployed) vm).getLoad();
             } else {
@@ -94,11 +94,6 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimat
      */
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
-    }
-
-    @Override
-    public boolean requiresVMInformation() {
-        return true;
-    }    
+    }   
     
 }

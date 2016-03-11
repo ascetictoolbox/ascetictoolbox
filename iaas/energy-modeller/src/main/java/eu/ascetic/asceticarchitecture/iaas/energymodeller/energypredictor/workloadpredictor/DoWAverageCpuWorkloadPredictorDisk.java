@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Richard Kavanagh
  */
-public class DoWAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimator {
+public class DoWAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloadEstimator {
 
     private int bootHistoryBucketSize = 500;
 
@@ -40,7 +40,7 @@ public class DoWAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimato
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with disk refs
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasDiskReferences(virtualMachines)) {
+        if (hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getDiskImages().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
@@ -116,11 +116,6 @@ public class DoWAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimato
      */
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
-    }
-    
-    @Override
-    public boolean requiresVMInformation() {
-        return true;
-    }    
+    }  
 
 }

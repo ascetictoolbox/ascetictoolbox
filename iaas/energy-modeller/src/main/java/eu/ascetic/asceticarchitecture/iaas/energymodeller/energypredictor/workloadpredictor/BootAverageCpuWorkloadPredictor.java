@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author Richard Kavanagh
  */
-public class BootAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
+public class BootAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEstimator {
 
     private int bootHistoryBucketSize = 500;
     
@@ -36,7 +36,7 @@ public class BootAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with app tags
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasAppTags(virtualMachines)) {
+        if (hasAppTags(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getApplicationTags().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
@@ -66,7 +66,7 @@ public class BootAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
                 List<VmLoadHistoryBootRecord> bootRecord = database.getAverageCPUUtilisationBootTraceForTag(
                         tag,
                         bootHistoryBucketSize);
-                answer = answer + AbstractWorkloadEstimator.getBootHistoryValue(bootRecord,
+                answer = answer + getBootHistoryValue(bootRecord,
                         bootHistoryBucketSize,
                         (VmDeployed) vm).getLoad();
             } else {
@@ -91,11 +91,6 @@ public class BootAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
      */
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
-    }    
-
-    @Override
-    public boolean requiresVMInformation() {
-        return true;
-    }    
+    }
     
 }

@@ -68,6 +68,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/historic/HistoricLoadBasedDivision.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/historic/LoadBasedDivision.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/vmenergyshare/historic/LoadBasedDivisionWithIdleEnergy.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/workloadpredictor/AbstractVMHistoryWorkloadEstimator.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/workloadpredictor/AbstractWorkloadEstimator.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/workloadpredictor/BasicAverageCpuWorkloadPredictor.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/energypredictor/workloadpredictor/BasicAverageCpuWorkloadPredictorDisk.java -text

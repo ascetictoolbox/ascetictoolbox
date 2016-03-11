@@ -25,13 +25,13 @@ import java.util.Collection;
  *
  * @author Richard Kavanagh
  */
-public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
+public class BasicAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEstimator {
 
     @Override
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with app tags
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasAppTags(virtualMachines)) {
+        if (hasAppTags(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getApplicationTags().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
@@ -60,11 +60,6 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator 
             answer = answer + database.getAverageCPUUtilisationTag(tag);
         }
         return answer / vm.getApplicationTags().size();
-    }
-
-    @Override
-    public boolean requiresVMInformation() {
-        return true;
     }
 
 }

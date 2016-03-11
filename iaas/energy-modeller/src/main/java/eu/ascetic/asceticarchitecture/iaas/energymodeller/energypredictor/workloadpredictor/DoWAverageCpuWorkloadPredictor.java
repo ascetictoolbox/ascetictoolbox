@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author Richard Kavanagh
  */
-public class DoWAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
+public class DoWAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEstimator {
 
     private int bootHistoryBucketSize = 500;
 
@@ -39,7 +39,7 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with app tags
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasAppTags(virtualMachines)) {
+        if (hasAppTags(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getApplicationTags().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
@@ -117,9 +117,4 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractWorkloadEstimator {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
     
-    @Override
-    public boolean requiresVMInformation() {
-        return true;
-    }    
-
 }

@@ -26,13 +26,13 @@ import java.util.Collection;
  *
  * @author Richard Kavanagh
  */
-public class BasicAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstimator {
+public class BasicAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloadEstimator {
 
     @Override
     public double getCpuUtilisation(Host host, Collection<VM> virtualMachines) {
         double vmCount = 0; //vms with disk refs
         double sumCpuUtilisation = 0;
-        if (AbstractWorkloadEstimator.hasDiskReferences(virtualMachines)) {
+        if (hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getDiskImages().isEmpty()) {
                     sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
@@ -61,11 +61,6 @@ public class BasicAverageCpuWorkloadPredictorDisk extends AbstractWorkloadEstima
             answer = answer + database.getAverageCPUUtilisationDisk(disk.getDiskImage());
         }
         return answer / vm.getDiskImages().size();
-    }
-    
-    @Override
-    public boolean requiresVMInformation() {
-        return true;
     }    
 
 }
