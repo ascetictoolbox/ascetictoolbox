@@ -55,6 +55,10 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
         }
     }
 
+    /**
+     * This reads from file the mappings between app tags/disk reference and
+     * the predictor to use for the app tag/disk reference.
+     */
     private void populatePredictorRules() {
         ResultsStore configFile = new ResultsStore(CONFIG_FILE);
         for (int row = 0; row < configFile.size(); row++) {
@@ -76,12 +80,16 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
         }
     }
 
+    /**
+     * This writes the default configuration file to disk.
+     */
     private void writeDefaultsToFile() {
         ResultsStore store = new ResultsStore(CONFIG_FILE);
         store.add("PropertyValue");
         store.append("IsRefToBaseImage");
         store.append("IsRefToVMAppUsed");
         store.add("FilterToUse");
+        store.saveMemoryConservative();
     }
 
     @Override
@@ -167,13 +175,25 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
         return true;
     }
 
+    /**
+     * This class represents the mappings between 
+     * VM properties (app tags and VM disk references) and the predictor to use.
+     */
     private class PredictorUsageRule {
 
-        private String propertyToMatch = "";
-        private boolean isAppTag = false;
-        private boolean isDisk = false;
+        private String propertyToMatch;
+        private boolean isAppTag;
+        private boolean isDisk;
         private String predictor;
 
+        /**
+         * This creates a new predictor usage rule
+         * @param propertyToMatch The String representation of the app tag or 
+         * disk reference
+         * @param isAppTag If the property is an app tag or not
+         * @param isDisk If the property is an disk reference or not
+         * @param predictor The name of the predictor to use
+         */
         public PredictorUsageRule(String propertyToMatch, boolean isAppTag, boolean isDisk, String predictor) {
             this.propertyToMatch = propertyToMatch;
             this.isAppTag = isAppTag;
@@ -182,56 +202,64 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
         }
 
         /**
-         * @return the propertyToMatch
+         * This gets the name of the VM property to match
+         * @return The name of the VM property to match
          */
         public String getPropertyToMatch() {
             return propertyToMatch;
         }
 
         /**
-         * @param propertyToMatch the propertyToMatch to set
+         * This sets the name of the VM property to match
+         * @param propertyToMatch The name of the VM property to match
          */
         public void setPropertyToMatch(String propertyToMatch) {
             this.propertyToMatch = propertyToMatch;
         }
 
         /**
-         * @return the isAppTag
+         * This gets if the property is for a app tag or not
+         * @return If the property is for a app tag or not
          */
         public boolean isIsAppTag() {
             return isAppTag;
         }
 
         /**
-         * @param isAppTag the isAppTag to set
+         * This sets if the property is for a app tag or not
+         * @param isAppTag If the property is for a app tag or not
          */
         public void setIsAppTag(boolean isAppTag) {
             this.isAppTag = isAppTag;
         }
 
         /**
-         * @return the isDisk
+         * This gets if the property is for a disk reference or not
+         * @return If the property is for a disk reference or not
          */
         public boolean isIsDisk() {
             return isDisk;
         }
 
         /**
-         * @param isDisk the isDisk to set
+         * This sets if the property is for a disk reference or not
+         * @param isDisk If the property is for a disk reference or not
          */
         public void setIsDisk(boolean isDisk) {
             this.isDisk = isDisk;
         }
 
         /**
-         * @return the predictor
+         * The gets the name of the predictor to use
+         * @return the predictor The name of the predictor to use
          */
         public String getPredictor() {
             return predictor;
         }
 
         /**
-         * @param predictor the predictor to set
+         * This sets the name of the predictor to use
+         * @param predictor The name of the predictor to set
          */
         public void setPredictor(String predictor) {
             this.predictor = predictor;
