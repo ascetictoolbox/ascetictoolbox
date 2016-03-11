@@ -62,4 +62,9 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadE
         return answer / vm.getApplicationTags().size();
     }
 
+    @Override
+    public String getName() {
+        return "Average Workload App Tag Predictor";
+    }
+
 }

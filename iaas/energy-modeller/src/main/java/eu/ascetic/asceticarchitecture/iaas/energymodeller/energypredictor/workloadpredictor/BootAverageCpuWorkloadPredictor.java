@@ -93,4 +93,9 @@ public class BootAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEs
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
     
+    @Override
+    public String getName() {
+        return "Boot Workload App Tag Predictor";
+    }    
+    
 }

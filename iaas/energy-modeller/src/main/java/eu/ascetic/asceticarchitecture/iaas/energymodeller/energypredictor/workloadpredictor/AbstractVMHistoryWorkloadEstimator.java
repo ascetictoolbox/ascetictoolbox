@@ -40,13 +40,12 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all application tags that a VM has.
      */
-    public abstract double getAverageCpuUtilisastion(VM vm);   
-    
+    public abstract double getAverageCpuUtilisastion(VM vm);
+
     @Override
     public boolean requiresVMInformation() {
         return true;
-    }        
-    
+    }
 
     /**
      * This indicates if all VMs in the collection have application tags.
@@ -64,13 +63,14 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
         }
         return true;
     }
-    
+
     /**
      * This indicates if all VMs in the collection have application tags.
      *
      * @param virtualMachines The virtual machines to check to see if they have
      * application tags.
-     * @param validList The list of app tags that should belong to this set of VMs
+     * @param validList The list of app tags that should belong to this set of
+     * VMs
      * @return If the VMs all have application tags or not. True only if all VMs
      * have tags or the collection is empty.
      */
@@ -81,7 +81,7 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
             }
         }
         return true;
-    }    
+    }
 
     /**
      * This gets a list of all application tags that a collection of VMs has
@@ -120,7 +120,8 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      *
      * @param virtualMachines The virtual machines to check to see if they have
      * disk references.
-     * @param validList The list of disk references that should belong to this set of VMs
+     * @param validList The list of disk references that should belong to this
+     * set of VMs
      * @return If the VMs all have disk references or not. True only if all VMs
      * have disk references or the collection is empty.
      */
@@ -136,8 +137,8 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
             }
         }
         return true;
-    }    
-    
+    }
+
     /**
      * This gets a list of all disk references that a collection of VMs has
      *
@@ -178,8 +179,8 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
         long created = TimeUnit.MILLISECONDS.toSeconds(vm.getCreated().getTimeInMillis());
         long now = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
         return bootHistory.get(getIndexPosition(bucketSize, (int) (created - now)));
-    }    
-    
+    }
+
     /**
      * This gets the boot history position of a given record.
      *
@@ -201,6 +202,12 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      */
     public static VmLoadHistoryBootRecord getBootHistoryValue(List<VmLoadHistoryBootRecord> bootHistory, int position) {
         return bootHistory.get(position);
-    }    
+    }
+    
+    /**
+     * This gets the user defined name for this workload estimator
+     * @return The name of this predictor
+     */
+    public abstract String getName();
     
 }

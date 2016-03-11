@@ -117,4 +117,9 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEst
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
     
+    @Override
+    public String getName() {
+        return "Day of Week Workload App Tag Predictor";
+    }    
+    
 }

@@ -116,6 +116,11 @@ public class DoWAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloa
      */
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
-    }  
+    }
+    
+    @Override
+    public String getName() {
+        return "Day of Week Workload Disk Predictor";
+    }     
 
 }

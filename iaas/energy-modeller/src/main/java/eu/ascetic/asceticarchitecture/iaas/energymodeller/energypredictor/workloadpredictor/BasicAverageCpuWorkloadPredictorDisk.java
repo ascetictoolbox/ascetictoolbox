@@ -63,4 +63,9 @@ public class BasicAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkl
         return answer / vm.getDiskImages().size();
     }    
 
+    @Override
+    public String getName() {
+        return "Average Workload Disk Predictor";
+    }
+    
 }

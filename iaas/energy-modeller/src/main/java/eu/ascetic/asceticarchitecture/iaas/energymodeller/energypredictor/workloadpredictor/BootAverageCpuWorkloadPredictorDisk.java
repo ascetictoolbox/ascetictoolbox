@@ -94,6 +94,11 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorklo
      */
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
-    }   
+    }
+    
+    @Override
+    public String getName() {
+        return "Boot Workload Disk Predictor";
+    }    
     
 }
