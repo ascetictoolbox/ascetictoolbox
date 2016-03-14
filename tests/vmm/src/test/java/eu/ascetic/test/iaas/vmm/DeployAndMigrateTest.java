@@ -1,5 +1,6 @@
 package eu.ascetic.test.iaas.vmm;
 
+import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
@@ -15,34 +16,10 @@ import junit.framework.TestCase;
  * @author Raimon Bosch (http://github.com/raimonbosch), 
  *         Mario Macías (http://github.com/mariomac)
  */
-public class DeployAndMigrateTest extends TestCase{
+public class DeployAndMigrateTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("DeployAndMigrateTest");
-    
-    VmManagerClient vmm;
-    String vmId = null;
-    
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        vmm = new VmManagerClient(VMMConf.vmManagerURL);
-    }
-    
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-        if(vmId != null){
-            //Destroy
-            logger.info("Destroying VM " + vmId);
-            vmm.destroyVm(vmId);
 
-            VmDeployed vmDestroyed = vmm.getVm(vmId);
-            assertNull(vmDestroyed);
-            
-            vmId = null;
-        }
-    }
-
-    public void testDeployMigrateAndDestroy() throws Exception {
+    public void testDeployAndMigrate() throws Exception {
         int cpus = 1;
         int ramMb = 256;
         int swapMb = 16;
@@ -85,7 +62,7 @@ public class DeployAndMigrateTest extends TestCase{
         vmm.migrate(deployedVms.get(0), computeNode02);
         
         VmDeployed vmMigrated = null;
-        while(vmm.getVm(vmId).getState().equals("MIGRATING")) {
+        while(vmm.getVm(vmId).getState().equals("MIGRATING") && loopIsAlive()) {
             logger.info("Waiting migration to finish...");
             Thread.sleep(2500);
         }

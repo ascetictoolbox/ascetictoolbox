@@ -6,6 +6,7 @@ import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import eu.ascetic.test.conf.VMMConf;
+import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,34 +16,10 @@ import junit.framework.TestCase;
 /**
  * @author Raimon Bosch (http://github.com/raimonbosch)
  */
-public class VerticalScalabilityTest extends TestCase{
+public class VerticalScalabilityTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("VerticalScalabilityTest");
-    
-    VmManagerClient vmm;
-    String vmId = null;
-    
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        vmm = new VmManagerClient(VMMConf.vmManagerURL);
-    }
-    
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
-        if(vmId != null){
-            //Destroy
-            logger.info("Destroying VM " + vmId);
-            vmm.destroyVm(vmId);
 
-            VmDeployed vmDestroyed = vmm.getVm(vmId);
-            assertNull(vmDestroyed);
-            
-            vmId = null;
-        }
-    }
-
-    public void testDeployScaleAndDestroy() throws Exception {
+    public void testDeployAndScale() throws Exception {
         VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
         VmRequirements vmScaleRequirements = new VmRequirements( 2, 512, 2, 32);
         
@@ -80,14 +57,15 @@ public class VerticalScalabilityTest extends TestCase{
         vmm.resize(vmId, vmScaleRequirements);
         
         VmDeployed vmScalated = null;
-        while(vmm.getVm(vmId).getState().equals("RESIZE")) {
+        while(vmm.getVm(vmId).getState().equals("RESIZE") && loopIsAlive()) {
             logger.info("Waiting migration (resize) to finish...");
             Thread.sleep(2500);
         }
         
+        //Scale confirmation
         vmm.confirmResize(vmId);
         
-        while(vmm.getVm(vmId).getState().equals("VERIFY_RESIZE")) {
+        while(vmm.getVm(vmId).getState().equals("VERIFY_RESIZE") && loopIsAlive()) {
             logger.info("Waiting confirmResize to finish...");
             Thread.sleep(2500);
         }
