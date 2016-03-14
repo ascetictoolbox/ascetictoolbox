@@ -801,7 +801,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
                 + "FROM vm_measurement as mesu, "
                 + "vm_disk_arr AS arr, "
                 + "vm_disk AS disk "
-                + "WHERE disk.vm_disk_id = arr.disk_id AND "
+                + "WHERE disk.vm_disk_id = arr.vm_disk_id AND "
                 + "arr.vm_id = mesu.vm_id AND "
                 + "disk.disk_name = ? "
                 + "GROUP BY Day_of_Week, Hour_in_Day", diskRef);
