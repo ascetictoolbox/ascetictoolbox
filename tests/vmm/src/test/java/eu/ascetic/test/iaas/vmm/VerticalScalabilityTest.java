@@ -4,17 +4,30 @@ import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
-import es.bsc.vmmclient.vmm.VmManagerClient;
 import eu.ascetic.test.conf.VMMConf;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import junit.framework.TestCase;
 
 /**
- * @author Raimon Bosch (http://github.com/raimonbosch)
+ * 
+ * Copyright (C) 2013-2014  Barcelona Supercomputing Center 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
 public class VerticalScalabilityTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("VerticalScalabilityTest");
