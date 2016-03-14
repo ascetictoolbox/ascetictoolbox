@@ -19,11 +19,27 @@ public class DeployAndMigrateTest extends TestCase{
     private static final Logger logger = Logger.getLogger("DeployAndMigrateTest");
     
     VmManagerClient vmm;
+    String vmId = null;
     
     @Override
     public void setUp() throws Exception {
         super.setUp();
         vmm = new VmManagerClient(VMMConf.vmManagerURL);
+    }
+    
+    @Override
+    public void tearDown() throws Exception {
+        super.tearDown();
+        if(vmId != null){
+            //Destroy
+            logger.info("Destroying VM " + vmId);
+            vmm.destroyVm(vmId);
+
+            VmDeployed vmDestroyed = vmm.getVm(vmId);
+            assertNull(vmDestroyed);
+            
+            vmId = null;
+        }
     }
 
     public void testDeployMigrateAndDestroy() throws Exception {
@@ -54,7 +70,7 @@ public class DeployAndMigrateTest extends TestCase{
                 null, "dmt01", "", "sla", computeNode01);
 		List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
 		VmDeployed vmd = vmm.getVm(deployedVms.get(0));
-        String vmId = vmd.getId();
+        vmId = vmd.getId();
         
         assertEquals("ACTIVE", vmd.getState());
         assertEquals(computeNode01, vmd.getHostName());
@@ -81,12 +97,5 @@ public class DeployAndMigrateTest extends TestCase{
         assertEquals(diskGb, vmMigrated.getDiskGb());
         assertEquals(ramMb, vmMigrated.getRamMb());
         assertEquals(swapMb, vmMigrated.getSwapMb());
-        
-        //Destroy
-        logger.info("Destroying VM " + vmId);
-        vmm.destroyVm(vmId);
-        
-        VmDeployed vmDestroyed = vmm.getVm(vmId);
-        assertNull(vmDestroyed);
     }
 }

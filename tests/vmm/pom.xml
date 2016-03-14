@@ -302,6 +302,12 @@
                         <artifactId>rest-client</artifactId>
                         <version>1.0-SNAPSHOT</version>
                 </dependency>
+                
+                <dependency>
+                    <groupId>es.bsc.demiurge</groupId>
+                    <artifactId>core</artifactId>
+                    <version>0.0.1-SNAPSHOT</version>
+                </dependency>
 
 	</dependencies>
 </project>
