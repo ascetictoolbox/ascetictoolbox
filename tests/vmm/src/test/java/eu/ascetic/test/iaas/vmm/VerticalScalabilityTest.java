@@ -45,12 +45,9 @@ public class VerticalScalabilityTest extends TestCase{
     public void testDeployScaleAndDestroy() throws Exception {
         VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
         VmRequirements vmScaleRequirements = new VmRequirements( 2, 512, 2, 32);
-        //VmRequirements vmDeployRequirements = new VmRequirements( 1, 100, 1, 0);
-        //VmRequirements vmScaleRequirements = new VmRequirements( 1, 200, 2, 0);
         
         List<Node> nodes = new ArrayList<Node>();
         for (Node node : vmm.getNodes()) {
-            nodes.add(node);
 			if( node.matchesRequirements(vmDeployRequirements) &&
                 node.matchesRequirements(vmScaleRequirements)){
                 nodes.add(node);
