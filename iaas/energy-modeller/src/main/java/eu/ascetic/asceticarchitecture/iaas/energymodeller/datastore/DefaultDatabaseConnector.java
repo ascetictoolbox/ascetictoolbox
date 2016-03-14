@@ -776,8 +776,8 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<VmLoadHistoryWeekRecord> getAverageCPUUtilisationWeekTraceForTag(String tagName) {
         return getAverageCPUUtilisationWeekTrace("SELECT avg(cpu_load), "
-                + "Weekday(FROM_UNIXTIME(UNIX_TIMESTAMP(clock))) as Day_of_Week, "
-                + "Hour(FROM_UNIXTIME(UNIX_TIMESTAMP(clock))) as Hour_in_Day "
+                + "Weekday(FROM_UNIXTIME(clock)) as Day_of_Week, "
+                + "Hour(FROM_UNIXTIME(clock)) as Hour_in_Day "
                 + "FROM vm_measurement as mesu, "
                 + "vm_app_tag_arr AS arr, "
                 + "vm_app_tag AS tag "
@@ -796,8 +796,8 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<VmLoadHistoryWeekRecord> getAverageCPUUtilisationWeekTraceForDisk(String diskRef) {
         return getAverageCPUUtilisationWeekTrace("SELECT avg(cpu_load), "
-                + "Weekday(FROM_UNIXTIME(UNIX_TIMESTAMP(clock))) as Day_of_Week, "
-                + "Hour(FROM_UNIXTIME(UNIX_TIMESTAMP(clock))) as Hour_in_Day "
+                + "Weekday(FROM_UNIXTIME(clock)) as Day_of_Week, "
+                + "Hour(FROM_UNIXTIME(clock)) as Hour_in_Day "
                 + "FROM vm_measurement as mesu, "
                 + "vm_disk_arr AS arr, "
                 + "vm_disk AS disk "
