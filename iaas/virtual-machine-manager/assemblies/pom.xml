@@ -13,10 +13,10 @@
     <packaging>pom</packaging>
     <modules>
         <module>ascetic</module>
-        <module>renewit</module>
-        <module>fake</module>
-		<!--module>test-local</module-->
-	</modules>
+        <!--<module>renewit</module>-->
+        <!--<module>fake</module>-->
+	<!--module>test-local</module-->
+    </modules>
 
 
 </project>
