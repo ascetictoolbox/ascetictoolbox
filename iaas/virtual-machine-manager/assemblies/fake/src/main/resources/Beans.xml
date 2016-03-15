@@ -1,0 +1,63 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:util="http://www.springframework.org/schema/util" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<!-- VERY IMPORTANT! If you are buinding your project with Maven Shade plugin, you need to add the
+	next lines to the shade configuration in your pom.xml (section <transformers>):
+
+	<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+		<resource>META-INF/spring.handlers</resource>
+	</transformer>
+	<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+		<resource>META-INF/spring.schemas</resource>
+	</transformer>
+-->
+
+    <bean id="monitoring" class="es.bsc.demiurge.fake.FakeMonitoring"/>
+    <bean id="cloudMiddleware" class="es.bsc.demiurge.fake.FakeCloudMiddleware">
+		<constructor-arg>
+			<util:list value-type="es.bsc.demiurge.core.monitoring.hosts.Host">
+				<bean class="es.bsc.demiurge.fake.HostFake">
+					<constructor-arg index="0" value="fakehost_1"/>
+					<constructor-arg index="1" value="8"/>
+					<constructor-arg index="2" value="16000"/>
+					<constructor-arg index="3" value="4000000"/>
+					<constructor-arg index="4" value="0"/>
+					<constructor-arg index="5" value="0"/>
+					<constructor-arg index="6" value="0"/>
+				</bean>
+				<bean class="es.bsc.demiurge.fake.HostFake">
+					<constructor-arg index="0" value="fakehost_2"/>
+					<constructor-arg index="1" value="8"/>
+					<constructor-arg index="2" value="16000"/>
+					<constructor-arg index="3" value="4000000"/>
+					<constructor-arg index="4" value="0"/>
+					<constructor-arg index="5" value="0"/>
+					<constructor-arg index="6" value="0"/>
+				</bean>
+			</util:list>
+		</constructor-arg>
+	</bean>
+
+    <bean id="vmManager" class="es.bsc.demiurge.core.manager.GenericVmManager"/>
+
+	<util:set id="estimators" value-type="es.bsc.demiurge.core.drivers.Estimator">
+	</util:set>
+
+	<!-- Values must be subclasses of optaplanners' SimpleScoreCalculator -->
+	<util:map id="placementPolicies" key-type="java.lang.String" value-type="java.lang.Class">
+		<entry key="consolidation" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorConsolidation"/>
+		<entry key="distribution" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorDistribution"/>
+		<entry key="random" value-type="java.lang.Class" value="es.bsc.demiurge.core.clopla.placement.scorecalculators.ScoreCalculatorRandom"/>
+	</util:map>
+
+	<util:list id="vmmListeners" value-type="es.bsc.demiurge.core.drivers.VmmListener">
+		<!-- TODO: make VmmConfig to not throw exception when this list does not exist -->
+	</util:list>
+
+	<util:list id="vmmGlobalListeners" value-type="es.bsc.demiurge.core.VmmGlobalListener">
+		<!-- TODO: make VmmConfig to not throw exception when this list does not exist -->
+	</util:list>
+</beans>

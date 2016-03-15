@@ -1,0 +1,8 @@
+<h1>Demiurge login</h1>
+
+<form name="f" action="/gui/j_spring_security_check"
+	  method="POST">
+	<div>Username: <input name="username"/></div>
+	<div>Password: <input name="password" type="password"/></div>
+	<button type="submit">Login!</button>
+</form>

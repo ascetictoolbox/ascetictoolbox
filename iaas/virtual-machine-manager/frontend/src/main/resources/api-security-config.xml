@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:security="http://www.springframework.org/schema/security"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
+
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+        		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
+        		">
+
+	<security:http use-expressions="true">
+		<security:intercept-url pattern="/api/**" access="hasRole('ROLE_USER')"/>
+		<security:http-basic />
+	</security:http>
+
+	<!-- Connect the custom authentication success handler -->
+	<bean id="mySuccessHandler"
+				class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler" />
+	<!-- Using default failure handler -->
+	<bean id="myFailureHandler"
+				class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler" />
+
+	<!-- Authentication manager -->
+	<bean id="authProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService" ref="customUserService"/>
+		<property name="passwordEncoder">
+			<bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+		</property>
+	</bean>
+
+	<bean id="customUserService" class="es.bsc.demiurge.ws.auth.CustomUserDetailsService">
+	</bean>
+
+	<security:authentication-manager>
+		<security:authentication-provider ref="authProvider"/>
+	</security:authentication-manager>
+</beans>
+
+
