@@ -18,6 +18,7 @@
 
 package es.bsc.vmmclient.vmm;
 
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.models.*;
 
 import java.util.List;
@@ -53,4 +54,8 @@ public interface VmManager {
 	List<VmCost> getCosts(List<String> vmIds);
 
 	void migrate(String vmId, String destinationHostName);
+
+	void resize(String vmId, VmRequirements vm);
+
+	void confirmResize(String vmId);
 }

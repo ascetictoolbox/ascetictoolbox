@@ -36,6 +36,7 @@ import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.core.db.VmManagerDbFactory;
 import es.bsc.demiurge.core.models.estimates.ListVmEstimates;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
 import es.bsc.demiurge.core.selfadaptation.SelfAdaptationManager;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
@@ -389,7 +390,7 @@ public class GenericVmManager implements VmManager {
     public void pressHostPowerButton(String hostname) {
         hostsManager.pressHostPowerButton(hostname);
     }
-
+    
     
     //================================================================================
     // VM price and energy estimates
@@ -405,14 +406,12 @@ public class GenericVmManager implements VmManager {
     public ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) throws CloudMiddlewareException {
         return estimatesManager.getVmEstimates(vmsToBeEstimated);
     }
-
-
-
+    
+    
     //================================================================================
     // Private Methods
     //================================================================================
     
-
     @Override
     public void doInitActions() {
         this.cloudMiddleware = conf.getCloudMiddleware();
@@ -423,17 +422,17 @@ public class GenericVmManager implements VmManager {
         imageManager = new ImageManager(cloudMiddleware);
 
         // Instantiates the hosts according to the monitoring software selected.
-		HostFactory hf = Config.INSTANCE.getHostFactory();
+        HostFactory hf = Config.INSTANCE.getHostFactory();
 
-		List<Host> hosts = new ArrayList<>();
+        List<Host> hosts = new ArrayList<>();
 
-		for(String hostname : Config.INSTANCE.hosts) {
-			hosts.add(hf.getHost(hostname));
-		}
+        for(String hostname : Config.INSTANCE.hosts) {
+                hosts.add(hf.getHost(hostname));
+        }
 
-		hostsManager = new HostsManager(hosts);
+        hostsManager = new HostsManager(hosts);
 
-		// initializes other subcomponents
+        // initializes other subcomponents
         estimatesManager = new EstimatesManager(this, conf.getEstimators());
 
         vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, estimatesManager, conf.getVmmListeners());
@@ -448,98 +447,114 @@ public class GenericVmManager implements VmManager {
             startPeriodicSelfAdaptationThread();
         }
 
-		for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
-			l.onVmmStart();
-		}
+        for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
+                l.onVmmStart();
+        }
 
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				log.debug("Notifying vmm global listeners on shutdown hook");
-				for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
-					l.onVmmStop();
-				}
-			}
-		}));
-	}
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                        log.debug("Notifying vmm global listeners on shutdown hook");
+                        for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
+                                l.onVmmStop();
+                        }
+                }
+        }));
+    }
 
-	@Override
-	public EstimatesManager getEstimatesManager() {
-		return estimatesManager;
-	}
+    @Override
+    public EstimatesManager getEstimatesManager() {
+        return estimatesManager;
+    }
 
     private void startPeriodicSelfAdaptationThread() {
         Thread thread = new Thread(
-                new PeriodicSelfAdaptationRunnable(selfAdaptationManager),
-                "periodicSelfAdaptationThread");
+            new PeriodicSelfAdaptationRunnable(selfAdaptationManager),
+            "periodicSelfAdaptationThread");
         thread.start();
     }
 
-	@Override
-	public HostsManager getHostsManager() {
-		return hostsManager;
-	}
+    @Override
+    public HostsManager getHostsManager() {
+        return hostsManager;
+    }
 
-	@Override
-	public VmManagerDb getDB() {
-		return db;
-	}
+    @Override
+    public VmManagerDb getDB() {
+        return db;
+    }
 
-	@Override
-	public VmsManager getVmsManager() {
-		return vmsManager;
-	}
+    @Override
+    public VmsManager getVmsManager() {
+        return vmsManager;
+    }
 
-	@Override
-	public void executeOnDemandSelfAdaptation() throws CloudMiddlewareException {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					log.debug("Starting new Thread for self-adaptaion");
-					selfAdaptationManager.applyOnDemandSelfAdaptation();
-					log.debug("Self-adaptation thread ended");
+    @Override
+    public void executeOnDemandSelfAdaptation() throws CloudMiddlewareException {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    log.debug("Starting new Thread for self-adaptaion");
+                    selfAdaptationManager.applyOnDemandSelfAdaptation();
+                    log.debug("Self-adaptation thread ended");
 
-				} catch (CloudMiddlewareException e) {
-					log.error(e.getMessage(),e);
-				}
-			}
-		},"onDemandSelfAdaptationThread").start();
+                } catch (CloudMiddlewareException e) {
+                    log.error(e.getMessage(),e);
+                }
+            }
+        },"onDemandSelfAdaptationThread").start();
+    }
 
-	}
+    @Override
+    public String getVmsEstimates(List<String> vmIds) throws Exception {
+        StringBuilder sb = new StringBuilder("[");
+        boolean first = true;
+        for(String vmid : vmIds) {
+            VmDeployed vm = vmsManager.getVm(vmid);
+            if(vm == null) {
+                throw new Exception("VM '"+vmid+"' does not exist");
+            }
+            if(first) {
+                first = false;
+            } else {
+                sb.append(',');
+            }
+            sb.append("{\"vmId\":\"").append(vmid).append('\"');
+            for(Estimator estimator : estimatesManager) {
+                sb.append(",\"");
+                sb.append(estimator.getLabel());
+                sb.append("\":");
+                Map<String,Object> options = new HashMap<>();
+                options.put("undeployed",false); // hack for ascetic pricing modeler
+                sb.append(estimator.getCurrentEstimation(vmid,options));
+            }
+            sb.append('}');
+        }
+        String retJson = sb.append(']').toString();
 
-	@Override
-	public String getVmsEstimates(List<String> vmIds) throws Exception {
-		StringBuilder sb = new StringBuilder("[");
-		boolean first = true;
-		for(String vmid : vmIds) {
-			VmDeployed vm = vmsManager.getVm(vmid);
-			if(vm == null) {
-				throw new Exception("VM '"+vmid+"' does not exist");
-			}
-			if(first) {
-				first = false;
-			} else {
-				sb.append(',');
-			}
-			sb.append("{\"vmId\":\"").append(vmid).append('\"');
-			for(Estimator estimator : estimatesManager) {
-				sb.append(",\"");
-				sb.append(estimator.getLabel());
-				sb.append("\":");
-				Map<String,Object> options = new HashMap<>();
-				options.put("undeployed",false); // hack for ascetic pricing modeler
-				sb.append(estimator.getCurrentEstimation(vmid,options));
-			}
-			sb.append('}');
-		}
-		String retJson = sb.append(']').toString();
+        log.debug("getVMscost returned: " + retJson);
 
-		log.debug("getVMscost returned: " + retJson);
+        return retJson;
+    }
 
-		return retJson;
-	}
+    @Override
+    public Map<String, String> getFlavours() {
+        return vmsManager.getFlavours();
+    }
+    
+    @Override
+    public void resize(String vmId, String flavourId) {
+        vmsManager.resize(vmId, flavourId);
+    }
 
-
-	// test methods
+    @Override
+    public void resize(String vmId, VmRequirements vm) {
+        vmsManager.resize(vmId, vm);
+    }
+    
+    @Override
+    public void confirmResize(String vmId) {
+        vmsManager.confirmResize(vmId);
+    }
 }

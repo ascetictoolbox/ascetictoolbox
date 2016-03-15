@@ -40,5 +40,4 @@ public class VmPlacement {
     public String getHostname() {
         return hostname;
     }
-
 }

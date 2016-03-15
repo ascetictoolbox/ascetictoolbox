@@ -547,7 +547,7 @@ public class GenericVmManagerRestV1Test {
             RestAssured.given()
                 .contentType("application/json")
                 .body(getValidImageJson())
-            .post(testDeploymentBaseUrl + "images/").asString();
+            .post(testDeploymentBaseUrl + "static/images/").asString();
 
         // Return the ID of the image uploaded
         return gson.fromJson(jsonString, JsonObject.class).get("id").getAsString();

@@ -25,11 +25,14 @@ import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.jclouds.collect.IterableWithMarker;
+import org.jclouds.collect.PagedIterable;
 import org.jclouds.openstack.neutron.v2.NeutronApi;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.domain.*;
@@ -41,6 +44,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Class that performs requests to OpenStack using the JClouds library.
@@ -376,7 +380,7 @@ public class OpenStackJclouds implements CloudMiddleware {
      * Otherwise, the function creates a new flavor and returns its ID.
      *
      * @param vm the VM to be deployed
-     * @return the flavor ID that the VM should use
+     * @return 
      */
     private String getFlavorIdForDeployment(Vm vm) {
         // If there is a flavor with the same specs as the ones we need to use return it
@@ -389,6 +393,29 @@ public class OpenStackJclouds implements CloudMiddleware {
         String id, name;
         id = name = vm.getCpus() + "-" + vm.getDiskGb() + "-" + vm.getRamMb() + "-" + vm.getSwapMb();
         return createFlavor(id, name, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getSwapMb());
+    }
+    
+    /**
+     * Returns the ID of the flavor that a VM should use when it is deployed.
+     * It uses separated params for cpu, memory, disk and swap instead of a VM object.
+     * 
+     * @param cpus
+     * @param ramMb
+     * @param diskGb
+     * @param swapMb
+     * @return the flavor ID that the VM should use
+     */
+    private String getFlavorIdForDeployment(int cpus, int ramMb, int diskGb, int swapMb) {
+        // If there is a flavor with the same specs as the ones we need to use return it
+        String flavorId = getFlavorId(cpus, ramMb, diskGb, swapMb);
+        if (flavorId != null) {
+            return flavorId;
+        }
+
+        //If the flavor does not exist, create it and return the ID
+        String id, name;
+        id = name = cpus + "-" + diskGb + "-" + ramMb + "-" + swapMb;
+        return createFlavor(id, name, cpus, ramMb, diskGb, swapMb);
     }
 
     /**
@@ -647,4 +674,46 @@ public class OpenStackJclouds implements CloudMiddleware {
         return null;
     }
 
+	@Override
+	public Map<String, String> getFlavours() {
+		PagedIterable<Resource> flavours = openStackJcloudsApis.getFlavorApi().list();
+		Map<String,String> ids = new HashMap<>();
+		for(IterableWithMarker<Resource> resIterable : flavours) {
+			Iterator<Resource> iterator = resIterable.iterator();
+			while(iterator.hasNext()) {
+				Resource res = iterator.next();
+				ids.put(res.getId(), res.getName());
+			}
+		}
+		return ids;
+	}
+
+	@Override
+	public void resize(String vmId, String flavourId) {
+		System.out.println("OpenStackJclouds.resize");
+		System.out.println("vmId = " + vmId);
+		System.out.println("flavourId = " + flavourId);
+		logger.info("vmId = " + vmId + ", " + "flavourId = " + flavourId);
+
+		openStackJcloudsApis.getServerApi().resize(vmId, flavourId);
+	}
+    
+    @Override
+	public void resize(String vmId, VmRequirements vm) {
+		System.out.println("OpenStackJclouds.resize");
+		System.out.println("vmId = " + vmId);
+        System.out.println("vmRequirements = " + vm.toString());
+        
+        String flavourId = getFlavorIdForDeployment(vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getSwapMb());
+		System.out.println("flavourId = " + flavourId);
+		logger.info("vmId = " + vmId + ", " + "flavourId = " + flavourId);
+
+		openStackJcloudsApis.getServerApi().resize(vmId, flavourId);
+	}
+    
+    @Override
+	public void confirmResize(String vmId) {
+		System.out.println("vmId = " + vmId);
+		openStackJcloudsApis.getServerApi().confirmResize(vmId);
+	}
 }

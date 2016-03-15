@@ -18,6 +18,7 @@
 
 package es.bsc.demiurge.core.db;
 
+import es.bsc.demiurge.core.auth.UserDao;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
 
 import java.util.List;
@@ -132,5 +133,7 @@ public interface VmManagerDb {
      * @return the options
      */
     SelfAdaptationOptions getSelfAdaptationOptions();
+
+	UserDao getUserDao();
 
 }

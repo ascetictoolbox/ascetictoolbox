@@ -35,6 +35,7 @@ import es.bsc.demiurge.core.utils.TimeUtils;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddleware;
 import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.core.models.scheduling.VmAssignmentToHost;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -444,5 +445,20 @@ public class VmsManager {
 
 		return vmId;
 	}
+
+	public Map<String, String> getFlavours() {
+		return cloudMiddleware.getFlavours();
+	}
+
+	public void resize(String vmId, String flavourId) {
+		cloudMiddleware.resize(vmId, flavourId);
+	}
+
+	public void resize(String vmId, VmRequirements vm) {
+		cloudMiddleware.resize(vmId, vm);
+	}
     
+    public void confirmResize(String vmId) {
+		cloudMiddleware.confirmResize(vmId);
+	}
 }

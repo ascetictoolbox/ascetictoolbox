@@ -31,13 +31,18 @@
             <artifactId>guava</artifactId>
             <version>18.0</version>
         </dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>es.bsc.demiurge</groupId>
+            <artifactId>core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -53,7 +58,7 @@
     </build>
 
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>demiurge-parent</artifactId>
         <groupId>es.bsc.demiurge</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>

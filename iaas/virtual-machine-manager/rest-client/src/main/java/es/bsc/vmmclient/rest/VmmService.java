@@ -18,6 +18,7 @@
 
 package es.bsc.vmmclient.rest;
 
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.models.*;
 import retrofit.client.Response;
 import retrofit.http.*;
@@ -25,7 +26,7 @@ import retrofit.http.*;
 import java.util.List;
 
 public interface VmmService {
-
+    
     /*
     I should get rid of the classes whose only purpose is to wrap other classes.
     For example, VmsDeployedResponse contains just one field with a list of VmDeployed.
@@ -33,49 +34,55 @@ public interface VmmService {
     be improved, but that would break compatibility with clients that are sending requests directly to the
     REST service.
      */
-
+    
     @GET("/vms")
     VmsDeployedResponse getVms();
-
+    
     @POST("/vms")
     DeployVmsResponse deployVms(@Body VmsList vms);
-
+    
     @GET("/vms/{id}")
     VmDeployed getVm(@Path("id") String id);
-
+    
     @PUT("/vms/{id}")
     Response performActionOnVm(@Path("id") String id, @Body VmActionQuery action);
-
+    
     @DELETE("/vms/{id}")
     Response destroyVm(@Path("id") String id);
-
+    
     @GET("/vmsapp/{appId}")
     VmsDeployedResponse getAppVms(@Path("appId") String id);
-
+    
     @DELETE("/vmsapp/{appId}")
     Response destroyAppVms(@Path("appId") String id);
-
+    
     @GET("/images")
     ImagesUploadedResponse getImages();
-
+    
     @POST("/images")
     UploadImageResponse uploadImage(@Body ImageToUpload image);
-
+    
     @GET("/images/{id}")
     ImageUploaded getImage(@Path("id") String id);
-
+    
     @DELETE("/images/{id}")
     Response destroyImage(@Path("id") String id);
-
+    
     @GET("/nodes")
     NodesResponse getNodes();
-
+    
     @POST("/estimates")
     EstimatesResponse getEstimates(@Body VmsToBeEstimatedList vms);
-
-	@POST("/cost")
-	List<VmCost> getCosts(@Body List<String> vmIds);
-
-	@PUT("/migrate/{vmId}/{destinationHostName}")
-	Response migrate(@Path("vmId") String vmId, @Path("destinationHostName") String destinationHostName);
+    
+    @POST("/cost")
+    List<VmCost> getCosts(@Body List<String> vmIds);
+    
+    @PUT("/migrate/{vmId}/{destinationHostName}")
+    Response migrate(@Path("vmId") String vmId, @Path("destinationHostName") String destinationHostName);
+    
+    @POST("/vms/{vmId}/resize")
+    Response resize(@Path("vmId") String vmId, @Body VmRequirements vm);
+    
+    @POST("/vms/{vmId}/confirmResize")
+    Response confirmResize(@Path("vmId") String vmId);
 }

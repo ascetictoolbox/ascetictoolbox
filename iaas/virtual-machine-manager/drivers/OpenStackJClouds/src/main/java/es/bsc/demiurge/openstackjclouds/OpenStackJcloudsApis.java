@@ -27,6 +27,7 @@ public class OpenStackJcloudsApis {
     private final FloatingIPApi floatingIpApi;
 
     public OpenStackJcloudsApis(OpenStackCredentials openStackCredentials) {
+
         this.openStackCredentials = openStackCredentials;
         novaApi = ContextBuilder.newBuilder(new NovaApiMetadata())
                 .endpoint("http://" + openStackCredentials.getOpenStackIP() + ":" +
@@ -80,5 +81,11 @@ public class OpenStackJcloudsApis {
                         openStackCredentials.getKeyStoneUser(), openStackCredentials.getKeyStonePassword())
                 .buildApi(NeutronApi.class);
     }
+
+	public void resize(String vmId, String flavourId) {
+		String v3Endpoint = "http://" + openStackCredentials.getOpenStackIP() + ":" +
+				openStackCredentials.getKeyStonePort() + "/v2.0";
+
+	}
 
 }

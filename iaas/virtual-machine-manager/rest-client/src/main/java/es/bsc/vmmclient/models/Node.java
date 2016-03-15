@@ -19,9 +19,10 @@
 package es.bsc.vmmclient.models;
 
 import com.google.common.base.MoreObjects;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 
 public class Node {
-
+    
     private final String hostname;
     private final int totalCpus;
     private final double totalMemoryMb;
@@ -73,6 +74,20 @@ public class Node {
 
     public double getCurrentPower() {
         return currentPower;
+    }
+    
+    /**
+     * Checks if given a series of VM requirements, a node has enough resources to deploy them.
+     * 
+     * TODO: Add constraint about swap.
+     * 
+     * @param vm the requirements to fulfill
+     * @return 
+     */
+    public boolean matchesRequirements(VmRequirements vm) {
+        return getTotalCpus() - getAssignedCpus() >= vm.getCpus() && 
+               getTotalMemoryMb() - getAssignedMemoryMb() >= vm.getRamMb() && 
+               getTotalDiskGb() - getAssignedDiskGb() >= vm.getDiskGb();
     }
 
     @Override

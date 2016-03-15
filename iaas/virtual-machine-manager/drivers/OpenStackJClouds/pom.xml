@@ -16,12 +16,12 @@
         <dependency>
             <groupId>org.apache.jclouds</groupId>
             <artifactId>jclouds-all</artifactId>
-            <version>1.8.1</version>
+            <version>1.9.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jclouds.labs</groupId>
             <artifactId>openstack-neutron</artifactId>
-            <version>1.8.1</version>
+            <version>1.9.2</version>
         </dependency>
         <dependency>
             <groupId>es.bsc.demiurge</groupId>

@@ -9,9 +9,9 @@ public class D41TEST extends TestCase {
 
 	private static final String URL_D41 = "http://iaas-stable:34373/vmmanager";
 	private static final String URL_TESTING = "http://192.168.3.17:34372/vmmanager/";
-	private static final String URL_STABLE = "http://iaas-stable:34372/vmmanager";
+	private static final String URL_STABLE = "http://iaas-stable:34372/api/v1";
 
-	private static final int NUMBER_OF_VMS = 12;
+	private static final int NUMBER_OF_VMS = 1;
 	//	private static final String CIRROS_IMAGE_ID = "0c29c65b-2ff8-46fc-acd7-fdb039316905"; //iaas testing
 	private static final String CIRROS_IMAGE_ID = "d967c216-cbc5-4dc7-b197-cc2a4e0752f8"; //iaas stable
 
@@ -20,7 +20,7 @@ public class D41TEST extends TestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		vmm = new VmManagerClient(URL_D41);
+		vmm = new VmManagerClient(URL_STABLE);
 	}
 
 	@Ignore

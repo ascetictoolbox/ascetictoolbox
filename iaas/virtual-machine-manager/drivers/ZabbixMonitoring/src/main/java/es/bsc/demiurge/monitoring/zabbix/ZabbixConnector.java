@@ -39,15 +39,13 @@ import java.util.Map;
 public class ZabbixConnector implements Monitoring<HostZabbix> {
 
     private final static ZabbixClient zabbixClient = new ZabbixClient();
-
     private static final String DB_URL = "jdbc:mysql://" + Config.INSTANCE.zabbixDbIp + "/zabbix";
     private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_USER = Config.INSTANCE.zabbixDbUser;
     private static final String DB_PASSWORD = Config.INSTANCE.zabbixDbPassword;
-    private static final String[] ZABBIX_TABLES = {"history", "history_uint"}; /* Zabbix stores values in several
-                                                                                  tables */
-
+    private static final String[] ZABBIX_TABLES = {"history", "history_uint"}; /* Zabbix stores values in several tables */
     private static Connection connection = null;
+    private static boolean doNotSpam = false;
 
     /* I have hardcoded the Zabbix IDs for each one of the hosts that we are using.
        This is a quick fix. This should be done querying Zabbix or in the Zabbix wrapper */
@@ -106,6 +104,9 @@ public class ZabbixConnector implements Monitoring<HostZabbix> {
             + "h.itemid IN (select it.itemid from hosts, items it "
             + "WHERE hosts.hostid = it.hostid AND "
             + "hosts.hostid = ?);";
+    
+    private static final String ZABBIX_HOSTID_QUERY = 
+        "SELECT hostid FROM hosts WHERE host = ?";
 
 
     public static ZabbixClient getZabbixClient() {
@@ -152,14 +153,36 @@ public class ZabbixConnector implements Monitoring<HostZabbix> {
                 resultSet.close();
             }
             catch (Exception e) {
-				if(!doNotSpam)
-					Logger.getLogger(ZabbixConnector.class).warn("Could not get data from Zabbix",e);
-				doNotSpam = true;
+                if(!doNotSpam)
+                        Logger.getLogger(ZabbixConnector.class).warn("Could not get data from Zabbix",e);
+                doNotSpam = true;
             }
         }
         return result;
     }
-	private static boolean doNotSpam = false;
+    
+    /**
+     * Delivers the host id of a specific hostname
+     * @param hostname
+     * @return the zabbix id of this particular hostname
+     */
+    public static int getHostId(String hostname) {
+        Map<String, Double> result = new HashMap<>();
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(ZABBIX_HOSTID_QUERY)) {
+            preparedStatement.setString(1, hostname);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            resultSet.close();
+        }
+        catch (Exception e) {
+            if(!doNotSpam)
+                    Logger.getLogger(ZabbixConnector.class).warn("Could not get data from Zabbix",e);
+            doNotSpam = true;
+        }
+        return -1;
+    }
 
     /**
      * Registers a VM in Zabbix. A client who makes a deployment request should not wait
@@ -190,18 +213,18 @@ public class ZabbixConnector implements Monitoring<HostZabbix> {
         thread.start();
     }
 
-	public static void migrateVmInZabbix(final String vmId, final String ipAddress) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-//				zabbixClient.deleteVM(vmId);
-//				zabbixClient.createVM(vmId, ipAddress);
-			}
-		}, "migrateVmInZabbixThread").start();
-	}
+    public static void migrateVmInZabbix(final String vmId, final String ipAddress) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //zabbixClient.deleteVM(vmId);
+                //zabbixClient.createVM(vmId, ipAddress);
+            }
+        }, "migrateVmInZabbixThread").start();
+    }
 
-	@Override
-	public HostZabbix createHost(String hostName) {
-		return new HostZabbix(hostName);
-	}
+    @Override
+    public HostZabbix createHost(String hostName) {
+            return new HostZabbix(hostName);
+    }
 }

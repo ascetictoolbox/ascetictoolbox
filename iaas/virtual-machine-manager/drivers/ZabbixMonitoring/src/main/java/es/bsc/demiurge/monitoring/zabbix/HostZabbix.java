@@ -40,7 +40,7 @@ public class HostZabbix extends Host {
     private static final String TOTAL_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,total]";
     private static final String USED_DISK_BYTES_KEY = "vfs.fs.size[/var/lib/nova/instances,used]";
     private static final String POWER_KEY = "power";
-
+    
     private final int zabbixId; // Each host has an ID in Zabbix and this ID is not the hostname
 
     /**
@@ -54,14 +54,17 @@ public class HostZabbix extends Host {
         updateMetrics();
     }
 
-
-	/**
+    /**
      * Returns the Zabbix ID for a specific host given its hostname.
      *
      * @param hostname the hostname
      * @return the Zabbix ID
      */
     private int getZabbixId(String hostname) {
+        int hostId = ZabbixConnector.getHostId(hostname);
+        if( hostId != -1){
+            return hostId;
+        }
         if (!ZabbixConnector.hostIds.containsKey(hostname)) {
             throw new IllegalArgumentException("The host specified does not seem to be registered in Zabbix.");
         }

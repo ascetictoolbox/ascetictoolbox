@@ -19,9 +19,14 @@
 package es.bsc.demiurge.core.db;
 
 import com.google.gson.Gson;
+import es.bsc.demiurge.core.auth.JdbcUserDao;
+import es.bsc.demiurge.core.auth.UserDao;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
 import org.apache.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +48,8 @@ public class VmManagerDbHsql implements VmManagerDb {
 
     private final Gson gson = new Gson(); // Using JSON provisionally
 
+	private UserDao userDao;
+
     // Error messages
     private static final String ERROR_DB_CONNECTION = "There was an error while connecting to the DB";
     private static final String ERROR_SETUP_DB = "There was an error while trying to set up the DB.";
@@ -59,12 +66,15 @@ public class VmManagerDbHsql implements VmManagerDb {
             // Load the HSQL Database Engine JDBC driver
             Class.forName("org.hsqldb.jdbcDriver");
             // Connect to the database. This will load the DB files and start the DB if it is not already running
+			log.debug("DB connection to jdbc:hsqldb:file:db/" + dbFileNamePrefix);
             conn = DriverManager.getConnection("jdbc:hsqldb:file:db/" + dbFileNamePrefix, "sa", "");
         } catch (Exception e) {
             log.error(ERROR_DB_CONNECTION + "jdbc:hsqldb:file:db/" + dbFileNamePrefix +" --> " + e.getMessage(),e);
 			e.printStackTrace();
         }
-        setupDb();
+		userDao = new JdbcUserDao(conn);
+
+		setupDb();
     }
     
     // Use for SQL command SELECT
@@ -112,14 +122,29 @@ public class VmManagerDbHsql implements VmManagerDb {
     
     private synchronized void setupDb() {
         try {
-            update("CREATE TABLE IF NOT EXISTS virtual_machines "
-                    + "(id VARCHAR(255), appId VARCHAR(255), ovfId VARCHAR(255), slaId VARCHAR(255), "
-                    + "PRIMARY KEY (id)) ");
-            update("CREATE TABLE IF NOT EXISTS current_scheduling_alg " +
-                    "(algorithm VARCHAR(255), PRIMARY KEY (algorithm))");
-            update("CREATE TABLE IF NOT EXISTS self_adaptation_options "
-                    + "(options LONGVARCHAR) ");
-        } catch (SQLException e) {
+			BufferedReader br = new BufferedReader(new InputStreamReader(VmManagerDb.class.getResourceAsStream("/createDb.sql")));
+			StringBuffer sqlScript = new StringBuffer();
+			String lastLine = null;
+			do {
+				lastLine = br.readLine();
+				if(lastLine != null) {
+					sqlScript.append(lastLine).append(' ');
+				}
+			} while(lastLine != null);
+
+			Statement script = conn.createStatement();
+			for(String sql : sqlScript.toString().split(";")) {
+				log.debug("Adding script to batch: " + sql);
+				script.addBatch(sql);
+			}
+			script.executeBatch();
+			script.close();
+			conn.commit();
+			if(userDao.countUsers() == 0) {
+				userDao.insertUser("admin","changeme");
+			}
+
+        } catch (Exception e) {
 			log.error(ERROR_SETUP_DB, e);
         }
     }
@@ -295,4 +320,8 @@ public class VmManagerDbHsql implements VmManagerDb {
         return null;
     }
 
+	@Override
+	public UserDao getUserDao() {
+		return userDao;
+	}
 }

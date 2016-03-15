@@ -18,7 +18,7 @@
 
 package es.bsc.vmm.ascetic.rest.rest;
 
-import es.bsc.demiurge.rest.RestInputValidator;
+import es.bsc.demiurge.ws.rest.RestInputValidator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

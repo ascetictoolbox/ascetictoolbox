@@ -1,5 +1,6 @@
 package es.bsc.demiurge.core.manager;
 
+import es.bsc.demiurge.core.auth.UserDao;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.db.VmManagerDb;
 import es.bsc.demiurge.core.manager.components.EstimatesManager;
@@ -12,10 +13,12 @@ import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.scheduling.*;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * VM Manager interface.
@@ -264,20 +267,45 @@ public interface VmManager {
      */
     ListVmEstimates getVmEstimates(List<VmToBeEstimated> vmsToBeEstimated) throws CloudMiddlewareException;
 
-	/**
-	 * Returns cost for a given vm
-	 * @param vmIds
-	 * @return a JSON with the next fields: 'vmId' as the id of the requested machine. 'cost' as the cost for the vm
-	 */
-	String getVmsEstimates(List<String> vmIds) throws Exception;
+    /**
+     * Returns cost for a given vm
+     * @param vmIds
+     * @return a JSON with the next fields: 'vmId' as the id of the requested machine. 'cost' as the cost for the vm
+     */
+    String getVmsEstimates(List<String> vmIds) throws Exception;
 
-	void executeOnDemandSelfAdaptation() throws CloudMiddlewareException ;
+    void executeOnDemandSelfAdaptation() throws CloudMiddlewareException ;
 
-	HostsManager getHostsManager();
-	VmManagerDb getDB();
-	VmsManager getVmsManager();
+    HostsManager getHostsManager();
+    VmManagerDb getDB();
+    VmsManager getVmsManager();
 
     void doInitActions();
 
-	EstimatesManager getEstimatesManager();
+    EstimatesManager getEstimatesManager();
+
+    Map<String, String> getFlavours();
+    
+    /**
+     * Resizes an existing VM to a new flavor.
+     * 
+     * @param vmId
+     * @param flavourId 
+     */
+    void resize(String vmId, String flavourId);
+    
+    /**
+     * Resizes an existing VM to new hardware settings.
+     * 
+     * @param vmId the VM's id to perform resize
+     * @param vm the hardware settings to scale to
+     */
+    void resize(String vmId, VmRequirements vm);
+    
+    /**
+     * Confirms a resize.
+     * 
+     * @param vmId the VM's id to perform resize
+     */
+    void confirmResize(String vmId);
 }

@@ -2,17 +2,21 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>es.bsc.demiurge</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>demiurge-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
+	<properties>
+		<spring.version>4.2.5.RELEASE</spring.version>
+	</properties>
 	<modules>
 		<!--<module>rest-client</module>-->
 		<module>core</module>
 		<module>drivers</module>
 		<!--module>power-button-presser</module-->
 		<module>rest-client</module>
+		<!--module>security</module-->
 		<module>frontend</module>
 		<module>assemblies</module>
 		<module>dist</module>

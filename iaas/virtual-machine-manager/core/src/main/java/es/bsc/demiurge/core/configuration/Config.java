@@ -26,9 +26,7 @@ import es.bsc.demiurge.core.drivers.VmmListener;
 import es.bsc.demiurge.core.manager.VmManager;
 import es.bsc.demiurge.core.monitoring.hosts.HostFactory;
 import es.bsc.demiurge.core.vmplacement.CloplaConversor;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.*;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
@@ -36,6 +34,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +55,19 @@ public enum Config {
 	// Configuration file
 	private static final String PROPNAME_CONF_FILE = "config";
 
+    private static final String DEFAULT_CONF_CLASSPATH_LOCATION = "/default.properties";
 	private static final String DEFAULT_CONF_FILE_LOCATION = "/etc/demiurge/config.properties";
 	private static final String OLD_ASCETIC_DEFAULT_CONF_FILE_LOCATION = "/etc/ascetic/vmm/vmmconfig.properties";
     private static final String DEFAULT_DB_NAME = "VmManagerDb";
     private static final String DEFAULT_BEANS_LOCATION = "/Beans.xml";
 
     // TODO: remove public ATTRIBUTES and access only through apache configuration
+	// security
+	public String cryptSalt;
+	public boolean disableSecurity;
+
+
+	// db
     public String dbName;
 
     // OpenStack configuration
@@ -72,6 +79,7 @@ public enum Config {
 
     // Deploy
     public int connectionPort;
+    public String contextPath;
     public String deployPackage;
 
     private Monitoring monitoring;
@@ -89,7 +97,9 @@ public enum Config {
 	private HostFactory hostFactory;
 	private VmManager vmManager;
     private CloplaConversor cloplaConversor;
+
 	private List<VmmGlobalListener> vmmGlobalListeners;
+
 
 	Config() {
         configuration = getPropertiesObjectFromConfigFile();
@@ -108,6 +118,16 @@ public enum Config {
     private Configuration getPropertiesObjectFromConfigFile() {
 		Logger log = LogManager.getLogger(Config.class);
         try {
+            Configuration embeddedConfig = null;
+            URL embeddedConfigURL = Configuration.class.getResource(DEFAULT_CONF_CLASSPATH_LOCATION);
+            if(embeddedConfigURL != null) {
+                try {
+                    embeddedConfig = new PropertiesConfiguration(embeddedConfigURL);
+                } catch (ConfigurationException e) {
+                    log.warn("Error processing embedded config file", e);
+                }
+            }
+
 			// TO ALLOW COMPATIBILITY WITH OLDER VERSIONS OF VMM (Ascetic_exclusive)
 			// If there is a config file in the newest default location, looks for it
 			// if not, it looks in the old Ascetic default location
@@ -118,7 +138,24 @@ public enum Config {
 			configurationFileName = System.getProperty(PROPNAME_CONF_FILE, defaultFileName);
 
             log.debug("Loading configuration file: " + configurationFileName);
-            return new PropertiesConfiguration(configurationFileName);
+
+            Configuration fileConfig = null;
+            if(new File(configurationFileName).exists()) {
+                fileConfig = new PropertiesConfiguration(configurationFileName);
+            }
+            if(embeddedConfig == null) {
+                if(fileConfig == null) {
+                    throw new IllegalStateException("No configuration found at " + configurationFileName);
+                }
+                return fileConfig;
+            } else {
+                CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
+                if(fileConfig != null) {
+                    compositeConfiguration.addConfiguration(fileConfig);
+                }
+                compositeConfiguration.addConfiguration(embeddedConfig);
+                return compositeConfiguration;
+            }
         } catch (ConfigurationException e) {
 			log.error("Error loading properties file", e);
             e.printStackTrace();
@@ -138,13 +175,17 @@ public enum Config {
         Logger logger = LogManager.getLogger(Config.class);
         dbName = configuration.getString("dbName", DEFAULT_DB_NAME);
 
+		disableSecurity = configuration.getBoolean("disableSecurity",false);
         connectionPort = configuration.getInt("connectionPort",80);
         deployPackage = configuration.getString("deployPackage");
         hosts = configuration.getStringArray("hosts");
+        contextPath = configuration.getString("contextPath","/");
         zabbixDbIp = configuration.getString("zabbixDbIp");
         zabbixDbUser = configuration.getString("zabbixDbUser");
         zabbixDbPassword = configuration.getString("zabbixDbPassword");
         deployVmWithVolume = configuration.getBoolean("deployVmWithVolume", false);
+
+		cryptSalt = configuration.getString("crypt.salt", "addYourOwnSaltPropertyToTheConfigFile");
 
 		logger.debug("Loading configuration: " + toString());
     }

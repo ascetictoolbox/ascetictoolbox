@@ -22,8 +22,10 @@ import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for the Cloud Middleware infrastructure (e.g. OpenNebula, OpenStack,
@@ -177,4 +179,29 @@ public interface CloudMiddleware {
      */
     void assignFloatingIp(String vmId) throws CloudMiddlewareException;
 
+    /**
+     * Returns a list of flavors.
+     * @return 
+     */
+	Map<String, String> getFlavours();
+    
+    /**
+     * Resizes an existing VM into a different flavor.
+     * @param vmId
+     * @param flavourId 
+     */
+	void resize(String vmId, String flavourId);
+    
+    /**
+     * Resizes an existing VM into different hardware settings.
+     * @param vmId
+     * @param vm
+     */
+	void resize(String vmId, VmRequirements vm);
+    
+    /**
+     * Confirms a resize.
+     * @param vmId
+     */
+	void confirmResize(String vmId);
 }

@@ -19,6 +19,7 @@
 package es.bsc.vmmclient.models;
 
 import com.google.common.base.MoreObjects;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 
 public class Vm {
 
@@ -59,6 +60,21 @@ public class Vm {
         this.ramMb = ramMb;
         this.diskGb = diskGb;
         this.swapMb = swapMb;
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.preferredHost = preferredHost;
+    }
+    
+    public Vm(String name, String image, VmRequirements vmDeployRequirements,
+              String initScript, String applicationId, String ovfId, String slaId, String preferredHost) {
+        this.name = name;
+        this.image = image;
+        this.cpus = vmDeployRequirements.getCpus();
+        this.ramMb = vmDeployRequirements.getRamMb();
+        this.diskGb = vmDeployRequirements.getDiskGb();
+        this.swapMb = vmDeployRequirements.getSwapMb();
         this.initScript = initScript;
         this.applicationId = applicationId;
         this.ovfId = ovfId;

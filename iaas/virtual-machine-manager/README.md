@@ -4,6 +4,10 @@ Bringing order to the (IaaS) Cloud
 
 ![Demiurge image](etc/demiurge.png)
 
+[WTF is this creature?](https://en.wikipedia.org/wiki/Demiurge)
+
+If you want to contribute to Demiurge, or just install it on your premises, please first have a look at the [Devloper/Deployer Manual](doc/dev.md)
+
 ## About
 
 _Demiurge_ is an Infrastructure-as-a-Service (IaaS) computing resources manager. It enables the optimization of the
@@ -22,15 +26,6 @@ _Demiurge_'s main features are:
   and [Ganglia](https://github.com/ganglia).
 * Easy management through a clean graphical user interface (see _Screenshots_ section)
 
-## Repository structure
-
-* `core` defines the core functionalities, models and interfaces of _Demiurge_.
-* `drivers` implements the drivers for different infrastructure and monitoring managers.
-* `assemblies` contains subprojects with different configurations of _Demiurge_, plus some extra code to adapt
-  it to different environments.
-* `client` implements a simple REST client to facilitate the integration of _Demiurge_.
-* `frontend` contains subprojects for GUI and REST services (WIP).
-
 ## Some screenshots
 
 Dashboard:
@@ -44,28 +39,6 @@ Listing virtual images:
 Listing Virtual Machines instances:
 
 ![VMs list](etc/sshot/vmslist.png)
-
-## How to compile and run
-
-To compile:
-
-	mvn clean install -P <profile>
-	
-Where `profile` can be `ascetic` or `renewit`.
-
-To run:
-
-	java -jar dist/target/demiurge.jar
-
-
-## TO DO:
-
-* Add documentation about:
-	- Creating an own assembly (beans.xml)
-		- per-project branding
-	- Configuring demiurge's properties file
-	- _Demiurge_'s core architecture
-	- Appending new OptaPlanner policies
 	
 ## Credits
 
