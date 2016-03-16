@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryWeekRecord;
 import java.util.Calendar;
 import java.util.Collection;
@@ -43,7 +44,7 @@ public class DoWAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloa
         if (hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getDiskImages().isEmpty()) {
-                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                     vmCount = vmCount + 1;
                 }
             }
@@ -60,21 +61,27 @@ public class DoWAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloa
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all disk references that a VM has.
      */
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    @Override
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        double utilisation = 0.0;
+        double stdDev = 0.0;
+        GregorianCalendar cal = new GregorianCalendar();
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);        
         if (vm.getDiskImages().isEmpty()) {
-            return answer;
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
         for (VmDiskImage disk : vm.getDiskImages()) {
             if (vm.getClass().equals(VmDeployed.class)) {
-                List<VmLoadHistoryWeekRecord> weekRecord = database.getAverageCPUUtilisationWeekTraceForDisk(
-                        disk.getDiskImage());
-                answer = answer + getLoad(weekRecord);
+                List<VmLoadHistoryWeekRecord> weekRecord = database.getAverageCPUUtilisationWeekTraceForDisk(disk.getDiskImage());
+                VmLoadHistoryRecord answer = getUtilisation(weekRecord);
+                utilisation = utilisation + answer.getUtilisation();
+                stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
             } else {
-                answer = answer + database.getAverageCPUUtilisationDisk(disk.getDiskImage());
+                utilisation = utilisation + database.getAverageCPUUtilisationDisk(disk.getDiskImage()).getUtilisation();
             }
         }
-        return answer / vm.getDiskImages().size();
+        return new VmLoadHistoryWeekRecord(dayOfWeek, hourOfDay, utilisation / vm.getDiskImages().size(), stdDev);
     }
 
     /**
@@ -85,18 +92,20 @@ public class DoWAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkloa
      * record is not found the average of all values in the record set is 
      * returned instead.
      */
-    public double getLoad(List<VmLoadHistoryWeekRecord> records) {
-        double sum = 0;
+    public VmLoadHistoryRecord getUtilisation(List<VmLoadHistoryWeekRecord> records) {
+        double sumUtil = 0;
+        double stdDev = 0.0;
         GregorianCalendar cal = new GregorianCalendar();
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
         int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
         for (VmLoadHistoryWeekRecord record : records) {
             if (record.getDayOfWeek() == dayOfWeek && record.getHourOfDay() == hourOfDay) {
-                return record.getLoad();
+                return new VmLoadHistoryWeekRecord(dayOfWeek, hourOfDay, record.getUtilisation(), record.getStdDev());
             }
-            sum = sum + record.getLoad();
+            sumUtil = sumUtil + record.getUtilisation();
+            stdDev = (stdDev < record.getStdDev() ? record.getStdDev() : stdDev);
         }
-        return sum / records.size();
+        return new VmLoadHistoryWeekRecord(dayOfWeek, hourOfDay, sumUtil / records.size(), stdDev);
     }
 
     /**

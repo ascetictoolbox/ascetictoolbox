@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryWeekRecord;
 import java.util.Calendar;
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEst
         if (hasAppTags(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getApplicationTags().isEmpty()) {
-                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                     vmCount = vmCount + 1;
                 }
             }
@@ -59,43 +60,52 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEst
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all application tags that a VM has.
      */
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    @Override
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        double utilisation = 0.0;
+        double stdDev = 0.0;
+        GregorianCalendar cal = new GregorianCalendar();
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
         if (vm.getApplicationTags().isEmpty()) {
-            return answer;
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
         for (String tag : vm.getApplicationTags()) {
             if (vm.getClass().equals(VmDeployed.class)) {
-                List<VmLoadHistoryWeekRecord> weekRecord = database.getAverageCPUUtilisationWeekTraceForTag(
-                        tag);
-                answer = answer + getLoad(weekRecord);
+                List<VmLoadHistoryWeekRecord> weekRecord = database.getAverageCPUUtilisationWeekTraceForTag(tag);
+                VmLoadHistoryRecord answer = getUtilisation(weekRecord);
+                utilisation = utilisation + answer.getUtilisation();
+                stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
             } else {
-                answer = answer + database.getAverageCPUUtilisationTag(tag);
+                utilisation = utilisation + database.getAverageCPUUtilisationTag(tag).getUtilisation();
             }
         }
-        return answer / vm.getApplicationTags().size();
+        return new VmLoadHistoryWeekRecord(dayOfWeek, hourOfDay, utilisation / vm.getApplicationTags().size(), stdDev);
     }
 
     /**
      * This gets the load for the current day and hour of the week.
+     *
      * @param records The records to search through to get the hour and day of
      * the week.
      * @return The average load for the given day and time of week. If this
-     * record is not found the average of all values in the record set is 
+     * record is not found the average of all values in the record set is
      * returned instead.
      */
-    public double getLoad(List<VmLoadHistoryWeekRecord> records) {
-        double sum = 0;
+    public VmLoadHistoryRecord getUtilisation(List<VmLoadHistoryWeekRecord> records) {
+        double sumUtil = 0;
+        double stdDev = 0.0;
         GregorianCalendar cal = new GregorianCalendar();
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
         int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
         for (VmLoadHistoryWeekRecord record : records) {
             if (record.getDayOfWeek() == dayOfWeek && record.getHourOfDay() == hourOfDay) {
-                return record.getLoad();
+                return new VmLoadHistoryWeekRecord(dayOfWeek, hourOfDay, record.getUtilisation(), record.getStdDev());
             }
-            sum = sum + record.getLoad();
+            sumUtil = sumUtil + record.getUtilisation();
+            stdDev = (stdDev < record.getStdDev() ? record.getStdDev() : stdDev);
         }
-        return sum / records.size();
+        return new VmLoadHistoryWeekRecord(dayOfWeek, hourOfDay, sumUtil / records.size(), stdDev);
     }
 
     /**
@@ -116,10 +126,10 @@ public class DoWAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEst
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
-    
+
     @Override
     public String getName() {
         return "Day of Week Workload App Tag Predictor";
-    }    
-    
+    }
+
 }

@@ -19,6 +19,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryBootRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class BootAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEs
         if (hasAppTags(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getApplicationTags().isEmpty()) {
-                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                     vmCount = vmCount + 1;
                 }
             }
@@ -56,24 +57,33 @@ public class BootAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEs
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all application tags that a VM has.
      */
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    @Override
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        double utilisation = 0.0;
+        double stdDev = 0.0;
+        int index = 0;
         if (vm.getApplicationTags().isEmpty()) {
-            return answer;
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
         for (String tag : vm.getApplicationTags()) {
             if (vm.getClass().equals(VmDeployed.class)) {
-                List<VmLoadHistoryBootRecord> bootRecord = database.getAverageCPUUtilisationBootTraceForTag(
+                List<VmLoadHistoryBootRecord> bootRecord = 
+                        database.getAverageCPUUtilisationBootTraceForTag(
                         tag,
                         bootHistoryBucketSize);
-                answer = answer + getBootHistoryValue(bootRecord,
+                VmLoadHistoryBootRecord answer = getBootHistoryValue(bootRecord,
                         bootHistoryBucketSize,
-                        (VmDeployed) vm).getLoad();
+                        (VmDeployed) vm);      
+                index = answer.getIndex();
+                utilisation = utilisation + answer.getUtilisation();
+                stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
             } else {
-                answer = answer + database.getAverageCPUUtilisationTag(tag);
+                VmLoadHistoryRecord answer = database.getAverageCPUUtilisationTag(tag);
+                utilisation = utilisation + answer.getUtilisation();
+                stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
             }
         }
-        return answer / vm.getApplicationTags().size();
+        return new VmLoadHistoryBootRecord(index, utilisation / vm.getApplicationTags().size(), stdDev);
     }
     
     /**

@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import eu.ascetic.ioutils.ResultsStore;
 import java.io.File;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
         double sumCpuUtilisation = 0;
         if (hasAppTags(virtualMachines, validAppTags)) {
             for (VM vm : virtualMachines) {
-                sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                 vmCount = vmCount + 1;
             }
             return sumCpuUtilisation / vmCount;
@@ -120,15 +121,18 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
      * @return The average utilisation of all application tags that a VM has.
      */
     @Override
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        double utilisation = 0.0;
+        double stdDev = 0.0;
         if (vm.getApplicationTags().isEmpty()) {
-            return 0;
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
         for (String tag : vm.getApplicationTags()) {
-            answer = answer + getEstimator(tag).getAverageCpuUtilisastion(vm);
+            VmLoadHistoryRecord answer = getEstimator(tag).getAverageCpuUtilisation(vm);
+            utilisation = utilisation + answer.getUtilisation();
+            stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
         }
-        return answer;
+        return new VmLoadHistoryRecord(utilisation, stdDev);
     }
     
     /**
@@ -144,8 +148,7 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
             return 0;
         }
         for (VmDiskImage image : vm.getDiskImages()) {
-            //replace line below with discovery rule answer
-            answer = answer + getEstimator(image.getDiskImage()).getAverageCpuUtilisastion(vm);
+            answer = answer + getEstimator(image.getDiskImage()).getAverageCpuUtilisation(vm).getUtilisation();
         }
         return answer / vm.getApplicationTags().size();
     } 
@@ -157,7 +160,6 @@ public class UserDefinedWorkloadPredictorMapper extends AbstractVMHistoryWorkloa
      * @return The workload estimator to use for VM
      */
     private AbstractVMHistoryWorkloadEstimator getEstimator(String lookupProperty) {
-        //Get correct estimator here!!!
         for (PredictorUsageRule rule : predictorRules) {
             if (rule.getPropertyToMatch().equals(lookupProperty)) {
                 for (AbstractVMHistoryWorkloadEstimator estimator : estimatorList) {

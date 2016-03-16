@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import java.util.Collection;
 
 /**
@@ -34,7 +35,7 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadE
         if (hasAppTags(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getApplicationTags().isEmpty()) {
-                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                     vmCount = vmCount + 1;
                 }
             }
@@ -51,15 +52,19 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadE
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all application tags that a VM has.
      */
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    @Override
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        double utilisation = 0.0;
+        double stdDev = 0.0;        
         if (vm.getApplicationTags().isEmpty()) {
-            return answer;
+            return new VmLoadHistoryRecord(stdDev, stdDev);
         }
         for (String tag : vm.getApplicationTags()) {
-            answer = answer + database.getAverageCPUUtilisationTag(tag);
+            VmLoadHistoryRecord answer = database.getAverageCPUUtilisationTag(tag);
+            utilisation = utilisation + answer.getUtilisation();
+            stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
         }
-        return answer / vm.getApplicationTags().size();
+        return new VmLoadHistoryRecord(utilisation / vm.getApplicationTags().size(), stdDev);
     }
 
     @Override

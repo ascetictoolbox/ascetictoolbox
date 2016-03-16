@@ -20,6 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryBootRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorklo
         if (hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getDiskImages().isEmpty()) {
-                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                     vmCount = vmCount + 1;
                 }
             }
@@ -57,24 +58,32 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorklo
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all disk references that a VM has.
      */
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    @Override
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        int index = 0;
+        double utilisation = 0.0;
+        double stdDev = 0.0;
         if (vm.getDiskImages().isEmpty()) {
-            return answer;
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
         for (VmDiskImage disk : vm.getDiskImages()) {
             if (vm.getClass().equals(VmDeployed.class)) {
                 List<VmLoadHistoryBootRecord> bootRecord = database.getAverageCPUUtilisationBootTraceForDisk(
                         disk.getDiskImage(),
                         bootHistoryBucketSize);
-                answer = answer + getBootHistoryValue(bootRecord,
+                VmLoadHistoryBootRecord answer = getBootHistoryValue(bootRecord,
                         bootHistoryBucketSize,
-                        (VmDeployed) vm).getLoad();
+                        (VmDeployed) vm);
+                index = answer.getIndex();
+                utilisation = utilisation + answer.getUtilisation();
+                stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
             } else {
-                answer = answer + database.getAverageCPUUtilisationDisk(disk.getDiskImage());
+                VmLoadHistoryRecord answer = database.getAverageCPUUtilisationDisk(disk.getDiskImage());
+                utilisation = utilisation + answer.getUtilisation();
+                stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
             }
         }
-        return answer / vm.getDiskImages().size();
+        return new VmLoadHistoryBootRecord(index, utilisation / vm.getDiskImages().size(), stdDev);
     }
 
     /**
@@ -95,10 +104,10 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorklo
     public void setBootHistoryBucketSize(int bootHistoryBucketSize) {
         this.bootHistoryBucketSize = bootHistoryBucketSize;
     }
-    
+
     @Override
     public String getName() {
         return "Boot Workload Disk Predictor";
-    }    
-    
+    }
+
 }

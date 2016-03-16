@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import java.util.Collection;
 
 /**
@@ -35,7 +36,7 @@ public class BasicAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkl
         if (hasDiskReferences(virtualMachines)) {
             for (VM vm : virtualMachines) {
                 if (!vm.getDiskImages().isEmpty()) {
-                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisastion(vm);
+                    sumCpuUtilisation = sumCpuUtilisation + getAverageCpuUtilisation(vm).getUtilisation();
                     vmCount = vmCount + 1;
                 }
             }
@@ -52,15 +53,19 @@ public class BasicAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorkl
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all disk images that a VM has.
      */
-    public double getAverageCpuUtilisastion(VM vm) {
-        double answer = 0.0;
+    @Override
+    public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
+        double utilisation = 0.0;
+        double stdDev = 0.0;
         if (vm.getDiskImages().isEmpty()) {
-            return answer;
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
         for (VmDiskImage disk : vm.getDiskImages()) {
-            answer = answer + database.getAverageCPUUtilisationDisk(disk.getDiskImage());
+            VmLoadHistoryRecord answer = database.getAverageCPUUtilisationDisk(disk.getDiskImage());
+            utilisation = utilisation + answer.getUtilisation();
+            stdDev = (stdDev < answer.getStdDev() ? answer.getStdDev() : stdDev);
         }
-        return answer / vm.getDiskImages().size();
+        return new VmLoadHistoryRecord(utilisation / vm.getDiskImages().size(), stdDev);
     }    
 
     @Override

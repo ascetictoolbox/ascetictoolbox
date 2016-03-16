@@ -121,6 +121,7 @@ iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymod
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HistoricUsageRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/HostEnergyRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/VmLoadHistoryBootRecord.java -text
+iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/VmLoadHistoryRecord.java -text
 iaas/energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/energymodeller/types/usage/VmLoadHistoryWeekRecord.java -text
 iaas/energy-modeller/src/main/resources/dummydata.sql -text
 iaas/energy-modeller/src/main/resources/iaas[!!-~]energy[!!-~]modeller[!!-~]db.sql -text

@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryBootRecord;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +41,7 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * @param vm The VM to get the average utilisation for.
      * @return The average utilisation of all application tags that a VM has.
      */
-    public abstract double getAverageCpuUtilisastion(VM vm);
+    public abstract VmLoadHistoryRecord getAverageCpuUtilisation(VM vm);
 
     @Override
     public boolean requiresVMInformation() {
@@ -209,5 +210,5 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * @return The name of this predictor
      */
     public abstract String getName();
-    
+       
 }

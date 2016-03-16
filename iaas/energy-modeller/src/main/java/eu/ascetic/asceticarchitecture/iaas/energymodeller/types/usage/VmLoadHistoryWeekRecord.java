@@ -20,18 +20,17 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
  * load cycles.
  * @author Richard Kavanagh
  */
-public class VmLoadHistoryWeekRecord {
+public class VmLoadHistoryWeekRecord extends VmLoadHistoryRecord {
 
     /**
-     * This holds the fields: SELECT avg(cpu_load), "
-     * "Weekday(FROM_UNIXTIME(UNIX_TIMESTAMP(clock))) as Day_of_Week, "
-     * "Hour(FROM_UNIXTIME(UNIX_TIMESTAMP(clock))) as Hour_in_Day "
+     * This holds the fields: SELECT avg(cpu_load), STDDEV_POP(cpu_load),"
+     * "Weekday(FROM_UNIXTIME(clock)) as Day_of_Week, "
+     * "Hour(FROM_UNIXTIME(clock)) as Hour_in_Day "
      *
      * the load factor value is generic and could be for any given device, not
      * just the CPU.
      */
     
-    private final double load;
     private final int dayOfWeek;
     private final int hourOfDay;
 
@@ -40,17 +39,19 @@ public class VmLoadHistoryWeekRecord {
      * for a given hour and day of the week.
      * @param dayOfWeek The day of the week
      * @param hourOfDay The hour of the day
-     * @param load The average load found to be induced by the VM
+     * @param utilisation The average cpu utilisation found to be induced by the VM
+     * @param stdDev The standard deviation, used to give a notion of spread 
+     * from the average (lower is better)
      */
-    public VmLoadHistoryWeekRecord(int dayOfWeek, int hourOfDay, double load) {
+    public VmLoadHistoryWeekRecord(int dayOfWeek, int hourOfDay, double utilisation, double stdDev) {
+        super(utilisation,stdDev);
         this.dayOfWeek = dayOfWeek;
         this.hourOfDay = hourOfDay;
-        this.load = load;        
     }
 
     /**
      * This gets the day of the week of this load history record.
-     * @return 
+     * @return The day of the week (0-6).
      */
     public int getDayOfWeek() {
         return dayOfWeek;
@@ -58,18 +59,10 @@ public class VmLoadHistoryWeekRecord {
 
     /**
      * This gets the hour of the day for this load history record.
-     * @return 
+     * @return The hour of the day.
      */
     public int getHourOfDay() {
         return hourOfDay;
-    }
-
-    /**
-     * This gets the average load history data for this record.
-     * @return 
-     */
-    public double getLoad() {
-        return load;
     }
     
 }

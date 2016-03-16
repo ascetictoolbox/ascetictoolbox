@@ -24,6 +24,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostVmLoadFraction;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.HostEnergyRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryBootRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryWeekRecord;
 import java.io.IOException;
 import java.sql.Connection;
@@ -680,22 +681,23 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      * @param queryItem The item to search for
      * @return The average CPU utilisation for the term.
      */
-    private double getAverageCPUUtilisation(String query, String queryItem) {
+    private VmLoadHistoryRecord getAverageCPUUtilisation(String query, String queryItem) {
         double answer = 0.0;
+        double stdDev = 0.0;
         connection = getConnection(connection);
         if (connection == null) {
-            return answer;
+            return new VmLoadHistoryRecord(answer, stdDev);
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 query)) {
             preparedStatement.setString(1, queryItem);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            return resultSet.getDouble(1); //return the single value from the query
+            return new VmLoadHistoryRecord(resultSet.getDouble(1), resultSet.getDouble(2)); //return the single value from the query
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return answer;
+        return new VmLoadHistoryRecord(answer, stdDev);
     }
 
     /**
@@ -706,8 +708,9 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      * tag.
      */
     @Override
-    public double getAverageCPUUtilisationTag(String tagName) {
-        return getAverageCPUUtilisation("SELECT avg(cpu_load) "
+    public VmLoadHistoryRecord getAverageCPUUtilisationTag(String tagName) {
+        return getAverageCPUUtilisation("SELECT avg(cpu_load), "
+                + "STDDEV_POP(cpu_load) as standardDev, "                
                 + "FROM vm_measurement as mesu, "
                 + "vm_app_tag_arr AS arr, "
                 + "vm_app_tag AS tag "
@@ -726,8 +729,9 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
      * reference
      */
     @Override
-    public double getAverageCPUUtilisationDisk(String diskRefStr) {
+    public VmLoadHistoryRecord getAverageCPUUtilisationDisk(String diskRefStr) {
         return getAverageCPUUtilisation("SELECT avg(cpu_load) "
+                + "STDDEV_POP(cpu_load) as standardDev, "                
                 + "FROM vm_measurement as mesu, "
                 + "vm_disk_arr AS arr, "
                 + "vm_disk AS disk "
@@ -757,9 +761,10 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
             for (ArrayList<Object> avgRecord : results) {
                 answer.add(new VmLoadHistoryWeekRecord(
-                        (int) avgRecord.get(1), //week day 2nd item
-                        (int) avgRecord.get(2), //day of week 3rd item
-                        (double) avgRecord.get(0))); // avg load is 1st item
+                        (int) avgRecord.get(2), //week day 3rd item
+                        (int) avgRecord.get(3), //day of week 4th item
+                        (double) avgRecord.get(0), // avg load is 1st item
+                        (double) avgRecord.get(1))); //standardDev is 2nd item
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
@@ -776,6 +781,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<VmLoadHistoryWeekRecord> getAverageCPUUtilisationWeekTraceForTag(String tagName) {
         return getAverageCPUUtilisationWeekTrace("SELECT avg(cpu_load), "
+                + "STDDEV_POP(cpu_load) as standardDev, "
                 + "Weekday(FROM_UNIXTIME(clock)) as Day_of_Week, "
                 + "Hour(FROM_UNIXTIME(clock)) as Hour_in_Day "
                 + "FROM vm_measurement as mesu, "
@@ -796,6 +802,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<VmLoadHistoryWeekRecord> getAverageCPUUtilisationWeekTraceForDisk(String diskRef) {
         return getAverageCPUUtilisationWeekTrace("SELECT avg(cpu_load), "
+                + "STDDEV_POP(cpu_load) as standardDev, "                
                 + "Weekday(FROM_UNIXTIME(clock)) as Day_of_Week, "
                 + "Hour(FROM_UNIXTIME(clock)) as Hour_in_Day "
                 + "FROM vm_measurement as mesu, "
@@ -866,7 +873,8 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
             for (ArrayList<Object> avgRecord : results) {
                 answer.add(new VmLoadHistoryBootRecord(
                         ((Long) avgRecord.get(0)).intValue(), //boot index
-                        (double) avgRecord.get(1))); // avg load is 2nd item
+                        (double) avgRecord.get(1), // avg load is 2nd item
+                        (double) avgRecord.get(2))); //Std Dev is 3rd item
             }
         } catch (SQLException ex) {
             Logger.getLogger(DefaultDatabaseConnector.class.getName()).log(Level.SEVERE, null, ex);
@@ -888,7 +896,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     public List<VmLoadHistoryBootRecord> getAverageCPUUtilisationBootTraceForTag(String tagName, int windowSize) {
         
         return getAverageCPUUtilisationBootTrace(
-            "SELECT (vm_data.clock - start_time) as start_clock, avg(vm_data.cpu_load) as cpu_load " + 
+            "SELECT (vm_data.clock - start_time) as start_clock, avg(vm_data.cpu_load) as cpu_load, STDDEV_POP(cpu_load) as standard_deviation " + 
             "FROM vm_measurement as vm_data, " + 
                 "(SELECT valid_vm.vm_id as valid_vm, min(valid_vm.clock) as start_time " + 
                 "FROM vm_measurement as valid_vm, vm_app_tag_arr AS arr, vm_app_tag AS tag " +
@@ -912,7 +920,7 @@ public class DefaultDatabaseConnector extends MySqlDatabaseConnector implements 
     @Override
     public List<VmLoadHistoryBootRecord> getAverageCPUUtilisationBootTraceForDisk(String diskName, int windowSize) {
         return getAverageCPUUtilisationBootTrace(
-            "SELECT (vm_data.clock - start_time) as start_clock, avg(vm_data.cpu_load) as cpu_load " + 
+            "SELECT (vm_data.clock - start_time) as start_clock, avg(vm_data.cpu_load) as cpu_load, STDDEV_POP(cpu_load) as standard_deviation " + 
             "FROM vm_measurement as vm_data, " + 
                 "(SELECT valid_vm.vm_id  as valid_vm, min(valid_vm.clock) as start_time " + 
                 "FROM vm_measurement as valid_vm, vm_disk_arr AS arr, vm_disk AS disk " +

@@ -16,36 +16,37 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
 
 /**
- * This class represents the load history of a VM that is based upon the time
- * since the VM booted.
+ * This class represents the utilisation history of a VM that is based upon the
+ * time since the VM booted.
  *
  * @author Richard Kavanagh
  */
-public class VmLoadHistoryBootRecord {
+public class VmLoadHistoryBootRecord extends VmLoadHistoryRecord {
 
     /**
      * This holds the fields: SELECT start_idx, sum_cpu_load_val /
-     * count_cpu_load_val as average
+     * count_cpu_load_val as average, STDDEV_POP(cpu_load) as standardDev
      *
-     * the load factor value is generic and could be for any given device, not
-     * just the CPU.
+     * the utilisation factor value is generic and could be for any given
+     * device, not just the CPU.
      */
-    
     private final int index;
-    private final double load;
 
     /**
-     * 
+     *
      * @param index The index value that represents the time from boot.
-     * @param load The average load induced. 
+     * @param utilisation The average utilisation induced.
+     * @param stdDev The standard deviation, used to give a notion of spread
+     * from the average (lower is better)
      */
-    public VmLoadHistoryBootRecord(int index, double load) {
+    public VmLoadHistoryBootRecord(int index, double utilisation, double stdDev) {
+        super(utilisation,stdDev);
         this.index = index;
-        this.load = load;
     }
 
     /**
      * This gets the index value that represents the time from boot.
+     *
      * @return The index value for the discrete time block
      */
     public int getIndex() {
@@ -53,12 +54,26 @@ public class VmLoadHistoryBootRecord {
     }
 
     /**
-     * This gets the average load induced during a discrete time block that 
-     * represents the time from boot.
-     * @return The average load value for the discrete time block
+     * This gets the average utilisation induced during a discrete time block
+     * that represents the time from boot.
+     *
+     * @return The average utilisation value for the discrete time block
      */
-    public double getLoad() {
-        return load;
+    @Override
+    public double getUtilisation() {
+        return super.getUtilisation();
+    }
+
+    /**
+     * This obtains the population standard deviation and is aimed at showing
+     * how good the average is an estimator of the utilisation.
+     *
+     * @return the stdDev The standard deviation for all samples used in
+     * calculating the average.
+     */
+    @Override
+    public double getStdDev() {
+        return super.getStdDev();
     }
 
 }
