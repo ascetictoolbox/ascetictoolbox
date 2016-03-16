@@ -18,8 +18,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workl
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
-import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryBootRecord;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,6 +57,9 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * have tags or the collection is empty.
      */
     public static boolean hasAppTags(Collection<VM> virtualMachines) {
+        if (virtualMachines == null) {
+            return false;
+        }
         for (VM vm : virtualMachines) {
             if (vm.getApplicationTags().isEmpty()) {
                 return false;
@@ -76,6 +79,9 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * have tags or the collection is empty.
      */
     public static boolean hasAppTags(Collection<VM> virtualMachines, HashSet<String> validList) {
+        if (virtualMachines == null || validList == null) {
+            return false;
+        }
         for (VM vm : virtualMachines) {
             if (vm.getApplicationTags().isEmpty() && !Collections.disjoint(vm.getApplicationTags(), validList)) {
                 return false;
@@ -108,6 +114,9 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * have disk references or the collection is empty.
      */
     public static boolean hasDiskReferences(Collection<VM> virtualMachines) {
+        if (virtualMachines == null) {
+            return false;
+        }
         for (VM vm : virtualMachines) {
             if (vm.getDiskImages().isEmpty()) {
                 return false;
@@ -127,6 +136,9 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
      * have disk references or the collection is empty.
      */
     public static boolean hasDiskReferences(Collection<VM> virtualMachines, HashSet<String> validList) {
+        if (virtualMachines == null) {
+            return false;
+        }
         for (VM vm : virtualMachines) {
             HashSet<VmDiskImage> images = vm.getDiskImages();
             HashSet<String> imageRefs = new HashSet<>();
@@ -204,11 +216,12 @@ public abstract class AbstractVMHistoryWorkloadEstimator extends AbstractWorkloa
     public static VmLoadHistoryBootRecord getBootHistoryValue(List<VmLoadHistoryBootRecord> bootHistory, int position) {
         return bootHistory.get(position);
     }
-    
+
     /**
      * This gets the user defined name for this workload estimator
+     *
      * @return The name of this predictor
      */
     public abstract String getName();
-       
+
 }
