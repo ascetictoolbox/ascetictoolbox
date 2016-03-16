@@ -26,12 +26,14 @@ public class VmRequirements {
     protected final int ramMb;
     protected final int diskGb;
     protected final int swapMb;
+    private boolean autoConfirmResize;
 
     public VmRequirements(int cpus, int ramMb, int diskGb, int swapMb) {
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
         this.swapMb = swapMb;
+        this.autoConfirmResize = true;
     }
 
     public int getCpus() {
@@ -58,5 +60,19 @@ public class VmRequirements {
                 .add("diskGb", diskGb)
                 .add("swapMb", swapMb)
                 .toString();
+    }
+
+    /**
+     * @return checks if confirmResize has to be done automatically
+     */
+    public boolean isAutoConfirm() {
+        return autoConfirmResize;
+    }
+
+    /**
+     * @param autoConfirm if set to true confirmResize will be done automatically
+     */
+    public void setAutoConfirm(boolean autoConfirm) {
+        this.autoConfirmResize = autoConfirm;
     }
 }

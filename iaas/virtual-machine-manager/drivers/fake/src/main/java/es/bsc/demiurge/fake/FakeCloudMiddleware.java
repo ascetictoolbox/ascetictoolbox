@@ -255,11 +255,6 @@ public class FakeCloudMiddleware implements CloudMiddleware {
 	public Map<String, String> getFlavours() {
 		return null;
 	}
-
-	@Override
-	public void resize(String vmId, String flavourId) {
-
-	}
     
     @Override
 	public void resize(String vmId, VmRequirements vm) {

@@ -450,11 +450,7 @@ public class VmsManager {
 		return cloudMiddleware.getFlavours();
 	}
 
-	public void resize(String vmId, String flavourId) {
-		cloudMiddleware.resize(vmId, flavourId);
-	}
-
-	public void resize(String vmId, VmRequirements vm) {
+	public void resize(String vmId, VmRequirements vm) throws Exception{
 		cloudMiddleware.resize(vmId, vm);
 	}
     

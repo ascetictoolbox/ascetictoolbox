@@ -186,18 +186,11 @@ public interface CloudMiddleware {
 	Map<String, String> getFlavours();
     
     /**
-     * Resizes an existing VM into a different flavor.
-     * @param vmId
-     * @param flavourId 
-     */
-	void resize(String vmId, String flavourId);
-    
-    /**
      * Resizes an existing VM into different hardware settings.
      * @param vmId
      * @param vm
      */
-	void resize(String vmId, VmRequirements vm);
+	void resize(String vmId, VmRequirements vm) throws CloudMiddlewareException, InterruptedException;
     
     /**
      * Confirms a resize.

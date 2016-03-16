@@ -542,14 +542,9 @@ public class GenericVmManager implements VmManager {
     public Map<String, String> getFlavours() {
         return vmsManager.getFlavours();
     }
-    
-    @Override
-    public void resize(String vmId, String flavourId) {
-        vmsManager.resize(vmId, flavourId);
-    }
 
     @Override
-    public void resize(String vmId, VmRequirements vm) {
+    public void resize(String vmId, VmRequirements vm) throws Exception{
         vmsManager.resize(vmId, vm);
     }
     

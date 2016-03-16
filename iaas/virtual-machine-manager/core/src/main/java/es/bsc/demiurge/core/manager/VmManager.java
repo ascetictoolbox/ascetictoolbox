@@ -1,6 +1,5 @@
 package es.bsc.demiurge.core.manager;
 
-import es.bsc.demiurge.core.auth.UserDao;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.db.VmManagerDb;
 import es.bsc.demiurge.core.manager.components.EstimatesManager;
@@ -287,20 +286,12 @@ public interface VmManager {
     Map<String, String> getFlavours();
     
     /**
-     * Resizes an existing VM to a new flavor.
-     * 
-     * @param vmId
-     * @param flavourId 
-     */
-    void resize(String vmId, String flavourId);
-    
-    /**
      * Resizes an existing VM to new hardware settings.
      * 
      * @param vmId the VM's id to perform resize
      * @param vm the hardware settings to scale to
      */
-    void resize(String vmId, VmRequirements vm);
+    void resize(String vmId, VmRequirements vm) throws Exception;
     
     /**
      * Confirms a resize.

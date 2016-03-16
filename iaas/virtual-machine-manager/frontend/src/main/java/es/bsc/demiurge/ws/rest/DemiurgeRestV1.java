@@ -416,7 +416,7 @@ public class DemiurgeRestV1 {
 	@Path("/vms/{id}/resize")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-	public void resize(@PathParam("id") String vmId, String vm) {
+	public void resize(@PathParam("id") String vmId, String vm) throws Exception{
         VmRequirements vmRequirements = vmCallsManager.getVmRequirements(vm);
 		vmManager.resize(vmId, vmRequirements);
 	}

@@ -64,6 +64,9 @@ public class OpenStackJclouds implements CloudMiddleware {
     private static final String ACTIVE = "active";
     private static final String BUILD = "BUILD";
     private static final String DELETING = "deleting";
+    private static final String RESIZE_STATE = "RESIZE";
+    private static final String VERIFY_RESIZE_STATE = "VERIFY_RESIZE";
+    private static final String ACTIVE_STATE = "ACTIVE";
 
     private final String zone; // This could be important/problematic in the future because I am assuming that
                                // the cluster only has one zone configured for deployments.
@@ -687,33 +690,70 @@ public class OpenStackJclouds implements CloudMiddleware {
 		}
 		return ids;
 	}
+    
+    /**
+     * Waits for a resize operation to finish.
+     * 
+     * @param vmId 
+     */
+    private void waitForResize(String vmId) throws CloudMiddlewareException, InterruptedException{
+        int resizeCounter = 0;
+        while(getVM(vmId).getState().equals(RESIZE_STATE) && resizeCounter++ < 100) {
+            logger.info("Waiting resize to finish...");
+            Thread.sleep(2500);
+        }
 
-	@Override
-	public void resize(String vmId, String flavourId) {
-		System.out.println("OpenStackJclouds.resize");
-		System.out.println("vmId = " + vmId);
-		System.out.println("flavourId = " + flavourId);
-		logger.info("vmId = " + vmId + ", " + "flavourId = " + flavourId);
+        if(resizeCounter >= 100){
+            throw new CloudMiddlewareException("Timeout reached while resizing. It was not posible to resize!");
+        }
+    }
+    
+    /**
+     * Waits for a confirmResize operation to finish.
+     * 
+     * @param vmId 
+     */
+    private void waitForConfirmResize(String vmId) throws CloudMiddlewareException, InterruptedException{
+        int verifyCounter = 0;
+        while(getVM(vmId).getState().equals(VERIFY_RESIZE_STATE) && verifyCounter++ < 100) {
+            logger.info("Waiting confirmResize to finish...");
+            Thread.sleep(2500);
+        }
 
-		openStackJcloudsApis.getServerApi().resize(vmId, flavourId);
-	}
+        if(verifyCounter >= 100){
+            throw new CloudMiddlewareException("Timeout reached while verifying resize. It was not posible to resize!");
+        }
+    }
     
     @Override
-	public void resize(String vmId, VmRequirements vm) {
-		System.out.println("OpenStackJclouds.resize");
-		System.out.println("vmId = " + vmId);
-        System.out.println("vmRequirements = " + vm.toString());
+	public void resize(String vmId, VmRequirements vm) throws CloudMiddlewareException, InterruptedException{
+		logger.info("OpenStackJclouds.resize(): vmId = " + vmId + "; vmRequirements = " + vm.toString());
         
         String flavourId = getFlavorIdForDeployment(vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), vm.getSwapMb());
-		System.out.println("flavourId = " + flavourId);
-		logger.info("vmId = " + vmId + ", " + "flavourId = " + flavourId);
+		logger.info("flavourId = " + flavourId);
 
 		openStackJcloudsApis.getServerApi().resize(vmId, flavourId);
+        
+        if(vm.isAutoConfirm()){
+            waitForResize(vmId);
+            
+            if(getVM(vmId).getState().equals(VERIFY_RESIZE_STATE)){
+                confirmResize(vmId);
+                waitForConfirmResize(vmId);
+            }
+            
+            if( !getVM(vmId).getState().equals(ACTIVE_STATE) ) {
+                throw new CloudMiddlewareException("VM state is not active! Resize was not successful.");
+            }
+            else{
+                logger.info("Resize done.");
+            }
+        }
 	}
     
     @Override
 	public void confirmResize(String vmId) {
-		System.out.println("vmId = " + vmId);
+		System.out.println("OpenStackJclouds.confirmResize(): vmId = " + vmId);
 		openStackJcloudsApis.getServerApi().confirmResize(vmId);
 	}
 }
