@@ -32,13 +32,15 @@ import java.util.logging.Logger;
 public class VerticalScalabilityTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("VerticalScalabilityTest");
 
-    public void testDeployAndScale() throws Exception {
+    public void testDeployAndScaleConfirmManually() throws Exception {
         VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
+        
         VmRequirements vmScaleRequirements = new VmRequirements( 2, 512, 2, 32);
+        vmScaleRequirements.setAutoConfirm(false);
         
         List<Node> nodes = new ArrayList<Node>();
         for (Node node : vmm.getNodes()) {
-			if( node.matchesRequirements(vmDeployRequirements) &&
+            if( node.matchesRequirements(vmDeployRequirements) &&
                 node.matchesRequirements(vmScaleRequirements)){
                 nodes.add(node);
             }
@@ -76,7 +78,9 @@ public class VerticalScalabilityTest extends VmmTestBase{
         }
         
         //Scale confirmation
-        vmm.confirmResize(vmId);
+        if(vmm.getVm(vmId).getState().equals("VERIFY_RESIZE")){
+            vmm.confirmResize(vmId);
+        }
         
         while(vmm.getVm(vmId).getState().equals("VERIFY_RESIZE") && loopIsAlive()) {
             logger.info("Waiting confirmResize to finish...");
@@ -84,6 +88,53 @@ public class VerticalScalabilityTest extends VmmTestBase{
         }
         
         vmScalated = vmm.getVm(vmId);
+        assertEquals("ACTIVE", vmScalated.getState());
+        assertEquals(vmScaleRequirements.getCpus(), vmScalated.getCpus());
+        assertEquals(vmScaleRequirements.getDiskGb(), vmScalated.getDiskGb());
+        assertEquals(vmScaleRequirements.getRamMb(), vmScalated.getRamMb());
+        assertEquals(vmScaleRequirements.getSwapMb(), vmScalated.getSwapMb());
+    }
+    
+    public void testDeployAndScaleAutoConfirm() throws Exception {
+        VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
+        
+        VmRequirements vmScaleRequirements = new VmRequirements( 2, 512, 2, 32);
+        vmScaleRequirements.setAutoConfirm(true);
+        
+        List<Node> nodes = new ArrayList<Node>();
+        for (Node node : vmm.getNodes()) {
+            if( node.matchesRequirements(vmDeployRequirements) &&
+                node.matchesRequirements(vmScaleRequirements)){
+                nodes.add(node);
+            }
+		}
+        
+        assertTrue("Can't run test with less than 1 compute nodes with enough resources!", 
+            nodes.size() >= 1);
+        
+        String vmName = "deployAndScaleTest01";
+        String computeNode01 = nodes.get(0).getHostname();
+        
+        //Deploy
+        logger.info("Deploying '" + vmName + "' at " + computeNode01 + "...");
+        Vm vm = new Vm(vmName, VMMConf.imageId, vmDeployRequirements, null, "dst01", "", "sla", computeNode01);
+		List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
+		VmDeployed vmd = vmm.getVm(deployedVms.get(0));
+        vmId = vmd.getId();
+        
+        assertEquals("ACTIVE", vmd.getState());
+        assertEquals(computeNode01, vmd.getHostName());
+        assertEquals(vmDeployRequirements.getCpus(), vmd.getCpus());
+        assertEquals(vmDeployRequirements.getDiskGb(), vmd.getDiskGb());
+        assertEquals(vmDeployRequirements.getRamMb(), vmd.getRamMb());
+        assertEquals(vmDeployRequirements.getSwapMb(), vmd.getSwapMb());
+        
+        //Scale
+        logger.info("Deployed " + vmName + " with id:" + vmId + 
+            ". Scaling VM to " + computeNode01 + " with ...");
+        vmm.resize(vmId, vmScaleRequirements);
+        
+        VmDeployed vmScalated = vmm.getVm(vmId);
         assertEquals("ACTIVE", vmScalated.getState());
         assertEquals(vmScaleRequirements.getCpus(), vmScalated.getCpus());
         assertEquals(vmScaleRequirements.getDiskGb(), vmScalated.getDiskGb());
