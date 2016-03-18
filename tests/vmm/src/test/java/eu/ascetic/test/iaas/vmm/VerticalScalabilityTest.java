@@ -112,7 +112,7 @@ public class VerticalScalabilityTest extends VmmTestBase{
         assertTrue("Can't run test with less than 1 compute nodes with enough resources!", 
             nodes.size() >= 1);
         
-        String vmName = "deployAndScaleTest01";
+        String vmName = "deployAndScaleTest02";
         String computeNode01 = nodes.get(0).getHostname();
         
         //Deploy
