@@ -252,7 +252,9 @@ public class EnergyModellerQueueServiceManager {
 		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
 		                    
 		                    // M. Fontanella - 09 Feb 2016 - begin
-		                    double value = (double) userData.get("value");
+		                    // M. Fontanella - 21 Mar 2016 - begin
+		                    double value = Double.valueOf(userData.get("value").toString());
+		                    // M. Fontanella - 21 Mar 2016 - end
 		                    long ts =  Long.valueOf(userData.get("timestamp").toString());
 		                    // TODO Ask to insert provider id in topic
 		                    // storeMeasurement(topic[x], topic[1], ts, value, topic[3]);

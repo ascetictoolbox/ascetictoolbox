@@ -47,10 +47,13 @@ public class EMQueuePEM {
 			//	paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
 			//	iaasQm.setup("192.168.0.8:32778", "admin", "admin");
 			// stable env
-			paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
-			iaasQm.setup("192.168.0.8:32778", "admin", "admin");
-			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
-			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
+			//MAXIM: paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
+			//MAXIM: iaasQm.setup("192.168.0.8:32778", "admin", "admin");
+			paasQm.setup("192.168.3.16:5673", "guest", "guest", "PEMENERGY");
+			iaasQm.setup("192.168.3.17:5673", "guest", "guest");
+			
+			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
+			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
 			// M. Fontanella - 05 Feb 2016 - end
 			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler);
 			queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.*");

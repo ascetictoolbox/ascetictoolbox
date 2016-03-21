@@ -99,12 +99,12 @@ public class AmqpClient {
 		LOGGER.info("Connection param"+topicName);
 		
 		javax.naming.Context context = new InitialContext(properties);
-
+		
         factory = (ConnectionFactory) context.lookup(connectionJNDIName);
         connection = factory.createConnection(this.user, this.password);
         connection.setExceptionListener(new MyExceptionListener());
         connection.start();
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
 		
 		// Create a Session for each queue

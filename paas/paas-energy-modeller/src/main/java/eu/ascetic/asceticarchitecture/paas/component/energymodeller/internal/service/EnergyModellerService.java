@@ -646,7 +646,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
                             int count = eventService.getAllEventsNumber(providerid, applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
                             // M. Fontanella - 11 Jan 2016 - end
                             LOGGER.info(energy+"it has been with other "+count);
-                            if (count>0){
+                            // M. Fontanella - 21 Mar 2016 - begin
+                            // if (count>0){
+                            if (count>1){
+                            // M. Fontanella - 21 Mar 2016 - end
                                     double event_delta = de.getEndtime() - de.getBegintime();
                                     // M. Fontanella - 08 Feb 2016 - begin
                                     // List<Long> split = eventService.getAllDeltas(providerid, applicationid, vmid, eventid, de.getBegintime(), de.getEndtime());
@@ -705,7 +708,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				int count = eventService.getAllEventsNumber(providerid, applicationid, translated, eventid, de.getBegintime(), de.getEndtime());
 				// M. Fontanella - 11 Jan 2016 - end
 				LOGGER.info(energy+"it has been with other "+count);
-				if (count>0){
+				// M. Fontanella - 21 Mar 2016 - begin
+				//if (count>0){
+				if (count>1){
+				// M. Fontanella - 21 Mar 2016 - end
 					energy = energy/count;
 					power=power/count;
 					LOGGER.info("the energy has been split between "+count + "events" );
