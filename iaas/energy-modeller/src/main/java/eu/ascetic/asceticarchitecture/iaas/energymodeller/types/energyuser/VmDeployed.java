@@ -16,7 +16,9 @@
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents an energy user of the ASCETiC project and in particular
@@ -31,7 +33,7 @@ import java.util.Objects;
 public class VmDeployed extends VM {
 
     private int id;
-    private String name;    
+    private String name;
     private String ipAddress;
     private Host allocatedTo;
     private String state;
@@ -71,14 +73,15 @@ public class VmDeployed extends VM {
         this.created = created;
         this.allocatedTo = allocatedTo;
     }
-    
+
     /**
      * This takes a previously uninstantiated VM and adds the additional
      * information to represent the newly created VM.
-     * @param vm the VM that was previously uninstantiated and without identity 
+     *
+     * @param vm the VM that was previously uninstantiated and without identity
      * information.
-     * @param id The id of the VM as known by the infrastructure monitor used
-     * by the energy modeller.
+     * @param id The id of the VM as known by the infrastructure monitor used by
+     * the energy modeller.
      * @param name The name of the VM as known by the source of information by
      * the energy modeller.
      */
@@ -179,6 +182,20 @@ public class VmDeployed extends VM {
     }
 
     /**
+     * This returns the time in seconds that have passed since this VM was booted.
+     * @return The time in seconds since boot. This returns -1 if the created date
+     * is unknown.
+     */
+    public long getTimeFromBoot() {
+        if (created == null) {
+            return -1;
+        }
+        long currentTime = new GregorianCalendar().getTimeInMillis();
+        long bootTimeMilliSecs = created.getTimeInMillis();
+        return TimeUnit.MILLISECONDS.toSeconds(currentTime - bootTimeMilliSecs);
+    }
+
+    /**
      * This indicates which host this VM is allocated to.
      *
      * @return the allocatedTo The host this vm is allocated to
@@ -195,10 +212,11 @@ public class VmDeployed extends VM {
     public void setAllocatedTo(Host allocatedTo) {
         this.allocatedTo = allocatedTo;
     }
-    
+
     /**
-     * This returns the idle power consumption of this VM given it's host's 
-     * idle power consumption and the amount of VMs that are on the same host.
+     * This returns the idle power consumption of this VM given it's host's idle
+     * power consumption and the amount of VMs that are on the same host.
+     *
      * @param vmCount The count of VMs to share the energy between
      * @return The idle power consumption of a VM given the count of other VMs
      * present.
@@ -208,7 +226,7 @@ public class VmDeployed extends VM {
             return 0;
         }
         return getAllocatedTo().getIdlePowerConsumption() / ((double) vmCount);
-    }    
+    }
 
     @Override
     public boolean equals(Object obj) {
