@@ -45,11 +45,11 @@ public class DeploymentInfo {
 	
 	Charges TotalCharges = new Charges();
 	
-	Charges energyCharges= new Charges();;
+	Charges energyCharges= new Charges();
 	
-	Charges resourceCharges= new Charges();;
+	Charges resourceCharges= new Charges();
 	
-	Charges totalIaaSCharges= new Charges();;
+	Charges totalIaaSCharges= new Charges();
 
 	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
 	
