@@ -15,8 +15,12 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -245,5 +249,33 @@ public class VmDeployed extends VM {
         hash = 97 * hash + Objects.hashCode(this.name);
         return hash;
     }
+    
+    /**
+     * This casts a vm deployed collection into a vm collection.
+     *
+     * @param virtualMachines The virtual machine collection to cast into its
+     * parent type.
+     * @return The collection of vms in its super type. This is backed by a
+     * hashset.
+     */
+    public static Collection<VM> castToSuperType(Collection<VmDeployed> virtualMachines) {
+        Collection<VM> answer = new HashSet<>();
+        answer.addAll(virtualMachines);
+        return answer;
+    }
+
+    /**
+     * This casts a vm deployed list into a vm list.
+     *
+     * @param virtualMachines The virtual machine list to cast into its parent
+     * type.
+     * @return The list of vms in its super type. This is backed by an array
+     * list.
+     */
+    public static List<VM> castToSuperType(List<VmDeployed> virtualMachines) {
+        List<VM> answer = new ArrayList<>();
+        answer.addAll(virtualMachines);
+        return answer;
+    }    
 
 }

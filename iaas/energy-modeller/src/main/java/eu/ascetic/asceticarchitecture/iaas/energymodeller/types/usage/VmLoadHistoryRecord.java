@@ -24,8 +24,8 @@ package eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage;
  */
 public class VmLoadHistoryRecord {
 
-    private final double utilisation;
-    private final double stdDev;
+    private double utilisation;
+    private double stdDev;
 
     /**
      * This creates an average cpu utilisation record.
@@ -57,6 +57,23 @@ public class VmLoadHistoryRecord {
      */
     public double getStdDev() {
         return stdDev;
+    }
+
+    /**
+     * This sets the average cpu utilisation data for this record.
+     * @param utilisation the utilisation to set
+     */
+    public void setUtilisation(double utilisation) {
+        this.utilisation = utilisation;
+    }
+
+    /*
+     * This sets the population standard deviation and is aimed at showing
+     * how good the average is an estimator of the load.
+     * @param stdDev the stdDev to set
+     */
+    public void setStdDev(double stdDev) {
+        this.stdDev = stdDev;
     }
 
 }
