@@ -60,6 +60,8 @@ public class DataGatherer implements Runnable {
     private boolean performDataGathering = false;
     private boolean loggerConsiderIdleEnergy = true;
     private VmEnergyUsageLogger vmUsageLogger = null;
+    private boolean useWorkloadCache = false;
+    private WorkloadStatisticsCache workloadCache = null;
 
     /**
      * This creates a data gather component for the energy modeller.
@@ -92,7 +94,12 @@ public class DataGatherer implements Runnable {
             config.setProperty("iaas.energy.modeller.data.gatherer.log.vms.filename", loggerOutputFile);
             loggerConsiderIdleEnergy = config.getBoolean("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
             config.setProperty("iaas.energy.modeller.data.gatherer.log.consider_idle_energy", loggerConsiderIdleEnergy);
-
+            useWorkloadCache = config.getBoolean("iaas.energy.modeller.data.gatherer.log.use_workload_cache", useWorkloadCache);
+            config.setProperty("iaas.energy.modeller.data.gatherer.log.use_workload_cache", useWorkloadCache);
+            if (useWorkloadCache) {
+                workloadCache = WorkloadStatisticsCache.getInstance();
+                workloadCache.setInUse(true);
+            }
         } catch (ConfigurationException ex) {
             Logger.getLogger(DataGatherer.class.getName()).log(Level.INFO, "Error loading the configuration of the IaaS energy modeller", ex);
         }
@@ -206,24 +213,26 @@ public class DataGatherer implements Runnable {
         }
         return answer;
     }
-    
+
     /**
      * This returns the overhead from the general purpose hosts that provide
      * services to other hosts' VMs. i.e. DFS, or cooling etc.
-     * @return The power consumption of all general purpose nodes (i.e. not 
+     *
+     * @return The power consumption of all general purpose nodes (i.e. not
      * hypervisors).
      */
     public double getGeneralPurposeHostsPowerConsumption() {
         return getGeneralPurposeHostsPowerConsumption(null);
-    }    
-    
+    }
+
     /**
      * This returns the overhead from the general purpose hosts that provide
      * services to other hosts' VMs. i.e. DFS, or cooling etc.
-     * @param generalNodeMeasurements The list of host measurements for the 
-     * general purpose nodes. If null the current list of known hosts will be used
-     * instead.
-     * @return  The power consumption of current general purpose hosts.
+     *
+     * @param generalNodeMeasurements The list of host measurements for the
+     * general purpose nodes. If null the current list of known hosts will be
+     * used instead.
+     * @return The power consumption of current general purpose hosts.
      */
     private double getGeneralPurposeHostsPowerConsumption(List<HostMeasurement> generalNodeMeasurements) {
         if (generalNodeMeasurements == null) {
@@ -317,7 +326,7 @@ public class DataGatherer implements Runnable {
             }
         }
     }
-    
+
     /**
      * This method gathers and writes host measurements to disk and to the
      * background database for future usage.
@@ -346,6 +355,9 @@ public class DataGatherer implements Runnable {
                 HostVmLoadFraction fraction = new HostVmLoadFraction(host, measurement.getClock());
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Obtaining specific vm information");
                 List<VmMeasurement> vmMeasurements = datasource.getVmData(vms);
+                if (useWorkloadCache) {
+                    workloadCache.addVMToStatistics(vmMeasurements);
+                }
                 fraction.setFraction(vmMeasurements);
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Writing out vm information");
                 database.writeHostVMHistoricData(host, measurement.getClock(), fraction);
@@ -451,7 +463,7 @@ public class DataGatherer implements Runnable {
             }
         }
         return answer;
-    } 
+    }
 
     /**
      * This sets and refreshes the knownHosts list in the data gatherer.
@@ -474,12 +486,12 @@ public class DataGatherer implements Runnable {
     }
 
     /**
-     * This compares a list of general purpose nodes (such as storage) 
-     * that has been found to the known list of general nodes.
+     * This compares a list of general purpose nodes (such as storage) that has
+     * been found to the known list of general nodes.
      *
      * @param newList The new list of general purpose nodes.
-     * @return The list of general purpose nodes that were otherwise unknown 
-     * to the data gatherer.
+     * @return The list of general purpose nodes that were otherwise unknown to
+     * the data gatherer.
      */
     private List<GeneralPurposePowerConsumer> discoverNewGeneralPurposeNode(List<GeneralPurposePowerConsumer> newList) {
         List<GeneralPurposePowerConsumer> answer = new ArrayList<>();
@@ -566,13 +578,13 @@ public class DataGatherer implements Runnable {
      * This provides the list of known hosts that have been tasked for general
      * purposes of the datacenter. i.e. Distributed file system etc.
      *
-     * @return The list of known hosts that are allocated to general tasks,
-     * i.e. supporting roles i.e. not hypervisors.
+     * @return The list of known hosts that are allocated to general tasks, i.e.
+     * supporting roles i.e. not hypervisors.
      */
     public HashMap<String, GeneralPurposePowerConsumer> getGeneralPurposeHostList() {
         return knownGeneralPurposeNodes;
     }
-    
+
     /**
      * This gets the named host from the known host list.
      *

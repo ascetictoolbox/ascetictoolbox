@@ -15,13 +15,14 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.WorkloadStatisticsCache;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.VmLoadHistoryRecord;
 import java.util.Collection;
 
 /**
- * This looks at an application tag and returns the average CPU workload induced 
+ * This looks at an application tag and returns the average CPU workload induced
  * by VMs as its estimate of CPU workload.
  *
  * @author Richard Kavanagh
@@ -55,10 +56,13 @@ public class BasicAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadE
     @Override
     public VmLoadHistoryRecord getAverageCpuUtilisation(VM vm) {
         double utilisation = 0.0;
-        double stdDev = 0.0;        
+        double stdDev = 0.0;
         if (vm.getApplicationTags().isEmpty()) {
-            return new VmLoadHistoryRecord(stdDev, stdDev);
+            return new VmLoadHistoryRecord(utilisation, stdDev);
         }
+        if (WorkloadStatisticsCache.getInstance().isInUse()) {
+            return new VmLoadHistoryRecord(WorkloadStatisticsCache.getInstance().getUtilisationforTags(vm), -1);
+        }        
         for (String tag : vm.getApplicationTags()) {
             VmLoadHistoryRecord answer = database.getAverageCPUUtilisationTag(tag);
             utilisation = utilisation + answer.getUtilisation();

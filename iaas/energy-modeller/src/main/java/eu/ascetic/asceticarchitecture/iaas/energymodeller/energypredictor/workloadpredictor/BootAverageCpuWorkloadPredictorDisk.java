@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.WorkloadStatisticsCache;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -66,6 +67,9 @@ public class BootAverageCpuWorkloadPredictorDisk extends AbstractVMHistoryWorklo
         if (vm.getDiskImages().isEmpty()) {
             return new VmLoadHistoryRecord(utilisation, stdDev);
         }
+        if (WorkloadStatisticsCache.getInstance().isInUse()) {
+            return new VmLoadHistoryRecord(WorkloadStatisticsCache.getInstance().getBootUtilisationforDisks(vm), -1);
+        }         
         for (VmDiskImage disk : vm.getDiskImages()) {
             if (vm.getClass().equals(VmDeployed.class)) {
                 List<VmLoadHistoryBootRecord> bootRecord = database.getAverageCPUUtilisationBootTraceForDisk(

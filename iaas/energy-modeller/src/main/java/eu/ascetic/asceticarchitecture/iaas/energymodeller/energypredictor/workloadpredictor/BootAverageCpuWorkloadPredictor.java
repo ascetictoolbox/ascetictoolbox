@@ -15,6 +15,7 @@
  */
 package eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.workloadpredictor;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.datastore.WorkloadStatisticsCache;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
@@ -65,6 +66,9 @@ public class BootAverageCpuWorkloadPredictor extends AbstractVMHistoryWorkloadEs
         if (vm.getApplicationTags().isEmpty()) {
             return new VmLoadHistoryRecord(utilisation, stdDev);
         }
+        if (WorkloadStatisticsCache.getInstance().isInUse()) {
+            return new VmLoadHistoryRecord(WorkloadStatisticsCache.getInstance().getBootUtilisationforTags(vm), -1);
+        }         
         for (String tag : vm.getApplicationTags()) {
             if (vm.getClass().equals(VmDeployed.class)) {
                 List<VmLoadHistoryBootRecord> bootRecord = 
