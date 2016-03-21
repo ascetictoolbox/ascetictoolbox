@@ -20,11 +20,17 @@ import java.sql.Timestamp;
 public class EnergyModellerMonitoring {
 
 	private String monitoringid;
+	// M. Fontanella - 20 Jan 2016 - begin
+	private String providerid;
+	// M. Fontanella - 20 Jan 2016 - end
 	private String applicationid;
 	private String deploymentid;
-	private String type;
-	private Timestamp started;
-	private Timestamp ended;
+	// M. Fontanella - 10 Feb 2016 - begin
+	// M. Fontanella - 12 Feb 2016 - begin
+	private long start;
+	private long stop;
+	// M. Fontanella - 12 Feb 2016 - end
+	// M. Fontanella - 10 Feb 2016 - end
 	private String events;
 	private boolean status;
 	// TODO will store data for future reference as: energy estimation ecc..
@@ -34,6 +40,14 @@ public class EnergyModellerMonitoring {
 	public void setMonitoringid(String monitoringid) {
 		this.monitoringid = monitoringid;
 	}
+	// M. Fontanella - 20 Jan 2016 - begin
+	public String getProviderid() {
+		return providerid;
+	}
+	public void setProviderid(String providerid) {
+		this.providerid = providerid;
+	}
+	// M. Fontanella - 20 Jan 2016 - end
 	public String getApplicationid() {
 		return applicationid;
 	}
@@ -46,29 +60,27 @@ public class EnergyModellerMonitoring {
 	public void setDeploymentid(String deploymentid) {
 		this.deploymentid = deploymentid;
 	}
-	public Timestamp getStarted() {
-		return started;
+	// M. Fontanella - 10 Feb 2016 - begin
+	// M. Fontanella - 12 Feb 2016 - begin
+	public long getStart() {
+		return start;
 	}
-	public void setStarted(Timestamp started) {
-		this.started = started;
+	public void setStart(long start) {
+		this.start = start;
 	}
-	public Timestamp getEnded() {
-		return ended;
+	public long getStop() {
+		return stop;
 	}
-	public void setEnded(Timestamp ended) {
-		this.ended = ended;
+	public void setStop(long stop) {
+		this.stop = stop;
 	}
+	// M. Fontanella - 12 Feb 2016 - end
+	// M. Fontanella - 10 Feb 2016 - end
 	public boolean isStatus() {
 		return status;
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
 	}
 	
 	public String getEvents() {

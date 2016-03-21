@@ -31,38 +31,49 @@ public class EventDataAggregatorService {
 	
 	private static final Logger logger = Logger.getLogger(EventDataAggregatorService.class);
 
-
-	public List<DataEvent> getEvents(String app, String depl, String vmid, String event, Timestamp start,Timestamp end) {
-		eventDataManager = new EventDataService(eventCollectorService.generateEventData(app, depl, vmid, event));
+// M. Fontanella - 11 Jan 2016 - begin
+	public List<DataEvent> getEvents(String provider, String app, String depl, String vmid, String event, Timestamp start,Timestamp end) {
+		eventDataManager = new EventDataService(eventCollectorService.generateEventData(provider, app, depl, vmid, event));
+		// M. Fontanella - 11 Jan 2016 - end
 		if((start==null)&&(end==null)){
-			List<DataEvent> events = eventDataManager.getByDeployId(app,depl,vmid,event);
+			// M. Fontanella - 11 Jan 2016 - begin
+			List<DataEvent> events = eventDataManager.getByDeployId(provider,app,depl,vmid,event);
+			// M. Fontanella - 11 Jan 2016 - end
 			logger.info("##################### Total events "+events.size()+" from " + vmid + " event" + event);
 			return events;
 		} else {
-			List<DataEvent> events = eventDataManager.getByDeployIdTime(app,depl,vmid,event,start,end);
+			// M. Fontanella - 11 Jan 2016 - begin
+			List<DataEvent> events = eventDataManager.getByDeployIdTime(provider,app,depl,vmid,event,start,end);
+			// M. Fontanella - 11 Jan 2016 - end
 			logger.info("##################### Total is "+events.size());
 			return events;
 		}
 	}
-	
-//	public int getEventsNumber(String app, String vmid, String event, long start,long end) {
+
+	// M. Fontanella - 11 Jan 2016 - begin
+//	public int getEventsNumber(String provider, String app, String vmid, String event, long start,long end) {
 //		
-//		return eventDataManager.getEventsInTimeFrame(app, vmid, event, start, end);
+//		return eventDataManager.getEventsInTimeFrame(provider, app, vmid, event, start, end);
+		// M. Fontanella - 11 Jan 2016 - end
 //		
 //		
 //	}
 	
-	public int getAllEventsNumber(String app, String vmid, String event, long start,long end) {
-		
-		return eventDataManager.getAllEventsInTimeFrame(app, vmid, event, start, end);
+	// M. Fontanella - 11 Jan 2016 - begin
+	public int getAllEventsNumber(String provider, String app, String vmid, String event, long start,long end) {
+				
+		return eventDataManager.getAllEventsInTimeFrame(provider, app, vmid, event, start, end);
+		// M. Fontanella - 11 Jan 2016 - end
 		
 		
 		
 	}
 	
-	public List<Long> getAllDeltas(String app, String vmid, String event, long start,long end) {
-		
-		return eventDataManager.getAllDeltas(app, vmid, event, start, end);
+	// M. Fontanella - 11 Jan 2016 - begin
+	public List<Long> getAllDeltas(String provider, String app, String vmid, String event, long start,long end) {
+				
+		return eventDataManager.getAllDeltas(provider, app, vmid, event, start, end);
+		// M. Fontanella - 11 Jan 2016 - end
 		
 		
 	}

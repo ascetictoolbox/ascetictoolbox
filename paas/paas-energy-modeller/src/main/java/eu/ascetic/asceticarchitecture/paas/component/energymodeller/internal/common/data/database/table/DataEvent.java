@@ -16,11 +16,16 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table;
 
 
-//application id | deployment id | event id |  start time | end time | event load (cpu/ram usage) | energy consumed total | min | max | avg
+// M. Fontanella - 11 Jan 2016 - begin
+//provider id | application id | deployment id | event id |  start time | end time | event load (cpu/ram usage) | energy consumed total | min | max | avg
+// M. Fontanella - 11 Jan 2016 - end
 
 
 public class DataEvent {
 	
+	// M. Fontanella - 11 Jan 2016 - begin
+	private String providerid;
+	// M. Fontanella - 11 Jan 2016 - end
 	private String applicationid;
 	private String deploymentid;
 	private String vmid;
@@ -29,6 +34,15 @@ public class DataEvent {
 	private long begintime;
 	private long endtime;
 	private double energy;
+	
+	// M. Fontanella - 11 Jan 2016 - begin
+	public String getProviderid() {
+		return providerid;
+	}
+	public void setProviderid(String providerid) {
+		this.providerid = providerid;
+	}
+	// M. Fontanella - 11 Jan 2016 - end
 	
 	public String getEventid() {
 		return eventid;

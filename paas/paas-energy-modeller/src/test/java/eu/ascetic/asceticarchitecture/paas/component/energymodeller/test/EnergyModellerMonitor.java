@@ -35,7 +35,7 @@ public class EnergyModellerMonitor {
 	
 	@BeforeClass
 	public static void setup() {
-		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
+		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/mfontanella/new/lavoro/ascetic/config/testconfig.properties");
 	}
 	
 //	@Test

@@ -139,14 +139,25 @@ public class EnergyModellerQueueServiceManager {
 	                    
 	                    if (topic[6].equals("DEPLOYED")){
 	                    	VirtualMachine vm = new VirtualMachine();
-		                    vm.setApp_id( topic[1]);
-		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
-		                    vm.setVm_id(Integer.parseInt(topic[5]));
+	                    	// M. Fontanella - 08 Feb 2016 - begin
+	                    	// TODO Ask to insert provider id in topic
+							// vm.setProviderid( topic[x]);
+	                    	vm.setProviderid( "00000");
+	                    	// M. Fontanella - 08 Feb 2016 - end
+		                    vm.setApplicationid( topic[1]);
+		                    // M. Fontanella - 10 Feb 2016 - begin
+		                    // vm.setDeploymentid(Integer.parseInt(topic[3]));
+		                    vm.setDeploymentid( topic[3]);
+		                    // vm.setVmid(Integer.parseInt(topic[5]));
+		                    vm.setVmid(topic[5]);
+		                    // M. Fontanella - 10 Feb 2016 - end
 		                    Date date = new Date();
 	                    	vm.setStart(date.getTime());
 	                    	SqlSession session = appRegistry.getSession();
 		                	AppRegistryMapper mapper = session.getMapper(AppRegistryMapper.class); 
-	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
+							// M. Fontanella - 20 Jan 2016 - begin
+	                    	int checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());
+							// M. Fontanella - 20 Jan 2016 - end
 	                    	if (checkvm>0){
 	                    		LOGGER.warn("Received again a deployd message for an app already registered");
 	                    		
@@ -167,7 +178,7 @@ public class EnergyModellerQueueServiceManager {
 		                    
 		                    
 		                    String iaasid = jsontext.findValue("iaasVmId").textValue();
-	                    	vm.setIaas_id(iaasid);
+	                    	vm.setIaasid(iaasid);
 	                    	
 	                    	mapper.createVM(vm);
 	                    	session.close();
@@ -176,15 +187,25 @@ public class EnergyModellerQueueServiceManager {
 	                    if (topic[6].equals("DELETED")){
 	                    	
 	                    	VirtualMachine vm = new VirtualMachine();
-		                    vm.setApp_id( topic[1]);
-		                    vm.setDeploy_id(Integer.parseInt(topic[3]));
-		                    vm.setVm_id(Integer.parseInt(topic[5]));
+							// M. Fontanella - 08 Feb 2016 - begin
+	                    	// TODO Ask to insert provider id in topic
+							// vm.setProviderid( topic[x]);
+	                    	vm.setProviderid( "00000");
+	                    	// M. Fontanella - 08 Feb 2016 - end
+		                    vm.setApplicationid( topic[1]);
+		                    // M. Fontanella - 10 Feb 2016 - begin
+		                    // vm.setDeploymentid(Integer.parseInt(topic[3]));
+		                    // vm.setDeploymentid( topic[3]);
+		                    vm.setVmid(topic[5]);
+		                    // M. Fontanella - 10 Feb 2016 - end
 		                    Date date = new Date();
 	                    	vm.setStop(date.getTime());
 	                    	SqlSession session = appRegistry.getSession();
 		                	AppRegistryMapper mapper = session.getMapper(AppRegistryMapper.class); 
-	                    	int checkvm = mapper.checkVM(vm.getApp_id(), vm.getDeploy_id(), vm.getVm_id());
-	                    	LOGGER.info("Received DELETED for VM"+vm.getApp_id()+ vm.getDeploy_id()+ vm.getVm_id());
+							// M. Fontanella - 20 Jan 2016 - begin
+	                    	int checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());
+	                    	LOGGER.info("Received DELETED for VM"+vm.getProviderid()+ vm.getApplicationid()+ vm.getDeploymentid()+ vm.getVmid());
+							// M. Fontanella - 20 Jan 2016 - end
 	                    	if (checkvm==0){
 	                    		LOGGER.warn("Received a message for an app not being created");
 	                    		return;
@@ -227,110 +248,16 @@ public class EnergyModellerQueueServiceManager {
 		                    String[] topic = dest.split("\\.");
 		                   
 		                    LOGGER.debug("this is for "+topic[3]);
-		                    DataConsumption dc= new DataConsumption();
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    Map<String,Object> userData = jmapper.readValue(payload, Map.class);
 		                    
-		                    if ((topic[3].equals("power"))){
-		                    	//LOGGER.info("The topic is power");
-		                    	LOGGER.debug("Received power " +topic[3]+topic[1] );
-			                    double value = (double) userData.get("value");
-			                    //LOGGER.info("Received ts" +Long.valueOf(userData.get("timestamp").toString() ));
-			                    long ts =  Long.valueOf(userData.get("timestamp").toString());
-			                    if (ts <=0){
-			                    	LOGGER.warn("Received non valid measure" +ts );
-			                    	return;
-			                    }
-			                    if (value <0){
-			                    	LOGGER.warn("Received non valid measure" +value);
-			                    	return;
-			                    }
-			                    // TODO now is iaas vm id later this will be the real paas id a	
-			                    SqlSession appsession = appRegistry.getSession();
-			                	AppRegistryMapper appmapper = appsession.getMapper(AppRegistryMapper.class); 
-			                    int count = appmapper.checkIaaSVM(topic[1]);
-			                    appsession.close();
-			                    if (count==0){
-			                    	LOGGER.debug("Received  valid measure for a vm not in the registry"+topic[1]);
-			                    	return;
-			                    }
-			                    LOGGER.debug("Received power " +topic[3]+topic[1] );
-			                    dc.setVmid(topic[1] );
-			                    dc.setVmpower(value);
-			                    dc.setTime(ts);	
-			                    dc.setMetrictype("power");
-			                    SqlSession datasession = dataMapper.getSession();
-			                	DataConsumptionMapper datamapper = datasession.getMapper(DataConsumptionMapper.class); 
-			                	datamapper.createMeasurement(dc);
-			                	datasession.close();
-		                    } 
-		                    if ((topic[3].equals("cpu"))){
-		                    	double value = (double) userData.get("value");
-		                    	LOGGER.debug("Received cpu measure " +value);
-		                    	long ts =  Long.valueOf(userData.get("timestamp").toString());
-			                    if (ts <=0){
-			                    	LOGGER.warn("Received non valid measure" +ts );
-			                    	return;
-			                    }
-			                    if (value <0){
-			                    	LOGGER.warn("Received non valid measure" +value);
-			                    	return;
-			                    }
-			                    // TODO now is iaas vm id later this will be the real paas id a	
-			                    SqlSession appsession = appRegistry.getSession();
-			                	AppRegistryMapper appmapper = appsession.getMapper(AppRegistryMapper.class); 
-			                    int count = appmapper.checkIaaSVM(topic[1]);
-			                    appsession.close();
-			                    if (count==0){
-			                    	LOGGER.debug("Received  valid measure for a vm not in the registry"+topic[1]);
-			                    	return;
-			                    }
-			                    // TODO now is iaas vm id later this will be the real paas id a	
-			                    dc.setVmid(topic[1] );
-			                    dc.setVmcpu(value);
-			                    dc.setTime(ts);	
-			                    dc.setMetrictype("cpu");
-			                    SqlSession datasession = dataMapper.getSession();
-			                	DataConsumptionMapper datamapper = datasession.getMapper(DataConsumptionMapper.class); 
-			                	datamapper.createMeasurement(dc);
-			                	datasession.close();
-		                    }
-		                    
-		                    if ((topic[3].equals("memory"))){
-		                    	double value = Double.valueOf(userData.get("value").toString());
-		                    	LOGGER.debug("Received memory measure " +value);
-		                    	long ts =  Long.valueOf(userData.get("timestamp").toString());
-			                    if (ts <=0){
-			                    	LOGGER.warn("Received non valid measure" +ts );
-			                    	return;
-			                    }
-			                    if (value <0){
-			                    	LOGGER.warn("Received non valid measure" +value);
-			                    	return;
-			                    }
-			                    // TODO now is iaas vm id later this will be the real paas id a	
-			                    SqlSession appsession = appRegistry.getSession();
-			                	AppRegistryMapper appmapper = appsession.getMapper(AppRegistryMapper.class); 
-			                    int count = appmapper.checkIaaSVM(topic[1]);
-			                    appsession.close();
-			                    
-			                    if (count==0){
-			                    	LOGGER.debug("Received  valid measure for a vm not in the registry"+topic[1]);
-			                    	return;
-			                    }
-			                    // TODO now is iaas vm id later this will be the real paas id a	
-			                    dc.setVmid(topic[1] );
-
-			                    dc.setVmmemory(value);
-			                    dc.setTime(ts);	
-			                    dc.setMetrictype("memory");
-			                    SqlSession datasession = dataMapper.getSession();
-			                	DataConsumptionMapper datamapper = datasession.getMapper(DataConsumptionMapper.class); 
-			                	datamapper.createMeasurement(dc);
-			                	datasession.close();
-		                    	
-		                    }
-		                    
+		                    // M. Fontanella - 09 Feb 2016 - begin
+		                    double value = (double) userData.get("value");
+		                    long ts =  Long.valueOf(userData.get("timestamp").toString());
+		                    // TODO Ask to insert provider id in topic
+		                    // storeMeasurement(topic[x], topic[1], ts, value, topic[3]);
+		                    storeMeasurement("00000", topic[1], ts, value, topic[3]);
+		                    // M. Fontanella - 09 Feb 2016 - end
 		                	 
 		                }
 		            } catch (Exception e) {
@@ -338,6 +265,76 @@ public class EnergyModellerQueueServiceManager {
 		                e.printStackTrace();
 		            }
 		        }
+	        
+	        	// M. Fontanella - 09 Feb 2016 - begin
+	        	public void storeMeasurement(String providerid, String iaasvmid, long timestamp, double value, String measureType) {
+	        		
+	        		boolean isManagedMeasureType;
+	        		switch(measureType) {
+            		case "power":
+            			isManagedMeasureType = true;
+            			break;
+            		case "cpu":
+            			isManagedMeasureType = true;
+            			break;
+            		case "memory": 
+            			isManagedMeasureType = true;
+            			break;
+            		default:
+            			isManagedMeasureType = false;
+	        		}
+	        		
+	        		if (!isManagedMeasureType){
+                    	LOGGER.debug("Received  non valid measure type "+measureType);
+                    	return;
+                    }
+	        		
+	        		LOGGER.debug("Received "+measureType +" measure "+value );
+	        		
+                     if (timestamp <=0){
+                    	LOGGER.warn("Received non valid measure " +timestamp );
+                    	return;
+                    }
+                    if (value <0){
+                    	LOGGER.warn("Received non valid measure " +value);
+                    	return;
+                    }
+                    // TODO now is iaas vm id later this will be the real paas id a	
+                    SqlSession appsession = appRegistry.getSession();
+                	AppRegistryMapper appmapper = appsession.getMapper(AppRegistryMapper.class); 
+                    int count = appmapper.checkIaaSVM(iaasvmid);
+                    appsession.close();
+                    if (count==0){
+                    	LOGGER.debug("Received  valid measure for a vm not in the registry"+iaasvmid);
+                    	return;
+                    }
+                    
+                    // TODO now is iaas vm id later this will be the real paas id a
+                    DataConsumption dc= new DataConsumption();
+                    dc.setProviderid(providerid);
+                    dc.setVmid(iaasvmid);
+                    
+                    switch(measureType) {
+                		case "power":
+                			dc.setVmpower(value);
+                			break;
+                		case "cpu":
+                			dc.setVmcpu(value);
+                			break;
+                		case "memory": 
+                			dc.setVmmemory(value);
+                			break;
+                    }
+                                        
+                    dc.setTime(timestamp);	
+                    dc.setMetrictype(measureType);
+                    SqlSession datasession = dataMapper.getSession();
+                	DataConsumptionMapper datamapper = datasession.getMapper(DataConsumptionMapper.class); 
+                	datamapper.createMeasurement(dc);
+                	datasession.close();
+	        	}
+	        	// M. Fontanella - 09 Feb 2016 - end
+	        
 		};
 		
 		LOGGER.debug("Received "+measurementsTopic);

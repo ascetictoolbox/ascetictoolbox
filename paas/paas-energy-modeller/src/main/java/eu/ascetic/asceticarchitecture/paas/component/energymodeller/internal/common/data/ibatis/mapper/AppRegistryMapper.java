@@ -30,56 +30,72 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
  * represent data stored inside the database about application
  */
 public interface AppRegistryMapper {
+	  // M. Fontanella - 10 Feb 2016 - begin
+	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE applicationid = #{applicationid}")
+	  List<VirtualMachine> selectByApp(@Param("applicationid") String applicationid);
+		  
+	  // M. Fontanella - 08 Feb 2016 - begin
+	  @Select("SELECT providerid FROM APPLICATION_REGISTRY WHERE deploymentid = #{deploymentid} GROUP BY providerid")
+	  String selectProvByDeploy(@Param("deploymentid") String deploymentid);
 
-	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id}")
-	  List<VirtualMachine> selectByApp(@Param("app_id") String app_id);
-	  
-	  @Select("SELECT app_id FROM APPLICATION_REGISTRY WHERE deploy_id = #{deploy_id} GROUP BY app_id")
-	  String selectAppByDeploy(@Param("deploy_id") String deploy_id);
+	  // M. Fontanella - 08 Feb 2016 - end
+	  @Select("SELECT applicationid FROM APPLICATION_REGISTRY WHERE deploymentid = #{deploymentid} GROUP BY applicationid")
+	  String selectAppByDeploy(@Param("deploymentid") String deploymentid);
 
-	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id}")
-	  List<VirtualMachine> selectByDeploy(@Param("app_id") String app_id,@Param("deploy_id") int deploy);
+	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE applicationid = #{applicationid} and deploymentid = #{deploymentid}")
+	  List<VirtualMachine> selectByDeploy(@Param("applicationid") String applicationid,@Param("deploymentid") String deploymentid);
 	  
-	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
-	  VirtualMachine selectByVmp(@Param("app_id") String app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
+	  // M. Fontanella - 20 Jan 2016 - begin
+	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  VirtualMachine selectByVmp(@Param("providerid") String providerid,@Param("applicationid") String applicationid,@Param("deploymentid") String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 20 Jan 2016 - end
 	  
-	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE iaas_id = #{iaas_id} ")
-	  VirtualMachine selectByIaaSId(@Param("iaas_id") String iaas_id);
+	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE iaasid = #{iaasid} ")
+	  VirtualMachine selectByIaaSId(@Param("iaasid") String iaasid);
 	  
-	  @Insert("INSERT INTO APPLICATION_REGISTRY (app_id,deploy_id,vm_id,start,stop,profile_id,model_id,iaas_id) VALUES(#{app_id},#{deploy_id},#{vm_id},#{start},#{stop},#{profile_id},#{model_id},#{iaas_id})")
+	  // M. Fontanella - 20 Jan 2016 - begin
+	  @Insert("INSERT INTO APPLICATION_REGISTRY (providerid,applicationid,deploymentid,vmid,start,stop,profileid,modelid,iaasid) VALUES(#{providerid},#{applicationid},#{deploymentid},#{vmid},#{start},#{stop},#{profileid},#{modelid},#{iaasid})")
 	  void createVM(VirtualMachine vm);
 	  
-	  @Update("UPDATE APPLICATION_REGISTRY set stop=#{stop} WHERE app_id=#{app_id}  and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  @Update("UPDATE APPLICATION_REGISTRY set stop=#{stop} WHERE providerid=#{providerid} and applicationid=#{applicationid}  and deploymentid = #{deploymentid} and vmid = #{vmid} ")
 	  void stopVM(VirtualMachine vm);
 	  
-	  @Update("UPDATE APPLICATION_REGISTRY set model_id=#{model_id} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  //@Update("UPDATE APPLICATION_REGISTRY set modelid=#{modelid} WHERE #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  @Update("UPDATE APPLICATION_REGISTRY set modelid=#{modelid} WHERE providerid=#{providerid} and applicationid=#{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
 	  void setModel(VirtualMachine vm);
 	  
-	  @Update("UPDATE APPLICATION_REGISTRY set profile_id=#{profile_id} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
+	  //@Update("UPDATE APPLICATION_REGISTRY set profileid=#{profileid} WHERE #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  @Update("UPDATE APPLICATION_REGISTRY set profileid=#{profileid} WHERE providerid=#{providerid} and applicationid=#{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
 	  void setProfile(VirtualMachine vm);
 	  
-	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE app_id = #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
-	  int checkVM(@Param("app_id") String app_id,@Param("deploy_id") int deploy_id,@Param("vm_id") int vm_id);
+	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  int checkVM(@Param("providerid") String providerid,@Param("applicationid") String applicationid,@Param("deploymentid") String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 20 Jan 2016 - end
 	  
-	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE iaas_id = #{iaas_id} ")
-	  int checkIaaSVM(@Param("iaas_id") String iaas_id);
+	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE iaasid = #{iaasid} ")
+	  int checkIaaSVM(@Param("iaasid") String iaasid);
 	
-	  @Select("SELECT iaas_id FROM APPLICATION_REGISTRY WHERE deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
-	  String selectFromIaaSID(@Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id);
+	  @Select("SELECT iaasid FROM APPLICATION_REGISTRY WHERE deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  String selectFromIaaSID(@Param("deploymentid") String deploymentid,@Param("vmid") String vmid);
 	  
-	  @Update("UPDATE APPLICATION_REGISTRY set energy=#{energy} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id} ")
-	  void updateEnergy(@Param("app_id") String app_id, @Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id,@Param("energy") double energy);
+	  // M. Fontanella - 20 Jan 2016 - begin
+	  //@Update("UPDATE APPLICATION_REGISTRY set energy=#{energy} WHERE #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  @Update("UPDATE APPLICATION_REGISTRY set energy=#{energy} WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  void updateEnergy(@Param("providerid") String providerid, @Param("applicationid") String applicationid, @Param("deploymentid") String deploymentid,@Param("vmid") String vmid,@Param("energy") double energy);
 
-	  @Update("UPDATE APPLICATION_REGISTRY set power=#{power} WHERE #{app_id} and deploy_id = #{deploy_id} and vm_id = #{vm_id}  ")
-	  void updatePower(@Param("app_id") String app_id, @Param("deploy_id") String deploy_id,@Param("vm_id") String vm_id,@Param("energy") double power);
-
-	  @Select("SELECT deploy_id FROM APPLICATION_REGISTRY where stop = 0 GROUP BY deploy_id")
+	  //@Update("UPDATE APPLICATION_REGISTRY set power=#{power} WHERE #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid}  ")
+	  @Update("UPDATE APPLICATION_REGISTRY set power=#{power} WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid}  ")
+	  void updatePower(@Param("providerid") String providerid, @Param("applicationid") String applicationid, @Param("deploymentid") String deploymentid,@Param("vmid") String vmid,@Param("energy") double power);
+	  // M. Fontanella - 20 Jan 2016 - end
+	  
+		  @Select("SELECT deploymentid FROM APPLICATION_REGISTRY where stop = 0 GROUP BY deploymentid")
 	  List<String> selectDeployments();
 	  
-	  @Select("SELECT vm_id FROM APPLICATION_REGISTRY where stop = 0 and deploy_id = #{deploy_id} GROUP BY deploy_id,vm_id")
-	  List<String> selectVMActiveperDeployment(@Param("deploy_id") String deploy_id);
+	  @Select("SELECT vmid FROM APPLICATION_REGISTRY where stop = 0 and deploymentid = #{deploymentid} GROUP BY deploymentid,vmid")
+	  List<String> selectVMActiveperDeployment(@Param("deploymentid") String deploymentid);
 	  
-	  @Select("SELECT vm_id FROM APPLICATION_REGISTRY where stop > 0 and deploy_id = #{deploy_id} GROUP BY deploy_id,vm_id")
-	  List<String> selectVMTerminatedperDeployment(@Param("deploy_id") String deploy_id);
-
+	  @Select("SELECT vmid FROM APPLICATION_REGISTRY where stop > 0 and deploymentid = #{deploymentid} GROUP BY deploymentid,vmid")
+	  List<String> selectVMTerminatedperDeployment(@Param("deploymentid") String deploymentid);
+	  // M. Fontanella - 10 Feb 2016 - end
+	  
 }

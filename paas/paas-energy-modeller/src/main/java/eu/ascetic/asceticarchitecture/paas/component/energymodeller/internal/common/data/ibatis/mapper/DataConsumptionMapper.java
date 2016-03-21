@@ -30,7 +30,9 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 public interface DataConsumptionMapper {
 	
 	// TODO when restored add deploymentid = #{deploymentid}
-	//application id | deployment id | start time | end time | event load (cpu/ram usage) | total energy consumed | min | max | avg
+	// M. Fontanella - 20 Jan 2016 - begin
+	//provider id | application id | deployment id | start time | end time | event load (cpu/ram usage) | total energy consumed | min | max | avg
+	// M. Fontanella - 20 Jan 2016 - end
 	  @Select("SELECT * FROM DATACONSUMPTION WHERE applicationid = #{applicationid} order by time asc")
 	  List<DataConsumption> selectByApp(@Param("applicationid")String applicationid);
 
@@ -39,13 +41,17 @@ public interface DataConsumptionMapper {
 	  
 	  @Select("SELECT * FROM DATACONSUMPTION WHERE vmid = #{vmid} and metrictype='power' order by time asc")
 	  List<DataConsumption> selectByVm(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
-	  	  
-	  @Insert("INSERT INTO DATACONSUMPTION (applicationid,deploymentid,vmid,metrictype,eventid,time,vmcpu,vmenergy,vmpower,vmmemory) VALUES(#{applicationid},#{deploymentid},#{vmid},#{metrictype},#{eventid},#{time},#{vmcpu},#{vmenergy},#{vmpower},#{vmmemory})")
+	 
+	  // M. Fontanella - 20 Jan 2016 - begin	 
+	  @Insert("INSERT INTO DATACONSUMPTION (providerid,applicationid,deploymentid,vmid,metrictype,eventid,time,vmcpu,vmenergy,vmpower,vmmemory) VALUES(#{providerid},#{applicationid},#{deploymentid},#{vmid},#{metrictype},#{eventid},#{time},#{vmcpu},#{vmenergy},#{vmpower},#{vmmemory})")
 	  void createMeasurement(DataConsumption dc);
+	  // M. Fontanella - 20 Jan 2016 - end
 
-	  @Select("select max(time) FROM DATACONSUMPTION WHERE vmid = #{vmid} and metrictype = 'power'")
+	  // M. Fontanella - 05 Feb 2016 - begin
+	  @Select("select IFNULL(max(time),0) FROM DATACONSUMPTION WHERE vmid = #{vmid} and metrictype = 'power'")
 	  long getLastConsumptionForVM(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
-
+	  // M. Fontanella - 05 Feb 2016 - end
+	  
 	  @Select("select IFNULL(sum(vmenergy),0) from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power'")
 	  double getTotalEnergyForVM(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
 
@@ -79,8 +85,10 @@ public interface DataConsumptionMapper {
 	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' ")
 	  List<DataConsumption> getPower(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
 
-	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' ORDER BY applicationid,deploymentid,vmid DESC LIMIT 1")
+	  // M. Fontanella - 20 Jan 2016 - begin
+	  @Select("select * from DATACONSUMPTION WHERE vmid = #{vmid}  and metrictype = 'power' ORDER BY providerid,applicationid,deploymentid,vmid DESC LIMIT 1")
 	  DataConsumption getLastSample(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
+	 // M. Fontanella - 20 Jan 2016 - end
 	 
 	  @Select("select * from DATACONSUMPTION WHERE metrictype = 'power' and vmid = #{vmid} and time = #{time} LIMIT 1")
 	  DataConsumption getSampleAtTime(@Param("deploymentid")String deploymentid,@Param("vmid") String vmid, @Param("time") long time);

@@ -85,17 +85,30 @@ public class ApplicationMonitoringDataService  {
 	 * retrieves values from the application manager about an event by using a rest interface, if not event are supplied it retrieves all events of the same application
 	 * it is possible that events have missing vmid in that case they are assinged to the current vm as they are global events assigned to all vms belonging to the same application
 	 */
-	public List<DataEvent> generateEventData(String applicationid, String deploymentid,String vmid, String eventid) {
+	// M. Fontanella - 11 Jan 2016 - begin 
+	public List<DataEvent> generateEventData(String providerid, String applicationid, String deploymentid,String vmid, String eventid) {
+		// M. Fontanella - 11 Jan 2016 - end
 		// TODO deployment id shoudl be used and in case to filter only some events. 
+			// M. Fontanella - 11 Jan 2016 - begin 
+			logger.info("Now getting events for prov " + providerid);
+			// M. Fontanella - 11 Jan 2016 - end
 			logger.info("Now getting events for app " + applicationid);
 			logger.info("Now getting events for dep " + deploymentid);
 			logger.info("Now getting events for vm " + vmid);
 			String requestEntity;
+			// M. Fontanella - 08 Feb 2016 - begin
+	    	// TODO Add provId id in wvents table 
+			// requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
+			// M. Fontanella - 08 Feb 2016 - end
 			// TODO this is the original query replaced 
-			requestEntity = "FROM events MATCH appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
 			//requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
+			requestEntity = "FROM events MATCH appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
 			if (eventid==null){
 				logger.warn("No event id supplied. I will load all events for the application");
+				// M. Fontanella - 08 Feb 2016 - begin
+		    	// TODO Add provId id in wvents table 
+				//requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\"";
+				// M. Fontanella - 08 Feb 2016 - end
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
 			}
 
@@ -107,6 +120,10 @@ public class ApplicationMonitoringDataService  {
 			    if ((entries==null)){
 			    }else if (entries.size()==0) {
 			    	logger.info("specifi events for only this VM not found, looking global events");
+					// M. Fontanella - 08 Feb 2016 - begin
+			    	// TODO Add provId id in wvents table 
+			    	// requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
+			    	// M. Fontanella - 08 Feb 2016 - end
 			    	requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
 			    	entries = checkEvents(requestEntity);
 			    	
@@ -116,6 +133,9 @@ public class ApplicationMonitoringDataService  {
 			    for (JsonElement el : entries){
 			    	JsonObject jo = (JsonObject) el;
 			    	logger.debug("id" + jo.getAsJsonObject("_id"));
+			    	// M. Fontanella - 20 Jan 2016 - begin
+			    	logger.debug("provId" + jo.getAsJsonPrimitive("provId"));
+			    	// M. Fontanella - 20 Jan 2016 - end
 			    	logger.debug("appId" + jo.getAsJsonPrimitive("appId"));
 			    	logger.debug("nodeId" + jo.getAsJsonPrimitive("nodeId"));
 			    	logger.debug("data" + jo.getAsJsonObject("data"));
@@ -145,6 +165,13 @@ public class ApplicationMonitoringDataService  {
 			    			}
 			    		}
 			    	}
+			    	// M. Fontanella - 20 Jan 2016 - begin
+			    	if (jo.getAsJsonPrimitive("provId")==null) 	{
+			    		valid_data = false;
+			    		logger.warn("prov id is null"+jo.getAsJsonObject("_id"));
+			    	}
+			    	// M. Fontanella - 20 Jan 2016 - end
+			    	
 			    	if (jo.getAsJsonPrimitive("appId")==null) 	{
 			    		valid_data = false;
 			    		logger.warn("app id is null"+jo.getAsJsonObject("_id"));
@@ -195,7 +222,9 @@ public class ApplicationMonitoringDataService  {
 			    		} else {
 			    			   // TODO in future could be worth checking if the event is already in the databse
 				    			if (valid_data)resultSet.add(data);
-				    			if (valid_data)logger.info("saving "+data.getEventid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
+								// M. Fontanella - 11 Jan 2016 - begin
+								if (valid_data)logger.info("saving "+data.getEventid()+data.getProviderid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
+								// M. Fontanella - 11 Jan 2016 - end
 				    		}
 			    		}
 			    }

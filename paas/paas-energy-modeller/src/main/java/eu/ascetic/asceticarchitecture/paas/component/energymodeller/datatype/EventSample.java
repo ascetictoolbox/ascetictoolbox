@@ -24,6 +24,9 @@ public class EventSample {
 	 * 
 	 */
 	
+	// M. Fontanella - 20 Jan 2016 - begin
+	private String provid;
+	// M. Fontanella - 20 Jan 2016 - end
 	private String vmid;
 	private String appid;
 	private String eventid;
@@ -34,7 +37,15 @@ public class EventSample {
 	private double cvalue;
 
 	
+	// M. Fontanella - 20 Jan 2016 - begin
+	public String getProvid() {
+		return provid;
+	}
+	public void setProvid(String provid) {
+		this.provid = provid;
+	}
 	
+	// M. Fontanella - 20 Jan 2016 - end
 	public String getAppid() {
 		return appid;
 	}

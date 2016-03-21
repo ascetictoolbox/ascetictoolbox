@@ -129,9 +129,10 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		// add after millisec conversion the time of the forecast
 		long forecasttime = end/1000 + (timelater);
 		
-	
-		LOGGER.info("Forecaster "+applicationid + " VM "+vm + " at time "+forecasttime);
-		LOGGER.info("############ Forecasting STARTED FOR "+applicationid + " VM "+vm+ "############");
+		// M. Fontanella - 20 Jan 2016 - begin
+		LOGGER.info("Forecaster Provider "+providerid + " Application "+applicationid + " VM "+vm + " at time "+forecasttime);
+		LOGGER.info("############ Forecasting STARTED FOR Provider "+providerid + " Application "+applicationid + " VM "+vm+ "############");
+		// M. Fontanella - 20 Jan 2016 - end
 		DataInterpolator cpuinterpolator;
 		DataInterpolator meminterpolator;
 		Attribute cpu = new Attribute("CPU");
@@ -142,10 +143,11 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		fvWekaAttributes.addElement(cpu);
 		fvWekaAttributes.addElement(memory);
 		fvWekaAttributes.addElement(power);
-			
-		List<DataConsumption> cpuSample = service.sampleCPU(applicationid, deploymentid, vm);
-		List<DataConsumption> memSample = service.sampleMemory(applicationid, deploymentid, vm);
-		List<DataConsumption> powerSample = service.samplePower(applicationid, deploymentid, vm);
+		// M. Fontanella - 11 Jan 2016 - begin	
+		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm);
+		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm);
+		List<DataConsumption> powerSample = service.samplePower(providerid, applicationid, deploymentid, vm);
+		// M. Fontanella - 11 Jan 2016 - end
 			
 			
 		LOGGER.debug("Samples for the analysis ");
@@ -231,8 +233,10 @@ public class EnergyModellerPredictor implements PredictorInterface {
 				e.printStackTrace();
 		 }
 	
-		 LOGGER.info("############ Forecasting not performed on "+applicationid + " VM "+vm+ "############");
-	
+		// M. Fontanella - 20 Jan 2016 - begin
+		 LOGGER.info("############ Forecasting not performed on Provider "+providerid + " Application "+applicationid + " VM "+vm+ "############");
+		// M. Fontanella - 20 Jan 2016 - end
+		 
 		 return estimation;
 		
 

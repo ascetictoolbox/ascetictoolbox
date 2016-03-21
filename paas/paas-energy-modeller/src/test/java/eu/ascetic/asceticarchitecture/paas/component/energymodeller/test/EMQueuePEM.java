@@ -42,14 +42,16 @@ public class EMQueuePEM {
 		iaasQm =  new AmqpClient();
 		try {
 			
+			// M. Fontanella - 05 Feb 2016 - begin
 			// dev enb
-			//paasQm.setup("192.168.3.16:5673", "guest", "guest", "PEMENERGY");
-			//iaasQm.setup("192.168.3.17:5673", "guest", "guest");
+			//	paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
+			//	iaasQm.setup("192.168.0.8:32778", "admin", "admin");
 			// stable env
-			paasQm.setup("192.168.3.222:5673", "guest", "guest", "PEMENERGY");
-			iaasQm.setup("192.168.3.223:5673", "guest", "guest");
-			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.99.100:3306/ascetic_paas_em","root","root");
-			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.99.100:3306/ascetic_paas_em","root","root");
+			paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
+			iaasQm.setup("192.168.0.8:32778", "admin", "admin");
+			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
+			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
+			// M. Fontanella - 05 Feb 2016 - end
 			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler);
 			queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.*");
 		} catch (Exception e) {

@@ -26,71 +26,105 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 
 public class DataConsumptionData {
 
+	// M. Fontanella - 08 Feb 2016 - begin
+	private static int MILLISEC=1000;
+	// M. Fontanella - 08 Feb 2016 - end
 	private static DataConsumptionHandler manager;
 	private static DataConsumptionMapper mapper;
 	
 	@BeforeClass
 	public static void setup() {
-		manager = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");
+		// M. Fontanella - 05 Feb 2016 - begin
+		manager = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
+		// M. Fontanella - 05 Feb 2016 - end
 		mapper = manager.getSession().getMapper(DataConsumptionMapper.class);
 	}
 	
 	
 	@Test
 	public void testCreate() {
+		
 		DataConsumption dc = new DataConsumption();
-		dc.setApplicationid("123");
+		// M. Fontanella - 20 Jan 2016 - begin
+		dc.setProviderid("00000");
+		// M. Fontanella - 20 Jan 2016 - end
+		// M. Fontanella - 05 Feb 2016 - begin
+		dc.setApplicationid("app2");
 		dc.setVmcpu(0.6);
-		dc.setDeploymentid("345");
+		dc.setDeploymentid("2");
 		dc.setVmenergy(50);
 		dc.setVmpower(5);
-		dc.setVmid("789");
-		long init = new Date().getTime();
-		dc.setTime(new Date().getTime());
+		dc.setVmid("iaas2");
+		dc.setMetrictype("power");
+		// M. Fontanella - 05 Feb 2016 - end
+		// M. Fontanella - 08 Feb 2016 - begin
+		long init = new Date().getTime() / MILLISEC;
+		dc.setTime(new Date().getTime() / MILLISEC);
+		// M. Fontanella - 08 Feb 2016 - end
 		mapper.createMeasurement(dc);
 		
 		dc = new DataConsumption();
-		dc.setApplicationid("123");
-		dc.setVmcpu(15);
-		dc.setDeploymentid("345");
+		// M. Fontanella - 20 Jan 2016 - begin
+		dc.setProviderid("00000");
+		// M. Fontanella - 20 Jan 2016 - end
+		// M. Fontanella - 05 Feb 2016 - begin
+		dc.setApplicationid("app2");
+		dc.setVmcpu(0.6);
+		dc.setDeploymentid("2");
 		dc.setVmenergy(55);
 		dc.setVmpower(5);
-		dc.setVmid("789");
-		dc.setTime(new Date().getTime());
-		mapper.createMeasurement(dc);
+		dc.setVmid("iaas2");
+		dc.setMetrictype("power");
+		// M. Fontanella - 05 Feb 2016 - end
+		// M. Fontanella - 08 Feb 2016 - begin
+		init = new Date().getTime() / MILLISEC;
+		dc.setTime(new Date().getTime() / MILLISEC);
+		// M. Fontanella - 08 Feb 2016 - end
+		mapper.createMeasurement(dc);		
+		
 		
 		dc = new DataConsumption();
-		dc.setApplicationid("123");
-		dc.setVmcpu(50);
-		dc.setDeploymentid("345");
+		// M. Fontanella - 20 Jan 2016 - begin
+		dc.setProviderid("00000");
+		// M. Fontanella - 20 Jan 2016 - end
+		// M. Fontanella - 05 Feb 2016 - begin
+		dc.setApplicationid("app2");
+		dc.setVmcpu(0.6);
+		dc.setDeploymentid("2");
 		dc.setVmenergy(60);
 		dc.setVmpower(15);
-		dc.setVmid("789");
-		dc.setTime(new Date().getTime());
-		long end = new Date().getTime();
-		mapper.createMeasurement(dc);
+		dc.setVmid("iaas2");
+		dc.setMetrictype("power");
+		// M. Fontanella - 05 Feb 2016 - end
+		// M. Fontanella - 08 Feb 2016 - begin
+		init = new Date().getTime() / MILLISEC;
+		dc.setTime(new Date().getTime() / MILLISEC);
+		// M. Fontanella - 08 Feb 2016 - end
+		mapper.createMeasurement(dc);		
 		
-		System.out.println(mapper.getLastConsumptionForVM("345", "789"));
+		// M. Fontanella - 05 Feb 2016 - begin
+		System.out.println(mapper.getLastConsumptionForVM("2", "iaas2"));
 		
-		System.out.println(mapper.getTotalEnergyForVM("345", "789"));
+		System.out.println(mapper.getTotalEnergyForVM("2", "iaas2"));
 		
-		System.out.println(mapper.getPowerInIntervalForVM("345", "789", init, end));
+		//	System.out.println(mapper.getPowerInIntervalForVM("2", "iaas2", init, end));
 		
-		System.out.println(mapper.getSampleTimeAfter("345", "789", init));
+		System.out.println(mapper.getSampleTimeAfter("2", "iaas2", init));
 		
-		System.out.println(mapper.getSampleTimeBefore("345", "789",end));
+		//	System.out.println(mapper.getSampleTimeBefore("2", "iaas2",end));
 		
-		System.out.println(mapper.getSamplesBetweenTime("345", "789", init, end));
+		//	System.out.println(mapper.getSamplesBetweenTime("2", "iaas2", init, end));
 		
-		System.out.println(mapper.getDataSamplesVM("345", "789", init, end));
+		//	System.out.println(mapper.getDataSamplesVM("2", "iaas2", init, end));
 		
-		System.out.println(mapper.selectByApp("123"));
+		System.out.println(mapper.selectByApp("app2"));
 		
-		System.out.println(mapper.selectByDeploy("345"));
+		System.out.println(mapper.selectByDeploy("2"));
 		
-		System.out.println(mapper.selectByVm("345","789"));
+		System.out.println(mapper.selectByVm("2", "iaas2"));
 		
-		System.out.println(mapper.getSampleAtTime("345", "789", init));
+		System.out.println(mapper.getSampleAtTime("2", "iaas2", init));
+		// M. Fontanella - 05 Feb 2016 - end
 	}
 	
 	

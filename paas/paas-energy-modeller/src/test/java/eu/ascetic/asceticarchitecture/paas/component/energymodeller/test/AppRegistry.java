@@ -32,7 +32,9 @@ public class AppRegistry {
 	
 	@BeforeClass
 	public static void setup() {
-		manager = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://10.15.5.55:3306/ascetic_paas_em","root","root");
+		// M. Fontanella - 05 Feb 2016 - begin
+		manager = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
+		// M. Fontanella - 05 Feb 2016 - end
 		mapper = manager.getSession().getMapper(AppRegistryMapper.class);
 	}
 	
@@ -40,10 +42,17 @@ public class AppRegistry {
 	@Test
 	public void testCreate() {
 		VirtualMachine vm = new VirtualMachine();
-		vm.setApp_id("123app");
-		vm.setDeploy_id(234);
-		vm.setVm_id(345);
-		vm.setIaas_id("ab013-11");
+		// M. Fontanella - 05 Feb 2016 - begin
+		// M. Fontanella - 20 Jan 2016 - begin 
+		vm.setProviderid("11111");
+		// M. Fontanella - 20 Jan 2016 - end
+		vm.setApplicationid("app1");
+		// M. Fontanella - 10 Feb 2016 - begin
+		vm.setDeploymentid("1");
+		vm.setVmid("1");
+		// M. Fontanella - 10 Feb 2016 - end
+		vm.setIaasid("iaas1");
+		// M. Fontanella - 05 Feb 2016 - end
 		Date date = new Date();
 		vm.setStart(date.getTime());
 		mapper.createVM(vm);
@@ -51,38 +60,59 @@ public class AppRegistry {
 		
 		
 		VirtualMachine vm2 = new VirtualMachine();
-		vm2.setApp_id("123app");
-		vm2.setDeploy_id(234);
-		vm2.setVm_id(890);
-		vm2.setIaas_id("ab013-12");
+		// M. Fontanella - 05 Feb 2016 - begin
+		// M. Fontanella - 20 Jan 2016 - begin 
+		vm2.setProviderid("00000");
+		// M. Fontanella - 20 Jan 2016 - end
+		vm2.setApplicationid("app2");
+		// M. Fontanella - 10 Feb 2016 - begin
+		vm2.setDeploymentid("2");
+		vm2.setVmid("11");
+		// M. Fontanella - 10 Feb 2016 - end
+		vm2.setIaasid("iaas2");
+		// M. Fontanella - 05 Feb 2016 - end
 		date = new Date();
 		vm2.setStart(date.getTime());
 		mapper.createVM(vm2);
 		
-		VirtualMachine vmext = mapper.selectByVmp("123", 234, 345);
+		// M. Fontanella - 05 Feb 2016 - begin
+		// M. Fontanella - 20 Jan 2016 - begin
+		// M. Fontanella - 10 Feb 2016 - begin
+		VirtualMachine vmext = mapper.selectByVmp("11111","app1", "1", "1");
+		// M. Fontanella - 10 Feb 2016 - end
+		// M. Fontanella - 20 Jan 2016 - end
+		// M. Fontanella - 05 Feb 2016 - end
 		System.out.println(vmext.toString());
 		List<VirtualMachine> machines;
-		machines = mapper.selectByApp("123");
+		// M. Fontanella - 05 Feb 2016 - begin
+		machines = mapper.selectByApp("app1");
+		// M. Fontanella - 05 Feb 2016 - end
 		
 		System.out.println(machines.size());
 		
-		machines = mapper.selectByDeploy("123",234);
+		// M. Fontanella - 05 Feb 2016 - begin
+		machines = mapper.selectByDeploy("app1","1");
+		// M. Fontanella - 05 Feb 2016 - end
 		
 		System.out.println(machines.size());
 		
-		vm2.setModel_id(555);
-		vm2.setProfile_id(897);
+		vm2.setModelid(555);
+		vm2.setProfileid(897);
 		
 		mapper.setModel(vm2);
 		mapper.setProfile(vm2);
 		
-		VirtualMachine reshaped = mapper.selectByIaaSId("ab013-12");
-		System.out.println(reshaped.getModel_id() + reshaped.getProfile_id());
+		// M. Fontanella - 05 Feb 2016 - begin
+		VirtualMachine reshaped = mapper.selectByIaaSId("iaas2");
+		// M. Fontanella - 05 Feb 2016 - end
+		System.out.println(reshaped.getModelid() + reshaped.getProfileid());
 		
 		date = new Date();
 		vm.setStop(date.getTime());
 		mapper.stopVM(vm);
-		reshaped = mapper.selectByIaaSId("ab013-11");
+		// M. Fontanella - 05 Feb 2016 - begin
+		reshaped = mapper.selectByIaaSId("iaas1");
+		// M. Fontanella - 05 Feb 2016 - end
 		System.out.println(reshaped.getStop());
 	}
 }

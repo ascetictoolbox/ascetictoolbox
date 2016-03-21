@@ -12,14 +12,16 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 
 public interface MonitoringMapper {
 
-	@Insert("insert into EMONITORING (applicationid,deploymentid,type, started, status , events ) values (#{applicationid},#{deploymentid},'MONITORING',#{started},#{status},#{events})")	
+// M. Fontanella - 20 Jan 2016 - begin
+	@Insert("insert into EMONITORING (providerid,applicationid,deploymentid,type, started, status , events ) values (#{providerid},#{applicationid},#{deploymentid},'MONITORING',#{started},#{status},#{events})")	
     public void createMonitoring(EnergyModellerMonitoring monitoring);
 	
-	@Delete("DELETE FROM EMONITORING WHERE applicationid = #{applicationid} and deploymentid = #{deploymentid} and type = 'MONITORING'")
-    public void terminateMonitoring(String applicationid,String deploymentid);
+	@Delete("DELETE FROM EMONITORING WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and type = 'MONITORING'")
+    public void terminateMonitoring(String providerid,String applicationid,String deploymentid);
     
-	@Select("select * from EMONITORING where applicationid = #{applicationid} and deploymentid = #{deploymentid} and type = 'MONITORING'")
-    public List<EnergyModellerMonitoring> getByDeploymentId(String applicationid,String deploymentid);
+	@Select("select * from EMONITORING where providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and type = 'MONITORING'")
+    public List<EnergyModellerMonitoring> getByDeploymentId(String providerid,String applicationid,String deploymentid);
+// M. Fontanella - 20 Jan 2016 - end
     	       
     @Select("select * from EMONITORING where status=true and type='MONITORING'")
     public List<EnergyModellerMonitoring> getMonitoringActive();

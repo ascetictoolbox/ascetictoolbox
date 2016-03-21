@@ -45,7 +45,9 @@ public class EnergyDataAggregatorServiceQueue {
 		this.dataConsumptionHandler = dataConsumptionHandler;
 	}
 
-	public double getEnergyFromVM(String applicationid, String deployment, String vmid, String event) {
+	// M. Fontanella - 11 Jan 2016 - begin
+	public double getEnergyFromVM(String providerid, String applicationid, String deployment, String vmid, String event) {
+		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
@@ -55,8 +57,9 @@ public class EnergyDataAggregatorServiceQueue {
 		return integrateSamples(deployment, vmid, -1,-1);
 	}
 
-	public double getMeasureInIntervalFromVM(Unit unit,String applictionid, String deployment, String vmid, long start, long end) {
-		
+	// M. Fontanella - 11 Jan 2016 - begin
+	public double getMeasureInIntervalFromVM(Unit unit, String providerid, String applictionid, String deployment, String vmid, long start, long end) {
+		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		
 		if (vmid == null ){
@@ -132,7 +135,9 @@ public class EnergyDataAggregatorServiceQueue {
 		
 	}
 	
-	public DataConsumption getLastPowerSampleFromVM(String applicationid, String deployment, String vmid) {
+	// M. Fontanella - 11 Jan 2016 - begin
+	public DataConsumption getLastPowerSampleFromVM(String providerid, String applicationid, String deployment, String vmid) {
+		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
@@ -182,7 +187,9 @@ public class EnergyDataAggregatorServiceQueue {
 			
 	}
 	
-	public List<DataConsumption> sampleMemory(String applicationid, String deployment, String vmid){
+	// M. Fontanella - 11 Jan 2016 - begin
+	public List<DataConsumption> sampleMemory(String providerid, String applicationid, String deployment, String vmid){
+		// M. Fontanella - 11 Jan 2016 - end
 		
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
@@ -198,8 +205,9 @@ public class EnergyDataAggregatorServiceQueue {
 		
 	}
 
-	
-	public List<DataConsumption> sampleCPU(String applicationid, String deployment, String vmid){
+	// M. Fontanella - 11 Jan 2016 - begin
+	public List<DataConsumption> sampleCPU(String providerid, String applicationid, String deployment, String vmid){
+		// M. Fontanella - 11 Jan 2016 - end
 		
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
@@ -214,7 +222,9 @@ public class EnergyDataAggregatorServiceQueue {
 		
 	}	
 	
-	public List<DataConsumption> samplePower(String applicationid, String deployment, String vmid){
+	// M. Fontanella - 11 Jan 2016 - begin
+	public List<DataConsumption> samplePower(String providerid, String applicationid, String deployment, String vmid){
+		// M. Fontanella - 11 Jan 2016 - end
 		
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
@@ -229,7 +239,9 @@ public class EnergyDataAggregatorServiceQueue {
 		
 	}	
 	
-	public List<DataConsumption> sampleMeasurements(String applicationid, String deployment, String vmid, long start,long end,long interval){
+	// M. Fontanella - 11 Jan 2016 - begin
+	public List<DataConsumption> sampleMeasurements(String providerid, String applicationid, String deployment, String vmid, long start,long end,long interval){
+		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
@@ -271,6 +283,9 @@ public class EnergyDataAggregatorServiceQueue {
 					as.setVmcpu(result.get(pointer).getVmcpu());
 					as.setVmpower(result.get(pointer).getVmpower());
 					as.setTime(currenttime);
+					// M. Fontanella - 11 Jan 2016 - begin
+					as.setProviderid(providerid);
+					// M. Fontanella - 11 Jan 2016 - end
 					as.setVmid(vmid);
 					as.setApplicationid(applicationid);
 					double part_energy = ((last_powerval+result.get(pointer).getVmpower())/2)*(currenttime-last_ts)/3600000;

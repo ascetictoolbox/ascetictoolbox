@@ -22,33 +22,48 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.co
  */
 public class VirtualMachine {
 	
-	private String app_id;
-	private int deploy_id;
-	private int vm_id;
+	// M. Fontanella - 10 Feb 2016 - begin
+	// M. Fontanella - 20 Jan 2016 - begin
+	private String providerid;
+	// M. Fontanella - 20 Jan 2016 - end
+	private String applicationid;
+	private String deploymentid;
+	private String vmid;
+	// M. Fontanella - 10 Feb 2016 - end
 	private long start;
 	private long stop;
-	private int profile_id;
-	private int model_id;
-	private String iaas_id;
-	
-	public String getApp_id() {
-		return app_id;
+	// M. Fontanella - 10 Feb 2016 - begin
+	private int profileid;
+	private int modelid;
+	private String iaasid;
+		
+	// M. Fontanella - 20 Jan 2016 - begin
+	public String getProviderid() {
+		return providerid;
 	}
-	public void setApp_id(String app_id) {
-		this.app_id = app_id;
+	public void setProviderid(String providerid) {
+		this.providerid = providerid;
 	}
-	public int getDeploy_id() {
-		return deploy_id;
+	// M. Fontanella - 20 Jan 2016 - end
+	public String getApplicationid() {
+		return applicationid;
 	}
-	public void setDeploy_id(int deploy_id) {
-		this.deploy_id = deploy_id;
+	public void setApplicationid(String applicationid) {
+		this.applicationid = applicationid;
 	}
-	public int getVm_id() {
-		return vm_id;
+	public String getDeploymentid() {
+		return deploymentid;
 	}
-	public void setVm_id(int vm_id) {
-		this.vm_id = vm_id;
+	public void setDeploymentid(String deploymentid) {
+		this.deploymentid = deploymentid;
 	}
+	public String getVmid() {
+		return vmid;
+	}
+	public void setVmid(String vmid) {
+		this.vmid = vmid;
+	}
+	// M. Fontanella - 10 Feb 2016 - end
 	public long getStart() {
 		return start;
 	}
@@ -61,24 +76,26 @@ public class VirtualMachine {
 	public void setStop(long stop) {
 		this.stop = stop;
 	}
-	public int getProfile_id() {
-		return profile_id;
+	// M. Fontanella - 10 Feb 2016 - end
+	public int getProfileid() {
+		return profileid;
 	}
-	public void setProfile_id(int profile_id) {
-		this.profile_id = profile_id;
+	public void setProfileid(int profileid) {
+		this.profileid = profileid;
 	}
-	public int getModel_id() {
-		return model_id;
+	public int getModelid() {
+		return modelid;
 	}
-	public void setModel_id(int model_id) {
-		this.model_id = model_id;
+	public void setModelid(int modelid) {
+		this.modelid = modelid;
 	}
-	public String getIaas_id() {
-		return iaas_id;
+	public String getIaasid() {
+		return iaasid;
 	}
-	public void setIaas_id(String iaas_id) {
-		this.iaas_id = iaas_id;
+	public void setIaasid(String iaasid) {
+		this.iaasid = iaasid;
 	}
+	// M. Fontanella - 10 Feb 2016 - end
 	
 	
 

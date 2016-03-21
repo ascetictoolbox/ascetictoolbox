@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -81,12 +82,19 @@ public class EnergyModellerMonitor implements Runnable {
 		SqlSession session = monitoringRegistry.getSession();
 		MonitoringMapper monitoringMapper = session.getMapper(MonitoringMapper.class);
 		EnergyModellerMonitoring energyModellerMonitoring = new EnergyModellerMonitoring();
+		// M. Fontanella - 20 Jan 2016 - begin
+		energyModellerMonitoring.setProviderid(providerid);
+		// M. Fontanella - 20 Jan 2016 - end
 		energyModellerMonitoring.setApplicationid(applicationid);
 		energyModellerMonitoring.setDeploymentid(deploymentid);
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Calendar cal = Calendar.getInstance();
-		Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
-		energyModellerMonitoring.setStarted(ts);
+		// M. Fontanella - 10 Feb 2016 - begin
+		// DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		// Calendar cal = Calendar.getInstance();
+		// Timestamp ts = Timestamp.valueOf(dateFormat.format(cal.getTime()));
+		// energyModellerMonitoring.setStarted(ts);
+		Date date = new Date();
+		energyModellerMonitoring.setStart(date.getTime());
+		// M. Fontanella - 10 Feb 2016 - end
 		monitoringMapper.createMonitoring(energyModellerMonitoring);
 	
 		return false;
@@ -95,7 +103,9 @@ public class EnergyModellerMonitor implements Runnable {
 	public boolean unsubscribeMonitoring(String providerid,	String applicationid, String deploymentid) {
 		SqlSession session = monitoringRegistry.getSession();
 		MonitoringMapper monitoringMapper = session.getMapper(MonitoringMapper.class);
-		monitoringMapper.terminateMonitoring(applicationid, deploymentid);
+		// M. Fontanella - 20 Jan 2016 - begin
+		monitoringMapper.terminateMonitoring(providerid, applicationid, deploymentid);
+		// M. Fontanella - 20 Jan 2016 - end
 		return true;
 	}
 
@@ -120,18 +130,27 @@ public class EnergyModellerMonitor implements Runnable {
 			List<String> vmsactive = registryMapper.selectVMActiveperDeployment(deployment);
 			List<String> vmsterminated = registryMapper.selectVMTerminatedperDeployment(deployment);
 			logger.info("monitoring deployment size"+ (vmsactive.size()+ vmsterminated.size()));
+			// M. Fontanella - 08 Feb 2016 - begin
+			String provid = registryMapper.selectProvByDeploy(deployment);
+			// M. Fontanella - 08 Feb 2016 - end
 			String appid = registryMapper.selectAppByDeploy(deployment);
-			logger.info("monitoring deployment "+deployment + " with active VMs "+vmsactive.size()+" on app "+appid);
-			logger.info("monitoring deployment "+deployment + " with terminated VMs "+vmsterminated.size()+" on app "+appid);
+			// M. Fontanella - 20 Jan 2016 - begin
+			logger.info("monitoring deployment "+deployment + " with active VMs "+vmsactive.size()+" on prov "+provid+" on app "+appid);
+			logger.info("monitoring deployment "+deployment + " with terminated VMs "+vmsterminated.size()+" on prov "+provid+" on app "+appid);
+			// M. Fontanella - 20 Jan 2016 - end
 			for(String vmid : vmsactive){
 				// active so contribute to consumption and to power
 				logger.info("monitoring this active vm "+vmid);
-				double partial_energy = energyService.getEnergyFromVM(appid, deployment, vmid, null);
+				// M. Fontanella - 11 Jan 2016 - begin
+				double partial_energy = energyService.getEnergyFromVM(provid, appid, deployment, vmid, null);
+				// M. Fontanella - 11 Jan 2016 - end
 				logger.info("monitoring energy "+partial_energy);
 				double partial_power = energyService.getPowerPerVM(deployment, vmid);
 				logger.info("monitoring power "+partial_power);
-				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
-				if (partial_power>0)sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_POWER, partial_power));
+				// M. Fontanella - 20 Jan 2016 - begin
+				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(provid,appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
+				if (partial_power>0)sentToApplicationManager(buildJSONDATA(provid,appid,vmid,VM_CONSUMPTION_POWER, partial_power));
+				// M. Fontanella - 20 Jan 2016 - end
 				logger.info("monitoring has sent data ");
 				total_deployment_energy = total_deployment_energy + partial_energy;
 				deployment_power=deployment_power+partial_power;
@@ -139,15 +158,21 @@ public class EnergyModellerMonitor implements Runnable {
 			for(String vmid : vmsterminated){
 				// terminated so contribute to consumption but not avg power
 				logger.info("monitoring this terminated  vm "+vmid);
-				double partial_energy = energyService.getEnergyFromVM(appid, deployment, vmid, null);
+				// M. Fontanella - 11 Jan 2016 - begin
+				double partial_energy = energyService.getEnergyFromVM(provid, appid, deployment, vmid, null);
+				// M. Fontanella - 11 Jan 2016 - end
 				logger.info("monitoring energy "+partial_energy);
-				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
+				// M. Fontanella - 20 Jan 2016 - begin
+				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(provid,appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
+				// M. Fontanella - 20 Jan 2016 - end
 				total_deployment_energy = total_deployment_energy + partial_energy;
 			}
 			logger.info("total energy "+total_deployment_energy);
 			logger.info("total power pre split "+deployment_power);
-			if (total_deployment_energy>0)sentToApplicationManager(buildJSONDATA(appid,"",APP_CONSUMPTION_ENERGY, total_deployment_energy));
-			if (deployment_machines>0) sentToApplicationManager(buildJSONDATA(appid,"",APP_CONSUMPTION_POWER, deployment_power/deployment_machines));
+			// M. Fontanella - 20 Jan 2016 - begin
+			if (total_deployment_energy>0)sentToApplicationManager(buildJSONDATA(provid,appid,"",APP_CONSUMPTION_ENERGY, total_deployment_energy));
+			if (deployment_machines>0) sentToApplicationManager(buildJSONDATA(provid,appid,"",APP_CONSUMPTION_POWER, deployment_power/deployment_machines));
+			// M. Fontanella - 20 Jan 2016 - end
 			
 		}
 		
@@ -200,11 +225,16 @@ public class EnergyModellerMonitor implements Runnable {
 	 * 
 	 * build a json representation of the monitoring data around a JSON formatted text
 	 */
-	private String buildJSONDATA(String app,String node,String message,double value){
-		// create the albums object
+		// M. Fontanella - 20 Jan 2016 - begin
+		private String buildJSONDATA(String prov,String app,String node,String message,double value){
+		// M. Fontanella - 20 Jan 2016 - end
+			// create the albums object
 		logger.info("monitoring building data ");
 		JsonObject payload = new JsonObject();
 	
+		// M. Fontanella - 20 Jan 2016 - begin
+		payload.addProperty("provId", prov);
+		// M. Fontanella - 20 Jan 2016 - end
 		payload.addProperty("appId", app);
 		payload.addProperty("nodeId", node);
 		JsonObject data = new JsonObject();

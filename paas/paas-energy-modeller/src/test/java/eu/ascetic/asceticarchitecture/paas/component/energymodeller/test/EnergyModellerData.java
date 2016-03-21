@@ -29,64 +29,76 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.ser
 
 public class EnergyModellerData {
 
-	
+	// M. Fontanella - 05 Feb 2016 - begin
 	private static EnergyModellerService serviceEM;
-//	private static String HOST = "1764";
-//	private static String HOST1 = "1765";
-	private static String HOST2 = "1766";
-	private static String HOST3 = "1767";
+	private static String HOST = "1764";
+	private static String HOST1 = "1765";
+	//	private static String HOST2 = "1766";
+	//	private static String HOST3 = "1767";
 	
 	
-	private static String HOST4 = "1768";
-	//private static String DEP = "584";
-	//private static String APP = "davidgpTestApp";
-	//private static String EVENT = "Create-Object-Light-Load";
+	//	private static String HOST4 = "1768";
+	//	private static String DEP = "584";
+	//	private static String APP = "davidgpTestApp";
+	//	private static String EVENT = "Create-Object-Light-Load";
 	
 
-	//private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
+	//	private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
 	private static String PROVIDER = "provider1";
 	private static String EVENT = "core0impl1";
-	//private static String EVENT = "core0impl1";
-	//private static String APP = "newsAsset";
+	//	private static String EVENT = "core0impl1";
+	//	private static String APP = "newsAsset";
 	
-	//private static String DEP = "490";
+	//	private static String DEP = "490";
 	long beginlong = 1443705639474L;
 	long endlong = 1443705931826L;
 	
-	private static String HOST = "1869";
-	private static String HOST1 = "1870";
+	//	private static String HOST = "1869";
+	//	private static String HOST1 = "1870";
 	
-//	private static String HOST = "1843";
-//	private static String HOST1 = "1844";
-    private static String APP = "JEPlus";
+	//	private static String HOST = "1843";
+	//	private static String HOST1 = "1844";
+    private static String APP = "app2";
 	
-	//private static String DEP = "540";
-	private static String DEP = "560";
-	private static String TEST= "1872";
+	//	private static String DEP = "540";
+	private static String DEP = "2";
+	private static String TEST= "11";
+	// M. Fontanella - 05 Feb 2016 - end
 	
 	@BeforeClass
 	public static void setup() {
-		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/dev-env/ascetic-conf/testconfig.properties");
+		// M. Fontanella - 05 Feb 2016 - begin
+		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/mfontanella/new/lavoro/ascetic/config/config.properties");
+		// M. Fontanella - 05 Feb 2016 - end
 	}
+
 	
-	@Test
-	public void eventPowerInterface() {
-		List<String> vmids = new Vector<String>();
-		vmids.add(TEST);		
-		PROVIDER=null;
-		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
-		System.out.println("################################ TEST "+TEST+"Average Power "+EVENT+" estimated is:  "+result);
-	}
-	
-	
+// M. Fontanella - 05 Feb 2016 - begin
 //	@Test
 //	public void eventPowerInterface() {
 //		List<String> vmids = new Vector<String>();
 //		vmids.add(TEST);		
 //		PROVIDER=null;
-//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,null,null);
+//		EVENT=null;
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
 //		System.out.println("################################ TEST "+TEST+"Average Power "+EVENT+" estimated is:  "+result);
 //	}
+// M. Fontanella - 05 Feb 2016 - end	
+
+
+// M. Fontanella - 05 Feb 2016 - begin
+	@Test
+	public void eventPowerInterface() {
+		List<String> vmids = new Vector<String>();
+		vmids.add(TEST);		
+		PROVIDER=null;
+		EVENT=null;
+		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,null,null);
+		System.out.println("################################ TEST "+TEST+"Average Power "+EVENT+" estimated is:  "+result);
+	}
+// M. Fontanella - 05 Feb 2016 - end	
+	
+	
 //	@Test
 //	public void eventEnergyInterface() {
 //		List<String> vmids = new Vector<String>();
