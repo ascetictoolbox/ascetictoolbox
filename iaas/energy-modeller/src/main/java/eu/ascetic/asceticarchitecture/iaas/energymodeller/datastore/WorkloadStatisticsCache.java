@@ -20,6 +20,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.Objects;
 public class WorkloadStatisticsCache {
 
     private boolean inUse = false;
-    
+
     //Running averages since the last restart of the energy modeller.
     private HashMap<String, RunningAverage> tagAverage = new HashMap<>();
     private HashMap<String, RunningAverage> diskAverage = new HashMap<>();
@@ -50,28 +51,14 @@ public class WorkloadStatisticsCache {
     private HashMap<String, HashMap<Integer, RunningAverage>> diskBootAverage = new HashMap<>();
 
     /**
-     * @return the inUse
-     */
-    public boolean isInUse() {
-        return inUse;
-    }
-
-    /**
-     * @param inUse the inUse to set
-     */
-    public void setInUse(boolean inUse) {
-        this.inUse = inUse;
-    }
-    /**
-     * The next set are for day of week records (first field tag second boot
-     * index. If the Energy modeller is restarted there is a notion that VMs
-     * that have already started will not have data for earlier parts of their
+     * The next set are for day of week records (first field tag second day of
+     * week. If the Energy modeller is restarted there is a notion that VMs that
+     * have already started will not have data for earlier parts of their
      * traces, thus a hashmap is used rather than a simple list.
      */
-    //TODO add DoW statistics here
-//    private HashMap<String, HashMap<Integer, RunningAverage>> tagDoWAverage = new HashMap<>();
-//    private HashMap<String, HashMap<Integer, RunningAverage>> diskDoWAverage = new HashMap<>();    
-    
+    private HashMap<String, HashMap<DayOfWeek, RunningAverage>> tagDoWAverage = new HashMap<>();
+    private HashMap<String, HashMap<DayOfWeek, RunningAverage>> diskDoWAverage = new HashMap<>();
+
     /**
      * SingletonHolder is loaded on the first execution of
      * Singleton.getInstance() or the first access to SingletonHolder.INSTANCE,
@@ -106,10 +93,12 @@ public class WorkloadStatisticsCache {
             for (String tag : tags) {
                 addRunningAverageForVMAppTag(tag, cpuUtil);
                 addRunningBootAverageForAppTag(tag, cpuUtil, timeFromBoot);
+                addRunningDoWAverageForAppTag(tag, cpuUtil);
             }
             for (VmDiskImage disk : disks) {
                 addRunningAverageForVMDisk(disk, cpuUtil);
                 addRunningBootAverageForVMDisk(disk, cpuUtil, timeFromBoot);
+                addRunningDoWAverageForVMDisk(disk, cpuUtil);
             }
         }
     }
@@ -128,7 +117,7 @@ public class WorkloadStatisticsCache {
         }
         return answer / vm.getDiskImages().size();
     }
-    
+
     /**
      * This given a VM with disk reference will find historical information
      * associated with the disk reference.
@@ -141,10 +130,26 @@ public class WorkloadStatisticsCache {
         int bootIndex = 0;
         if (vm instanceof VmDeployed) {
             long timeFromBoot = ((VmDeployed) vm).getTimeFromBoot();
-            bootIndex = AbstractVMHistoryWorkloadEstimator.getIndexPosition(BOOT_BUCKET_SIZE, (int) timeFromBoot);  
-        } 
+            bootIndex = AbstractVMHistoryWorkloadEstimator.getIndexPosition(BOOT_BUCKET_SIZE, (int) timeFromBoot);
+        }
         for (VmDiskImage disk : vm.getDiskImages()) {
             answer = answer + diskBootAverage.get(disk.getDiskImage()).get(bootIndex).getAverage();
+        }
+        return answer / vm.getDiskImages().size();
+    }
+    
+    /**
+     * This given a VM with disk reference will find historical information
+     * associated with the disk reference.
+     *
+     * @param vm The VM to get the information for
+     * @return
+     */
+    public double getDoWUtilisationforDisks(VM vm) {
+        double answer = 0;
+        DayOfWeek index = getCurrentDayOfWeek();
+        for (VmDiskImage disk : vm.getDiskImages()) {
+            answer = answer + diskDoWAverage.get(disk.getDiskImage()).get(index).getAverage();
         }
         return answer / vm.getDiskImages().size();
     }    
@@ -163,7 +168,7 @@ public class WorkloadStatisticsCache {
         }
         return answer / vm.getApplicationTags().size();
     }
-    
+
     /**
      * This given a VM with app tags will find historical information associated
      * with the app tags.
@@ -177,12 +182,28 @@ public class WorkloadStatisticsCache {
         if (vm instanceof VmDeployed) {
             long timeFromBoot = ((VmDeployed) vm).getTimeFromBoot();
             bootIndex = AbstractVMHistoryWorkloadEstimator.getIndexPosition(BOOT_BUCKET_SIZE, (int) timeFromBoot);
-            
-        } 
+
+        }
         for (String tag : vm.getApplicationTags()) {
             answer = answer + tagBootAverage.get(tag).get(bootIndex).getAverage();
         }
         return answer / vm.getApplicationTags().size();
+    }
+    
+    /**
+     * This given a VM with disk reference will find historical information
+     * associated with the disk reference.
+     *
+     * @param vm The VM to get the information for
+     * @return
+     */
+    public double getDoWUtilisationforTags(VM vm) {
+        double answer = 0;
+        DayOfWeek index = getCurrentDayOfWeek();
+        for (VmDiskImage disk : vm.getDiskImages()) {
+            answer = answer + tagDoWAverage.get(disk.getDiskImage()).get(index).getAverage();
+        }
+        return answer / vm.getDiskImages().size();
     }    
 
     /**
@@ -221,9 +242,11 @@ public class WorkloadStatisticsCache {
 
     /**
      * This generates boot time averaging in discrete time blocks
+     *
      * @param tag The application tag
      * @param cpuUtil The cpu utilisation to record in the average
-     * @param secondsFromBoot  The time which is to be used to find the correct time window.
+     * @param secondsFromBoot The time which is to be used to find the correct
+     * time window.
      */
     private void addRunningBootAverageForAppTag(String tag, double cpuUtil, long secondsFromBoot) {
         HashMap<Integer, RunningAverage> bootTrace = tagBootAverage.get(tag);
@@ -246,9 +269,11 @@ public class WorkloadStatisticsCache {
 
     /**
      * This generates boot time averaging in discrete time blocks
+     *
      * @param disk The disk reference to use
      * @param cpuUtil The cpu utilisation to record in the average
-     * @param secondsFromBoot  The time which is to be used to find the correct time window.
+     * @param secondsFromBoot The time which is to be used to find the correct
+     * time window.
      */
     private void addRunningBootAverageForVMDisk(VmDiskImage disk, double cpuUtil, long secondsFromBoot) {
         HashMap<Integer, RunningAverage> bootTrace = diskBootAverage.get(disk.getDiskImage());
@@ -267,6 +292,70 @@ public class WorkloadStatisticsCache {
                 average.add(cpuUtil);
             }
         }
+    }
+
+    /**
+     * This generates day of week time averaging in discrete time blocks
+     *
+     * @param tag The application tag
+     * @param cpuUtil The cpu utilisation to record in the average
+     */
+    private void addRunningDoWAverageForAppTag(String tag, double cpuUtil) {
+        HashMap<DayOfWeek, RunningAverage> dowTrace = tagDoWAverage.get(tag);
+        if (dowTrace == null) {
+            HashMap<DayOfWeek, RunningAverage> answer = new HashMap<>();
+            answer.put(getCurrentDayOfWeek(), new RunningAverage(tag, cpuUtil));
+            tagDoWAverage.put(tag, answer);
+        } else {
+            //get the index position item, and add to it.
+            DayOfWeek index = getCurrentDayOfWeek();
+            RunningAverage average = dowTrace.get(index);
+            if (average == null) {
+                average = new RunningAverage(tag, cpuUtil);
+                dowTrace.put(index, average);
+            } else {
+                average.add(cpuUtil);
+            }
+        }
+    }
+    
+    /**
+     * This generates day of week time averaging in discrete time blocks
+     *
+     * @param disk The application tag
+     * @param cpuUtil The cpu utilisation to record in the average
+     */
+    private void addRunningDoWAverageForVMDisk(VmDiskImage disk, double cpuUtil) {
+        HashMap<DayOfWeek, RunningAverage> dowTrace = diskDoWAverage.get(disk.getDiskImage());
+        if (dowTrace == null) {
+            HashMap<DayOfWeek, RunningAverage> answer = new HashMap<>();
+            answer.put(getCurrentDayOfWeek(), new RunningAverage(disk.getDiskImage(), cpuUtil));
+            diskDoWAverage.put(disk.getDiskImage(), answer);
+        } else {
+            //get the index position item, and add to it.
+            DayOfWeek index = getCurrentDayOfWeek();
+            RunningAverage average = dowTrace.get(index);
+            if (average == null) {
+                average = new RunningAverage(disk.getDiskImage(), cpuUtil);
+                dowTrace.put(index, average);
+            } else {
+                average.add(cpuUtil);
+            }
+        }
+    }    
+
+    /**
+     * @return the inUse
+     */
+    public boolean isInUse() {
+        return inUse;
+    }
+
+    /**
+     * @param inUse the inUse to set
+     */
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
     }
 
     /**
@@ -334,6 +423,56 @@ public class WorkloadStatisticsCache {
             return hash;
         }
 
+    }
+
+    private DayOfWeek getCurrentDayOfWeek() {
+        GregorianCalendar cal = new GregorianCalendar();
+        return new DayOfWeek(cal.get(GregorianCalendar.DAY_OF_WEEK), cal.get(GregorianCalendar.HOUR_OF_DAY));
+    }
+
+    /**
+     * This represents the day of the week.
+     */
+    public class DayOfWeek {
+
+        private final int day;
+        private final int hour;
+
+        public DayOfWeek(int day, int hour) {
+            this.day = day;
+            this.hour = hour;
+        }
+
+        /**
+         * @return the day
+         */
+        public int getDay() {
+            return day;
+        }
+
+        /**
+         * @return the hour
+         */
+        public int getHour() {
+            return hour;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof DayOfWeek) {
+                DayOfWeek other = (DayOfWeek) obj;
+                return other.getDay() == day && other.getHour() == hour;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 29 * hash + this.day;
+            hash = 29 * hash + this.hour;
+            return hash;
+        }
     }
 
 }
