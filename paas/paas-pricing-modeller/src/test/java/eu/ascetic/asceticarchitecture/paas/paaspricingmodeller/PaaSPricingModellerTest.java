@@ -18,6 +18,7 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 import eu.ascetic.amqp.client.AmqpBasicListener;
 import eu.ascetic.amqp.client.AmqpMessageProducer;
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
+import eu.ascetic.asceticarchitecture.paas.type.*;
 
 /**
 * This is the test of the pricing modeller of PaaS layer. 
@@ -25,7 +26,7 @@ import eu.ascetic.amqp.client.AmqpMessageReceiver;
 * @author E. Agiatzidou
 */
 
-import eu.ascetic.asceticarchitecture.paas.type.*;
+
 
 import java.io.StringWriter;
 import java.util.LinkedList;
@@ -63,9 +64,27 @@ public class PaaSPricingModellerTest{
     @After
 	    public void tearDown() {
 	    }
-    
-    /*<-------------------------------------start activemq tests---------------------------------------------------------->*/    
     @Test
+    public void testPriceEstimationBasic(){
+    	System.out.println("test PaaS");
+    	PaaSPricingModeller prmodeller = new PaaSPricingModeller();
+    	//prmodeller.getAppPredictedCharges(1, 0, 10);
+    	//System.out.println(prmodeller.getAppPredictedCharges(1, 0, 10));
+	   	//prmodeller.getAppPredictedPrice(1, 0, 10,7200);
+    	//prmodeller.initializeApp(1, 0);
+    	//System.out.println(prmodeller.getAppTotalCharges(1, 1, 4));
+    	//System.out.println(prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, (long)6635.77, 2));
+    	VMinfo vm1 = new VMinfo(1024, 2, 50000, 3600);
+    	VMinfo vm2 = new VMinfo(1024, 1, 50000, 3600);
+    	LinkedList<VMinfo> test = new LinkedList<>();
+    	test.add(vm1);
+    	test.add(vm2);
+    	System.out.println(prmodeller.getEventPredictedChargesOfApp(1, test, 10, 0));
+    
+   }
+}
+    /*<-------------------------------------start activemq tests---------------------------------------------------------->*/    
+   /* @Test
     // The code to check if the message is sended...
     public void testingSendAndRecieve() throws Exception {
             AmqpMessageReceiver receiver = new AmqpMessageReceiver("localhost:5672", "guest", "guest", "test.topic2",true);
@@ -78,7 +97,7 @@ public class PaaSPricingModellerTest{
             Thread.sleep(1000l);
            
             System.out.println(listener.getMessage());
-    }
+    }*/
 /*    @Test
     // The code to check if the message is sended...
     public void testingSendAndRecieve() throws Exception {
@@ -102,22 +121,4 @@ public class PaaSPricingModellerTest{
     }*/
     
 /*<-------------------------------------end activemq tests---------------------------------------------------------->*/    
-   @Test
-    public void testPriceEstimationBasic(){
-    	System.out.println("test PaaS");
-    	PaaSPricingModeller prmodeller = new PaaSPricingModeller();
-    	//prmodeller.getAppPredictedCharges(1, 0, 10);
-    	//System.out.println(prmodeller.getAppPredictedCharges(1, 0, 10));
-	   	//prmodeller.getAppPredictedPrice(1, 0, 10,7200);
-    	//prmodeller.initializeApp(1, 0);
-    	//System.out.println(prmodeller.getAppTotalCharges(1, 1, 4));
-    	//System.out.println(prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, (long)6635.77, 2));
-    	VMinfo vm1 = new VMinfo(1024, 2, 50000, 3600);
-    	VMinfo vm2 = new VMinfo(1024, 1, 50000, 3600);
-    	LinkedList<VMinfo> test = new LinkedList<>();
-    	test.add(vm1);
-    	test.add(vm2);
-    	System.out.println(prmodeller.getEventPredictedChargesOfApp(1, test, 10, 0));
-    
-   }
-}
+   
