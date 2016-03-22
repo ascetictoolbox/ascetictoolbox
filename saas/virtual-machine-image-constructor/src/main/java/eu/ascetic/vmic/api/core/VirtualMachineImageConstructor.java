@@ -429,11 +429,11 @@ public class VirtualMachineImageConstructor implements Runnable {
         // Add qemu-nbd command
         arguments.add("sudo qemu-nbd --connect=" + nbdDevicePath + " "
                 + imagePath + ";");
-        // Check the qemu-nbd command has
+        // Check the qemu-nbd command has worked
         arguments
-                .add("while true;do S=`cat /sys/class/block"
+                .add("while true;do S=`cat /sys/class/block/$(basename "
                         + nbdDevicePath
-                        + "/size`;if [ \"$S\" != \"0\" ];then break;else sleep 1;fi;done;");
+                        + ")/size`;if [ \"$S\" != \"0\" ];then break;else sleep 1;fi;done;");
         // Add mount command
         // FIXME: Should detect which partition to mount and what file system is
         // in use
