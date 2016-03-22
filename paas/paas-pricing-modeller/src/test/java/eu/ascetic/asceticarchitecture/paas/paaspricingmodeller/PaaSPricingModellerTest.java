@@ -74,12 +74,21 @@ public class PaaSPricingModellerTest{
     	//prmodeller.initializeApp(1, 0);
     	//System.out.println(prmodeller.getAppTotalCharges(1, 1, 4));
     	//System.out.println(prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, (long)6635.77, 2));
-    	VMinfo vm1 = new VMinfo(1024, 2, 50000, 3600);
+//<<<<<<< .mine
+    	VMinfo vm1 = new VMinfo(1024, 0, 50000, 3600);
     	VMinfo vm2 = new VMinfo(1024, 1, 50000, 3600);
-    	LinkedList<VMinfo> test = new LinkedList<>();
+       LinkedList<VMinfo> test = new LinkedList<>();
+        test.add(vm1);
+        test.add(vm2);
+       System.out.println(prmodeller.getEventPredictedChargesOfApp(1, test, 10));
+//=======
+    	VMinfo vm11 = new VMinfo(1024, 2, 50000, 3600);
+    	VMinfo vm22 = new VMinfo(1024, 1, 50000, 3600);
+    	LinkedList<VMinfo> test1 = new LinkedList<>();
     	test.add(vm1);
     	test.add(vm2);
     	System.out.println(prmodeller.getEventPredictedChargesOfApp(1, test, 10, 0));
+//>>>>>>> .r2173
     
    }
 }
