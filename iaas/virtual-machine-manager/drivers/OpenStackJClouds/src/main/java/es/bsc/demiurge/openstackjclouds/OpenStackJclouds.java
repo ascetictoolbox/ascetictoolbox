@@ -18,6 +18,7 @@
 
 package es.bsc.demiurge.openstackjclouds;
 
+import com.google.common.collect.FluentIterable;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddleware;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
@@ -79,7 +80,7 @@ public class OpenStackJclouds implements CloudMiddleware {
 
 	private Set<String> hostNames = new TreeSet<>();
 
-	private Logger logger = LogManager.getLogger(OpenStackJclouds.class);
+	private final Logger logger = LogManager.getLogger(OpenStackJclouds.class);
 
     private static final String CONFIG_OPENSTACK_SUBSET_PREFIX = "openstack";
     public static final String OS_CONFIG_IP = "IP";
@@ -145,15 +146,15 @@ public class OpenStackJclouds implements CloudMiddleware {
     // I would prefer to see this blocking in the VmManager class. I need to block the execution because
     // I need to return the ID of the deployed VM to the Application Manager.
     public String deploy(Vm vm, String hostname) throws CloudMiddlewareException {
-        // Deploy the VM
-		assertHostName(hostname);
+        logger.info("deploy() => hostname: " + hostname + "; vm: " + vm.toString());
+        assertHostName(hostname);
         try {
             ServerCreated server = openStackJcloudsApis.getServerApi().create(
                     vm.getName(),
                     getImageIdForDeployment(vm),
                     getFlavorIdForDeployment(vm),
                     getDeploymentOptionsForVm(vm, hostname, securityGroups, false, null));
-
+            
             blockUntilVmIsDeployed(server.getId());
             return server.getId();
         } catch(Exception e) {
@@ -163,7 +164,8 @@ public class OpenStackJclouds implements CloudMiddleware {
 
     @Override
     public String deployWithVolume(Vm vm, String hostname, String isoPath)  throws CloudMiddlewareException {
-        // Deploy the VM
+        logger.info("deployWithVolume() => hostname: " + hostname + "; isoPath:" 
+            + isoPath + "; vm: " + vm.toString());
 		assertHostName(hostname);
 		try {
             ServerCreated server = openStackJcloudsApis.getServerApi().create(
@@ -466,6 +468,24 @@ public class OpenStackJclouds implements CloudMiddleware {
         }
         return options;
     }
+    
+    /**
+     * Finds out the availability zone of a given hostname.
+     * @param hostname
+     * @return 
+     */
+    private String getAvailabilityZone(String hostname) {
+        FluentIterable<HostAggregate> hostAggregates = 
+            openStackJcloudsApis.getNovaApi().getHostAggregateApi(zone).get().list();
+        for(int i = 0; i < hostAggregates.size(); i++){
+            HostAggregate h = hostAggregates.get(i);
+            if(h.getHosts().contains(hostname)){
+                return h.getAvailabilityZone();
+            }
+        }
+        
+        return "nova"; // default availability zone
+    }
 
     /**
      * Specifies in the VM deployment options the server on which to deploy the VM.
@@ -476,7 +496,8 @@ public class OpenStackJclouds implements CloudMiddleware {
     private void includeDstNodeInDeploymentOption(String dstNode, CreateServerOptions options) throws CloudMiddlewareException {
 		assertHostName(dstNode);
         if (dstNode != null) {
-            options.availabilityZone("nova:" + dstNode);
+            String availabilityZone = getAvailabilityZone(dstNode);
+            options.availabilityZone(availabilityZone + ":" + dstNode);
         }
     }
 
@@ -698,6 +719,11 @@ public class OpenStackJclouds implements CloudMiddleware {
      */
     private void waitForResize(String vmId) throws CloudMiddlewareException, InterruptedException{
         int resizeCounter = 0;
+        
+        if(!getVM(vmId).getState().equals(RESIZE_STATE)){
+            throw new CloudMiddlewareException("State of this machine is " + getVM(vmId).getState() + ". It is not resizing!");
+        }
+        
         while(getVM(vmId).getState().equals(RESIZE_STATE) && resizeCounter++ < 100) {
             logger.info("Waiting resize to finish...");
             Thread.sleep(2500);

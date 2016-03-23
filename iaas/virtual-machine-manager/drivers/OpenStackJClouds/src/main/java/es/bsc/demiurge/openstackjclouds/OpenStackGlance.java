@@ -67,7 +67,7 @@ public class OpenStackGlance {
                             openStackCredentials.getGlancePort(),
                             "/v1/images"),
                     getHeadersForCreateImageRequest(imageToUpload), "");
-			log.debug("Creating image from Valid URL " + imageToUpload.getUrl()+ " :\n"+ responseContent);
+			log.debug("Creating image from Valid URL " + imageToUpload.getUrl()+ " :"+ responseContent);
             return getIdFromCreateImageImageResponse(responseContent);
         }
         else {
@@ -84,7 +84,7 @@ public class OpenStackGlance {
                         "--container-format=bare --is-public=True " +
                         "--file " + imageToUpload.getUrl());
 
-                log.debug("Creating image from non-valid URL. Glance command:\n"+glanceCommandOutput);
+                log.debug("Creating image from non-valid URL " + imageToUpload.getUrl() + "\nGlance command output:\n"+glanceCommandOutput);
                 String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
                 String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
                 return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
