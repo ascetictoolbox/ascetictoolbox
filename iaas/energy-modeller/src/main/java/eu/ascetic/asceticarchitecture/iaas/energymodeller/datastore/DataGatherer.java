@@ -155,11 +155,13 @@ public class DataGatherer implements Runnable {
         if (vm.getAllocatedTo() != null) {
             return vm.getAllocatedTo();
         }
-        //This will perform a full description of the VM (including its deployed host).
+        //This will get a full description of the VM (including its deployed host).
         VmDeployed vmQueried = datasource.getVmByName(vm.getName());
-        vm.setAllocatedTo(vmQueried.getAllocatedTo());
-        if (vm.getAllocatedTo() != null) {
-            return vm.getAllocatedTo();
+        if (vmQueried != null) {
+            vm.setAllocatedTo(vmQueried.getAllocatedTo());
+            if (vm.getAllocatedTo() != null) {
+                return vm.getAllocatedTo();
+            }
         }
         /**
          * This block of code takes the agreed assumption that the host name
