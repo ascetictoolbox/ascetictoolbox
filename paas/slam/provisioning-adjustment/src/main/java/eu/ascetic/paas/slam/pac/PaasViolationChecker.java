@@ -76,6 +76,7 @@ public class PaasViolationChecker implements Runnable {
 	private static String BUSINESS_REPORTING_URL = "business_reporting_url";
 	private static String MONITORABLE_TERMS = "monitorable_terms";
 	private static String NOTIFICATION_INTERVAL = "notification_interval";
+	private static String MARGIN_OF_ERROR = "margin_of_error";
 
 	public static final String FIELD_APP_ID = "ApplicationId";
 	public static final String FIELD_DEPLOYMENT_ID = "DeploymentId";
@@ -370,6 +371,11 @@ public class PaasViolationChecker implements Runnable {
 
 									String[] monitorableTerms = properties.getProperty(MONITORABLE_TERMS).split(",");
 
+									/*
+									 * margin of error included
+									 */
+									Double marginOfError = new Double(properties.getProperty(MARGIN_OF_ERROR));
+									
 									for (String monitorableTerm:monitorableTerms) {
 										if (m.getName().equalsIgnoreCase(monitorableTerm)) {
 											if (measuredTerms.containsKey(monitorableTerm)) {
@@ -379,22 +385,22 @@ public class PaasViolationChecker implements Runnable {
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
-													if (!(m.getValue()<(new Double(measuredTerms.get(monitorableTerm))))) {
+													if (!(m.getValue() <(new Double(measuredTerms.get(monitorableTerm)  + marginOfError)))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
-													if (!(m.getValue()<=(new Double(measuredTerms.get(monitorableTerm))))) {
+													if (!(m.getValue()+marginOfError <=(new Double(measuredTerms.get(monitorableTerm) + marginOfError)))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS)) {
-													if (!(m.getValue()>(new Double(measuredTerms.get(monitorableTerm))))) {
+													if (!(m.getValue() + marginOfError >(new Double(measuredTerms.get(monitorableTerm))))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.LESS_EQUAL)) {
-													if (!(m.getValue()>=(new Double(measuredTerms.get(monitorableTerm))))) {
+													if (!(m.getValue() + marginOfError >=(new Double(measuredTerms.get(monitorableTerm))))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
