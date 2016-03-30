@@ -49,6 +49,9 @@ saas/programming_model/compss/runtime/resources/commons/target
 saas/programming_model/compss/runtime/toolkit-interaction/target
 saas/programming_model/compss/tools/monitor/target
 saas/virtual-machine-image-constructor/logs
+saas/virtual-machine-image-constructor/runtime/virtual-machine-image-constructor.jar
+tests/vmic/logs
+tests/vmic/target
 utils/energy-modeller-benchtest/energymodeller.properties
 utils/energy-modeller-benchtest/energymodeller_calibrator.properties
 utils/energy-modeller-benchtest/energymodeller_cpu_predictor.properties

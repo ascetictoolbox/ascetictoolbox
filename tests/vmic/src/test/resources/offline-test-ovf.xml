@@ -1,26 +1,26 @@
 <Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
   <References>
-    <File ovf:id="asceticVMICFile-JEPlus-JEPlus.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/JEPlus.jar" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-project.xml" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/project.xml" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-resources.xml" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/resources.xml" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-it-log4j.debug" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/it-log4j.debug" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-project_schema.xsd" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/project_schema.xsd" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-resource_schema.xsd" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/resource_schema.xsd" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-JEPlus.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/JEPlus.jar" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-compss-monitor.war" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/compss-monitor.war" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-autoMethod_cores.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/autoMethod_cores.jar" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-autoMethod_cores_deps.zip" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/autoMethod_cores_deps.zip" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-JEPlus_cores.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/JEPlus_cores.jar" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="asceticVMICFile-JEPlus-JEPlus_cores_deps.zip" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/JEPlus_cores_deps.zip" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="ascetic-pm-JEPlus-img" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/ascetic-pm-JEPlus-img.img" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
-    <File ovf:id="ascetic-pm-autoMethod-img" ovf:href="/mnt/cephfs/ascetic/vmic/repository/JEPlus/ascetic-pm-autoMethod-img.img" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-JEPlus.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/JEPlus.jar" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-project.xml" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/project.xml" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-resources.xml" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/resources.xml" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-it-log4j.debug" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/it-log4j.debug" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-project_schema.xsd" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/project_schema.xsd" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-resource_schema.xsd" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/resource_schema.xsd" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-JEPlus.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/JEPlus.jar" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-compss-monitor.war" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/compss-monitor.war" ovf:compression="war" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-autoMethod_cores.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/autoMethod_cores.jar" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-autoMethod_cores_deps.zip" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/autoMethod_cores_deps.zip" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-JEPlus_cores.jar" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/JEPlus_cores.jar" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="asceticVMICFile-JEPlus-JEPlus_cores_deps.zip" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/JEPlus_cores_deps.zip" ovf:compression="zip" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="ascetic-pm-JEPlus-img" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/ascetic-pm-JEPlus-img.img" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
+    <File ovf:id="ascetic-pm-autoMethod-img" ovf:href="/mnt/cephfs/ascetic/vmic/repository/OfflineTest/ascetic-pm-autoMethod-img.img" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"/>
   </References>
   <DiskSection>
     <Info>Disk section for application JEPlus</Info>
     <Disk ns:diskId="ascetic-pm-JEPlus-disk" ns:fileRef="ascetic-pm-JEPlus-img" ns:format="http://www.gnome.org/~markmc/qcow-image-format.html" ns:capacityAllocationUnits="byte * 2^20" ns:capacity="10240" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
     <Disk ns:diskId="ascetic-pm-autoMethod-disk" ns:fileRef="ascetic-pm-autoMethod-img" ns:format="http://www.gnome.org/~markmc/qcow-image-format.html" ns:capacityAllocationUnits="byte * 2^20" ns:capacity="10240" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1"/>
   </DiskSection>
-  <VirtualSystemCollection ns:id="JEPlus" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1">
+  <VirtualSystemCollection ns:id="OfflineTest" xmlns:ns="http://schemas.dmtf.org/ovf/envelope/1">
     <Info>Virtual Systems for JEPlus application</Info>
     <ProductSection>
       <Info>Ascetic Application Wide Extensions</Info>

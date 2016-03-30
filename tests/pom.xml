@@ -22,7 +22,8 @@
 	    <module>application_manager</module>
             <!-- IaaS Modules -->
             <module>vmm</module>
-  	</modules>
+            <module>vmic</module>
+	</modules>
 
         <url>http://www.ascetic.eu</url>
 	<version>0.0.1-SNAPSHOT</version>
