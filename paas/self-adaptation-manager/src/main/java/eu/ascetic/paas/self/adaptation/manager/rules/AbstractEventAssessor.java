@@ -22,6 +22,7 @@ import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.DecisionEngine;
 import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.RandomDecisionEngine;
 import eu.ascetic.paas.self.adaptation.manager.rules.loggers.EventHistoryLogger;
+import eu.ascetic.paas.self.adaptation.manager.rules.loggers.ResponseHistoryBroadcaster;
 import eu.ascetic.paas.self.adaptation.manager.rules.loggers.ResponseHistoryLogger;
 import java.io.File;
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.jms.JMSException;
+import javax.naming.NamingException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -51,6 +54,8 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     private boolean logging = true;
     private ResponseHistoryLogger responseHistoryLogger = null;
     private Thread responseHistoryLoggerThread = null;
+    private ResponseHistoryBroadcaster responseBroadcaster = null;
+    private Thread responseBroadcasterThread = null;
     private EventHistoryLogger eventHistoryLogger = null;
     private Thread eventHistoryLoggerThread = null;
     private List<Response> adaptations = new ArrayList<>();
@@ -86,6 +91,19 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             setDecisionEngine(decisionEngineName);
             logging = config.getBoolean("paas.self.adaptation.manager.logging", logging);
             config.setProperty("paas.self.adaptation.manager.logging", logging);
+            String responseBroadcastQueueName = "paas.sam.responses";
+            responseBroadcastQueueName = config.getString("paas.self.adaptation.manager.response.broadcast.queue", responseBroadcastQueueName);
+            config.setProperty("paas.self.adaptation.manager.response.broadcast.queue", responseBroadcastQueueName);
+            try {
+                responseBroadcaster = new ResponseHistoryBroadcaster(responseBroadcastQueueName);
+                responseBroadcasterThread = new Thread(responseHistoryLogger);
+                responseBroadcasterThread.setDaemon(true);
+                responseBroadcasterThread.start();
+            } catch (JMSException ex) {
+                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NamingException ex) {
+                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.SEVERE, null, ex);
+            }
             if (logging) {
                 responseHistoryLogger = new ResponseHistoryLogger(new File("ResponseLog.csv"), true);
                 responseHistoryLoggerThread = new Thread(responseHistoryLogger);
@@ -141,6 +159,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
         synchronized (this) {
             Response answer = assessEvent(event, eventData, adaptations);
+            responseBroadcaster.broadcastChange(answer);
             if (answer != null) {
                 adaptations.add(answer);
                 answer = decisionEngine.decide(answer);
