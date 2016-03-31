@@ -20,11 +20,19 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.queryinterface.datasou
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VM;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDeployed;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.DayOfWeek;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.RunningAverage;
+import java.io.IOException;
+import java.io.File;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clapper.util.misc.FileHashMap;
+import org.clapper.util.misc.ObjectExistsException;
+import org.clapper.util.misc.VersionMismatchException;
 
 /**
  * The aim of this is to generate a running average counter for various workload
@@ -38,8 +46,8 @@ public class WorkloadStatisticsCache {
     private boolean inUse = false;
 
     //Running averages since the last restart of the energy modeller.
-    private HashMap<String, RunningAverage> tagAverage = new HashMap<>();
-    private HashMap<String, RunningAverage> diskAverage = new HashMap<>();
+    private FileHashMap<String, RunningAverage> tagAverage;
+    private FileHashMap<String, RunningAverage> diskAverage;
     /**
      * The next set are for time from boot records (first field tag second boot
      * index. If the Energy modeller is restarted there is a notion that VMs
@@ -47,8 +55,8 @@ public class WorkloadStatisticsCache {
      * traces, thus a hashmap is used rather than a simple list.
      */
     private static final int BOOT_BUCKET_SIZE = 3600; //time in seconds to make each bucket
-    private HashMap<String, HashMap<Integer, RunningAverage>> tagBootAverage = new HashMap<>();
-    private HashMap<String, HashMap<Integer, RunningAverage>> diskBootAverage = new HashMap<>();
+    private FileHashMap<String, HashMap<Integer, RunningAverage>> tagBootAverage;
+    private FileHashMap<String, HashMap<Integer, RunningAverage>> diskBootAverage;
 
     /**
      * The next set are for day of week records (first field tag second day of
@@ -56,8 +64,8 @@ public class WorkloadStatisticsCache {
      * have already started will not have data for earlier parts of their
      * traces, thus a hashmap is used rather than a simple list.
      */
-    private HashMap<String, HashMap<DayOfWeek, RunningAverage>> tagDoWAverage = new HashMap<>();
-    private HashMap<String, HashMap<DayOfWeek, RunningAverage>> diskDoWAverage = new HashMap<>();
+    private FileHashMap<String, HashMap<DayOfWeek, RunningAverage>> tagDoWAverage;
+    private FileHashMap<String, HashMap<DayOfWeek, RunningAverage>> diskDoWAverage;
 
     /**
      * SingletonHolder is loaded on the first execution of
@@ -67,6 +75,7 @@ public class WorkloadStatisticsCache {
     private static class SingletonHolder {
 
         private static final WorkloadStatisticsCache INSTANCE = new WorkloadStatisticsCache();
+
     }
 
     /**
@@ -76,6 +85,49 @@ public class WorkloadStatisticsCache {
      */
     public static WorkloadStatisticsCache getInstance() {
         return SingletonHolder.INSTANCE;
+    }
+
+    /**
+     * This is the main constructor for this workload statistics generator. It
+     * is private to force the use of the Singleton instance.
+     */
+    private WorkloadStatisticsCache() {
+        try {
+            cleanFilesUp("./TagListing");
+            cleanFilesUp("./DiskListing");
+            cleanFilesUp("./TagBootAverage");
+            cleanFilesUp("./DiskBootAverage");
+            cleanFilesUp("./TagDoWAverage");
+            cleanFilesUp("./DiskDoWAverage");
+            tagAverage = new FileHashMap<>("./TagListing", FileHashMap.FORCE_OVERWRITE);
+            diskAverage = new FileHashMap<>("./DiskListing", FileHashMap.FORCE_OVERWRITE);
+            tagBootAverage = new FileHashMap<>("./TagBootAverage", FileHashMap.FORCE_OVERWRITE);
+            diskBootAverage = new FileHashMap<>("./DiskBootAverage", FileHashMap.FORCE_OVERWRITE);
+            tagDoWAverage = new FileHashMap<>("./TagDoWAverage", FileHashMap.FORCE_OVERWRITE);
+            diskDoWAverage = new FileHashMap<>("./DiskDoWAverage", FileHashMap.FORCE_OVERWRITE);
+        } catch (IOException | ObjectExistsException | ClassNotFoundException | VersionMismatchException ex) {
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    /**
+     * This aims to deal with the situation where the .db file has been created
+     * but because no entries were added the idx file was not. This thus avoids
+     * exceptions when both files don't exist on reloading the hash maps.
+     * @param filename
+     */
+    private void cleanFilesUp(String filename) {
+        /**
+         * Avoids: org.clapper.util.misc.ObjectExistsException: One of the hash 
+         * table files exists ("DiskListing.db" or "DiskListing.ix") exists, 
+         * but the other one does not.
+         */
+        File file = new File(filename + ".db");
+        File fileIndex = new File(filename + ".ix");
+        if (file.exists() && !fileIndex.exists()) {
+            file.delete();
+        }
     }
 
     /**
@@ -100,6 +152,16 @@ public class WorkloadStatisticsCache {
                 addRunningBootAverageForVMDisk(disk, cpuUtil, timeFromBoot);
                 addRunningDoWAverageForVMDisk(disk, cpuUtil);
             }
+        }
+        try {
+            tagAverage.save();
+            diskAverage.save();
+            tagBootAverage.save();
+            diskBootAverage.save();
+            tagDoWAverage.save();
+            diskDoWAverage.save();
+        } catch (IOException ex) {
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -137,7 +199,7 @@ public class WorkloadStatisticsCache {
         }
         return answer / vm.getDiskImages().size();
     }
-    
+
     /**
      * This given a VM with disk reference will find historical information
      * associated with the disk reference.
@@ -152,7 +214,7 @@ public class WorkloadStatisticsCache {
             answer = answer + diskDoWAverage.get(disk.getDiskImage()).get(index).getAverage();
         }
         return answer / vm.getDiskImages().size();
-    }    
+    }
 
     /**
      * This given a VM with app tags will find historical information associated
@@ -189,7 +251,7 @@ public class WorkloadStatisticsCache {
         }
         return answer / vm.getApplicationTags().size();
     }
-    
+
     /**
      * This given a VM with disk reference will find historical information
      * associated with the disk reference.
@@ -204,7 +266,7 @@ public class WorkloadStatisticsCache {
             answer = answer + tagDoWAverage.get(disk.getDiskImage()).get(index).getAverage();
         }
         return answer / vm.getDiskImages().size();
-    }    
+    }
 
     /**
      * This subroutine is called by addVMToStatistics and adds part of the
@@ -318,7 +380,7 @@ public class WorkloadStatisticsCache {
             }
         }
     }
-    
+
     /**
      * This generates day of week time averaging in discrete time blocks
      *
@@ -342,7 +404,7 @@ public class WorkloadStatisticsCache {
                 average.add(cpuUtil);
             }
         }
-    }    
+    }
 
     /**
      * @return the inUse
@@ -358,121 +420,9 @@ public class WorkloadStatisticsCache {
         this.inUse = inUse;
     }
 
-    /**
-     * This class stores the running average information and enables its
-     * processing.
-     */
-    public class RunningAverage {
-
-        String property;
-        double total;
-        double count;
-
-        /**
-         *
-         * @param property
-         * @param total
-         * @param count
-         */
-        public RunningAverage(String property, double total, int count) {
-            this.property = property;
-            this.total = total;
-            this.count = (double) count;
-        }
-
-        /**
-         *
-         * @param property
-         * @param intialValue
-         */
-        public RunningAverage(String property, double intialValue) {
-            count = 1;
-            total = intialValue;
-            this.property = property;
-        }
-
-        /**
-         *
-         * @param value
-         */
-        public void add(double value) {
-            count = count + 1;
-            total = total + value;
-        }
-
-        /**
-         *
-         * @return
-         */
-        public double getAverage() {
-            return total / count;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj.getClass().equals(this.getClass())) {
-                return ((RunningAverage) obj).property.equals(this.property);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 53 * hash + Objects.hashCode(this.property);
-            return hash;
-        }
-
-    }
-
     private DayOfWeek getCurrentDayOfWeek() {
         GregorianCalendar cal = new GregorianCalendar();
         return new DayOfWeek(cal.get(GregorianCalendar.DAY_OF_WEEK), cal.get(GregorianCalendar.HOUR_OF_DAY));
-    }
-
-    /**
-     * This represents the day of the week.
-     */
-    public class DayOfWeek {
-
-        private final int day;
-        private final int hour;
-
-        public DayOfWeek(int day, int hour) {
-            this.day = day;
-            this.hour = hour;
-        }
-
-        /**
-         * @return the day
-         */
-        public int getDay() {
-            return day;
-        }
-
-        /**
-         * @return the hour
-         */
-        public int getHour() {
-            return hour;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof DayOfWeek) {
-                DayOfWeek other = (DayOfWeek) obj;
-                return other.getDay() == day && other.getHour() == hour;
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 29 * hash + this.day;
-            hash = 29 * hash + this.hour;
-            return hash;
-        }
     }
 
 }

@@ -13,6 +13,19 @@
     <version>1.0-SNAPSHOT</version>
     <name>IaaS Energy Modeller</name>
     <url>http://maven.apache.org</url>
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <id>clapper-org-maven-repo</id>
+            <name>org.clapper Maven Repo</name>
+            <url>http://maven.clapper.org/</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -199,5 +212,10 @@
             <artifactId>commons-io</artifactId>
             <version>2.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.clapper</groupId>
+            <artifactId>javautil</artifactId>
+            <version>3.1.1</version>
+        </dependency>        
     </dependencies>  
 </project>
