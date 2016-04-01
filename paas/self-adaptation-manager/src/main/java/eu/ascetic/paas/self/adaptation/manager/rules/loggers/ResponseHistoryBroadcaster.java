@@ -70,7 +70,9 @@ public class ResponseHistoryBroadcaster extends ActiveMQBase implements Runnable
      * @param response The response item to broadcast.
      */
     public void broadcastChange(Response response) {
-        queue.add(response);
+        if (response != null) {
+            queue.add(response);
+        }
     }
 
     /**
@@ -124,7 +126,7 @@ public class ResponseHistoryBroadcaster extends ActiveMQBase implements Runnable
     }
 
     /**
-     * This permanently stops this broadcaster. It will however broadcast all 
+     * This permanently stops this broadcaster. It will however broadcast all
      * queued work, before quitting.
      */
     public void stop() {

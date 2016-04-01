@@ -99,9 +99,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 responseBroadcasterThread = new Thread(responseHistoryLogger);
                 responseBroadcasterThread.setDaemon(true);
                 responseBroadcasterThread.start();
-            } catch (JMSException ex) {
-                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (NamingException ex) {
+            } catch (JMSException | NamingException ex) {
                 Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (logging) {
@@ -157,18 +155,40 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         List<EventData> eventData = EventDataAggregator.filterEventData(eventHistory, event.getSlaUuid(), event.getAgreementTerm());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
+        return assessEvent(event, eventData);
+    }
+
+    /**
+     * This assesses an event and decides if a response is required. If no
+     * response is required then null is returned. Calling this is equivalent to
+     * calling the method assessEvent(EventData event, List sequence) but in
+     * this case the event sequence list is maintained by the event assessor.
+     *
+     * @param event The SLA event to assess
+     * @param eventData The historical list of event data.
+     * @return A response object in cases where an adaptive response is
+     * required.
+     */
+    private Response assessEvent(EventData event, List<EventData> eventData) {
         synchronized (this) {
             Response answer = assessEvent(event, eventData, adaptations);
-            responseBroadcaster.broadcastChange(answer);
             if (answer != null) {
                 adaptations.add(answer);
                 answer = decisionEngine.decide(answer);
-                if (actuator != null) {
+                if (actuator != null && answer.isPossibleToAdapt()) {
                     actuator.actuate(answer);
+                    responseBroadcaster.broadcastChange(answer);
                 }
                 if (logging) {
                     responseHistoryLogger.printToFile(answer);
                 }
+            }
+            /**
+             * This causes a looping behaviour when the action is not possible
+             * to carry out.
+             */
+            if (answer != null && !answer.isPossibleToAdapt()) {
+                assessEvent(event, eventData);
             }
             return answer;
         }

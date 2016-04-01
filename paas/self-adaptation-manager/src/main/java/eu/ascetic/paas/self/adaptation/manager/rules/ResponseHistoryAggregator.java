@@ -31,14 +31,14 @@ import java.util.List;
 public class ResponseHistoryAggregator {
 
     /**
-     * This takes a list of responses and provides a list of responses for a 
+     * This takes a list of responses and provides a list of responses for a
      * single guarantee of a named SLA.
      *
      * @param responses The list of responses records to filter
      * @param slaUuid The SLA identifier to filter against
      * @param agreementTerm The agreement term to filter against.
-     * @param onlyActionable This filters out any responses that were not possible
-     * to perform.
+     * @param onlyActionable This filters out any responses that were not
+     * possible to perform.
      * @return The list of responses associated with a given guarantee of an
      * SLA, in ascending chronological order. i.e. earliest first.
      */
@@ -46,8 +46,8 @@ public class ResponseHistoryAggregator {
             String slaUuid, String agreementTerm, boolean onlyActionable) {
         ArrayList<Response> answer = new ArrayList<>();
         for (Response response : responses) {
-            if (response.getCause().getSlaUuid().equals(slaUuid) && 
-                    response.getCause().getAgreementTerm().equals(agreementTerm)) {
+            if (response.getCause().getSlaUuid().equals(slaUuid)
+                    && response.getCause().getAgreementTerm().equals(agreementTerm)) {
                 if (onlyActionable == true && response.isPossibleToAdapt() == false) {
                     continue;
                 }
@@ -56,10 +56,10 @@ public class ResponseHistoryAggregator {
         }
         Collections.sort(answer);
         return answer;
-    }    
-    
+    }
+
     /**
-     * This takes a list of responses and provides a list of responses for a 
+     * This takes a list of responses and provides a list of responses for a
      * single guarantee of a named SLA.
      *
      * @param responses The list of responses records to filter
@@ -74,7 +74,7 @@ public class ResponseHistoryAggregator {
     }
 
     /**
-     * This takes a list of responses and provides a list of responses for a 
+     * This takes a list of responses and provides a list of responses for a
      * single named SLA.
      *
      * @param responses The list of responses records to filter
@@ -93,13 +93,54 @@ public class ResponseHistoryAggregator {
         Collections.sort(answer);
         return answer;
     }
-    
+
+    /**
+     * This takes a list of responses and provides a list of responses for a
+     * single named type of adaptation.
+     *
+     * @param responses The list of responses records to filter
+     * @param adaptationForm The form of adaptation to filter against
+     * @return The list of responses associated with a given type of adaptation
+     * in ascending chronological order. i.e. earliest first.
+     */
+    public static List<Response> filterResponseHistory(List<Response> responses,
+            Response.AdaptationType adaptationForm) {
+        ArrayList<Response> answer = new ArrayList<>();
+        for (Response response : responses) {
+            if (response.getActionType().equals(adaptationForm)) {
+                answer.add(response);
+            }
+        }
+        Collections.sort(answer);
+        return answer;
+    }
+
+    /**
+     * This indicates if all actions in the response list were inactionable.
+     *
+     * @param responses
+     * @return true only if all actions were inactionable. A zero sized list is
+     * false.
+     */
+    public static boolean responseHistoryWasUnactionable(List<Response> responses) {
+        if (responses.isEmpty()) {
+            return false;
+        }
+        for (Response response : responses) {
+            if (response.isPossibleToAdapt()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * This takes a list of responses and filters out old data.
+     *
      * @param responses The list of responses to filter
      * @param ageSeconds The time in seconds to allow data entry points for
-     * @return The list of responses in ascending chronological order. 
-     * i.e. earliest first, that meet the time criteria.
+     * @return The list of responses in ascending chronological order. i.e.
+     * earliest first, that meet the time criteria.
      */
     public static List<Response> filterResponseHistoryByTime(List<Response> responses, int ageSeconds) {
         ArrayList<Response> answer = new ArrayList<>();
@@ -112,7 +153,7 @@ public class ResponseHistoryAggregator {
             }
         }
         Collections.sort(answer);
-        return answer;        
-    }    
+        return answer;
+    }
 
 }
