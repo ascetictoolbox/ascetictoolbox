@@ -22,8 +22,8 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDep
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.VmDiskImage;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.DayOfWeek;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.RunningAverage;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -115,13 +115,14 @@ public class WorkloadStatisticsCache {
      * This aims to deal with the situation where the .db file has been created
      * but because no entries were added the idx file was not. This thus avoids
      * exceptions when both files don't exist on reloading the hash maps.
+     *
      * @param filename
      */
     private void cleanFilesUp(String filename) {
         /**
-         * Avoids: org.clapper.util.misc.ObjectExistsException: One of the hash 
-         * table files exists ("DiskListing.db" or "DiskListing.ix") exists, 
-         * but the other one does not.
+         * Avoids: org.clapper.util.misc.ObjectExistsException: One of the hash
+         * table files exists ("DiskListing.db" or "DiskListing.ix") exists, but
+         * the other one does not.
          */
         File file = new File(filename + ".db");
         File fileIndex = new File(filename + ".ix");
@@ -279,9 +280,11 @@ public class WorkloadStatisticsCache {
         RunningAverage average = tagAverage.get(tag);
         if (average == null) {
             tagAverage.put(tag, new RunningAverage(tag, cpuUtil));
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Average - Tag:{0} Value: {1}", new Object[]{tag, cpuUtil});
         } else {
             average.add(cpuUtil);
             tagAverage.put(tag, average);
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Average - Tag:{0} Value: {1}, New Average {2}", new Object[]{tag, cpuUtil, average.getAverage()});
         }
     }
 
@@ -296,9 +299,11 @@ public class WorkloadStatisticsCache {
         RunningAverage average = diskAverage.get(disk.getDiskImage());
         if (average == null) {
             diskAverage.put(disk.getDiskImage(), new RunningAverage(disk.getDiskImage(), cpuUtil));
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Average - Disk:{0} Value: {1}", new Object[]{disk.getDiskImage(), cpuUtil});
         } else {
             average.add(cpuUtil);
             diskAverage.put(disk.getDiskImage(), average);
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Average - Disk:{0} Value: {1}, New Average {2}", new Object[]{disk.getDiskImage(), cpuUtil, average.getAverage()});
         }
     }
 
@@ -316,6 +321,7 @@ public class WorkloadStatisticsCache {
             HashMap<Integer, RunningAverage> answer = new HashMap<>();
             answer.put(0, new RunningAverage(tag, cpuUtil));
             tagBootAverage.put(tag, answer);
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Boot Average - Tag:{0} Index:{1} Value: {2}", new Object[]{tag, 0, cpuUtil});
         } else {
             //get the index position item, and add to it.
             Integer index = AbstractVMHistoryWorkloadEstimator.getIndexPosition(BOOT_BUCKET_SIZE, (int) secondsFromBoot);
@@ -323,8 +329,10 @@ public class WorkloadStatisticsCache {
             if (average == null) {
                 average = new RunningAverage(tag, cpuUtil);
                 bootTrace.put(index, average);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Boot Average - Tag:{0} Index:{1} Value: {2}", new Object[]{tag, index, cpuUtil});
             } else {
                 average.add(cpuUtil);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Boot Average - Tag:{0} Index:{1} Value: {2}", new Object[]{tag, index, cpuUtil});
             }
         }
     }
@@ -343,6 +351,7 @@ public class WorkloadStatisticsCache {
             HashMap<Integer, RunningAverage> answer = new HashMap<>();
             answer.put(0, new RunningAverage(disk.getDiskImage(), cpuUtil));
             diskBootAverage.put(disk.getDiskImage(), answer);
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Boot Average - Disk:{0} Index:{1} Value: {2}", new Object[]{disk.getDiskImage(), 0, cpuUtil});
         } else {
             //get the index position item, and add to it.
             Integer index = AbstractVMHistoryWorkloadEstimator.getIndexPosition(BOOT_BUCKET_SIZE, (int) secondsFromBoot);
@@ -350,8 +359,10 @@ public class WorkloadStatisticsCache {
             if (average == null) {
                 average = new RunningAverage(disk.getDiskImage(), cpuUtil);
                 bootTrace.put(index, average);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Boot Average - Disk:{0} Index:{1} Value: {2}", new Object[]{disk.getDiskImage(), index, cpuUtil});
             } else {
                 average.add(cpuUtil);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "Boot Average - Disk:{0} Index:{1} Value: {2}", new Object[]{disk.getDiskImage(), index, cpuUtil});
             }
         }
     }
@@ -364,19 +375,22 @@ public class WorkloadStatisticsCache {
      */
     private void addRunningDoWAverageForAppTag(String tag, double cpuUtil) {
         HashMap<DayOfWeek, RunningAverage> dowTrace = tagDoWAverage.get(tag);
+        DayOfWeek index = getCurrentDayOfWeek();
         if (dowTrace == null) {
             HashMap<DayOfWeek, RunningAverage> answer = new HashMap<>();
-            answer.put(getCurrentDayOfWeek(), new RunningAverage(tag, cpuUtil));
+            answer.put(index, new RunningAverage(tag, cpuUtil));
             tagDoWAverage.put(tag, answer);
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "DoW Average - Tag:{0} Day:{1} Hour:{2} Value: {3}", new Object[]{tag, index.getDay(), index.getHour(), cpuUtil});
         } else {
-            //get the index position item, and add to it.
-            DayOfWeek index = getCurrentDayOfWeek();
+            //given the index position item, add to it.
             RunningAverage average = dowTrace.get(index);
             if (average == null) {
                 average = new RunningAverage(tag, cpuUtil);
                 dowTrace.put(index, average);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "DoW Average - Tag:{0} Day:{1} Hour:{2} Value: {3}", new Object[]{tag, index.getDay(), index.getHour(), cpuUtil});
             } else {
                 average.add(cpuUtil);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "DoW Average - Tag:{0} Day:{1} Hour:{2} Value: {3}", new Object[]{tag, index.getDay(), index.getHour(), cpuUtil});
             }
         }
     }
@@ -389,19 +403,22 @@ public class WorkloadStatisticsCache {
      */
     private void addRunningDoWAverageForVMDisk(VmDiskImage disk, double cpuUtil) {
         HashMap<DayOfWeek, RunningAverage> dowTrace = diskDoWAverage.get(disk.getDiskImage());
+        DayOfWeek index = getCurrentDayOfWeek();
         if (dowTrace == null) {
             HashMap<DayOfWeek, RunningAverage> answer = new HashMap<>();
             answer.put(getCurrentDayOfWeek(), new RunningAverage(disk.getDiskImage(), cpuUtil));
             diskDoWAverage.put(disk.getDiskImage(), answer);
+            Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "DoW Average - disk:{0} Day:{1} Hour:{2} Value: {3}", new Object[]{disk.getDiskImage(), index.getDay(), index.getHour(), cpuUtil});
         } else {
-            //get the index position item, and add to it.
-            DayOfWeek index = getCurrentDayOfWeek();
+            //given the index position item and add to it.
             RunningAverage average = dowTrace.get(index);
             if (average == null) {
                 average = new RunningAverage(disk.getDiskImage(), cpuUtil);
                 dowTrace.put(index, average);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "DoW Average - disk:{0} Day:{1} Hour:{2} Value: {3}", new Object[]{disk.getDiskImage(), index.getDay(), index.getHour(), cpuUtil});
             } else {
                 average.add(cpuUtil);
+                Logger.getLogger(WorkloadStatisticsCache.class.getName()).log(Level.INFO, "DoW Average - disk:{0} Day:{1} Hour:{2} Value: {3}", new Object[]{disk.getDiskImage(), index.getDay(), index.getHour(), cpuUtil});
             }
         }
     }
