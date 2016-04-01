@@ -46,6 +46,7 @@ public class Response implements Comparable<Response> {
         ADAPTATION_TYPE_MAPPING.put("REMOVE_MEMORY", Response.AdaptationType.ADD_VM);
         ADAPTATION_TYPE_MAPPING.put("SHUTDOWN_APP", Response.AdaptationType.SHUTDOWN_APP);
         ADAPTATION_TYPE_MAPPING.put("HARD_SHUTDOWN_APP", Response.AdaptationType.HARD_SHUTDOWN_APP);
+        ADAPTATION_TYPE_MAPPING.put("REQUEST_VM_CONSOLIDATION", Response.AdaptationType.REQUEST_VM_CONSOLIDATION);
         ADAPTATION_TYPE_MAPPING.put(null, null);
         ADAPTATION_TYPE_MAPPING.put("", null);
     }
@@ -56,7 +57,7 @@ public class Response implements Comparable<Response> {
     public enum AdaptationType {
 
         ADD_VM, REMOVE_VM, ADD_CPU, REMOVE_CPU,
-        ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP, HARD_SHUTDOWN_APP
+        ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP, HARD_SHUTDOWN_APP, REQUEST_VM_CONSOLIDATION
     }
 
     /**
