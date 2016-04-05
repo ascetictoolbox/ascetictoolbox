@@ -42,9 +42,9 @@ do
 done
 
 # Upload the cookbook
-knife upload $COOKBOOKS$COOKBOOK_NAME
+knife upload $COOKBOOKS$COOKBOOK_NAME -s https://$(hostname):443
 
 # Add the cookbook to the VMs (node) runlist using its IP
-knife node run_list add vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) recipe[$COOKBOOK_ORIGINAL_NAME@$(echo $CHEF_CLIENT_IP | cut -d'.' -f4).0.0]
+knife node run_list add vmic-$(echo $CHEF_CLIENT_IP | cut -d'.' -f 4) recipe[$COOKBOOK_ORIGINAL_NAME@$(echo $CHEF_CLIENT_IP | cut -d'.' -f4).0.0] -s https://$(hostname):443
 
 exit 0

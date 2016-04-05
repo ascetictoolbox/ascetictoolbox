@@ -16,7 +16,10 @@ then
   #echo "Copying windows base image via efficient inplace partial file delta encoding"
   echo "Copying windows base image"
   sudo su - root -c "rm -f $IMAGE_PATH"
-  sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/windows/win-2k3.raw.img $IMAGE_PATH"
+  #sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/windows/win-2k3.raw.img $IMAGE_PATH"
+  sudo su - root -c "dbus-launch gcp -vf $INSTALL_DIR/base-images/windows/win-2k3.raw.img $IMAGE_PATH"
+  sudo su - root -c "chown -v ubuntu:ubuntu $IMAGE_PATH"
+  sudo su - root -c "chmod -v 777 $IMAGE_PATH"
   if [ $? -ne 0 ]
   then
     echo "Error copying windows base image"
@@ -53,7 +56,7 @@ then
   REBOOT=0
   while true
   do
-    knife wsman test $IP -m > /dev/null 2>&1
+    knife wsman test $IP -m -s https://$(hostname):443 > /dev/null 2>&1
     if [ $? -ne 0 ]
     then
       TIME_NOW=$(date +%s)
@@ -102,7 +105,10 @@ then
   #echo "Copying linux base image via efficient inplace partial file delta encoding"
   echo "Copying linux base image"
   sudo su - root -c "rm -f $IMAGE_PATH"
-  sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/linux/deb-wheezy.raw.img $IMAGE_PATH"
+  #sudo su - root -c "rsync -avPh --inplace --no-whole-file $INSTALL_DIR/base-images/linux/deb-wheezy.raw.img $IMAGE_PATH"
+  sudo su - root -c "dbus-launch gcp -vf $INSTALL_DIR/base-images/linux/deb-wheezy.raw.img $IMAGE_PATH"
+  sudo su - root -c "chown -v ubuntu:ubuntu $IMAGE_PATH"
+  sudo su - root -c "chmod -v 777 $IMAGE_PATH"
   if [ $? -ne 0 ]
   then
     echo "Error copying linux base image"

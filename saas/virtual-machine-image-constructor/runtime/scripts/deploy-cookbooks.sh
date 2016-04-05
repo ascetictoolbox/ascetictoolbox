@@ -14,7 +14,7 @@ echo "Searching for $NODE_NAME"
 RETRIES=4 # This should be set to twice: chef-server.rb > chef_solr['commit_interval']
 T=1
 while true; do
-  knife search node "name:$NODE_NAME" -a ipaddress 2>&1 | grep ipaddress
+  knife search node "name:$NODE_NAME" -a ipaddress -s https://$(hostname):443 2>&1 | grep ipaddress
   if [ $? -ne 0 ]; then
     echo "Node not registered in server. Trying again ($T/$RETRIES)"
     sleep 1
@@ -31,7 +31,7 @@ done
 # Execute chef-client
 if [ "$OS" == "windows" ]
 then
-  knife winrm "name:$NODE_NAME" 'chef-client' -x Administrator -P 'password' --winrm-authentication-protocol basic -a ipaddress --no-color
+  knife winrm "name:$NODE_NAME" 'chef-client' -x Administrator -P 'password' --winrm-authentication-protocol basic -a ipaddress --no-color -s https://$(hostname):443
   if [ $? -ne 0 ]
   then
     echo "Error invoking chef-client via winrm"
@@ -39,7 +39,7 @@ then
   fi
 elif [ "$OS" == "linux" ]
 then
-  knife ssh "name:$NODE_NAME" 'chef-client' -x root -P 'password' -a ipaddress --no-color
+  knife ssh "name:$NODE_NAME" 'chef-client' -x root -P 'password' -a ipaddress --no-color -s https://$(hostname):443
   if [ $? -ne 0 ]
   then
     echo "Error invoking chef-client via ssh"
