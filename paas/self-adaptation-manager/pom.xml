@@ -136,7 +136,13 @@
             <groupId>eu.ascetic.utils</groupId>
             <artifactId>ovf-xmlbeans</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>        
+        <dependency>
+            <groupId>eu.ascetic.utils</groupId>
+            <artifactId>ovf-xmlbeans-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
         <dependency>
             <groupId>eu.ascetic.utils</groupId>
             <artifactId>JFuzzyLogic</artifactId>
@@ -150,7 +156,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>application-manager-datamodel</artifactId>
-            <version>0.22-SNAPSHOT</version>
+            <version>0.25-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>

@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager.rules.datatypes;
 
 import java.util.HashMap;
 import java.util.Map;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
 
 /**
  * This class represents an event that arrives at self-adaptation manager for
@@ -36,6 +37,8 @@ public class EventData implements Comparable<EventData> {
     private String deploymentId;
     private String agreementTerm;
     private String guaranteeid; //sla gurantee id
+    //augments information about the event, with the original deployment information
+    private OvfDefinition ovf; 
 
     private static final Map<String, Operator> OPERATOR_MAPPING
             = new HashMap<>();
@@ -254,6 +257,22 @@ public class EventData implements Comparable<EventData> {
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
+    
+    /**
+     * This gets the OVF definition of the original deployment.
+     * @return the ovf definition of the original deployment
+     */
+    public OvfDefinition getOvf() {
+        return ovf;
+    }
+
+    /**
+     * This sets the OVF definition of the original deployment.
+     * @param ovf the ovf description of the original deployment.
+     */
+    public void setOvf(OvfDefinition ovf) {
+        this.ovf = ovf;
+    }    
 
     @Override
     public int compareTo(EventData event) {

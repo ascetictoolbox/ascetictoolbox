@@ -24,6 +24,8 @@ import eu.ascetic.paas.self.adaptation.manager.rules.decisionengine.RandomDecisi
 import eu.ascetic.paas.self.adaptation.manager.rules.loggers.EventHistoryLogger;
 import eu.ascetic.paas.self.adaptation.manager.rules.loggers.ResponseHistoryBroadcaster;
 import eu.ascetic.paas.self.adaptation.manager.rules.loggers.ResponseHistoryLogger;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -159,6 +161,23 @@ public abstract class AbstractEventAssessor implements EventAssessor {
     }
 
     /**
+     * Gets the ovf definition object.
+     *
+     * @param ovf the ovf
+     * @return the ovf definition
+     */
+    public static OvfDefinition getOvfDefinition(String ovf) {
+        try {
+            OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+            return ovfDocument;
+        } catch (OvfRuntimeException ex) {
+            Logger.getLogger(AbstractEventAssessor.class.getName()).info("Error parsing OVF file: " + ex.getMessage());
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * This assesses an event and decides if a response is required. If no
      * response is required then null is returned. Calling this is equivalent to
      * calling the method assessEvent(EventData event, List sequence) but in
@@ -171,6 +190,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
      */
     private Response assessEvent(EventData event, List<EventData> eventData) {
         synchronized (this) {
+            if (actuator != null) {
+                event.setOvf(getOvfDefinition(actuator.getOvf(event.getApplicationId(), event.getDeploymentId())));
+            }
             Response answer = assessEvent(event, eventData, adaptations);
             if (answer != null) {
                 adaptations.add(answer);
