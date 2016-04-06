@@ -27,6 +27,16 @@ import java.util.List;
 public interface ActuatorInvoker {
 
     /**
+     * This gets the ovf of a given deployment.
+     *
+     * @param applicationId The application ID
+     * @param deploymentId The deployment ID
+     * @return The ovf that describes a given deployment. If the OVF can't be 
+     * reported by this actuator then null is returned instead.
+     */    
+    public abstract String getOvf(String applicationId, String deploymentId);
+    
+    /**
      * This lists which VMs can be added to a deployment in order to make it
      * scale.
      *

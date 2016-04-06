@@ -105,6 +105,11 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
         }
         return null;
     }
+    
+    @Override
+    public String getOvf(String applicationId, String deploymentId) {
+        return null; //Open nebula doesn't support OVF information for deployments.
+    }    
 
     @Override
     public List<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {

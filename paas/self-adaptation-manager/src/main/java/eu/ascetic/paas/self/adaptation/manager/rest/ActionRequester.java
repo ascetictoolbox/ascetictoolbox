@@ -45,6 +45,32 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     private boolean stop = false;
 
     /**
+     * This gets the ovf of a given deployment.
+     *
+     * @param applicationId The application ID
+     * @param deploymentId The deployment ID
+     * @return The ovf that describes a given deployment.
+     */
+    public String getOvf(String applicationId, String deploymentId) {
+        /**
+         * An example url is:
+         * http://192.168.3.16/application-manager/applications/threeTierWebApp/deployments/100/vms/
+         */
+        RestDeploymentClient client = new RestDeploymentClient(applicationId);
+        String response = client.getDeployment(String.class, deploymentId);
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Deployment.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Deployment deployment = (Deployment) jaxbUnmarshaller.unmarshal(new StringReader(response));
+            return deployment.getOvf();
+        } catch (JAXBException ex) {
+            Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    
+    /**
      * This gets a VM given its application, deployment and VM ids.
      *
      * @param application The application ID
