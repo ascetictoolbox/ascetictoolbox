@@ -1936,7 +1936,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The number of items held in the array structure.
      */
     private int decrementIndexPropertyNumber(String keyOfCountingField) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_ADAPTATION_RULE_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(keyOfCountingField);
         Integer newAdaptationRuleNumber = ((Integer) productProperty
                 .getValueAsJavaObject()) - 1;
         productProperty.setValue(newAdaptationRuleNumber.toString());
