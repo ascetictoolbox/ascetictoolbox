@@ -15,16 +15,12 @@
  */
 package eu.ascetic.utils.ovf.api;
 
-import java.util.Vector;
-
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
-import org.dmtf.schemas.wbem.wscim.x1.common.CimString;
-
-import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
-
+import java.util.Vector;
 import org.apache.commons.codec.binary.Base64;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
+import org.dmtf.schemas.wbem.wscim.x1.common.CimString;
 
 /**
  * Provides access to elements in the ProductSection element. This section
@@ -205,6 +201,15 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY = "asceticSoftwareDependencyAttributeName_";
     private static final String ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY = "asceticSoftwareDependencyAttributeValue_";
 
+    /**
+     * The static KEY used to get and set the number of adaptation rules that are in the global
+     * scope of {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     */
+    private static final String ASCETIC_ADAPTATION_RULE_NUMBER = "asceticAdaptationRuleNumber";    
+    private static final String ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY = "asceticAdaptationRuleAgreementTerm_";    
+    private static final String ASCETIC_ADAPTATION_RULE_DIRECTION_KEY = "asceticAdaptationRuleDirection_";    
+    private static final String ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY = "asceticAdaptationRuleResponseType_";     
+    
     /**
      * Default constructor.
      * 
@@ -1732,7 +1737,232 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             return ((Integer) productProperty.getValueAsJavaObject());
         }
     }
+    
+    /**
+     * Adds a new set of properties that define an adaptation rule.
+     * 
+     * @param agreementTerm The agreement term of the rule (e.g.
+     *            ("energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @return The index of the new adaptation rule (not to be confused with the 
+     * index of a {@link ProductProperty})
+     */
+    public int addAdaptationRule(String agreementTerm, String direction,
+            String responseType) {
+       
+        // Find the next adaptation rule index
+        int i = getNextFreeIndexKeyValue(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY);
 
+        addNewProperty(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + i,
+                ProductPropertyType.STRING, agreementTerm);
+        addNewProperty(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + i,
+                ProductPropertyType.STRING, direction);
+        addNewProperty(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + i,
+                ProductPropertyType.STRING, responseType);
+        
+        // Increment the number of adaptation rules stored
+        incrementIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
+
+        // Return the adaptation rule index
+        return i;
+    }
+    
+/**
+     * Sets a set of properties that define an adaptation rule at a specific 
+     * adaptation rule property set index.
+     * 
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param agreementTerm The agreement term of the rule (e.g.
+     *            ("energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     */
+    public void setAdaptationRule(int index, String agreementTerm, String direction,
+            String responseType) {
+        setAdaptationRuleAgreementTerm(index, agreementTerm);
+        setAdaptationRuleDirection(index, direction);
+        setAdaptationRuleResponseType(index, responseType);
+    }
+    
+    /**
+     * Gets the agreement term of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @return The agreement term of the rule (e.g.
+     *            ("energy_usage_per_app or power_usage_per_app etc")
+     */
+    public String getAdaptationRuleAgreementTerm(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index).getValue();
+    }
+
+    /**
+     * Sets the agreement term of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param agreementTerm The agreement term of the rule (e.g.
+     *            ("energy_usage_per_app or power_usage_per_app etc")
+     */
+    public void setAdaptationRuleAgreementTerm(int index, String agreementTerm) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index).setValue(agreementTerm);
+    }    
+
+    /**
+     * Gets the direction of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @return The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     */
+    public String getAdaptationRuleDirection(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index).getValue();
+    }
+
+    /**
+     * Sets the direction of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     */
+    public void setAdaptationRuleDirection(int index, String direction) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index).setValue(direction);
+    }    
+    
+     /**
+     * Gets the response type of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @return The response type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     */
+    public String getAdaptationRuleResponseType(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index).getValue();
+    }
+
+    /**
+     * Sets the response type of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     */
+    public void setAdaptationRuleResponseType(int index, String responseType) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index).setValue(responseType);
+    }
+    
+    /**
+     * Remove a set of adaptation rule properties at a specific index.
+     * 
+     * @param index
+     *            The index of the adaptation rule to remove (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     */
+    public void removeAdaptationRule(int index) {
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index); 
+        
+        // FIXME: We should decrement by 1 the index of all subsequent property
+        // sets
+
+        decrementIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
+    }
+
+    /**
+     * Gets the number of adaptation rules that are stored in this
+     * {@link ProductSection}.
+     * 
+     * @return The number of adaptation rules
+     */
+    public int getAdaptationRuleNumber() {
+        return getIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
+    }
+    
+    /**
+     * This gets from the XML the number of items that are held in an array like
+     * structure.
+     * @param keyOfCountingField The key of the field that is used for counting
+     * the amount of items that are in the array structure.
+     * @return The number of items held in the array structure.
+     */
+    private int getIndexPropertyNumber(String keyOfCountingField) {
+        ProductProperty productProperty = getPropertyByKey(keyOfCountingField);
+        if (productProperty == null) {
+            return 0;
+        } else {
+            return ((Integer) productProperty.getValueAsJavaObject());
+        }
+    }
+    
+    /**
+     * This increments the number of items that are held in an array like
+     * structure that is held within the xml.
+     * @param keyOfCountingField The key of the field that is used for counting
+     * the amount of items that are in the array structure.
+     * @return The number of items held in the array structure.
+     */
+    private int incrementIndexPropertyNumber(String keyOfCountingField) {
+        ProductProperty productProperty = getPropertyByKey(keyOfCountingField);     
+        if (productProperty == null) {
+            addNewProperty(keyOfCountingField, ProductPropertyType.UINT32,
+                    "1");
+            return 1;
+        } else {
+            Integer newItemCountNumber = ((Integer) productProperty
+                    .getValueAsJavaObject()) + 1;
+            productProperty.setValue(newItemCountNumber.toString());
+        return newItemCountNumber;
+        }
+    }
+    
+    /**
+     * This decrements the number of items that are held in an array like
+     * structure that is held within the xml.
+     * @param keyOfCountingField The key of the field that is used for counting
+     * the amount of items that are in the array structure.
+     * @return The number of items held in the array structure.
+     */
+    private int decrementIndexPropertyNumber(String keyOfCountingField) {
+        ProductProperty productProperty = getPropertyByKey(ASCETIC_ADAPTATION_RULE_NUMBER);
+        Integer newAdaptationRuleNumber = ((Integer) productProperty
+                .getValueAsJavaObject()) - 1;
+        productProperty.setValue(newAdaptationRuleNumber.toString());
+        return newAdaptationRuleNumber;
+    }
+    
+    /**
+     * This scans through a named property field and finds the next free index 
+     * value
+     * @param property The property to search (e.g. ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY)
+     * @return The next free index value for inserting a new item
+     */
+    private int getNextFreeIndexKeyValue(String property) {
+        // This scans through a named property and finds the next free index value
+        int i = 0;
+        while (true) {
+            ProductProperty productProperty = getPropertyByKey(property
+                    + i);
+            if (productProperty == null) {
+                break;
+            }
+            i++;
+        }
+        return i;
+    }
+    
     // TODO: Add additional helper methods here to standardise access to ASCETIC
     // specific product properties.
 }
