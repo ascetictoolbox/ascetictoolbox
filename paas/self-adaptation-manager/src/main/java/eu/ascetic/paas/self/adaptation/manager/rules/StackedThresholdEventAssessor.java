@@ -19,6 +19,8 @@ import eu.ascetic.ioutils.ResultsStore;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.FiringCriteria;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductSection;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,6 +160,30 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
     }
 
     /**
+     * This examines the OVF for rules associated with the application. If any
+     * exist then they will be added to the list of rules used fro this event 
+     * assessor.
+     *
+     * @param event The event to look for firing rules for
+     * @return The firing criteria that are from the application.
+     */
+    private ArrayList<FiringCriteria> getFiringCriteriaFromOVF(EventData event) {
+        ArrayList<FiringCriteria> answer = new ArrayList<>();
+        OvfDefinition ovf = event.getOvf();
+        for (ProductSection section : ovf.getVirtualSystemCollection().getProductSectionArray()) {
+            int maxValue = section.getAdaptationRuleNumber();
+            for (int i = 0; i < maxValue; i++) {
+                FiringCriteria criteria = new FiringCriteria(
+                        section.getAdaptationRuleAgreementTerm(i),
+                        section.getAdaptationRuleDirection(i),
+                        section.getAdaptationRuleResponseType(i));
+                answer.add(criteria);
+            }
+        }
+        return answer;
+    }
+
+    /**
      * This tests an event to see if it matches any of the rules for firing off
      * a response.
      *
@@ -167,11 +193,16 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
      */
     private ArrayList<FiringCriteria> getMatchingFiringCriteria(EventData event) {
         ArrayList<FiringCriteria> answer = new ArrayList<>();
+        for (FiringCriteria rule : getFiringCriteriaFromOVF(event)) {
+            if (rule.shouldFire(event)) {
+                answer.add(rule);
+            }
+        }   
         for (FiringCriteria rule : rules) {
             if (rule.shouldFire(event)) {
                 answer.add(rule);
             }
-        }
+        }     
         return answer;
     }
 
