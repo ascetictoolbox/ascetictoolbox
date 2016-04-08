@@ -66,40 +66,62 @@ public class RestDeploymentClient {
         webResource = client.resource(baseUri).path(resourcePath);
     }
 
-    public void setResourcePath(String applicationName) {
-        String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments", new Object[]{applicationName});
+    public void setResourcePath(String application_name) {
+        String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments", new Object[]{application_name});
         webResource = client.resource(baseUri).path(resourcePath);
     }
 
-    public <T> T getDeployment(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
+    public <T> T getDeployment(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{deploymentId}));
+        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getEnergyEstimationForEvent(Class<T> responseType, String deploymentId, String eventId) throws UniformInterfaceException {
+    public <T> T getPowerConsumption(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-estimation", new Object[]{deploymentId, eventId}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/power-consumption", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public ClientResponse deleteDeployment(String deploymentId) throws UniformInterfaceException {
-        return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deploymentId})).delete(ClientResponse.class);
-    }
-
-    public ClientResponse postDeployment(Object requestEntity) throws UniformInterfaceException {
-        return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_XML).post(ClientResponse.class, requestEntity);
-    }
-
-    public <T> T getEnergyConsumption(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
+    public <T> T getDeploymentJSON(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/energy-consumption", new Object[]{deploymentId}));
+        resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
+    public ClientResponse deleteDeployment_XML(Object requestEntity, String deployment_id) throws UniformInterfaceException {
+        return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id})).type(javax.ws.rs.core.MediaType.APPLICATION_XML).delete(ClientResponse.class, requestEntity);
+    }
+
+    public ClientResponse deleteDeployment_JSON(Object requestEntity, String deployment_id) throws UniformInterfaceException {
+        return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id})).type(javax.ws.rs.core.MediaType.APPLICATION_JSON).delete(ClientResponse.class, requestEntity);
+    }
+
+    public ClientResponse deleteDeployment_TEXT(Object requestEntity, String deployment_id) throws UniformInterfaceException {
+        return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id})).type(javax.ws.rs.core.MediaType.TEXT_PLAIN).delete(ClientResponse.class, requestEntity);
+    }
+
+    public <T> T getCostEstimation(Class<T> responseType, String event_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("events/{0}/cost-estimation", new Object[]{event_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getDeploymentOvf(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
+    public <T> T getPowerEstimationForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/ovf", new Object[]{deploymentId}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/power-estimation", new Object[]{deployment_id, event_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T getDeploymentOvf(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/ovf", new Object[]{deployment_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T getPowerConsumptionForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/power-consumption", new Object[]{deployment_id, event_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
@@ -111,14 +133,54 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getDeploymentAgreement(Class<T> responseType, String deploymentId) throws UniformInterfaceException {
+    public <T> T getDeploymentAgreement(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deploymentId}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public ClientResponse putDeploymentAgreement(Object requestEntity, String deploymentId) throws UniformInterfaceException {
-        return webResource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deploymentId})).type(javax.ws.rs.core.MediaType.APPLICATION_XML).put(ClientResponse.class, requestEntity);
+    public <T> T getDeploymentsJSON(Class<T> responseType, String status) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        if (status != null) {
+            resource = resource.queryParam("status", status);
+        }
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
+    public ClientResponse postDeploymentJSON(Object requestEntity) throws UniformInterfaceException {
+        return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_XML).post(ClientResponse.class, requestEntity);
+    }
+
+    public <T> T getEnergyEstimationForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-estimation", new Object[]{deployment_id, event_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public ClientResponse postDeployment(Object requestEntity) throws UniformInterfaceException {
+        return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_XML).post(ClientResponse.class, requestEntity);
+    }
+
+    public <T> T getEnergyConsumption(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/energy-consumption", new Object[]{deployment_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T getEnergyMeasurementForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-consumption", new Object[]{deployment_id, event_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+    
+    public <T> T getCost(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/cost-consumption", new Object[]{deployment_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }    
+
+    public ClientResponse putDeploymentAgreement(Object requestEntity, String deployment_id) throws UniformInterfaceException {
+        return webResource.path(java.text.MessageFormat.format("{0}/agreement", new Object[]{deployment_id})).type(javax.ws.rs.core.MediaType.APPLICATION_XML).put(ClientResponse.class, requestEntity);
     }
 
     public void close() {
