@@ -1,17 +1,15 @@
 package eu.ascetic.saas.applicationpackager.appmanager.client;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
-import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 //import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.saas.applicationpackager.Dictionary;
 import eu.ascetic.saas.applicationpackager.conf.Configuration;
 import eu.ascetic.saas.applicationpackager.http.Client;
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.AppManagerCallProgressBarDialog;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -72,19 +70,28 @@ public class AppManagerClientHC implements AppManagerClient {
 	 * @see eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClient#postApplication(java.lang.String)
 	 */
 	@Override
-	public Application postApplication(String ovf) {
+	public Application postApplication(String ovf, AppManagerCallProgressBarDialog dialog) {
 		
+		if (dialog != null){
+			dialog.updateProgressBar(1);
+		}
 		Application app  = null;
 		Boolean exception = false;
 		String vmDeployUrl = url + "/applications";
 		logger.info("URL build: " + vmDeployUrl);
+		if (dialog != null){
+			dialog.addLogMessage("URL build: " + vmDeployUrl);
+		}
 		
 		try {
 //			ListVms listVms = new ListVms(vms);
 //			String payload = ModelConverter.objectListVmsToJSON(listVms);
 //			
-			String response = Client.postMethod(vmDeployUrl, ovf, Dictionary.CONTENT_TYPE_XML, Dictionary.CONTENT_TYPE_XML, exception);
+			String response = Client.postMethod(vmDeployUrl, ovf, Dictionary.CONTENT_TYPE_XML, Dictionary.CONTENT_TYPE_XML, exception, dialog);
 			logger.info("PAYLOAD: " + response);
+			if (dialog != null){
+				dialog.addLogMessage("PAYLOAD: " + response);
+			}
 			app = ModelConverter.xmlApplicationToObject(response);
 			
 //			assertEquals("/applications/101", application.getHref());
@@ -112,6 +119,9 @@ public class AppManagerClientHC implements AppManagerClient {
 //			}
 		} catch(Exception e) {
 			logger.warn("Error trying to parse XML response from AppMan: " + url + "/vms" + " Exception: " + e.getMessage());
+			if (dialog != null){
+				dialog.addLogMessage("Error trying to parse XML response from AppMan: " + url + "/vms" + " Exception: " + e.getMessage());
+			}
 			exception = true;
 		}
 		
@@ -121,6 +131,10 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	
+public void showDeploymentURL(String appName, String deploymentId){
+		String targetUrl = url + "/applications/" + appName + "/deployments/" + deploymentId;
+		logger.info("Connecting to: " + targetUrl);		
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClient#getDeployment(java.lang.String, java.lang.String)
@@ -134,7 +148,7 @@ public class AppManagerClientHC implements AppManagerClient {
 		
 		try {
 			String response = Client.getMethod(targetUrl, Dictionary.CONTENT_TYPE_XML, exception);
-			logger.info("PAYLOAD: " + response);
+//			logger.info("PAYLOAD: " + response);
 			deployment = ModelConverter.xmlDeploymentToObject(response);
 		} catch(Exception e) {
 			logger.warn("Error trying to parse XML response from AppMan: " + targetUrl + " Exception: " + e.getMessage());

@@ -2,19 +2,31 @@ package eu.ascetic.saas.applicationpackager.ide.wizards;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
+
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.ProgressBarDialog;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -47,6 +59,8 @@ public class XmlFileSelectorWizardPage extends WizardPage {
 	
 	/** The container. */
 	private Composite container;
+	
+	private ProgressBar progressBar;
 
 	
 	/**
@@ -152,12 +166,77 @@ public class XmlFileSelectorWizardPage extends WizardPage {
 			}
 		});
 
+		//testing with jobs
+//		Button button = new Button(container, SWT.PUSH);
+//		progressBar = new ProgressBar(container, SWT.SMOOTH);
+//	    progressBar.setBounds(100, 10, 200, 20);
+//	    progressBar.setVisible(false);
+//	    progressBar.setSelection(0);
+//		progressBar.setMaximum(100);
+//			
+//		button.setText("job button");
+// 
+//		//JOB
+//		Listener listener = new Listener() {
+//			public void handleEvent(Event event) {
+//				 
+//		    	  Job job = new Job("test") {
+//		  			@Override
+//		  			protected IStatus run(IProgressMonitor monitor) {
+//		  				
+//		  				monitor.beginTask("start task", 100);
+//		  				//time consuming work here
+//		  				doExpensiveWork(monitor);
+//		  				//sync with UI				
+//		  				syncWithUI();
+//
+//		  				return Status.OK_STATUS;
+//		  			}
+//
+//		  		};
+//		  		job.setUser(true);
+//		  		job.schedule();  	  
+//		      }
+//		    };
+// 
+//		button.addListener(SWT.Selection, listener);
+//		end testing with jobs
+		
 		// required to avoid an error in the system
 		setControl(container);
 		setPageComplete(false);
 	}
 
-	
+//	private void doExpensiveWork(final IProgressMonitor monitor) {
+//		Display.getDefault().asyncExec(new Runnable() {
+//			public void run() {
+//				progressBar.setVisible(true);
+//				// mimic a long time job here
+//				for (int i = 0; i < 10; i++) {
+//					try {
+//						//give a progress bar to indicate progress
+//						monitor.worked(10);
+//						progressBar.setSelection(progressBar.getSelection() + 10);
+//						
+//						Thread.sleep(2000);
+//						System.out.println("step: " + i);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		});
+//
+//	}
+// 
+//	private void syncWithUI() {
+//		Display.getDefault().asyncExec(new Runnable() {
+//			public void run() {
+//				MessageDialog.openInformation(XmlFileSelectorWizardPage.this.getShell(), "message",
+//						"completed!");
+//			}
+//		});
+//	}
 	/**
 	 * Gets the text1.
 	 *

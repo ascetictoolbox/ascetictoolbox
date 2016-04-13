@@ -3,6 +3,7 @@ package eu.ascetic.saas.applicationpackager.appmanager.client;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.AppManagerCallProgressBarDialog;
 
 
 
@@ -50,9 +51,10 @@ public interface AppManagerClient {
 	 * Adds the application.
 	 *
 	 * @param ovf the ovf
+	 * @param dialog the dialog
 	 * @return the string
 	 */
-	public Application postApplication(String ovf);
+	public Application postApplication(String ovf, AppManagerCallProgressBarDialog dialog);
 	
 	/**
 	 * Gets the deployment.

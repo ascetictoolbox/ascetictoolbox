@@ -12,9 +12,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import eu.ascetic.saas.applicationpackager.ovf.OVFUtils;
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.VmicCallProgressBarDialog;
 import eu.ascetic.saas.applicationpackager.utils.Xml2OvfTranslator;
-import eu.ascetic.saas.applicationpackager.vmic.VmicClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -50,7 +49,7 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 	
 	/** The called from checkbox. */
 	private boolean calledFromCheckbox;
-	
+
 	/**
 	 * Instantiates a new ovf code generated viewer wizard page.
 	 */
@@ -69,16 +68,7 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
-		layout.numColumns = 2;
-//		Label label1 = new Label(container, SWT.NONE);
-//		label1.setText("File");
-//
-//		text1 = new Text(container, SWT.BORDER | SWT.SINGLE);
-//		text1.setText("");		
-//
-//		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-//		text1.setLayoutData(gd);
-//		text1.setEditable(false);		
+		layout.numColumns = 2;	
 		
 		Label contentLabel = new Label(container, SWT.NONE);
 		contentLabel.setText("OVF");
@@ -89,8 +79,6 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 	
 		styledText.setText(ovfContent);
 		styledText.setEditable(false);
-//		styledText.setSize(500, 500);
-//		styledText.setBounds(10, 10, 500, 500);
 		
 		Label labelCheck = new Label(container, SWT.NONE);
 		labelCheck.setText("Continue?");
@@ -143,21 +131,16 @@ public class OvfCodeGeneratedViewerWizardPage extends WizardPage {
 	public IWizardPage getNextPage() {			
 		IWizardPage nextPage = super.getNextPage();	
 		if (calledFromCheckbox){	
-			VmicClient vmicClient = new VmicClient();
-			String ovfVmicResponse = vmicClient.testGenerateImageWorkflow(styledText.getText());
-//			((OvfResponseVmicViewerWizardPage) nextPage).setContent(ovfVmicResponse);
-			System.out.println("VMIC response: ");
-			System.out.println(ovfVmicResponse);
-			String msg = OVFUtils.removeSoftwareDependencyElements(ovfVmicResponse);
-			System.out.println("Post remove software dependencies: ");
-			System.out.println(msg);
-			if (msg == null){
-				msg = "";
-			}
-			((OvfResponseVmicViewerWizardPage) nextPage).setContent(msg);
-			calledFromCheckbox = false;
+			VmicCallProgressBarDialog vcpbd = new VmicCallProgressBarDialog(OvfCodeGeneratedViewerWizardPage.this.getShell(),
+					this, 
+					(OvfResponseVmicViewerWizardPage) nextPage, styledText.getText());
+			vcpbd.open();			
 		}
 		return nextPage;
 	} 
-
+	
+	public void setCalledFromCheckBox(boolean called){
+		calledFromCheckbox = called;
+	}
+	
 }

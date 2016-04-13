@@ -10,10 +10,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.saas.applicationpackager.appmanager.client.AppManagerClientHC;
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.AppManagerCallProgressBarDialog;
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.VmicCallProgressBarDialog;
+import eu.ascetic.saas.applicationpackager.utils.Utils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -50,6 +54,7 @@ public class OvfResponseVmicViewerWizardPage extends WizardPage {
 	/** The called from checkbox. */
 	private boolean calledFromCheckbox;
 	
+    private Button check;
 	/**
 	 * Instantiates a new ovf response vmic viewer wizard page.
 	 */
@@ -93,7 +98,8 @@ public class OvfResponseVmicViewerWizardPage extends WizardPage {
 		
 		Label labelCheck = new Label(container, SWT.NONE);
 		labelCheck.setText("Continue?");
-		final Button check = new Button(container, SWT.CHECK);
+		
+        check = new Button(container, SWT.CHECK);
 		check.setSelection(false);check.addSelectionListener(new SelectionListener() {
 			
 			@Override
@@ -101,7 +107,7 @@ public class OvfResponseVmicViewerWizardPage extends WizardPage {
 				// TODO Auto-generated method stub
 				if (check.getSelection() == true) {
 					setPageComplete(true);
-					System.out.println("Next stop: PaaS AppManager");
+
 					calledFromCheckbox = true;
 //					vmicClient.testGenerateImageWorkflow();
 				}
@@ -128,10 +134,20 @@ public class OvfResponseVmicViewerWizardPage extends WizardPage {
 	 * Sets the content.
 	 *
 	 * @param ovfGenerated the new content
+     * @param error specify if an error has happened
 	 */
-	public void setContent(String ovfGenerated) {
+	public void setContent(final String ovfGenerated, final boolean error) {
 		// TODO Auto-generated method stub
-		styledText.setText(ovfGenerated);		
+//		culo ovfGenerated = Utils.replaceArrow(ovfGenerated);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				styledText.setText(ovfGenerated);		
+		        if (error){
+					check.setEnabled(false);
+				}
+			}
+		});
+		
 	}
 	
 	/* (non-Javadoc)
@@ -141,14 +157,22 @@ public class OvfResponseVmicViewerWizardPage extends WizardPage {
 	public IWizardPage getNextPage() {			
 		IWizardPage nextPage = super.getNextPage();	
 		if (calledFromCheckbox){
-			AppManagerClientHC appManClient = new AppManagerClientHC();
-			Application app = appManClient.postApplication(styledText.getText());
-			if (app == null){				
-				((XmlResponseAppManViewerWizardPage) nextPage).setErrorUploadingApp("ERROR retrieving XML from AppManager");	
-			}
-			else {
-				((XmlResponseAppManViewerWizardPage) nextPage).setContent(app);
-			}
+//			AppManagerClientHC appManClient = new AppManagerClientHC();
+//			Application app = appManClient.postApplication(styledText.getText());
+//			if (app == null){				
+//				((XmlResponseAppManViewerWizardPage) nextPage).setErrorUploadingApp("ERROR retrieving XML from AppManager");	
+//			}
+//			else {
+//				((XmlResponseAppManViewerWizardPage) nextPage).setContent(app);
+//			}
+			//new code
+			AppManagerCallProgressBarDialog ampbd = new AppManagerCallProgressBarDialog(
+					OvfResponseVmicViewerWizardPage.this.getShell(),
+					this, 
+					(XmlResponseAppManViewerWizardPage) nextPage, styledText.getText());
+			ampbd.open();
+			//end code
+			
 //			Application app = new Application();
 //			app.setName("myApp");
 //			Deployment d = new Deployment();

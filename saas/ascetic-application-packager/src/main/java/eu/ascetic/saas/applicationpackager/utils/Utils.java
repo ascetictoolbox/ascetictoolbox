@@ -55,6 +55,37 @@ public class Utils {
 	    return everything;
 	}
 	
+	/**
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String replaceSpecialCharacters(String str){
+		String s = str;
+		str = str.replaceAll(">", "&gt;");
+		str = str.replaceAll("<", "&lt;");
+		return str;
+	}
+	
+	public static String replaceAmpersand(String str){
+//		System.out.println("**********************************************************");
+//		System.out.println(str.replaceAll("&amp;", "&"));
+//		System.out.println("**********************************************************");
+		return str.replaceAll("&amp;", "&");
+	}
+	
+	public static String replaceArrow(String str){
+//		System.out.println("**********************************************************");
+//		System.out.println(str.replaceAll("&amp;", "&"));
+//		System.out.println("**********************************************************");
+		return str.replaceAll("=>", "=&gt;");
+	}
+	
+	public static int getIntValue(double d){
+		Double number = new Double(d);
+		return number.intValue();		
+	}
+	
 
 
 }

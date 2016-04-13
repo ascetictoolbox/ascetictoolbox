@@ -1,5 +1,11 @@
 package eu.ascetic.saas.applicationpackager;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import eu.ascetic.saas.applicationpackager.vmic.VmicClient;
 
 /**
@@ -29,6 +35,7 @@ public class VmicTest {
 
 	public static void main(String args[]){
 		VmicClient vmicClient = new VmicClient();
-//		vmicClient.testGenerateImageWorkflow();
+
+		vmicClient.testGenerateImageWorkflowTest();
 	}
 }

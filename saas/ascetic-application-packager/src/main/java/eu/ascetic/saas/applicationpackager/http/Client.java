@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.saas.applicationpackager.Dictionary;
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.AppManagerCallProgressBarDialog;
 
 
 
@@ -70,7 +71,7 @@ public class Client {
 		// Create an instance of HttpClient.
 		HttpClient client = getHttpClient();
 				
-		logger.debug("Connecting to: " + url);
+//		logger.debug("Connecting to: " + url);
 		// Create a method instance.
 		GetMethod method = new GetMethod(url);
 		setHeaders(method, accept);
@@ -126,15 +127,20 @@ public class Client {
 	 * @param payload payload of the request
 	 * @param accept type of the response the method accepts
 	 * @param contentType type of the response the method gets back
+	 * @param dialog 
 	 * @param exeception if something goes wrong in the connection, the object is set to null
 	 * @return the response payload
 	 */
-	public static String postMethod(String url, String payload, String accept, String contentType, Boolean exception) {
+	public static String postMethod(String url, String payload, String accept, String contentType, Boolean exception, AppManagerCallProgressBarDialog dialog) {
 		// Create an instance of HttpClient.
 		HttpClient client = getHttpClient();
 
 		logger.info("Connecting to: " + url);
 		System.out.println("Connecting to: " + url);
+		if (dialog != null){
+			dialog.addLogMessage("Connecting to: " + url);
+			dialog.updateProgressBar(5);
+		}
 		// Create a method instance.
 		PostMethod method = new PostMethod(url);
 		setHeaders(method, accept);
@@ -154,10 +160,16 @@ public class Client {
 			int statusCode = client.executeMethod(method);
 			logger.info("Status Code: " + statusCode );
 			System.out.println("Status Code: " + statusCode );
+			if (dialog != null){
+				dialog.addLogMessage("Status Code: " + statusCode);
+			}
 
 			if (statusCode >= 200 && statusCode > 300) { //TODO test for this case... 
 				logger.info("Execution of POST method to: " + url + " failed: " + method.getStatusLine());
 				System.out.println("Execution of POST method to: " + url + " failed: " + method.getStatusLine());
+				if (dialog != null){
+					dialog.addLogMessage("Execution of POST method to: " + url + " failed: " + method.getStatusLine());
+				}
 			} else {
 				// Read the response body.
 				byte[] responseBody = method.getResponseBody();
@@ -168,11 +180,17 @@ public class Client {
 			logger.info("Fatal protocol violation: " + e.getMessage());
 			System.out.println("Fatal protocol violation: " + e.getMessage());
 			e.printStackTrace();
+			if (dialog != null){
+				dialog.addLogMessage("Fatal protocol violation: " + e.getMessage());
+			}
 			exception = true;
 		} catch(IOException e) {
 			logger.info("Fatal transport error: " + e.getMessage());
 			System.out.println("Fatal transport error: " + e.getMessage());
 			e.printStackTrace();
+			if (dialog != null){
+				dialog.addLogMessage("Fatal transport error: " + e.getMessage());
+			}
 			exception = true;
 		} finally {
 			// Release the connection.

@@ -1,7 +1,16 @@
 package eu.ascetic.saas.applicationpackager.vmic;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.apache.log4j.Logger;
 
+import eu.ascetic.saas.applicationpackager.ide.wizards.progressDialogs.VmicCallProgressBarDialog;
+import eu.ascetic.saas.applicationpackager.ovf.OVFUtils;
+import eu.ascetic.saas.applicationpackager.utils.Utils;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.vmic.api.VmicApi;
 import eu.ascetic.vmic.api.core.ProgressException;
@@ -56,46 +65,60 @@ public class VmicClient {
 	protected final static Logger LOGGER = Logger.getLogger(VmicClient.class);
 
 	/**
+	 * Testing sending an OVF to VMIC
+	 * @return
+	 */
+	public String testGenerateImageWorkflowTest(){
+		String ovfDefinitionAsString = null;
+		try {
+			ovfDefinitionAsString = Utils.readFile(
+					"C:\\data\\projects\\ARI\\it\\ASCETiC\\svn\\trunk\\saas\\ascetic-application-packager"
+					+ "\\src\\main\\resources\\atc-single-feb2016.ovf");
+		 } catch (IOException e) {
+            e.printStackTrace();
+		}
+       
+		return  testGenerateImageWorkflow(ovfDefinitionAsString, null);
+	}
+
+	
+	/**
 	 * Test generate image workflow.
 	 *
 	 * @param ovfDefinitionAsString the ovf definition as string
 	 * @return the string
 	 */
-	public String testGenerateImageWorkflow(String ovfDefinitionAsString) {
+	public String testGenerateImageWorkflow(String ovfDefinitionAsString, VmicCallProgressBarDialog dialog) {
         
 		String ovfResult = null;
-		
+		if (dialog != null){
+			dialog.updateProgressBar(1);
+		}
         LOGGER.info("### TEST: " + getCurrentMethodName() + " STARTED ###");
         System.out.println("### TEST: " + getCurrentMethodName() + " STARTED ###");
-
+        if (dialog != null){
+        	dialog.addLogMessage("### OVF code generation from VMIC STARTED ###");
+        }
         try {
             ProgressDataImage progressDataImage = null;
 
             // Initialise the VMIC's configuration
-            GlobalConfiguration globalConfiguration = new GlobalConfiguration();
+            GlobalConfiguration globalConfiguration = new GlobalConfiguration(            
+//        "C:\\data\\projects\\ARI\\it\\ASCETiC\\svn\\trunk\\saas\\ascetic-application-packager\\src\\main\\resources\\cfg.properties");
+    		"/home/ubuntu/ascetic/saas/app-packager/cfg.properties");
+            System.out.println("Config file assigned");
             VmicApi vmicApi = new VmicApi(globalConfiguration);
-
-            /** I pass the ovf text directly as method attribute **/
-            // Read the testing OVF
-//          URL url = getClass().getClassLoader().getResource("gpf-ovf.xml");
-//          URL url = getClass().getClassLoader().getResource("test-ovf.ovf");
-//          URL url = getClass().getClassLoader().getResource("test-ovf-may2015.ovf");
-//            String ovfDefinitionAsString = null;
-//            try {
-//                ovfDefinitionAsString = new String(Files.readAllBytes(Paths
-//                        .get(url.toURI())));
-//                LOGGER.info(ovfDefinitionAsString);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (URISyntaxException e) {
-//                e.printStackTrace();
-//            }
+            System.out.println("Configs parameters loaded");
+            
+            System.out.println("Generating new instance from ovfDefinitionFactory");
             OvfDefinition ovfDefinition = OvfDefinition.Factory
                     .newInstance(ovfDefinitionAsString);
-
+            
+            System.out.println("Retrieving ID from Virtual System Collection");
             String ovfDefinitionId = ovfDefinition.getVirtualSystemCollection()
                     .getId();
 
+            System.out.println("Ready to generate image");
             vmicApi.generateImage(ovfDefinition);
 
             // Wait until the file upload has been registered with the VMIC
@@ -104,19 +127,32 @@ public class VmicClient {
                 try {
                     LOGGER.info("TEST: Trying to fetch progress data...");
                     System.out.println("TEST: Trying to fetch progress data...");
+                    if (dialog != null){
+                    	dialog.addLogMessage("Trying to fetch progress data...");
+                    }
                     vmicApi.progressCallback(ovfDefinitionId, null);
                     LOGGER.info("TEST: No ProgressException...");
                     System.out.println("TEST: No ProgressException...");
+                    if (dialog != null){
+                    	dialog.addLogMessage("No ProgressException...");
+                    }
                     break;
                 } catch (ProgressException e) {
                     LOGGER.warn("TEST: Caught ProgressException due to: "
                             + e.getMessage());
                     System.out.println("TEST: Caught ProgressException due to: "
                             + e.getMessage());
+                    if (dialog != null){
+                    	dialog.addLogMessage("Caught ProgressException due to: "
+                                + e.getMessage());
+                    }
                     Thread.sleep(250);
                 }
             }
 
+//
+            double previousProgess = -1.0;
+            
             // Poll the progress data until completion...
             while (true) {
 
@@ -130,24 +166,48 @@ public class VmicClient {
                     LOGGER.error(progressDataImage.getException().getMessage(),
                             progressDataImage.getException());
                     System.out.println(progressDataImage.getException().getMessage());
+                    if (dialog != null){
+                    	dialog.addLogMessage(progressDataImage.getException().getMessage());
+                    }
                     return ovfResult;
                 } else {
-                    LOGGER.info("TEST: progressDataImageObject total progress is: "
-                            + progressDataImage.getTotalProgress());
-                    System.out.println("TEST: progressDataImageObject total progress is: "
-                            + progressDataImage.getTotalProgress());
-                    LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
-                            + progressDataImage.getPhaseName(progressDataImage
-                                    .getCurrentPhaseId())
-                            + ", % is: "
-                            + progressDataImage.getHistory().get(
-                                    progressDataImage.getCurrentPhaseId()));
-                    System.out.println("TEST: progressDataImageObject history of Phase with ID: "
-                            + progressDataImage.getPhaseName(progressDataImage
-                                    .getCurrentPhaseId())
-                            + ", % is: "
-                            + progressDataImage.getHistory().get(
-                                    progressDataImage.getCurrentPhaseId()));
+                    double currentProgress = progressDataImage
+                            .getTotalProgress();
+                    
+                    if (dialog != null){
+                    	dialog.updateProgressBar(currentProgress);
+                    }
+                    if (currentProgress > previousProgess) {
+                        LOGGER.info("TEST: progressDataImageObject total progress is: "
+                                + currentProgress);
+                        
+                        LOGGER.info("TEST: progressDataImageObject history of Phase with ID: "
+                                + progressDataImage
+                                        .getPhaseName(progressDataImage
+                                                .getCurrentPhaseId())
+                                + ", % is: "
+                                + progressDataImage.getHistory().get(
+                                        progressDataImage.getCurrentPhaseId()));
+                        System.out.println("TEST: progressDataImageObject total progress is: " + currentProgress);
+                        System.out.println("TEST: progressDataImageObject history of Phase with ID: "
+	                                + progressDataImage
+	                                .getPhaseName(progressDataImage
+	                                        .getCurrentPhaseId())
+	                        + ", % is: "
+	                        + progressDataImage.getHistory().get(
+	                                progressDataImage.getCurrentPhaseId()));
+                        if (dialog != null){
+                        	dialog.addLogMessage("progressDataImageObject total progress is: " + currentProgress);
+                        	dialog.addLogMessage("progressDataImageObject history of Phase with ID: "
+	                                + progressDataImage
+	                                .getPhaseName(progressDataImage
+	                                        .getCurrentPhaseId())
+	                        + ", % is: "
+	                        + progressDataImage.getHistory().get(
+	                                progressDataImage.getCurrentPhaseId()));
+                        }
+                        previousProgess = currentProgress;
+                    }
                 }
 
                 // 250ms delay between polling...
@@ -158,6 +218,11 @@ public class VmicClient {
                         .isComplete()) {
                     LOGGER.warn("TEST: Detected image generation as completed!");
                     System.out.println("TEST: Detected image generation as completed!");
+                    if (dialog != null){
+                    	dialog.addLogMessage("Detected image generation has been completed!");
+//                    	dialog.updateProgressBar(100.0);
+//                    	dialog.updateWidgetsProcessFinished();
+                    }
                     break;
                 }
             }
@@ -191,10 +256,21 @@ public class VmicClient {
         } catch (Exception e) {
             LOGGER.error("TEST: Test Failed! Cause: " + e.getCause(), e);
             System.out.println("TEST: Test Failed! Cause: " + e.getCause());
+            System.out.println("TEST: Test Failed! Cause: " + e.getMessage());
+            if (dialog != null){
+            	dialog.addLogMessage("Process Failed! Cause: " + e.getMessage());
+            }
+            
         }
         
         LOGGER.warn("### TEST: " + getCurrentMethodName() + " COMPLETE ###");
         System.out.println("### TEST: " + getCurrentMethodName() + " COMPLETE ###");
+        if (dialog != null){
+        	dialog.addLogMessage("### OVF code generation from VMIC COMPLETE ###");
+        	
+        	dialog.updateProgressBar(100.0);
+        	dialog.updateWidgetsProcessFinished();
+        }
         
         return ovfResult;
     }

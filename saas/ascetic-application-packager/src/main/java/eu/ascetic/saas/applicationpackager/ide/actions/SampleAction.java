@@ -74,9 +74,9 @@ public class SampleAction implements IWorkbenchWindowActionDelegate {
 				new ApplicationPackagerWizard());
 		
 		if (wizardDialog.open() == Window.OK) {
-			System.out.println("Ok pressed");
+//			System.out.println("Ok pressed");
 		} else {
-			System.out.println("Cancel pressed");
+//			System.out.println("Cancel pressed");
 		}
 	}
 

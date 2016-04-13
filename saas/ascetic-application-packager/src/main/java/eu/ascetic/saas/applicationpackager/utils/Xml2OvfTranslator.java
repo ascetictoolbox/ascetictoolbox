@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 
 import eu.ascetic.saas.applicationpackager.ovf.OVFUtils;
 import eu.ascetic.saas.applicationpackager.xml.model.ApplicationConfig;
+import eu.ascetic.saas.applicationpackager.xml.model.Attribute;
 import eu.ascetic.saas.applicationpackager.xml.model.CpuSpeed;
 import eu.ascetic.saas.applicationpackager.xml.model.Node;
 import eu.ascetic.saas.applicationpackager.xml.model.SoftwareInstall;
@@ -28,6 +29,7 @@ import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.enums.DiskFormatType;
 import eu.ascetic.utils.ovf.api.enums.OperatingSystemType;
+import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.enums.ResourceType;
 
 /**
@@ -108,18 +110,19 @@ public class Xml2OvfTranslator {
 	        	 // Virtual System
 		        VirtualSystem virtualSystem = VirtualSystem.Factory.newInstance();
 		        virtualSystem.setId(n.getName());
+                virtualSystem.setName(n.getName());
 		        virtualSystem.setInfo(n.getName() + "Test Virtual System");
 		        OperatingSystem operatingSystem = OperatingSystem.Factory.newInstance();
 		        operatingSystem.setInfo("Description of " + n.getName() + " Operating System.");
 		        if (n.getBaseDependency().getOs().equalsIgnoreCase("Linux")){
 			        operatingSystem
 			                .setId(OperatingSystemType.LINUX);
-			        //operatingSystem.setVersion(n.getBaseDependency().getOs());
+			        operatingSystem.setVersion("debian-7");
 		        }
 		        else {
 		        	 operatingSystem
 		                .setId(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003);
-//		        	 operatingSystem.setVersion(n.getBaseDependency().getOs());
+		        	 operatingSystem.setVersion("2003");
 		        }
 		        virtualSystem.setOperatingSystem(operatingSystem);
 
@@ -130,11 +133,26 @@ public class Xml2OvfTranslator {
 		        productSection2.setVersion("2.0");
 		        productSection2.setLowerBound(Integer.parseInt(n.getMinInstance()));
 		        productSection2.setUpperBound(Integer.parseInt(n.getMaxInstance()));
+                productSection2.setAssociatePublicIp(true);
+		        productSection2.addNewProperty("asceticCacheImage", ProductPropertyType.UINT32 , "1");
 		        
 		        List<SoftwareInstall> swList = n.getSoftwareInstalls();
 		        if (swList != null){
 		        	for (SoftwareInstall sw : n.getSoftwareInstalls()){
-		        		 productSection2.addSoftwareDependencyProperties(sw.getName(), "chef-cookbok", sw.getChefUri(), "");
+		        		 int index = productSection2.addSoftwareDependencyProperties(sw.getName(), "chef-cookbook", sw.getChefUri(), "");
+                         List<Attribute> attList = sw.getAttributes();
+		        		 for (int i=0; i<attList.size(); i++){
+								System.out.println(Utils.replaceSpecialCharacters(attList.get(i).getName()));
+								System.out.println(Utils.replaceSpecialCharacters(attList.get(i).getValue()));
+		        			 productSection2.addSoftwareDependencyPackageAttribute(
+		        					 index, 
+		        					 sw.getName(), 
+//		        					 Utils.replaceSpecialCharacters(attList.get(i).getName()), 
+//		        					 Utils.replaceSpecialCharacters(attList.get(i).getValue()));
+//culo
+		        					 attList.get(i).getName(), 
+		        					 attList.get(i).getValue());
+		        		 }
 			        }
 			       
 		        }
@@ -222,7 +240,7 @@ public class Xml2OvfTranslator {
 		        Disk disk = Disk.Factory.newInstance();
 		        disk.setDiskId(n.getName() + "-img-disk");
 		        disk.setFileRef(n.getName() + "-img");
-		        disk.setFormat(DiskFormatType.QCOW2);
+		        disk.setFormat(DiskFormatType.RAW);
 		        StorageResource d = OVFUtils.getStorageResourceFormatted(n.getPrefDiskSize());
 		        if (d != null){
 		        	disk.setCapacityAllocationUnits(d.getUnits());
@@ -247,8 +265,15 @@ public class Xml2OvfTranslator {
 	        ovfDefinition.setVirtualSystemCollection(virtualSystemCollection);
 
         }
-        
-		return ovfDefinition.toString();		
+
+	String s = ovfDefinition.toString();
+//culo
+//	s = Utils.replaceAmpersand(s);
+//	System.out.println("POST-REPLACE AMPERSAND HTML CODE:");
+	System.out.println(s);
+//	System.out.println("*************************************");
+	return s;
+	
 	}
 	
 	/**

@@ -1,12 +1,11 @@
 package eu.ascetic.saas.applicationpackager.xml.model;
 
-import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * Copyright 2015 ATOS SPAIN S.A. 
@@ -26,23 +25,21 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author David Rojo Antona. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.rojoa@atos.net 
  * 
- * This class implements a software_install node in a XML file
+ * This class implements an attribute node in a XML file
  *
  */
-@XmlRootElement(name ="software_install")
+@XmlRootElement(name ="attribute")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SoftwareInstall {
+public class Attribute {
 
 	/** The name. */
 	@XmlAttribute(name="name")
 	private String name;
 	
-	/** The chef uri. */
-	@XmlAttribute(name="chefURI")
-	private String chefUri;
-    /** The attributes. */
-	@XmlElement(name="attribute")
-	private ArrayList<Attribute> attributes;
+
+	/** The value. */
+	@XmlAttribute(name="value")
+	private String value;
 
 	/**
 	 * Gets the name.
@@ -63,55 +60,26 @@ public void setName(String name) {
 		this.name = name;
 	}
 
+
 	/**
-	 * Gets the chef uri.
+	 * Gets the value.
 	 *
-	 * @return the chef uri
+	 * @return the value
 	 */
-	public String getChefUri() {
-		return chefUri;
+	public String getValue() {
+		return value;
 	}
 
 //	@XmlAttribute
-	/**
- * Sets the chef uri.
+
+/**
+ * Sets the value.
  *
- * @param chefUri the new chef uri
+ * @param value the new value
  */
-public void setChefUri(String chefUri) {
-		this.chefUri = chefUri;
+public void setValue(String value) {
+		this.value = value;
 	}
 	
-    /**
-	 * Gets the attributes.
-	 *
-	 * @return the attributes
-	 */
-	public ArrayList<Attribute> getAttributes() {
-		return attributes;
-	}
-
-
-
-	/**
-	 * Sets the attributes.
-	 *
-	 * @param attributes the new attributes
-	 */
-	public void setAttributes(ArrayList<Attribute> attributes) {
-		this.attributes = attributes;
-	}
-
-
-
-	/**
-	 * Adds the attribute.
-	 *
-	 * @param attribute the attribute
-	 */
-	public void addAttribute(Attribute attribute) {
-		if(attributes == null) attributes = new ArrayList<Attribute>();
-		attributes.add(attribute);
-	}
 	
 }
