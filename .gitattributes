@@ -1906,6 +1906,7 @@ saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpacka
 saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpackager/xml/model/Node.java -text
 saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpackager/xml/model/SoftwareInstall.java -text
 saas/ascetic-application-packager/src/main/java/eu/ascetic/saas/applicationpackager/xml/model/StorageResource.java -text
+saas/ascetic-application-packager/src/main/resources/application-packager.properties -text
 saas/ascetic-application-packager/src/main/resources/atc-single-definitivo-feb2016.xml -text
 saas/ascetic-application-packager/src/main/resources/cfg.properties -text
 saas/ascetic-application-packager/src/main/resources/log4j.properties -text
