@@ -14,8 +14,26 @@ echo "Searching for $NODE_NAME"
 RETRIES=4 # This should be set to twice: chef-server.rb > chef_solr['commit_interval']
 T=1
 while true; do
-  knife search node "name:$NODE_NAME" -a ipaddress -s https://$(hostname):443 2>&1 | grep ipaddress
-  if [ $? -ne 0 ]; then
+  echo "Currently indexed clients"
+  knife node list -s https://$(hostname):443 2>&1
+  echo "Searching for node IP"
+  #knife search node "name:$NODE_NAME" -a ipaddress -s https://$(hostname):443 -VV 2>&1 | {
+  knife node show -a ipaddress $NODE_NAME -s https://$(hostname):443 -VV 2>&1 | {
+    FOUND=0
+    while read -r LINE; do
+      echo $LINE
+      echo $LINE | grep -q ipaddress
+      if [ $? -eq 0 ]; then
+        FOUND=1
+      fi
+    done
+    if [ "$FOUND" == "1" ]; then
+      exit 0
+    else
+      exit 1
+    fi
+  }
+  if [ $? -eq 1 ]; then
     echo "Node not registered in server. Trying again ($T/$RETRIES)"
     sleep 1
     T=$((T+1))
@@ -24,6 +42,7 @@ while true; do
       exit 1
     fi
   else
+    echo "Node registered"
     break
   fi
 done

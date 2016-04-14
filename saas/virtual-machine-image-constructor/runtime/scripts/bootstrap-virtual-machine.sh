@@ -9,7 +9,7 @@ cd $RUNTIME_DIR/chef-repo
 # Bootstrap chef agent to chef server
 if [ "$OS" == "windows" ]
 then
-  knife bootstrap windows winrm $BOOTSTRAP_IP -x Administrator -P 'password' --winrm-authentication-protocol basic --msi-url 'http://10.0.0.1:8080/chef-windows-11.18.6-1.windows.msi' -N vmic-$(echo $BOOTSTRAP_IP | cut -d'.' -f 4) --no-color -s https://$(hostname):443
+  knife bootstrap windows winrm $BOOTSTRAP_IP -x Administrator -P 'password' --winrm-authentication-protocol basic --msi-url 'http://10.0.0.1:8080/chef-client-11.18.12-1.msi' -N vmic-$(echo $BOOTSTRAP_IP | cut -d'.' -f 4) --no-color -s https://$(hostname):443
   if [ $? -ne 0 ]
   then
     echo "Error bootstrapping windows base image to chef server"
