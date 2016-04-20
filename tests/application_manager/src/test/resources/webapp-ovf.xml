@@ -43,7 +43,7 @@
                 deployment ID etc.-->
     </ovf:ProductSection>
     <!--MySQL Virtual System Instances Template-->
-    <ovf:VirtualSystem ovf:id="mysql">
+    <ovf:VirtualSystem ovf:id="testMySQL">
       <ovf:Info>MySQL Virtual System</ovf:Info>
       <ovf:Name>MySQL</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
@@ -121,7 +121,7 @@
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
     <!--JMeter Virtual System Instances Template-->
-    <ovf:VirtualSystem ovf:id="jmeter">
+    <ovf:VirtualSystem ovf:id="testJMeter">
       <ovf:Info>JMeter Virtual System</ovf:Info>
       <ovf:Name>JMeter</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
@@ -200,7 +200,7 @@
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
     <!--HAProxy Virtual System Instances Template-->
-    <ovf:VirtualSystem ovf:id="haproxy">
+    <ovf:VirtualSystem ovf:id="testHAProxy">
       <ovf:Info>HAProxy Virtual System</ovf:Info>
       <ovf:Name>HAProxy</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
@@ -279,7 +279,7 @@
       </ovf:VirtualHardwareSection>
     </ovf:VirtualSystem>
     <!--JBoss Virtual System Instances Template-->
-    <ovf:VirtualSystem ovf:id="jboss">
+    <ovf:VirtualSystem ovf:id="testJBoss">
       <ovf:Info>Jboss Virtual System</ovf:Info>
       <ovf:Name>Jboss</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
