@@ -45,7 +45,7 @@
     <!--MySQL Virtual System Instances Template-->
     <ovf:VirtualSystem ovf:id="testMySQL">
       <ovf:Info>MySQL Virtual System</ovf:Info>
-      <ovf:Name>MySQL</ovf:Name>
+      <ovf:Name>testMySQL</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
                 (VM)-->
       <ovf:ProductSection ovf:class="eu.ascetic.vm">
@@ -123,7 +123,7 @@
     <!--JMeter Virtual System Instances Template-->
     <ovf:VirtualSystem ovf:id="testJMeter">
       <ovf:Info>JMeter Virtual System</ovf:Info>
-      <ovf:Name>JMeter</ovf:Name>
+      <ovf:Name>testJMeter</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
                 (VM)-->
       <ovf:ProductSection ovf:class="eu.ascetic.vm">
@@ -202,7 +202,7 @@
     <!--HAProxy Virtual System Instances Template-->
     <ovf:VirtualSystem ovf:id="testHAProxy">
       <ovf:Info>HAProxy Virtual System</ovf:Info>
-      <ovf:Name>HAProxy</ovf:Name>
+      <ovf:Name>testHAProxy</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
                 (VM)-->
       <ovf:ProductSection ovf:class="eu.ascetic.vm">
@@ -281,7 +281,7 @@
     <!--JBoss Virtual System Instances Template-->
     <ovf:VirtualSystem ovf:id="testJBoss">
       <ovf:Info>Jboss Virtual System</ovf:Info>
-      <ovf:Name>Jboss</ovf:Name>
+      <ovf:Name>testJBoss</ovf:Name>
       <!--Product specific attributes applicable to a single Virtual System 
                 (VM)-->
       <ovf:ProductSection ovf:class="eu.ascetic.vm">
