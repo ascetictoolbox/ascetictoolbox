@@ -68,9 +68,12 @@ public class SLATest {
 		List<AgreementTerm> agreementTerms = new ArrayList<AgreementTerm>();
 		sla.setAgreementTerms(agreementTerms);
 		sla.setUuid("uuid");
+		Properties properties = new Properties();
+		sla.setProperties(properties);
 		
 		assertEquals(agreementTerms, sla.getAgreementTerms());
 		assertEquals("uuid", sla.getUuid());
+		assertEquals(properties, sla.getProperties());
 	}
 	
 	@Test
@@ -80,6 +83,16 @@ public class SLATest {
 		SLA slaAgreement = (SLA) jaxbUnmarshaller.unmarshal(new StringReader(slaAgreementString));
 		
 		assertEquals("95f718dd-3665-461a-b6c2-e89a0f98c473", slaAgreement.getUuid());
+	}
+	
+	@Test
+	public void getProviderIdTest() throws JAXBException {
+		JAXBContext jaxbContext = JAXBContext.newInstance(SLA.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		SLA slaAgreement = (SLA) jaxbUnmarshaller.unmarshal(new StringReader(slaAgreementString));
+		
+		assertEquals("1", slaAgreement.getProperties().getEntries().get(0).getValue());
+		assertEquals("ProviderUUid", slaAgreement.getProperties().getEntries().get(0).getKey());
 	}
 	
 	@Test

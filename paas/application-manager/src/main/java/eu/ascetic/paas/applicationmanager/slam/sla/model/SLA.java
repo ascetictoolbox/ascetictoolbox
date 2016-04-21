@@ -34,6 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="SLA", namespace=SLA_XMLNS)
 public class SLA {
+	@XmlElement(name="Properties", namespace=SLA_XMLNS)
+	private Properties properties;
 	@XmlElement(name="AgreementTerm", namespace=SLA_XMLNS)
 	private List<AgreementTerm> agreementTerms;
 	@XmlElement(name="UUID", namespace=SLA_XMLNS)
@@ -53,5 +55,13 @@ public class SLA {
 
 	public void setAgreementTerms(List<AgreementTerm> agreementTerms) {
 		this.agreementTerms = agreementTerms;
+	}
+	
+	public Properties getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Properties properties) {
+		this.properties = properties;
 	}
 }
