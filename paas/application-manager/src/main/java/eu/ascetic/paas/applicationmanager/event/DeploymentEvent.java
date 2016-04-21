@@ -26,6 +26,7 @@ public class DeploymentEvent {
 	private int deploymentId;
 	private String deploymentStatus;
 	private boolean automaticNegotiation;
+	private int providerId=-1;
 	
 	public int getDeploymentId() {
 		return deploymentId;
@@ -53,5 +54,12 @@ public class DeploymentEvent {
 	}
 	public void setAutomaticNegotiation(boolean automaticNegotiation) {
 		this.automaticNegotiation = automaticNegotiation;
+	}
+	
+	public int getProviderId() {
+		return providerId;
+	}
+	public void setProviderId(int providerId) {
+		this.providerId = providerId;
 	}
 }

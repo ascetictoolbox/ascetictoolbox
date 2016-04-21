@@ -35,10 +35,12 @@ public class DeploymentStatusTest {
 		deploymentEvent.setDeploymentId(2);
 		deploymentEvent.setDeploymentStatus("1111");
 		deploymentEvent.setAutomaticNegotiation(false);
+		deploymentEvent.setProviderId(22);
 		
 		assertEquals(2, deploymentEvent.getDeploymentId());
 		assertEquals("1111", deploymentEvent.getDeploymentStatus());
 		assertFalse(deploymentEvent.isAutomaticNegotiation());
+		assertEquals(22, deploymentEvent.getProviderId());
 	}
 	
 }
