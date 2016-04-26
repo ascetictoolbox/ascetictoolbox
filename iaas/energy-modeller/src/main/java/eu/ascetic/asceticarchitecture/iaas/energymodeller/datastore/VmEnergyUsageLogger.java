@@ -94,6 +94,9 @@ public class VmEnergyUsageLogger extends GenericLogger<VmEnergyUsageLogger.Pair>
                 store.add(vm.getName());
                 store.append("power");
                 store.append(powerVal);
+                store.add(vm.getName());
+                store.append("idle.power");
+                store.append(vmLoadFraction.getVmIdlePower());                
             }
         }
     }

@@ -244,5 +244,14 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     public void setHostPowerOffset(double offset) {
         hostPowerOffset = offset;
     }
+    
+    /**
+     * This returns the host idle power consumption.
+     * @return The host idle power consumption, based upon evenly fractioning 
+     * out the hosts power consumption based upon the amount of VMs running upon it.
+     */
+    public double getVmIdlePower() {
+        return host.getIdlePowerConsumption() / ((double) fraction.size());
+    }
 
 }
