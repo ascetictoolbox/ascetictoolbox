@@ -85,7 +85,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             rulesFile.append("Direction");
             rulesFile.append("Response Type");
             rulesFile.append("lower bound");
-            rulesFile.append("upper bound");            
+            rulesFile.append("upper bound");
             rulesFile.add("energy_usage_per_app");
             rulesFile.append("GT");
             rulesFile.append("REMOVE_VM");
@@ -124,7 +124,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             }
             if (current.size() > 4) {
                 rule.setMinMagnitude(Double.parseDouble(current.get(4)));
-            }            
+            }
             rules.add(rule);
         }
     }
@@ -169,7 +169,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
 
     /**
      * This examines the OVF for rules associated with the application. If any
-     * exist then they will be added to the list of rules used fro this event 
+     * exist then they will be added to the list of rules used fro this event
      * assessor.
      *
      * @param event The event to look for firing rules for
@@ -185,14 +185,13 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                         section.getAdaptationRuleAgreementTerm(i),
                         section.getAdaptationRuleDirection(i),
                         section.getAdaptationRuleResponseType(i));
-                if (section.getAdaptationRuleLowerBound(i)!= null) {
+                if (section.getAdaptationRuleLowerBound(i) != null) {
                     criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(i)));
                 }
-                if (section.getAdaptationRuleUpperBound(i)!= null) {
+                if (section.getAdaptationRuleUpperBound(i) != null) {
                     criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(i)));
-                }                 
-                                    
-                
+                }
+
                 answer.add(criteria);
             }
         }
@@ -213,12 +212,12 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             if (rule.shouldFire(event)) {
                 answer.add(rule);
             }
-        }   
+        }
         for (FiringCriteria rule : rules) {
             if (rule.shouldFire(event)) {
                 answer.add(rule);
             }
-        }     
+        }
         return answer;
     }
 
