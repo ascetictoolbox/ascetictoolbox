@@ -84,6 +84,8 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             rulesFile.add("Agreement Term");
             rulesFile.append("Direction");
             rulesFile.append("Response Type");
+            rulesFile.append("lower bound");
+            rulesFile.append("upper bound");            
             rulesFile.add("energy_usage_per_app");
             rulesFile.append("GT");
             rulesFile.append("REMOVE_VM");
@@ -117,6 +119,12 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         for (int i = 1; i < rulesFile.size(); i++) {
             ArrayList<String> current = rulesFile.getRow(i);
             FiringCriteria rule = new FiringCriteria(current.get(0), current.get(1), current.get(2));
+            if (current.size() > 3) {
+                rule.setMinMagnitude(Double.parseDouble(current.get(3)));
+            }
+            if (current.size() > 4) {
+                rule.setMinMagnitude(Double.parseDouble(current.get(4)));
+            }            
             rules.add(rule);
         }
     }
@@ -177,6 +185,14 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                         section.getAdaptationRuleAgreementTerm(i),
                         section.getAdaptationRuleDirection(i),
                         section.getAdaptationRuleResponseType(i));
+                if (section.getAdaptationRuleLowerBound(i)!= null) {
+                    criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(i)));
+                }
+                if (section.getAdaptationRuleUpperBound(i)!= null) {
+                    criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(i)));
+                }                 
+                                    
+                
                 answer.add(criteria);
             }
         }

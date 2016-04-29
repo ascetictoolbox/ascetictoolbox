@@ -27,6 +27,8 @@ public class FiringCriteria {
     private String agreementTerm;
     private EventData.Operator operator;
     private Response.AdaptationType responseType;
+    private Double minMagnitude = null;
+    private Double maxMagnitude = null;
 
     public FiringCriteria() {
     }
@@ -65,50 +67,116 @@ public class FiringCriteria {
      * @return true only if the criteria are met.
      */
     public boolean shouldFire(EventData event) {
+        if (minMagnitude != null && event.getDeviationBetweenRawAndGuarantee() < minMagnitude) {
+            return false;
+        }
+        if (maxMagnitude != null && event.getDeviationBetweenRawAndGuarantee() > maxMagnitude) {
+            return false;
+        }
         return (agreementTerm.equals(event.getAgreementTerm())
                 && operator.equals(event.getGuranteeOperator()));
     }
 
     /**
-     * @return the agreementTerm
+     * The term in the SLA that is caused the breach, must match this in 
+     * order for the rule to fire.
+     * @return the agreementTerm The SLA agreement term that must be matched
+     * for the rule to be applied.
      */
     public String getAgreementTerm() {
         return agreementTerm;
     }
 
     /**
-     * @param agreementTerm the agreementTerm to set
+     * The term in the SLA that is caused the breach, must match this in 
+     * order for the rule to fire.
+     * @param agreementTerm The SLA agreement term that must be matched
+     * for the rule to be applied.
      */
     public void setAgreementTerm(String agreementTerm) {
         this.agreementTerm = agreementTerm;
     }
 
     /**
-     * @return the responseType
+     * The form of response that is associated with the firing of this rule.
+     * @return the response to execute given the firing of this rule.
      */
     public Response.AdaptationType getResponseType() {
         return responseType;
     }
 
     /**
-     * @param responseType the responseType to set
+     * This sets the form of response that is associated with the firing of 
+     * this rule.
+     * @param responseType the response to execute given the firing of this rule.
      */
     public void setResponseType(Response.AdaptationType responseType) {
         this.responseType = responseType;
     }
 
     /**
-     * @return the operator
+     * This returns the operator that is used as part of the test to see if the 
+     * measured value is "greater than"/"less than"/"equal" to the 
+     * guaranteed value.
+     * @return the operator either LT, LTE, EQ, GTE, GT
      */
     public EventData.Operator getOperator() {
         return operator;
     }
 
     /**
-     * @param operator the operator to set
+     * This sets the operator that is used as part of the test to see if the 
+     * measured value is "greater than"/"less than"/"equal" to the 
+     * guaranteed value.
+     * @param operator the operator either LT, LTE, EQ, GTE, GT
      */
     public void setOperator(EventData.Operator operator) {
         this.operator = operator;
+    }
+
+    /**
+     * This indicates the minimum magnitude for the rule to fire, for the
+     * absolute difference between the guaranteed value and the measured value.
+     * This value is optional.
+     * @return the minimum magnitude before this rule fires (inclusive).
+     */
+    public double getMinMagnitude() {
+        return minMagnitude;
+    }
+
+    /**
+     * This sets the minimum magnitude for the rule to fire, for the
+     * absolute difference between the guaranteed value and the measured value.
+     * This value is optional.
+     * @param minMagnitude the minimum magnitude before this rule fires 
+     * (inclusive).
+     */
+    public void setMinMagnitude(double minMagnitude) {
+        this.minMagnitude = minMagnitude;
+    }
+
+    /**
+     * This indicates the minimum magnitude for the rule to fire, for the
+     * absolute difference between the guaranteed value and the measured value.
+     * This value is optional.
+     * @return the maximum magnitude before this rule fires (inclusive).
+     */
+    public double getMaxMagnitude() {
+        return maxMagnitude;
+    }
+
+    /**
+     * This sets the maximum magnitude for the rule to fire, for the
+     * absolute difference between the guaranteed value and the measured value.
+     * This value is optional.
+     * @param maxMagnitude the maximum magnitude before this rule fires 
+     * (inclusive).
+     */
+    public void setMaxMagnitude(double maxMagnitude) {
+        this.maxMagnitude = maxMagnitude;
+        if (minMagnitude == null) {
+            minMagnitude = 0.0;
+        }
     }
 
 }
