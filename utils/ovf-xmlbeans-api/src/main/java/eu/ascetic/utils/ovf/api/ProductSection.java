@@ -209,6 +209,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY = "asceticAdaptationRuleAgreementTerm_";    
     private static final String ASCETIC_ADAPTATION_RULE_DIRECTION_KEY = "asceticAdaptationRuleDirection_";    
     private static final String ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY = "asceticAdaptationRuleResponseType_";     
+    private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleResponseType_";     
+    private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";     
     
     /**
      * Default constructor.
@@ -1768,6 +1770,32 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         return i;
     }
     
+    /**
+     * Adds a new set of properties that define an adaptation rule.
+     * 
+     * @param agreementTerm The agreement term of the rule (e.g.
+     *            ("energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param lowerBound The lower bound for the magnitude, i.e. different 
+     * between guaranteed value and actual value. 
+     * @param upperBound The upper bound for the magnitude, i.e. different 
+     * between guaranteed value and actual value. 
+     * @return The index of the new adaptation rule (not to be confused with the 
+     * index of a {@link ProductProperty})
+     */
+    public int addAdaptationRule(String agreementTerm, String direction,
+            String responseType, String lowerBound, String upperBound) {
+       
+        int answer = addAdaptationRule(agreementTerm, direction, responseType);
+        //The extended extra section
+         addNewProperty(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + answer,
+                ProductPropertyType.STRING, lowerBound);
+        addNewProperty(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + answer,
+                ProductPropertyType.STRING, upperBound);       
+        return answer;
+    }    
+    
 /**
      * Sets a set of properties that define an adaptation rule at a specific 
      * adaptation rule property set index.
@@ -1863,6 +1891,54 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
     
     /**
+     * Gets the lower bound of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @return The lower bound of the adaptation rule
+     */
+    public String getAdaptationRuleLowerBound(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).getValue();
+    }
+
+    /**
+     * Sets the lower bound of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param lowerBound The lower bound of the adaptation rule
+     */
+    public void setAdaptationRuleLowerBound(int index, String lowerBound) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).setValue(lowerBound);
+    }     
+    
+    /**
+     * Gets the upper bound of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @return The upper bound of the adaptation rule
+     */
+    public String getAdaptationRuleUpperBound(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).getValue();
+    }
+
+    /**
+     * Sets the upper bound of an adaptation rule set at a specific index.
+     * 
+     * @param index The index of the adaptation rule (not to be confused with the index
+     *            of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param upperBound The upper bound of the adaptation rule
+     */
+    public void setAdaptationRuleUpperBound(int index, String upperBound) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).setValue(upperBound);
+    }     
+    
+    /**
      * Remove a set of adaptation rule properties at a specific index.
      * 
      * @param index
@@ -1873,7 +1949,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public void removeAdaptationRule(int index) {
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index);
-        removePropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index); 
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index); 
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index); 
         
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
