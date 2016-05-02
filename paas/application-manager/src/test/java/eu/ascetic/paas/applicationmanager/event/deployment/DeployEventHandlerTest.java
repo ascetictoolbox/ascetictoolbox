@@ -47,6 +47,7 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -119,6 +120,63 @@ public class DeployEventHandlerTest extends AbstractTest {
 		verify(deploymentDAO, never()).getById(deploymentEvent.getDeploymentId());
 		verify(deploymentDAO, never()).update(any(Deployment.class));
 		verify(deploymentEventService, never()).fireDeploymentEvent(any(DeploymentEvent.class));
+	}
+	
+	@Test
+	public void invalidVMManager() throws Exception {
+
+		Deployment deployment = new Deployment();
+		deployment.setId(22);
+		deployment.setOvf(threeTierWebAppOvfString);
+		
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// We mock the calls to the PRClient
+		Configuration.providerRegistryEndpoint = "http://provider-registry.com";
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(-1)).thenReturn(null);
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		when(deploymentDAO.getById(22)).thenReturn(deployment);
+		
+		// The test starts here
+		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
+		
+		DeploymentEvent deploymentEvent = new DeploymentEvent();
+		deploymentEvent.setDeploymentId(22);
+		deploymentEvent.setApplicationName("pepito");
+		deploymentEvent.setDeploymentStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED);
+		
+		// We configure de DeployEventHandler
+		DeployEventHandler deploymentEventHandler = new DeployEventHandler();
+		deploymentEventHandler.deploymentDAO = deploymentDAO;
+		deploymentEventHandler.deploymentEventService = deploymentEventService;
+		deploymentEventHandler.prClient = prClient;
+				
+		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
+				
+		// We give time to the new thread to run... 
+		Thread.sleep(4000l);
+				
+		// We verify that at the end we store in the database the right object
+		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
+		verify(deploymentDAO, times(1)).update(deploymentCaptor.capture());
+		assertEquals(Dictionary.APPLICATION_STATUS_ERROR, deploymentCaptor.getValue().getStatus());
+		
+		// We verify that the right messages were sent to the AMQP
+		assertEquals(1, listener.getTextMessages().size());
+				
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.22.ERROR", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("pepito", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("ERROR", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+				
+						
+		receiver.close();
 	}
 	
 	@Test
@@ -229,6 +287,11 @@ public class DeployEventHandlerTest extends AbstractTest {
 		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
 		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
 		
+		// We mock the calls to the PRClient
+		Configuration.providerRegistryEndpoint = "http://provider-registry.com";
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(-1)).thenReturn(vmMaClient);
+		
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
@@ -243,7 +306,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		deploymentEventHandler.deploymentEventService = deploymentEventService;
 		deploymentEventHandler.applicationDAO = applicationDAO;
 		deploymentEventHandler.imageDAO = imageDAO;
-		deploymentEventHandler.vmManagerClient = vmMaClient;
+		deploymentEventHandler.prClient = prClient;
 		deploymentEventHandler.vmDAO = vmDAO;
 		
 		//We start the task
@@ -511,6 +574,11 @@ public class DeployEventHandlerTest extends AbstractTest {
 		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
 		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
 		
+		// We mock the calls to the PRClient
+		Configuration.providerRegistryEndpoint = "http://provider-registry.com";
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(-1)).thenReturn(vmMaClient);
+		
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
@@ -524,7 +592,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		deploymentEventHandler.deploymentEventService = deploymentEventService;
 		deploymentEventHandler.applicationDAO = applicationDAO;
 		deploymentEventHandler.imageDAO = imageDAO;
-		deploymentEventHandler.vmManagerClient = vmMaClient;
+		deploymentEventHandler.prClient = prClient;
 		deploymentEventHandler.vmDAO = vmDAO;
 		
 		//We start the task

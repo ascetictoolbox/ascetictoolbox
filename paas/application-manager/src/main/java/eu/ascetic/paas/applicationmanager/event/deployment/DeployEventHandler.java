@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
-import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
@@ -21,9 +20,9 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.ovf.VMLimits;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.ImageUploader;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
-import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualHardwareSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
@@ -70,7 +69,7 @@ public class DeployEventHandler {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
+	protected PRClient prClient = new PRClient();
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void deployDeployment(Event<DeploymentEvent> event) {
@@ -80,139 +79,143 @@ public class DeployEventHandler {
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
 
 			// We need to know the provider information first... 
-			
-			logger.info("Creating a new thread to deploy in infrastructure the deployment: " + deploymentEvent.getDeploymentId());
-			logger.info("Connecting to the VMM: " + vmManagerClient.getURL());
-			
+			VmManagerClient vmManagerClient = prClient.getVMMClient(deploymentEvent.getProviderId());
+
 			// We need first to read the deployment from the DB:
 			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
 			
-			// First we change the status of the deployment proccess... 
-			deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYING);
-			deploymentDAO.update(deployment);
-			
-			// We sent the message that the deploying state starts:
-			AmqpProducer.sendDeploymentDeployingMessage(deploymentEvent.getApplicationName(), deployment);
-			
-			try {
-				OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(deployment.getOvf());
-				String applicationName = OVFUtils.getApplicationName(deployment.getOvf());
-				VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
-				
-				// We check all the Virtual Systems in the OVF file
-				for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
-					VirtualSystem virtualSystem = vsc.getVirtualSystemAtIndex(i);
-					String ovfID = virtualSystem.getId();
-					
-					logger.info(" Starting to deploy Virtual System: " + virtualSystem.getName());
-					
-					VirtualHardwareSection virtualHardwareSection = virtualSystem.getVirtualHardwareSection();
-					
-					// We find the disk id for each resource... 
-					String diskId = OVFUtils.getDiskId(virtualHardwareSection);
+			if(vmManagerClient != null) {
+				logger.info("Creating a new thread to deploy in infrastructure the deployment: " + deploymentEvent.getDeploymentId());
+				logger.info("Connecting to the VMM: " + vmManagerClient.getURL());
 
-					// We find the file id and for each resource // ovfId
-					String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
-					
-					// We get the images urls... // ovfHref 
-					String urlImg = OVFUtils.getUrlImg(ovfDocument, fileId);
-
-					Image image = null;
-					
-					if(OVFUtils.usesACacheImage(virtualSystem)) {
-						logger.info("This virtual system uses a cache demo image");
-						image = imageDAO.getDemoCacheImage(fileId, urlImg);
-						if(image == null) {
-							logger.info("The image was not cached, we need to uplaod first");
-							image = ImageUploader.uploadImage(urlImg, fileId, true, applicationName, vmManagerClient, applicationDAO, imageDAO);
-						}
-					} else {
-						image = ImageUploader.uploadImage(urlImg, fileId, false, applicationName, vmManagerClient, applicationDAO, imageDAO);
-					}
-
-					//Now we have the image... lets see what it is the rest to build the VM to Upload...
-					String ovfVirtualSystemID = virtualSystem.getId();
-					// We determine how many VMs of this type we need to create
-					VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem.getProductSectionAtIndex(0));
-					long minNumberVMs = vmLimits.getLowerNumberOfVMs();
-					long maxNumberVMs = vmLimits.getUpperNumberOfVMs();
-					
-					//We determine if it needs a public IP/Floating IP
-					boolean publicIP = false;	
-					try {
-						publicIP = virtualSystem.getProductSectionAtIndex(0).isAssociatePublicIp();
-					} catch(NullPointerException ex) {}
-					
-					String vmName = virtualSystem.getName();
-					int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
-					int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
-					String isoPath = OVFUtils.getIsoPathFromVm(virtualSystem.getVirtualHardwareSection(), ovfDocument);
-					int capacity = OVFUtils.getCapacity(ovfDocument, diskId);
-					
-					// We force to refresh the image from the DB... 
-					image = imageDAO.getById(image.getId());
-					
-					for(int j = 0; j < minNumberVMs; j++) {
-
-						logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath + " PUBLIC IP: " + publicIP);
-
-						int suffixInt = j + 1;
-						String suffix = "_" + suffixInt;
-						String iso = "";
-						if(isoPath != null) iso = isoPath + suffix ;
-						
-						// TOOD I need to add here the slaagreement id. 
-						Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, ""/*deployment.getSlaAgreement()*/, publicIP );
-						
-						logger.debug("virtMachine: " + virtMachine);
-						
-						List<Vm> vms = new ArrayList<Vm>();
-						vms.add(virtMachine);
-						List<String> vmIds = vmManagerClient.deployVMs(vms);
-						
-						logger.debug("Id: " + vmIds.get(0));
-						
-						for(String id : vmIds) {
-							VmDeployed vmDeployed = vmManagerClient.getVM(id);
-							
-							VM vmToDB = new VM();
-							vmToDB.setIp(vmDeployed.getIpAddress());
-							vmToDB.setOvfId(ovfVirtualSystemID);
-							vmToDB.setStatus(vmDeployed.getState());
-							vmToDB.setProviderVmId(id);
-							// TODO I need to update this to get it from the table Agreements... 
-							//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
-							vmToDB.setNumberVMsMax(maxNumberVMs);
-							vmToDB.setNumberVMsMin(minNumberVMs);
-							vmToDB.setCpuMin(cpus);
-							vmToDB.setCpuActual(cpus);
-							vmToDB.setCpuMax(cpus);
-							vmToDB.setDiskMin(capacity);
-							vmToDB.setDiskActual(capacity);
-							vmToDB.setDiskMax(capacity);
-							vmToDB.setRamMin(ramMb);
-							vmToDB.setRamActual(ramMb);
-							vmToDB.setRamMax(ramMb);
-							vmToDB.setSwapMax(0);
-							vmToDB.setSwapActual(0);
-							vmToDB.setSwapMin(0);
-							vmDAO.save(vmToDB);
-							
-							vmToDB.addImage(image);
-							vmDAO.update(vmToDB);
-							
-							deployment.addVM(vmToDB);
-							deploymentDAO.update(deployment);
-							//deployment = deploymentDAO.getById(deployment.getId());
-							
-							AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
-						}
-					}
-				}
-				
-				deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
-				// We save the changes to the DB
+				// First we change the status of the deployment proccess... 
+				deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYING);
 				deploymentDAO.update(deployment);
+
+				// We sent the message that the deploying state starts:
+				AmqpProducer.sendDeploymentDeployingMessage(deploymentEvent.getApplicationName(), deployment);
+
+				try {
+					OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(deployment.getOvf());
+					String applicationName = OVFUtils.getApplicationName(deployment.getOvf());
+					VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+
+					// We check all the Virtual Systems in the OVF file
+					for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
+						VirtualSystem virtualSystem = vsc.getVirtualSystemAtIndex(i);
+						String ovfID = virtualSystem.getId();
+
+						logger.info(" Starting to deploy Virtual System: " + virtualSystem.getName());
+
+						VirtualHardwareSection virtualHardwareSection = virtualSystem.getVirtualHardwareSection();
+
+						// We find the disk id for each resource... 
+						String diskId = OVFUtils.getDiskId(virtualHardwareSection);
+
+						// We find the file id and for each resource // ovfId
+						String fileId = OVFUtils.getFileId(diskId, ovfDocument.getDiskSection().getDiskArray());
+
+						// We get the images urls... // ovfHref 
+						String urlImg = OVFUtils.getUrlImg(ovfDocument, fileId);
+
+						Image image = null;
+
+						if(OVFUtils.usesACacheImage(virtualSystem)) {
+							logger.info("This virtual system uses a cache demo image");
+							image = imageDAO.getDemoCacheImage(fileId, urlImg);
+							if(image == null) {
+								logger.info("The image was not cached, we need to uplaod first");
+								image = ImageUploader.uploadImage(urlImg, fileId, true, applicationName, vmManagerClient, applicationDAO, imageDAO);
+							}
+						} else {
+							image = ImageUploader.uploadImage(urlImg, fileId, false, applicationName, vmManagerClient, applicationDAO, imageDAO);
+						}
+
+						//Now we have the image... lets see what it is the rest to build the VM to Upload...
+						String ovfVirtualSystemID = virtualSystem.getId();
+						// We determine how many VMs of this type we need to create
+						VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem.getProductSectionAtIndex(0));
+						long minNumberVMs = vmLimits.getLowerNumberOfVMs();
+						long maxNumberVMs = vmLimits.getUpperNumberOfVMs();
+
+						//We determine if it needs a public IP/Floating IP
+						boolean publicIP = false;	
+						try {
+							publicIP = virtualSystem.getProductSectionAtIndex(0).isAssociatePublicIp();
+						} catch(NullPointerException ex) {}
+
+						String vmName = virtualSystem.getName();
+						int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+						int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
+						String isoPath = OVFUtils.getIsoPathFromVm(virtualSystem.getVirtualHardwareSection(), ovfDocument);
+						int capacity = OVFUtils.getCapacity(ovfDocument, diskId);
+
+						// We force to refresh the image from the DB... 
+						image = imageDAO.getById(image.getId());
+
+						for(int j = 0; j < minNumberVMs; j++) {
+
+							logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath + " PUBLIC IP: " + publicIP);
+
+							int suffixInt = j + 1;
+							String suffix = "_" + suffixInt;
+							String iso = "";
+							if(isoPath != null) iso = isoPath + suffix ;
+
+							// TOOD I need to add here the slaagreement id. 
+							Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), ovfID, ""/*deployment.getSlaAgreement()*/, publicIP );
+
+							logger.debug("virtMachine: " + virtMachine);
+
+							List<Vm> vms = new ArrayList<Vm>();
+							vms.add(virtMachine);
+							List<String> vmIds = vmManagerClient.deployVMs(vms);
+
+							logger.debug("Id: " + vmIds.get(0));
+
+							for(String id : vmIds) {
+								VmDeployed vmDeployed = vmManagerClient.getVM(id);
+
+								VM vmToDB = new VM();
+								vmToDB.setIp(vmDeployed.getIpAddress());
+								vmToDB.setOvfId(ovfVirtualSystemID);
+								vmToDB.setStatus(vmDeployed.getState());
+								vmToDB.setProviderVmId(id);
+								// TODO I need to update this to get it from the table Agreements... 
+								//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
+								vmToDB.setNumberVMsMax(maxNumberVMs);
+								vmToDB.setNumberVMsMin(minNumberVMs);
+								vmToDB.setCpuMin(cpus);
+								vmToDB.setCpuActual(cpus);
+								vmToDB.setCpuMax(cpus);
+								vmToDB.setDiskMin(capacity);
+								vmToDB.setDiskActual(capacity);
+								vmToDB.setDiskMax(capacity);
+								vmToDB.setRamMin(ramMb);
+								vmToDB.setRamActual(ramMb);
+								vmToDB.setRamMax(ramMb);
+								vmToDB.setSwapMax(0);
+								vmToDB.setSwapActual(0);
+								vmToDB.setSwapMin(0);
+								vmDAO.save(vmToDB);
+
+								vmToDB.addImage(image);
+								vmDAO.update(vmToDB);
+
+								deployment.addVM(vmToDB);
+								deploymentDAO.update(deployment);
+								//deployment = deploymentDAO.getById(deployment.getId());
+
+								AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
+							}
+						}
+					}
+
+					deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+					// We save the changes to the DB
+					deploymentDAO.update(deployment);
+
+				
 				
 			} catch(OvfRuntimeException ex) {
 				logger.info("Error parsing OVF file: " + ex.getMessage());
@@ -230,6 +233,7 @@ public class DeployEventHandler {
 				AmqpProducer.sendDeploymentErrorMessage(deploymentEvent.getApplicationName(), deployment);
 			}
 			
+			
 			deploymentEvent.setDeploymentStatus(deployment.getStatus());
 			
 			// We sent the message that the deployed state starts:
@@ -239,53 +243,13 @@ public class DeployEventHandler {
 			deploymentEventService.fireDeploymentEvent(deploymentEvent);
 		
 		
-//			DeployEventHandlerRunner runner = new DeployEventHandlerRunner(applicationDAO,
-//																	   	   deploymentDAO,
-//																	   	   deploymentEventService,
-//																	   	   vmDAO,
-//																	   	   imageDAO,
-//																	   	   deploymentEvent,
-//																	   	   vmManagerClient);
-//			runner.start();
-		}
+			} else {
+				logger.info("Error, not available VMM Client");
+				deployment.setStatus(Dictionary.APPLICATION_STATUS_ERROR);
+				// We save the changes to the DB
+				deploymentDAO.update(deployment);
+				AmqpProducer.sendDeploymentErrorMessage(deploymentEvent.getApplicationName(), deployment);
+			}
+		} 
 	}
 }
-
-
-//class DeployEventHandlerRunner extends Thread {
-//	private static Logger logger = Logger.getLogger(DeployEventHandlerRunner.class);
-//	private ApplicationDAO applicationDAO;
-//	private DeploymentDAO deploymentDAO;
-//	private DeploymentEventService deploymentEventService;
-//	private VMDAO vmDAO;
-//	private ImageDAO imageDAO;
-//	private VmManagerClient vmManagerClient;
-//	private DeploymentEvent deploymentEvent;
-//	
-//	public DeployEventHandlerRunner(ApplicationDAO applicationDAO, 
-//									DeploymentDAO deploymentDAO, 
-//									DeploymentEventService deploymentEventService, 
-//									VMDAO vmDAO, 
-//									ImageDAO imageDAO, 
-//									DeploymentEvent deploymentEvent,
-//									VmManagerClient vmManagerClient) {
-//		this.applicationDAO = applicationDAO; 
-//		this.deploymentDAO = deploymentDAO;
-//		this.deploymentEventService = deploymentEventService;
-//		this.vmDAO = vmDAO;
-//		this.imageDAO = imageDAO;
-//		this.deploymentEvent = deploymentEvent;
-//		this.vmManagerClient = vmManagerClient;
-//	}
-//	
-//	public void run() {
-//		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
-//			logger.info(" Moving deployment id: " + deploymentEvent.getDeploymentId()  + " to " + Dictionary.APPLICATION_STATUS_DEPLOYING + " state");
-//			
-//			// We need first to read the deployment from the DB:
-//			Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
-//						
-//			
-//		}	
-//	}
-//}
