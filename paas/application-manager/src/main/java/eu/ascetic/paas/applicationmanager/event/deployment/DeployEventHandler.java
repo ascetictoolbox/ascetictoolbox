@@ -79,6 +79,8 @@ public class DeployEventHandler {
 		
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED)) {
 
+			// We need to know the provider information first... 
+			
 			logger.info("Creating a new thread to deploy in infrastructure the deployment: " + deploymentEvent.getDeploymentId());
 			logger.info("Connecting to the VMM: " + vmManagerClient.getURL());
 			

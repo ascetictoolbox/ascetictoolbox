@@ -18,6 +18,8 @@ import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.providerregistry.model.Collection;
 import eu.ascetic.providerregistry.model.Items;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
+import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
 
 /**
  * 
@@ -83,5 +85,24 @@ public class PRClient {
 		} else {
 			return new ArrayList<Provider>();
 		}
+	}
+	
+	public VmManagerClient getVMMClient(int id) {
+		
+		List<Provider> providers = getProviders();
+		
+		if(providers.size() >= 1) {
+			if(id == -1) {
+				return new VmManagerClientBSSC(providers.get(0).getVmmUrl());
+			} else {
+				for(Provider provider : providers) {
+					if(id == provider.getId()) {
+						return new VmManagerClientBSSC(provider.getVmmUrl());
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 }

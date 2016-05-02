@@ -119,4 +119,50 @@ public class PRClientTest {
 		PRClient client = new PRClient();
 		assertEquals(0, client.getProviders().size());
 	}
+	
+	@Test
+	public void getVmmClientTest() {
+
+		 
+		Configuration.providerRegistryEndpoint = mBaseURL;
+		
+		String collection = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+							"<collection xmlns=\"http://provider-registry.ascetic.eu/doc/schemas/xml\" href=\"/\">" +
+								"<items offset=\"0\" total=\"2\">" +
+									"<provider href=\"/1\">" +
+										"<id>1</id>" +
+										"<name>default</name>" +
+										"<vmm-url>http://iaas-vm-dev:34372/vmmanager</vmm-url>" +
+										"<slam-url>http://10.0.9.149:8080/services/asceticNegotiation?wsdl</slam-url>" +
+										"<amqp-url>amqp://guest:guest@iaas-vm-dev:5673</amqp-url>" +
+										"<link rel=\"parent\" href=\"/\" type=\"application/xml\"/>" +
+										"<link rel=\"self\" href=\"/1\" type=\"application/xml\"/>" +
+									"</provider>" +
+									"<provider href=\"/2\">" +
+										"<id>2</id>" +
+										"<name>default</name>" +
+										"<vmm-url>http://iaas-vm-dev2:34372/vmmanager</vmm-url>" +
+										"<slam-url>http://10.0.9.149:8080/services/asceticNegotiation?wsdl</slam-url>" +
+										"<amqp-url>amqp://guest:guest@iaas-vm-dev:5673</amqp-url>" +
+										"<link rel=\"parent\" href=\"/\" type=\"application/xml\"/>" +
+										"<link rel=\"self\" href=\"/1\" type=\"application/xml\"/>" +
+									"</provider>" +
+								"</items>" +
+								"<link rel=\"self\" href=\"/\" type=\"application/xml\"/>" +
+							"</collection>";
+		
+		mServer.addPath("/", collection);
+		
+		PRClient prClient = new PRClient();
+		
+		// We test first that if the ID is -1 it gets the first provider...
+		assertEquals("http://iaas-vm-dev:34372/vmmanager", prClient.getVMMClient(-1).getURL());
+		
+		//We test that we are able to get spcific details for an specific provider:
+		assertEquals("http://iaas-vm-dev:34372/vmmanager", prClient.getVMMClient(1).getURL());
+		assertEquals("http://iaas-vm-dev2:34372/vmmanager", prClient.getVMMClient(2).getURL());
+		
+		//We test that we obtain null VMMClient if we don't find the provider...
+		assertEquals(null, prClient.getVMMClient(3));
+	}
 }
