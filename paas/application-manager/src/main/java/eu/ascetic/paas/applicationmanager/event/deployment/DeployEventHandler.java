@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
@@ -69,7 +70,7 @@ public class DeployEventHandler {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void deployDeployment(Event<DeploymentEvent> event) {

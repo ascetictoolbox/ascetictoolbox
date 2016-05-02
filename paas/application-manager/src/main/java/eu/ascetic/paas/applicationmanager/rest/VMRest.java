@@ -30,6 +30,7 @@ import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
@@ -78,7 +79,7 @@ import eu.ascetic.utils.ovf.api.VirtualSystem;
 @Scope("request")
 public class VMRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(VMRest.class);
-	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
 	@Autowired
 	protected ImageDAO imageDAO;
 	

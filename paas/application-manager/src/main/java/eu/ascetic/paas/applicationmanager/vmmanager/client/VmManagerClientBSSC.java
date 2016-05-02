@@ -9,7 +9,6 @@ import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmCost;
 import es.bsc.vmmclient.models.VmDeployed;
-import eu.ascetic.paas.applicationmanager.conf.Configuration;
 
 
 /**
@@ -38,8 +37,8 @@ public class VmManagerClientBSSC implements VmManagerClient {
 	private static Logger logger = Logger.getLogger(VmManagerClientBSSC.class);
 	private String url;
 	
-	public VmManagerClientBSSC() {
-		this.url = Configuration.vmManagerServiceUrl;
+	public VmManagerClientBSSC(String url) {
+		this.url = url;
 		logger.info("Connecting to URL for VMM: " + url);
 	}
 

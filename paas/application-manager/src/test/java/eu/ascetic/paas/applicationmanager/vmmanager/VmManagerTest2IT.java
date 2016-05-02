@@ -7,6 +7,7 @@ import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmDeployed;
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;;
 
 
@@ -40,7 +41,7 @@ public class VmManagerTest2IT {
 	
 	public static void main(String[] args) {
 //		VmManagerClientHC client = new VmManagerClientHC("http://10.4.0.15:34372/vmmanager");
-		VmManagerClientBSSC client = new VmManagerClientBSSC();
+		VmManagerClientBSSC client = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
 
 //		insertSeparator("testGetAllImages");
 //		testGetAllImages(client);

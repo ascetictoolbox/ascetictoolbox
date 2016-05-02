@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Image;
@@ -53,7 +54,7 @@ public class CacheImageRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(CacheImageRest.class);
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
 	
 	/**
 	 * Returns the cache images associated to an application in the DB

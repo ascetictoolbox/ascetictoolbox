@@ -79,7 +79,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
 @Scope("request")
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
-	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC();
+	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
 	protected ApplicationMonitorClient applicationMonitorClient = new ApplicationMonitorClientHC();
 	
 	/**
