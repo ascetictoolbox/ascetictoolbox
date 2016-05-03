@@ -95,7 +95,7 @@ public class VM extends EnergyUsageSource {
     public VM(VmDeployed vm, int cpus, int ramMb) {
         this.cpus = cpus;
         this.ramMb = ramMb;
-        this.diskGb = vm.diskGb;
+        this.diskGb = vm.getDiskGb();
         this.applicationTags = vm.getApplicationTags();
         this.diskImages = vm.getDiskImages();
     }    
@@ -106,9 +106,9 @@ public class VM extends EnergyUsageSource {
      * @param vm The vm to copy/clone.
      */
     public VM(VmDeployed vm) {
-        this.cpus = vm.cpus;
-        this.ramMb = vm.ramMb;
-        this.diskGb = vm.diskGb;
+        this.cpus = vm.getCpus();
+        this.ramMb = vm.getRamMb();
+        this.diskGb = vm.getDiskGb();
         this.applicationTags = vm.getApplicationTags();
         this.diskImages = vm.getDiskImages();
     }        
