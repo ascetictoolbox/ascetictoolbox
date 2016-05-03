@@ -52,6 +52,14 @@ package eu.ascetic.iaas.slamanager.poc;
 
 import java.util.List;
 
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.core.context.SLAMContextAware;
 import org.slasoi.gslam.core.context.SLAManagerContext;
@@ -74,6 +82,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.ascetic.iaas.slamanager.poc.exceptions.NotSupportedVEPOperationException;
 import eu.ascetic.iaas.slamanager.poc.manager.negotiation.NegotiationManagerImpl;
 import eu.ascetic.iaas.slamanager.poc.slatemplate.SLAT2SLAImpl;
+
 
 /**
  * DOMAIN SPECIFIC POC
@@ -220,6 +229,14 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 					LOGGER.info("Before updating own SLA in SLA registry.");
 					register.update(infrastructureSLA.getUuid(), sla, null, SLAState.OBSERVED);
 					LOGGER.info("Own SLA updated successfully in SLA registry.");
+					
+					/*
+					 * send a message to the queue to change monitoring parameters
+					 */
+					sendRenegotiationMessage(negotiationID, sla.getUuid().getValue());
+					/*
+					 * END
+					 */
 				}
 
 			} catch (Exception e) {
@@ -228,6 +245,48 @@ public class PlanningOptimizationImpl implements PlanningOptimization, SLAMConte
 				return sla;
 			}
 		}
+		
+		
+		
+		/**
+		 *  Writes a renegotiation message to the message queue to update monitoring parameters
+		 */
+		private void sendRenegotiationMessage(String oldId, String newId) {
+			
+			try{
+
+				//ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(ConfigManager.getInstance().getActivemqUrl());
+				ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+					Connection connection = connectionFactory.createConnection();
+				connection.start();
+
+				// JMS messages are sent and received using a Session. We will
+				// create here a non-transactional session object. If you want
+				// to use transactions you should set the first parameter to 'true'
+				Session session = connection.createSession(false,
+						Session.AUTO_ACKNOWLEDGE);
+
+				Topic topic = session.createTopic("iaas-slam.monitoring."+oldId+".renegotiated");
+
+				MessageProducer producer = session.createProducer(topic);
+
+
+				TextMessage message = session.createTextMessage();
+
+				message.setText(newId);
+				
+				// Here we are sending the message!
+				producer.send(message);
+				LOGGER.info("Renegotiation message sent.\nOldId: "+oldId+"\nNewId: " + message.getText());
+
+				connection.close();
+			}catch(Exception e){
+				e.printStackTrace();
+				LOGGER.error(e.getMessage());
+				//            System.err.println("NOT CONNECTED!!!");
+			}
+		}
+		
 
 		/**
 		 * Customer invokes this method for starting a negotiation
