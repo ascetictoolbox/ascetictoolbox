@@ -22,7 +22,7 @@ import java.util.Collection;
 /**
  * This allocates energy used by a host machine into the VMs that run upon it.
  * This takes the count of VMs CPU cores and divides energy out accordingly.
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class VMCPUCountEnergyShareRule implements EnergyShareRule {
 

@@ -86,6 +86,34 @@ public class VM extends EnergyUsageSource {
     }
 
     /**
+     * A copy constructor, for a VM. This constructor is aimed at resizing a VM.
+     *
+     * @param vm The vm to copy/clone.
+     * @param cpus The number of CPUs. 
+     * @param ramMb The amount of RAM in MB.
+     */
+    public VM(VmDeployed vm, int cpus, int ramMb) {
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = vm.diskGb;
+        this.applicationTags = vm.getApplicationTags();
+        this.diskImages = vm.getDiskImages();
+    }    
+
+    /**
+     * A copy constructor, for a VM.
+     *
+     * @param vm The vm to copy/clone.
+     */
+    public VM(VmDeployed vm) {
+        this.cpus = vm.cpus;
+        this.ramMb = vm.ramMb;
+        this.diskGb = vm.diskGb;
+        this.applicationTags = vm.getApplicationTags();
+        this.diskImages = vm.getDiskImages();
+    }        
+    
+    /**
      * This gets the count of how many virtual cpu cores this vm has.
      *
      * @return the amount of virtual cpus cores that the VM has.
