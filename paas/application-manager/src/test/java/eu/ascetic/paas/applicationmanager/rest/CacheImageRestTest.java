@@ -24,6 +24,7 @@ import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -192,10 +193,13 @@ public class CacheImageRestTest {
 		VMDAO vmDAO = mock(VMDAO.class);
 		VmManagerClient vMManagerClient = mock(VmManagerClient.class);
 		
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(-1)).thenReturn(vMManagerClient);
+		
 		CacheImageRest cacheImageRest = new CacheImageRest();
 		cacheImageRest.imageDAO = imageDAO;
 		cacheImageRest.vmDAO = vmDAO;
-		cacheImageRest.vmManagerClient = vMManagerClient;
+		cacheImageRest.prClient = prClient;
 		
 		Image image = new Image();
 		image.setDemo(true);
@@ -216,5 +220,134 @@ public class CacheImageRestTest {
 		
 		ArgumentCaptor<Image> imageCaptor = ArgumentCaptor.forClass(Image.class);
 		verify(imageDAO, times(1)).update(imageCaptor.capture());
+	}
+	
+	@Test
+	public void deleteImageWithProviderIdTest() {
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		VMDAO vmDAO = mock(VMDAO.class);
+		VmManagerClient vMManagerClient = mock(VmManagerClient.class);
+		
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(2)).thenReturn(vMManagerClient);
+		
+		CacheImageRest cacheImageRest = new CacheImageRest();
+		cacheImageRest.imageDAO = imageDAO;
+		cacheImageRest.vmDAO = vmDAO;
+		cacheImageRest.prClient = prClient;
+		
+		Image image = new Image();
+		image.setDemo(true);
+		image.setId(1);
+		image.setOvfHref("ovf-href-1");
+		image.setOvfId("ovf-id1");
+		image.setProviderImageId("uuid1");
+		image.setProviderId("2");
+		when(imageDAO.getById(1)).thenReturn(image);
+		
+		List<VM> vms = new ArrayList<VM>();
+		when(vmDAO.getNotDeletedVMsWithImage(image)).thenReturn(vms);
+		
+		when(imageDAO.update(image)).thenReturn(true);
+		
+		Response response = cacheImageRest.deleteCacheImage("applicationName", "1");
+		assertEquals(204, response.getStatus());
+		assertEquals("", (String) response.getEntity());
+		
+		ArgumentCaptor<Image> imageCaptor = ArgumentCaptor.forClass(Image.class);
+		verify(imageDAO, times(1)).update(imageCaptor.capture());
+	}
+	
+	
+	@Test
+	public void deleteImageWithEmptyStringTest() {
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		VMDAO vmDAO = mock(VMDAO.class);
+		VmManagerClient vMManagerClient = mock(VmManagerClient.class);
+		
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(-1)).thenReturn(vMManagerClient);
+		
+		CacheImageRest cacheImageRest = new CacheImageRest();
+		cacheImageRest.imageDAO = imageDAO;
+		cacheImageRest.vmDAO = vmDAO;
+		cacheImageRest.prClient = prClient;
+		
+		Image image = new Image();
+		image.setDemo(true);
+		image.setId(1);
+		image.setOvfHref("ovf-href-1");
+		image.setOvfId("ovf-id1");
+		image.setProviderImageId("uuid1");
+		image.setProviderId("");
+		when(imageDAO.getById(1)).thenReturn(image);
+		
+		List<VM> vms = new ArrayList<VM>();
+		when(vmDAO.getNotDeletedVMsWithImage(image)).thenReturn(vms);
+		
+		when(imageDAO.update(image)).thenReturn(true);
+		
+		Response response = cacheImageRest.deleteCacheImage("applicationName", "1");
+		assertEquals(204, response.getStatus());
+		assertEquals("", (String) response.getEntity());
+		
+		ArgumentCaptor<Image> imageCaptor = ArgumentCaptor.forClass(Image.class);
+		verify(imageDAO, times(1)).update(imageCaptor.capture());
+	}
+	
+	@Test
+	public void deleteImageWithInvalidProviderString() {
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		VMDAO vmDAO = mock(VMDAO.class);
+		
+		CacheImageRest cacheImageRest = new CacheImageRest();
+		cacheImageRest.imageDAO = imageDAO;
+		cacheImageRest.vmDAO = vmDAO;
+		
+		Image image = new Image();
+		image.setDemo(true);
+		image.setId(1);
+		image.setOvfHref("ovf-href-1");
+		image.setOvfId("ovf-id1");
+		image.setProviderImageId("uuid1");
+		image.setProviderId("asdfas");
+		when(imageDAO.getById(1)).thenReturn(image);
+		
+		List<VM> vms = new ArrayList<VM>();
+		when(vmDAO.getNotDeletedVMsWithImage(image)).thenReturn(vms);
+		
+		Response response = cacheImageRest.deleteCacheImage("applicationName", "1");
+		assertEquals(500, response.getStatus());
+		assertEquals("Wrong provider ID stored in the DB", (String) response.getEntity());	
+	}
+	
+	@Test
+	public void deleteImageWithNotAvailableProvider() {
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		VMDAO vmDAO = mock(VMDAO.class);
+		
+		PRClient prClient = mock(PRClient.class);
+		when(prClient.getVMMClient(3)).thenReturn(null);
+		
+		CacheImageRest cacheImageRest = new CacheImageRest();
+		cacheImageRest.imageDAO = imageDAO;
+		cacheImageRest.vmDAO = vmDAO;
+		cacheImageRest.prClient = prClient;
+		
+		Image image = new Image();
+		image.setDemo(true);
+		image.setId(1);
+		image.setOvfHref("ovf-href-1");
+		image.setOvfId("ovf-id1");
+		image.setProviderImageId("uuid1");
+		image.setProviderId("3");
+		when(imageDAO.getById(1)).thenReturn(image);
+		
+		List<VM> vms = new ArrayList<VM>();
+		when(vmDAO.getNotDeletedVMsWithImage(image)).thenReturn(vms);
+		
+		Response response = cacheImageRest.deleteCacheImage("applicationName", "1");
+		assertEquals(500, response.getStatus());
+		assertEquals("No provider with ID: 3", (String) response.getEntity());
 	}
 }

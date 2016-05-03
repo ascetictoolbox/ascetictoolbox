@@ -21,6 +21,7 @@ import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;;
@@ -54,7 +55,7 @@ public class CacheImageRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(CacheImageRest.class);
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
+	protected PRClient prClient = new PRClient();
 	
 	/**
 	 * Returns the cache images associated to an application in the DB
@@ -107,11 +108,24 @@ public class CacheImageRest extends AbstractRest {
 		if(vms.size() != 0) {
 			return buildResponse(Status.CONFLICT, "Image with ID: " + image.getId() + " is still being used by one or more VMs.");
 		}
+		if(image.getProviderId() == null || image.getProviderId() == "") {
+			image.setProviderId("-1");
+		}
 		
-		vmManagerClient.deleteImage(image.getProviderImageId()); 
-		image.setDemo(false);
-		imageDAO.update(image);
+		try {
+			VmManagerClient vmManagerClient = prClient.getVMMClient(Integer.parseInt(image.getProviderId()));
+			
+			if(vmManagerClient == null) {
+				return buildResponse(Status.INTERNAL_SERVER_ERROR, "No provider with ID: " + image.getProviderId());
+			}
+		
+			vmManagerClient.deleteImage(image.getProviderImageId()); 
+			image.setDemo(false);
+			imageDAO.update(image);
 
-		return buildResponse(Status.NO_CONTENT, "");
+			return buildResponse(Status.NO_CONTENT, "");
+		} catch(NumberFormatException ex) {
+			return buildResponse(Status.INTERNAL_SERVER_ERROR, "Wrong provider ID stored in the DB");
+		}
 	}
 }
