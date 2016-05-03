@@ -4,8 +4,10 @@ import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -46,6 +48,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
@@ -80,6 +83,7 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
 public class DeploymentRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(DeploymentRest.class);
 	protected VmManagerClient vmManagerClient = new VmManagerClientBSSC(Configuration.vmManagerServiceUrl);
+	protected PRClient prClient = new PRClient();
 	protected ApplicationMonitorClient applicationMonitorClient = new ApplicationMonitorClientHC();
 	
 	/**
@@ -391,11 +395,15 @@ public class DeploymentRest extends AbstractRest {
 		
 		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
 		
-		List<String> vmProviderIds = getVmsProviderIds(deployment);
+		Map<String, List<String>> providerVMIds = providerIdsAndItsVMIds(deployment);
 		
-		for(String id : vmProviderIds) logger.info("Getting costs for the following VMs: " + id);
+		List<VmCost> vmCosts = new ArrayList<VmCost>();
 		
-		List<VmCost> vmCosts = vmManagerClient.getVMCosts(vmProviderIds);
+		for(Map.Entry<String, List<String>> entry : providerVMIds.entrySet()) {
+			VmManagerClient vmManagerClient = prClient.getVMMClient(Integer.parseInt(entry.getKey()));
+			logger.info("Asking for the costs of the VMs: " + entry.getValue() + " in provider: " + entry.getKey());
+			vmCosts.addAll(vmManagerClient.getVMCosts(entry.getValue()));
+		}
 		
 		double totalCost = 0.0;
 		
@@ -414,6 +422,29 @@ public class DeploymentRest extends AbstractRest {
 		String xml = XMLBuilder.getCostConsumptionForADeployment(cost, applicationName, deploymentId);
 		
 		return  buildResponse(Status.OK, xml);
+	}
+	
+	protected Map<String, List<String>> providerIdsAndItsVMIds(Deployment deployment) {
+		Map<String, List<String>> providerVMIds = new HashMap<String, List<String>>();
+		
+		for(VM vm : deployment.getVms()) {
+			String id = vm.getProviderId();
+			
+			if(id == null || id == "") {
+				id="-1";
+			}
+			
+			List<String> ids = providerVMIds.get(id);
+			
+			if(ids == null) {
+				ids = new ArrayList<String>();
+				providerVMIds.put(id, ids);
+			}
+			
+			ids.add(vm.getProviderVmId());
+		}
+		
+		return providerVMIds;
 	}
 	
 	@GET

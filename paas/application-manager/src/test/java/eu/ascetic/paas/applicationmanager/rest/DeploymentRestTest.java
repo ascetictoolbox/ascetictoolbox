@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -63,6 +64,7 @@ import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -1196,6 +1198,52 @@ public class DeploymentRestTest extends AbstractTest {
 	}
 	
 	@Test
+	public void providerIdsAndItsVMIdsTest() {
+		Deployment deployment = new Deployment();
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		vm1.setProviderId("1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		vm2.setProviderId("2");
+		deployment.addVM(vm2);
+		
+		VM vm3 = new VM();
+		vm3.setId(3);
+		vm3.setProviderVmId("X3");
+		vm3.setProviderId("2");
+		deployment.addVM(vm3);
+		
+		VM vm4 = new VM();
+		vm4.setId(4);
+		vm4.setProviderVmId("X4");
+		vm4.setProviderId("");
+		deployment.addVM(vm4);
+		
+		VM vm5 = new VM();
+		vm5.setId(5);
+		vm5.setProviderVmId("X5");
+		vm5.setProviderId(null);
+		deployment.addVM(vm5);
+		
+		DeploymentRest rest = new DeploymentRest();
+		
+		Map<String, List<String>> ids = rest.providerIdsAndItsVMIds(deployment);
+		
+		assertEquals(3, ids.size());
+		assertEquals("X1", ids.get("1").get(0));
+		assertEquals("X2", ids.get("2").get(0));
+		assertEquals("X3", ids.get("2").get(1));
+		assertEquals("X4", ids.get("-1").get(0));
+		assertEquals("X5", ids.get("-1").get(1));
+	}
+	
+	@Test
 	public void getVmProvidersIdsTest() {
 		Deployment deployment = new Deployment();
 		
@@ -1228,29 +1276,40 @@ public class DeploymentRestTest extends AbstractTest {
 		VM vm1 = new VM();
 		vm1.setId(1);
 		vm1.setProviderVmId("X1");
+		vm1.setProviderId("1");
 		deployment.addVM(vm1);
 		
 		VM vm2 = new VM();
 		vm2.setId(2);
 		vm2.setProviderVmId("X2");
+		vm2.setProviderId("2");
 		deployment.addVM(vm2);
 		
+		PRClient prClient = mock(PRClient.class);
+		
 		DeploymentRest deploymentRest = new DeploymentRest();
+		deploymentRest.prClient = prClient;
 		
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 		
-		VmManagerClient vmManagerClient = mock(VmManagerClient.class);
-		deploymentRest.vmManagerClient = vmManagerClient;
+		VmManagerClient vmManagerClient1 = mock(VmManagerClient.class);
+		VmManagerClient vmManagerClient2 = mock(VmManagerClient.class);
+		when(prClient.getVMMClient(1)).thenReturn(vmManagerClient1);
+		when(prClient.getVMMClient(2)).thenReturn(vmManagerClient2);
 		
 		List<String> ids = new ArrayList<String>();
 		ids.add("X1");
-		ids.add("X2");
 		List<VmCost> vmCosts = new ArrayList<VmCost>();
 		vmCosts.add(new VmCost("X1", 2.1));
-		vmCosts.add(new VmCost("X2", 3.2));
-		when(vmManagerClient.getVMCosts(ids)).thenReturn(vmCosts);
+		when(vmManagerClient1.getVMCosts(ids)).thenReturn(vmCosts);
+		
+		List<String> ids2 = new ArrayList<String>();
+		ids2.add("X2");
+		List<VmCost> vmCosts2 = new ArrayList<VmCost>();
+		vmCosts2.add(new VmCost("X2", 3.2));
+		when(vmManagerClient2.getVMCosts(ids2)).thenReturn(vmCosts2);
 		
 		PriceModellerClient pmClient = mock(PriceModellerClient.class);
 		deploymentRest.priceModellerClient = pmClient;
