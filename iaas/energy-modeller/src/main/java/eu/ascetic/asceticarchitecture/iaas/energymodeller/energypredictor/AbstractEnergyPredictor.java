@@ -90,10 +90,12 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             defaultAssumedCpuUsage = config.getDouble("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
+            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
             String shareRule = config.getString("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
+            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", shareRule);
             setEnergyShareRule(shareRule);
             considerIdleEnergy = config.getBoolean("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
-            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
+            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
             defaultPowerOverheadPerHost = config.getDouble("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
             config.setProperty("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
             if (defaultAssumedCpuUsage == -1) {
