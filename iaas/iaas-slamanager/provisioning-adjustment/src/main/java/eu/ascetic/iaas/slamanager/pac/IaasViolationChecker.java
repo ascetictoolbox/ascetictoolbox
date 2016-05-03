@@ -77,6 +77,7 @@ public class IaasViolationChecker implements Runnable {
 	private String vmId;
 	private Connection measurementsConnection;
 	private Connection vmEventsConnection;
+	private Connection renegotiationConnection;
 	private boolean recovered;
 
     public static final String FIELD_VM_ID = "id";
@@ -150,6 +151,9 @@ public class IaasViolationChecker implements Runnable {
 
 		logger.info("Retrieving measurements from the message queue...");
 		retrieveMeasurements();
+		
+		logger.info("Retrieving renegotiation events from the message queue...");
+		retrieveRenegotiationEvents();
 	}
 
 
@@ -228,6 +232,7 @@ public class IaasViolationChecker implements Runnable {
 								logger.info("Closing message queue connections and stopping the monitoring...");
 								measurementsConnection.close();
 								vmEventsConnection.close();
+								renegotiationConnection.close();
 								
 								//remove monitoring info to file
 								String monitoringString = topicId + "%%%" + vmId + "%%%" + ovfId + "%%%"+slaId;
@@ -286,6 +291,8 @@ public class IaasViolationChecker implements Runnable {
 			//            System.err.println("NOT CONNECTED!!!");
 		}
 	}
+	
+	
 
 	/**
 	 * 2. Retrieves the measurements for the given vm, ovf and SLA,
@@ -479,6 +486,159 @@ public class IaasViolationChecker implements Runnable {
 
 
 	
+	
+	/**
+	 * 3. Gets 'renegotiation' events from the message queue
+	 */
+	private void retrieveRenegotiationEvents() {
+		try{
+			
+			// Getting JMS connection from the server
+
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+			renegotiationConnection = connectionFactory.createConnection();
+
+			// need to setClientID value, any string value you wish
+			renegotiationConnection.setClientID("IaaS Violation Checker Renegotiation Listener "+System.currentTimeMillis());
+
+
+			renegotiationConnection.start();
+
+			final Session session = renegotiationConnection.createSession(false,
+					Session.AUTO_ACKNOWLEDGE);
+
+			final Topic topic = session.createTopic("iaas-slam.monitoring.*.renegotiated");
+
+			//need to use createDurableSubscriber() method instead of createConsumer() for topic
+			// MessageConsumer consumer = session.createConsumer(topic);
+			MessageConsumer consumer = session.createDurableSubscriber(topic,
+					properties.getProperty(ACTIVEMQ_CHANNEL));
+
+			MessageListener listener = new MessageListener() {
+				public void onMessage(Message message) {
+					if (message.toString().indexOf(slaId)==-1) return;
+
+					try {
+						if (message instanceof TextMessage) {
+							TextMessage textMessage = (TextMessage) message;
+							logger.info("ACTIVEMQ: Received message in the renegotiated vms queue. Actual SLAId: "+slaId+ ", New SLAId:"
+									+ textMessage.getText());
+							
+							
+							/*
+							 * change string in activemonitorings file
+							 */
+							
+							//remove monitoring info to file
+							String monitoringString = topicId + "%%%" + vmId + "%%%" + ovfId + "%%%"+slaId;
+							logger.info("Removing monitoring info from file, entry: "+monitoringString );
+							
+							String sepr = System.getProperty("file.separator");
+							String confPath = System.getenv("SLASOI_HOME");
+							String monitoringPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+							String tempPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "temp";
+							File monitoringFile = new File(monitoringPath);
+							File tempFile = new File(tempPath);
+							try {
+								BufferedReader reader = new BufferedReader(new FileReader(monitoringFile));
+								BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+								String currentLine;
+
+								while((currentLine = reader.readLine()) != null) {
+									// trim newline when comparing with lineToRemove
+									String trimmedLine = currentLine.trim();
+									if(trimmedLine.equals(monitoringString)) {
+
+										continue;
+									}
+									writer.write(currentLine + System.getProperty("line.separator"));
+								}
+								reader.close(); 
+								writer.close(); 
+								monitoringFile.setWritable(true);
+								boolean rimozione = monitoringFile.delete();
+								if (rimozione) {
+									boolean successful = tempFile.renameTo(monitoringFile);
+								}
+							} catch (Exception ex) {
+								ex.printStackTrace();
+								logger.error(ex.getMessage());
+							}
+							//end
+							
+						
+							slaId = textMessage.getText();
+							logger.info("SLAID changed to "+slaId);
+							
+							
+							//write new monitoring info to file
+							monitoringString = topicId + "%%%" + vmId + "%%%" + ovfId + "%%%"+slaId;
+
+							sepr = System.getProperty("file.separator");
+							confPath = System.getenv("SLASOI_HOME");
+							monitoringPath = confPath + sepr	+ "ascetic-iaas-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
+							monitoringFile = new File(monitoringPath);
+
+							Scanner scanner = null;
+							PrintWriter writer = null;
+							try {
+								scanner = new Scanner(monitoringFile);
+								writer = new PrintWriter(new FileWriter(monitoringFile,true));
+
+								boolean found = false;
+								while (scanner.hasNextLine()) 
+								{
+									String lineFromFile = scanner.nextLine();
+									if (monitoringString.equals(lineFromFile))
+									{
+										found = true;
+										break;
+									}
+								}
+
+								if (!found) {
+									writer.write(monitoringString+ System.getProperty("line.separator"));
+									writer.close();
+									scanner.close();
+								}
+								else {
+									if (!recovered) {
+									logger.info("IaaS Violation Checker : topicId "+topicId+", vmId "+vmId+", ovfId "+ovfId+", slaId "+slaId + " is still being monitored. Exiting...");
+									if (writer!=null) writer.close();
+									if (scanner!=null) scanner.close();
+									return;
+									}
+									if (writer!=null) writer.close();
+									if (scanner!=null) scanner.close();
+								}
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								if (writer!=null) writer.close();
+								if (scanner!=null) scanner.close();
+							}
+							//end	
+							
+							
+							//monitoring the new renegotiation queue
+							//retrieveRenegotiationEvents();
+							
+						}
+					} catch (JMSException e) {
+						logger.error("Caught:" + e);
+						e.printStackTrace();
+					}
+				}
+			};
+			consumer.setMessageListener(listener);
+			//connection.close();
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			//            System.err.println("NOT CONNECTED!!!");
+		}
+	}
 	
 	
 	
