@@ -36,6 +36,7 @@ public class VM {
 	private String ovfId;
 	private String status;
 	private String metricName;
+	private String providerId;
 	private double value;
 	private String units;
 	private long timestamp;
@@ -101,5 +102,12 @@ public class VM {
 	}
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
+	}
+	
+	public String getProviderId() {
+		return providerId;
+	}
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
 	}
 }

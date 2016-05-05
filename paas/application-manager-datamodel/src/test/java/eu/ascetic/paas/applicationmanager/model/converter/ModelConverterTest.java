@@ -1126,6 +1126,7 @@ public class ModelConverterTest {
 		vm1.setOvfId("ccc");
 		vm1.setStatus("ddd");
 		vm1.setVmId("eee");
+		vm1.setProviderId("provider-id");
 		
 		eu.ascetic.paas.applicationmanager.amqp.model.VM vm2 = new eu.ascetic.paas.applicationmanager.amqp.model.VM();
 		vm2.setIaasMonitoringVmId("zzz");
@@ -1137,6 +1138,7 @@ public class ModelConverterTest {
 		vm2.setValue(2.0);
 		vm2.setUnits("W");
 		vm2.setTimestamp(111l);
+		vm2.setProviderId("1122");
 		
 		amMessage.addVM(vm1);
 		amMessage.addVM(vm2);
@@ -1158,6 +1160,7 @@ public class ModelConverterTest {
 		assertEquals("aaa", (String) jsonObject.get("iaasMonitoringVmId"));
 		assertEquals("ccc", (String) jsonObject.get("ovfId"));
 		assertEquals("ddd", (String) jsonObject.get("status"));
+		assertEquals("provider-id", (String) jsonObject.get("providerId"));
 		
 		jsonObject = (JSONObject) vms.get(1);
 		assertEquals("www", (String) jsonObject.get("vmId"));
@@ -1165,6 +1168,7 @@ public class ModelConverterTest {
 		assertEquals("zzz", (String) jsonObject.get("iaasMonitoringVmId"));
 		assertEquals("xxx", (String) jsonObject.get("ovfId"));
 		assertEquals("ttt", (String) jsonObject.get("status"));
+		assertEquals("1122", (String) jsonObject.get("providerId"));
 		assertEquals("power", (String) jsonObject.get("metricName"));
 		assertEquals(2.0, (double) jsonObject.get("value"), 0.00001);
 		assertEquals(111l, (long) jsonObject.get("timestamp"));
