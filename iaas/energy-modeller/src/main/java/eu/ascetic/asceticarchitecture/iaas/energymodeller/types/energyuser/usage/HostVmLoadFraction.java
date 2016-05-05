@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 /**
  * This is a record of what fraction of the load on a host was caused by a given
- * VM. There is the opportunity to add and additional amount, that is power 
+ * VM. There is the opportunity to add and additional amount, that is power
  * attributed from other sources such as cooling, DFS or others factors in the
  * data center.
  *
@@ -38,7 +38,7 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     private final Host host;
     private final long time;
     private HashMap<VmDeployed, Double> fraction = new HashMap<>();
-    private double hostPowerOffset = 0; 
+    private double hostPowerOffset = 0;
 
     /**
      * This creates a new host vm load fraction record.
@@ -136,6 +136,19 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
      * @return The fraction of the load associated with each deployed vm.
      */
     public static HashMap<VmDeployed, Double> getFraction(List<VmMeasurement> load) {
+        return getFraction(load, false);
+    }
+
+    /**
+     * This takes a set of vm usage records and calculates the fraction of
+     * system load each vm is responsible for.
+     *
+     * @param load The load that was induced on the system.
+     * @param considerCoreCount If the fraction should consider the count of
+     * cores or not.
+     * @return The fraction of the load associated with each deployed vm.
+     */
+    public static HashMap<VmDeployed, Double> getFraction(List<VmMeasurement> load, boolean considerCoreCount) {
         HashMap<VmDeployed, Double> answer = new HashMap<>();
         double totalLoad = 0.0;
         try {
@@ -155,8 +168,8 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
             return answer;
         }
         /**
-         * This is an error handling state, if the data indicates no load
-         * was induced whatsoever. Avoids divide by zero errors.
+         * This is an error handling state, if the data indicates no load was
+         * induced whatsoever. Avoids divide by zero errors.
          */
         if (totalLoad == 0) {
             Logger.getLogger(HostVmLoadFraction.class.getName()).log(Level.WARNING, "Using fallback due to no CPU total load been equal to zero.");
@@ -167,7 +180,12 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
             return answer;
         }
         for (VmMeasurement loadMeasure : load) {
-            answer.put(loadMeasure.getVm(), (loadMeasure.getCpuUtilisation() / totalLoad));
+            if (considerCoreCount) {
+                double vmCoreCount = (loadMeasure.getVm().getCpus() >= 1 ? loadMeasure.getVm().getCpus() : 1);
+                answer.put(loadMeasure.getVm(),vmCoreCount * (loadMeasure.getCpuUtilisation() / totalLoad));
+            } else {
+                answer.put(loadMeasure.getVm(), (loadMeasure.getCpuUtilisation() / totalLoad));
+            }
         }
         return answer;
     }
@@ -224,31 +242,35 @@ public class HostVmLoadFraction implements Comparable<HostVmLoadFraction> {
     public int compareTo(HostVmLoadFraction loadFraction) {
         return Long.valueOf(this.time).compareTo(loadFraction.getTime());
     }
-    
+
     /**
-     * This sets and additional offset based upon cooling and other sources, 
-     * power consumption that is attributed to the data center as a whole.
-     * i.e. Distributed file system nodes, cooling etc.
+     * This sets and additional offset based upon cooling and other sources,
+     * power consumption that is attributed to the data center as a whole. i.e.
+     * Distributed file system nodes, cooling etc.
+     *
      * @return The offset which to apply to this host power measurement
      */
     public double getHostPowerOffset() {
         return hostPowerOffset;
-    }    
-    
+    }
+
     /**
-     * This sets and additional offset based upon cooling and other sources, 
-     * power consumption that is attributed to the data center as a whole.
-     * i.e. Distributed file system nodes, cooling etc.
+     * This sets and additional offset based upon cooling and other sources,
+     * power consumption that is attributed to the data center as a whole. i.e.
+     * Distributed file system nodes, cooling etc.
+     *
      * @param offset The offset
      */
     public void setHostPowerOffset(double offset) {
         hostPowerOffset = offset;
     }
-    
+
     /**
      * This returns the host idle power consumption.
-     * @return The host idle power consumption, based upon evenly fractioning 
-     * out the hosts power consumption based upon the amount of VMs running upon it.
+     *
+     * @return The host idle power consumption, based upon evenly fractioning
+     * out the hosts power consumption based upon the amount of VMs running upon
+     * it.
      */
     public double getVmIdlePower() {
         return host.getIdlePowerConsumption() / ((double) fraction.size());

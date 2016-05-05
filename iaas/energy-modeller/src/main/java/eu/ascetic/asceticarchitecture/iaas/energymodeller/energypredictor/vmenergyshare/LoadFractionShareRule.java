@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 /**
  * This looks at the fraction of load placed on each VM and determines the 
  * share of energy that is should have based upon this.
- * @author Richard
+ * @author Richard Kavanagh
  */
 public class LoadFractionShareRule implements EnergyShareRule {
 
