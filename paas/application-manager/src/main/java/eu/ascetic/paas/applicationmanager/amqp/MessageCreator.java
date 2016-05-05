@@ -87,6 +87,11 @@ public class MessageCreator {
 		messageVM.setOvfId(vm.getOvfId());
 		messageVM.setStatus(vm.getStatus());
 		messageVM.setVmId("" + vm.getId());
+		if(vm.getProviderId() == null) {
+			messageVM.setProviderId("");
+		} else {
+			messageVM.setProviderId("" + vm.getProviderId());
+		}
 		
 		return messageVM;
 	}

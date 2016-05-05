@@ -84,6 +84,7 @@ public class MessageCreatorTest {
 		vm1.setStatus("XXX1");
 		vm1.setIp("172.0.0.1");
 		vm1.setSlaAgreement("slaAggrementId1");
+		vm1.setProviderId("111");
 		
 		vms.add(vm1);
 		
@@ -96,6 +97,7 @@ public class MessageCreatorTest {
 		vm2.setStatus("XXX2");
 		vm2.setIp("172.0.0.12");
 		vm2.setSlaAgreement("slaAggrementId2");
+		vm2.setProviderId(null);
 		
 		vms.add(vm2);
 		
@@ -109,11 +111,13 @@ public class MessageCreatorTest {
 		assertEquals("ovfId1", amMessage.getVms().get(0).getOvfId());
 		assertEquals("XXX1", amMessage.getVms().get(0).getStatus());
 		assertEquals("12", amMessage.getVms().get(0).getVmId());
+		assertEquals("111", amMessage.getVms().get(0).getProviderId());
 		
 		assertEquals("provider-vm-id2", amMessage.getVms().get(1).getIaasVmId());
 		assertEquals("ovfId2", amMessage.getVms().get(1).getOvfId());
 		assertEquals("XXX2", amMessage.getVms().get(1).getStatus());
 		assertEquals("22", amMessage.getVms().get(1).getVmId());
+		assertEquals("", amMessage.getVms().get(1).getProviderId());
 	}
 	
 	@Test
