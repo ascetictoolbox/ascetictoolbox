@@ -1,9 +1,10 @@
 package eu.ascetic.test.iaas.vmm;
 
+import es.bsc.demiurge.core.models.vms.Vm;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import es.bsc.vmmclient.models.Node;
-import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.test.conf.VMMConf;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +35,15 @@ public class DeployAndMigrateTest extends VmmTestBase{
     public void testDeployAndMigrate() throws Exception {
         int cpus = 1;
         int ramMb = 256;
-        int swapMb = 16;
         int diskGb = 1;
+        int swapMb = 0;
+        
+        VmRequirements vmMigrateRequirements = 
+            new VmRequirements( cpus, ramMb, diskGb, swapMb);
         
         List<Node> nodes = new ArrayList<Node>();
         for (Node node : vmm.getNodes()) {
-			if( (node.getTotalCpus() - node.getAssignedCpus()) >= cpus && 
-                (node.getTotalMemoryMb() - node.getAssignedMemoryMb()) >= ramMb && 
-                (node.getTotalDiskGb() - node.getAssignedDiskGb()) >= diskGb){
+			if( environment.equals("dev") || node.matchesRequirements(vmMigrateRequirements)){
                 nodes.add(node);
             }
 		}
@@ -55,8 +57,7 @@ public class DeployAndMigrateTest extends VmmTestBase{
         
         //Deploy
         logger.info("Deploying '" + vmName + "' at " + computeNode01 + "...");
-        Vm vm = new Vm("deployAndMigrateTest01", VMMConf.imageId, cpus, ramMb, diskGb, swapMb, 
-                null, "dmt01", "", "sla", computeNode01);
+        Vm vm = new Vm("deployAndMigrateTest01", VMMConf.imageId, vmMigrateRequirements, null, "dmt01", "", "sla", computeNode01);
 		List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
 		VmDeployed vmd = vmm.getVm(deployedVms.get(0));
         vmId = vmd.getId();

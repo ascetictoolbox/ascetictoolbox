@@ -5,7 +5,7 @@
  */
 package eu.ascetic.test.iaas.vmm.base;
 
-import es.bsc.vmmclient.models.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import eu.ascetic.test.conf.VMMConf;
 import java.util.logging.Logger;
@@ -36,11 +36,13 @@ public class VmmTestBase extends TestCase {
     private static final int MAX_ITERATIONS = 100;
     public VmManagerClient vmm;
     public String vmId = null;
+    public String environment = null;
     
     @Override
     public void setUp() throws Exception {
         super.setUp();
         vmm = new VmManagerClient(VMMConf.vmManagerURL);
+        environment = VMMConf.environment;
         iterations = 0;
     }
     

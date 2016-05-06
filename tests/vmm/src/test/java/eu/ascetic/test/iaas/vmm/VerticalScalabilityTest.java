@@ -1,9 +1,9 @@
 package eu.ascetic.test.iaas.vmm;
 
+import es.bsc.demiurge.core.models.vms.Vm;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.models.Node;
-import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmDeployed;
 import eu.ascetic.test.conf.VMMConf;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import java.util.ArrayList;
@@ -40,8 +40,9 @@ public class VerticalScalabilityTest extends VmmTestBase{
         
         List<Node> nodes = new ArrayList<Node>();
         for (Node node : vmm.getNodes()) {
-            if( node.matchesRequirements(vmDeployRequirements) &&
-                node.matchesRequirements(vmScaleRequirements)){
+            if( environment.equals("dev") || 
+                (node.matchesRequirements(vmDeployRequirements) &&
+                node.matchesRequirements(vmScaleRequirements)) ){
                 nodes.add(node);
             }
 		}
@@ -103,8 +104,9 @@ public class VerticalScalabilityTest extends VmmTestBase{
         
         List<Node> nodes = new ArrayList<Node>();
         for (Node node : vmm.getNodes()) {
-            if( node.matchesRequirements(vmDeployRequirements) &&
-                node.matchesRequirements(vmScaleRequirements)){
+            if( environment.equals("dev") || 
+                (node.matchesRequirements(vmDeployRequirements) &&
+                node.matchesRequirements(vmScaleRequirements)) ){
                 nodes.add(node);
             }
 		}

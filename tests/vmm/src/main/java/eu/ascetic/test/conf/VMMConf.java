@@ -28,6 +28,7 @@ public class VMMConf {
 	private static Logger logger = Logger.getLogger(VMMConf.class);
 	public static String vmManagerURL = "";
     public static String imageId = "";
+    public static String environment = "";
 	
 	static {
         try {
@@ -41,6 +42,7 @@ public class VMMConf {
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
         	vmManagerURL = config.getString("vm.manager.url");
             imageId = config.getString("image.id");
+            environment = config.getString("environment");
         }
         catch (Exception e) {
             logger.info("Error loading ASCETiC Tests configuration file");
