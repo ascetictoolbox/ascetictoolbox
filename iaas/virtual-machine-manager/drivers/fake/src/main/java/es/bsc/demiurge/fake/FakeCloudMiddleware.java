@@ -268,7 +268,7 @@ public class FakeCloudMiddleware implements CloudMiddleware {
 	}
 
     @Override
-    public Map<String, HardwareInfo> getHypervisors() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Map<String, HardwareInfo> getHypervisors(String region) {
+        return null;
     }
 }
