@@ -1,9 +1,6 @@
 package eu.ascetic.test.iaas.vmm;
 
-import es.bsc.demiurge.core.models.vms.Vm;
-import es.bsc.demiurge.core.models.vms.VmDeployed;
-import es.bsc.demiurge.core.models.vms.VmRequirements;
-import es.bsc.vmmclient.models.Node;
+import es.bsc.vmmclient.models.*;
 import eu.ascetic.test.conf.VMMConf;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@
  */
 package eu.ascetic.test.iaas.vmm.base;
 
-import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.vmmclient.models.*;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import eu.ascetic.test.conf.VMMConf;
 import java.util.logging.Logger;

@@ -5,11 +5,7 @@
  */
 package eu.ascetic.test.iaas.vmm;
 
-import es.bsc.demiurge.core.models.hosts.HardwareInfo;
-import es.bsc.demiurge.core.models.vms.Vm;
-import es.bsc.demiurge.core.models.vms.VmDeployed;
-import es.bsc.demiurge.core.models.vms.VmRequirements;
-import es.bsc.demiurge.core.monitoring.hosts.Slot;
+import es.bsc.vmmclient.models.*;
 import eu.ascetic.test.conf.VMMConf;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import java.util.Arrays;
