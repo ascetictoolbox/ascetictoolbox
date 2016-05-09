@@ -115,6 +115,22 @@ public class Vm {
         this.needsFloatingIp = needsFloatingIp;
     }
 
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId,
+              String ovfId, String slaId, boolean needsFloatingIp) {
+        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.needsFloatingIp = needsFloatingIp;
+    }
+
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
               String ovfId, String slaId, String preferredHost) {
         validateConstructorParams(cpus, ramMb, diskGb, 0);
@@ -124,6 +140,22 @@ public class Vm {
         this.ramMb = ramMb;
         this.diskGb = diskGb;
         this.swapMb = 0;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.preferredHost = preferredHost;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId,
+              String ovfId, String slaId, String preferredHost) {
+        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
         setInitScript(initScript);
         this.applicationId = applicationId;
         this.ovfId = ovfId;
