@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 import es.bsc.vmmclient.models.ImageToUpload;
 import es.bsc.vmmclient.models.ImageUploaded;
 import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmCost;
 import es.bsc.vmmclient.models.VmDeployed;
+import es.bsc.vmmclient.models.VmCost;
 
 
 /**
