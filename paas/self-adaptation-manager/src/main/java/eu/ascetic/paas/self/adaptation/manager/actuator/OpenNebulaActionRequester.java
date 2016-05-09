@@ -105,11 +105,11 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
         }
         return null;
     }
-    
+
     @Override
     public String getOvf(String applicationId, String deploymentId) {
         return null; //Open nebula doesn't support OVF information for deployments.
-    }    
+    }
 
     @Override
     public List<String> getVmTypesAvailableToAdd(String applicationId, String deploymentId) {
@@ -259,6 +259,20 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
         }
     }
 
+    @Override
+    public void scaleUpVM(String application, String deployment, String vmID) {
+        VirtualMachine vm = new VirtualMachine(Integer.parseInt(vmID), client);
+        //TODO, complete the code here - Need to find next template name!!!!
+        OneResponse rc = vm.resize("", false);
+    }
+
+    @Override
+    public void scaleDownVM(String application, String deployment, String vmID) {
+        VirtualMachine vm = new VirtualMachine(Integer.parseInt(vmID), client);
+        //TODO, complete the code here - Need to find next template name!!!!        
+        OneResponse rc = vm.resize("", false);
+    }
+
     /**
      * The things that are needed to invoke an action are:
      *
@@ -326,6 +340,12 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
                 break;
             case HARD_SHUTDOWN_APP:
                 hardShutdown(response.getApplicationId(), response.getDeploymentId());
+                break;
+            case SCALE_DOWN_VM:
+                scaleDownVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
+                break;
+            case SCALE_UP_VM:
+                scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
         }
         response.setPerformed(true);

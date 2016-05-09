@@ -138,6 +138,12 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
             case REMOVE_VM:
                 deleteVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
+            case SCALE_DOWN_VM:
+                scaleDownVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
+                break;
+            case SCALE_UP_VM:
+                scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
+                break;
         }
         response.setPerformed(true);
     }
@@ -237,11 +243,23 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     public void hardShutdown(String applicationId, String deploymentId) {
         ApplicationManagerMessage message = new ApplicationManagerMessage();
         message.setApplicationId(applicationId);
-        message.setDeploymentId(deploymentId);     
+        message.setDeploymentId(deploymentId);
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
             deleteVM(applicationId, deploymentId, vm.getId() + "");
         }
+    }
+
+    @Override
+    public void scaleUpVM(String application, String deployment, String vmID) {
+        //TODO, complete the code here!!!!
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void scaleDownVM(String application, String deployment, String vmID) {
+        //TODO, complete the code here!!!!
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

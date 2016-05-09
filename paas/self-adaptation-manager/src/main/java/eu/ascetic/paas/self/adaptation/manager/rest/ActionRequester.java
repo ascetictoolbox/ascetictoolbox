@@ -69,8 +69,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }
         return null;
     }
-    
-    
+
     /**
      * This gets a VM given its application, deployment and VM ids.
      *
@@ -286,6 +285,36 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     }
     
     /**
+     * This scales up a named VM. VM types are expected to be in a co-ordinated
+     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     *
+     * @param application The application the VM is part of
+     * @param deployment The id of the deployment instance of the VM
+     * @param vmID The id of the VM to delete
+     */
+    @Override
+    public void scaleUpVM(String application, String deployment, String vmID) {
+        RestVMClient client = new RestVMClient(application, deployment);
+        //TODO Adjust code here.
+        //client.deleteVM(vmID);
+    }
+    
+    /**
+     * This scales down a named VM. VM types are expected to be in a co-ordinated
+     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     *
+     * @param application The application the VM is part of
+     * @param deployment The id of the deployment instance of the VM
+     * @param vmID The id of the VM to delete
+     */
+    @Override
+    public void scaleDownVM(String application, String deployment, String vmID) {
+        RestVMClient client = new RestVMClient(application, deployment);
+        //TODO Adjust code here.
+        //client.deleteVM(vmID);
+    }    
+
+    /**
      * This deletes all VMs of an application
      *
      * @param applicationId The application the VM is part of
@@ -298,7 +327,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         for (VM vm : vms) {
             client.deleteVM(vm.getId() + "");
         }
-    }    
+    }
 
     /**
      * The things that are needed to invoke an action are:
@@ -367,6 +396,12 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                 break;
             case HARD_SHUTDOWN_APP:
                 hardShutdown(response.getApplicationId(), response.getDeploymentId());
+                break;
+            case SCALE_DOWN_VM:
+                scaleDownVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
+                break;
+            case SCALE_UP_VM:
+                scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
         }
         response.setPerformed(true);

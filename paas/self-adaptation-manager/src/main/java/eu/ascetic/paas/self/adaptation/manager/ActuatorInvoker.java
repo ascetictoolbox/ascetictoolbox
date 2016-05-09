@@ -100,6 +100,26 @@ public interface ActuatorInvoker {
      * @param deploymentId The id of the deployment instance of the VM
      */
     public void hardShutdown(String applicationId, String deploymentId);    
+
+    /**
+     * This scales up a named VM. VM types are expected to be in a co-ordinated
+     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     *
+     * @param application The application the VM is part of
+     * @param deployment The id of the deployment instance of the VM
+     * @param vmID The id of the VM to delete
+     */
+    public void scaleUpVM(String application, String deployment, String vmID);    
+    
+    /**
+     * This scales down a named VM. VM types are expected to be in a co-ordinated
+     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     *
+     * @param application The application the VM is part of
+     * @param deployment The id of the deployment instance of the VM
+     * @param vmID The id of the VM to delete
+     */
+    public void scaleDownVM(String application, String deployment, String vmID);
     
     /**
      * This causes the actuator to invoke a given action
