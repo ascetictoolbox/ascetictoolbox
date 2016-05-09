@@ -19,6 +19,7 @@
 package es.bsc.vmm.ascetic.vmplacement;
 
 import es.bsc.demiurge.core.clopla.domain.Vm;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 
 import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
@@ -28,7 +29,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -62,7 +65,9 @@ public class CloplaConversorTest {
     public void getCloplaHosts() {
         List<Host> hosts = new ArrayList<>();
         hosts.add(new HostFake("host1", 1, 1024, 1, 0, 0, 0));
-        es.bsc.demiurge.core.clopla.domain.Host cloplaHost = cc.getCloplaHosts(hosts).get(0);
+        Map<String, HardwareInfo> hwinfo = new HashMap<String, HardwareInfo>();
+        hwinfo.put("host1", new HardwareInfo("host1", "x86_64", "Intel", "SSD"));
+        es.bsc.demiurge.core.clopla.domain.Host cloplaHost = cc.getCloplaHosts(hosts, hwinfo).get(0);
         assertEquals("host1", cloplaHost.getHostname());
         assertEquals(1, cloplaHost.getNcpus());
         assertEquals(1024.0, cloplaHost.getRamMb());

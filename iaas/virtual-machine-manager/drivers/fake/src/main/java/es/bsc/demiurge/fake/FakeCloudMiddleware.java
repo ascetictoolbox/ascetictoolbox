@@ -21,6 +21,7 @@ package es.bsc.demiurge.fake;
 import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddleware;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
@@ -265,4 +266,9 @@ public class FakeCloudMiddleware implements CloudMiddleware {
 	public void confirmResize(String vmId) {
 
 	}
+
+    @Override
+    public Map<String, HardwareInfo> getHypervisors() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

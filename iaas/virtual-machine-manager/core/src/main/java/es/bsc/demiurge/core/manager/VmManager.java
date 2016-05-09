@@ -7,6 +7,7 @@ import es.bsc.demiurge.core.manager.components.HostsManager;
 import es.bsc.demiurge.core.manager.components.VmsManager;
 import es.bsc.demiurge.core.models.estimates.ListVmEstimates;
 import es.bsc.demiurge.core.models.estimates.VmToBeEstimated;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.scheduling.*;
@@ -299,4 +300,21 @@ public interface VmManager {
      * @param vmId the VM's id to perform resize
      */
     void confirmResize(String vmId);
+    
+    /**
+     * Returns all information about hardware.
+     * 
+     * @return 
+     */
+    Map<String, HardwareInfo> getHardwareInfo();
+    
+    /**
+     * Returns a specific hardware property.
+     * 
+     * @param hostname
+     * @param hardware
+     * @param property
+     * @return 
+     */
+    String getHardwareInfo(String hostname, String hardware, String property);
 }

@@ -21,8 +21,6 @@ package es.bsc.demiurge.core.models.vms;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-import java.io.File;
-
 /**
  * VM.
  *
@@ -44,9 +42,12 @@ public class Vm {
     private String ovfId = "";
     private String slaId = "";
     private boolean needsFloatingIp = false;
+    private String processorArchitecture = null;
+    private String processorBrand = null;
+    private String diskType = null;
 
     private String preferredHost;
-
+    
     // TODO: apply builder pattern instead of having several constructors.
     // This really needs a refactoring, although several classes will be affected.
 
@@ -84,6 +85,19 @@ public class Vm {
         setInitScript(initScript);
         this.applicationId = applicationId;
     }
+    
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId, String preferredHost) {
+        validateConstructorParams(cpus, ramMb, diskGb, 0);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = 0;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.preferredHost = preferredHost;
+    }
 
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
               String ovfId, String slaId, boolean needsFloatingIp) {
@@ -116,7 +130,57 @@ public class Vm {
         this.slaId = slaId;
         this.preferredHost = preferredHost;
     }
-
+    
+    public Vm(String name, String image, VmRequirements vmDeployRequirements,
+              String initScript, String applicationId) {
+        this.name = name;
+        this.image = image;
+        this.cpus = vmDeployRequirements.getCpus();
+        this.ramMb = vmDeployRequirements.getRamMb();
+        this.diskGb = vmDeployRequirements.getDiskGb();
+        this.swapMb = vmDeployRequirements.getSwapMb();
+        this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
+        this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.diskType = vmDeployRequirements.getDiskType();
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+    }
+    
+    public Vm(String name, String image, VmRequirements vmDeployRequirements,
+              String initScript, String applicationId, String ovfId, String slaId) {
+        this.name = name;
+        this.image = image;
+        this.cpus = vmDeployRequirements.getCpus();
+        this.ramMb = vmDeployRequirements.getRamMb();
+        this.diskGb = vmDeployRequirements.getDiskGb();
+        this.swapMb = vmDeployRequirements.getSwapMb();
+        this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
+        this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.diskType = vmDeployRequirements.getDiskType();
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+    }
+    
+    public Vm(String name, String image, VmRequirements vmDeployRequirements,
+              String initScript, String applicationId, String ovfId, String slaId, String preferredHost) {
+        this.name = name;
+        this.image = image;
+        this.cpus = vmDeployRequirements.getCpus();
+        this.ramMb = vmDeployRequirements.getRamMb();
+        this.diskGb = vmDeployRequirements.getDiskGb();
+        this.swapMb = vmDeployRequirements.getSwapMb();
+        this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
+        this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.diskType = vmDeployRequirements.getDiskType();
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.preferredHost = preferredHost;
+    }
+    
     public String getName() {
         return name;
     }
@@ -146,13 +210,7 @@ public class Vm {
     }
 
     public void setInitScript(String initScript) {
-        // If a path for an loadConfiguration script was specified
         if (initScript != null && !initScript.equals("")) {
-            // Check that the path is valid and the file can be read
-            File f = new File(initScript);
-            if (!f.isFile() || !f.canRead()) {
-                throw new IllegalArgumentException("The path for the loadConfiguration script is not valid");
-            }
             this.initScript = initScript;
         }
     }
@@ -192,12 +250,36 @@ public class Vm {
     public boolean belongsToAnApp() {
         return applicationId != null && !applicationId.equals("") && !applicationId.equals(" ");
     }
-
+    
+    public String getProcessorArchitecture() {
+        return processorArchitecture;
+    }
+    
+    public void setProcessorArchitecture(String processorArchitecture) {
+        this.processorArchitecture = processorArchitecture;
+    }
+    
+    public String getProcessorBrand() {
+        return processorBrand;
+    }
+    
+    public void setProcessorBrand(String processorBrand) {
+        this.processorBrand = processorBrand;
+    }
+    
+    public String getDiskType() {
+        return diskType;
+    }
+    
+    public void setDiskType(String diskType) {
+        this.diskType = diskType;
+    }
+    
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this);
     }
-
+    
     private void validateConstructorParams(int cpus, int ramMb, int diskGb, int swapMb) {
         Preconditions.checkArgument(cpus > 0, "CPUs was %s but expected positive", cpus);
         Preconditions.checkArgument(ramMb > 0, "RAM MB was %s but expected positive", ramMb);

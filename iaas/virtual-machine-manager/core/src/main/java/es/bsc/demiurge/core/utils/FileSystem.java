@@ -18,15 +18,20 @@
 
 package es.bsc.demiurge.core.utils;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.apache.commons.configuration.Configuration;
 
 /**
  * This helper class contains auxiliary methods to work with the file system.
  *
- * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es).
+ * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
  *
  */
 public class FileSystem {
@@ -44,5 +49,61 @@ public class FileSystem {
             throw new RuntimeException("Error while deleting a file.");
         }
     }
+    
+    /**
+     * Delivers a string with the contents of a file given a path
+     * @param fileConfPath
+     * @return String
+     */
+    public static String readConfigurationFile(String fileConfPath) {
+        StringBuilder text = new StringBuilder();
+        URL urlConfPath = Configuration.class.getResource(fileConfPath);
 
+        try{
+            
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(urlConfPath.openStream(), "UTF8"));
+
+            String str;
+            while ((str = in.readLine()) != null) {
+                text.append(str);
+                text.append("\n");
+            }
+
+            in.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return text.toString();
+    }
+    
+    /**
+     * Delivers a string with the contents of a file given a path
+     * @param filePath
+     * @return String
+     */
+    public static String readFile(String filePath) {
+        StringBuilder text = new StringBuilder();
+
+        try{
+            
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filePath), "UTF8"));
+
+            String str;
+            while ((str = in.readLine()) != null) {
+                text.append(str);
+                text.append("\n");
+            }
+
+            in.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return text.toString();
+    }
 }

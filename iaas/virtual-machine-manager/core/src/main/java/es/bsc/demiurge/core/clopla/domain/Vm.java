@@ -35,6 +35,9 @@ public class Vm extends AbstractPersistable {
     private int ncpus;
     private int ramMb;
     private int diskGb;
+    private String processorArchitecture = null;
+    private String processorBrand = null;
+    private String diskType = null;
     private String appId;
     private Host host; // The host where the Vm should be deployed according to the planner.
     private String alphaNumericId; /* This might be needed in some cases. For example, OpenStack uses alphanumeric
@@ -49,6 +52,9 @@ public class Vm extends AbstractPersistable {
         private final int ncpus;
         private final int ramMb;
         private final int diskGb;
+        private String processorArchitecture = null;
+        private String processorBrand = null;
+        private String diskType = null;
         
         // Optional parameters
         private String appId;
@@ -59,6 +65,19 @@ public class Vm extends AbstractPersistable {
             this.ncpus = ncpus;
             this.ramMb = ramMb;
             this.diskGb = diskGb;
+            this.processorArchitecture = null;
+            this.processorBrand = null;
+            this.diskType = null;
+        }
+        
+        public Builder (Long id, int ncpus, int ramMb, int diskGb, String processorArchitecture, String processorBrand, String diskType) {
+            this.id = id;
+            this.ncpus = ncpus;
+            this.ramMb = ramMb;
+            this.diskGb = diskGb;
+            this.processorArchitecture = processorArchitecture;
+            this.processorBrand = processorBrand;
+            this.diskType = diskType;
         }
         
         public Builder appId(String appId) {
@@ -82,6 +101,9 @@ public class Vm extends AbstractPersistable {
         ncpus = builder.ncpus;
         ramMb = builder.ramMb;
         diskGb = builder.diskGb;
+        processorArchitecture = builder.processorArchitecture;
+        processorBrand = builder.processorBrand;
+        diskType = builder.diskType;
         appId = builder.appId;
         alphaNumericId = builder.alphaNumericId;
     }
@@ -112,6 +134,30 @@ public class Vm extends AbstractPersistable {
 
     public int getDiskGb() {
         return diskGb;
+    }
+    
+    public String getProcessorArchitecture() {
+        return processorArchitecture;
+    }
+    
+    public void setProcessorArchitecture(String processorArchitecture) {
+        this.processorArchitecture = processorArchitecture;
+    }
+    
+    public String getProcessorBrand() {
+        return processorBrand;
+    }
+    
+    public void setProcessorBrand(String processorBrand) {
+        this.processorBrand = processorBrand;
+    }
+    
+    public String getDiskType() {
+        return diskType;
+    }
+    
+    public void setDiskType(String diskType) {
+        this.diskType = diskType;
     }
 
     public String getAppId() {

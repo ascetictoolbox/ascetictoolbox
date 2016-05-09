@@ -21,8 +21,10 @@ package es.bsc.demiurge.ws.rest;
 import com.google.gson.Gson;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
 import es.bsc.demiurge.core.manager.VmManager;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class implements the REST calls that are related with the nodes of the infrastructure.
@@ -66,6 +68,14 @@ public class NodeCallsManager {
 			*/
         }
         return result.append("]}").toString();
+    }
+    
+    public Map<String, HardwareInfo> getHardwareInfo() {
+        return vmManager.getHardwareInfo();
+    }
+    
+    public String getHardwareInfo(String hostname, String hardware, String property) {
+        return vmManager.getHardwareInfo(hostname, hardware, property);
     }
 
     public String getVMsDeployedInNode(String hostname) {

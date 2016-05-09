@@ -1,3 +1,4 @@
+import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.vmmclient.models.*;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import junit.framework.TestCase;
@@ -10,6 +11,7 @@ public class D41TEST extends TestCase {
 	private static final String URL_D41 = "http://iaas-stable:34373/vmmanager";
 	private static final String URL_TESTING = "http://192.168.3.17:34372/vmmanager/";
 	private static final String URL_STABLE = "http://iaas-stable:34372/api/v1";
+    private static final String URL_LOCAL = "http://localhost:34372/api/v1";
 
 	private static final int NUMBER_OF_VMS = 1;
 	//	private static final String CIRROS_IMAGE_ID = "0c29c65b-2ff8-46fc-acd7-fdb039316905"; //iaas testing
@@ -20,14 +22,13 @@ public class D41TEST extends TestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		vmm = new VmManagerClient(URL_STABLE);
+		vmm = new VmManagerClient(URL_LOCAL);
 	}
 
 	@Ignore
 	public void testAll() {
 		testShowUploadedImages();
 		testShowNodesAndVms();
-		testDeployVms();
 		try {
 			Thread.sleep(1*60*1000);
 		} catch (InterruptedException e) {
@@ -65,65 +66,6 @@ public class D41TEST extends TestCase {
 				vmm.destroyVm(vm.getId());
 			}
 		}
-	}
-
-	@Ignore
-	public void testDeployVms() {
-
-		System.out.println("* deploying new vms");
-		// deploy vms
-		List<Vm> toDeploy = new ArrayList<>();
-		for(int i = 1 ; i <= NUMBER_OF_VMS ; i++) {
-			Vm vm = new Vm("d41vm"+i,
-					CIRROS_IMAGE_ID,
-					2,1024,1,6*512,
-					"#!/bin/sh\n" +
-							"\n" +
-							"forkfunc() {\n" +
-							"\ta=2;\n" +
-							"\tb=3;\n" +
-							"\n" +
-							"\twhile [ 1 == 1 ]\n" +
-							"\tdo\n" +
-							"\t\ta=`expr '(' '(' $a '+' '1' ')' '*' $b ')' '/' $a`\n" +
-							"\t\tb=`expr '(' $b '*' $b ')'`\n" +
-							"\n" +
-							"\t\tif [ \"$a\" -ge 100000 ]\n" +
-							"\t\tthen\n" +
-							"\t\t\ta=2\n" +
-							"\t\tfi\n" +
-							"\t\tif [ \"$b\" -ge 100000 ]\n" +
-							"\t\tthen\n" +
-							"\t\t\tb=3\n" +
-							"\t\tfi\n" +
-							"\n" +
-							"\t\techo \"hola tio $a $b\"\n" +
-							"\tdone\n" +
-							"}\n" +
-							"\n" +
-							"forkfunc & forkfunc & forkfunc & forkfunc",
-					"test-id",null,null,false);
-
-			toDeploy.add(vm);
-
-		}
-
-		for(Vm vm : toDeploy) {
-			VmDeployed vmDeployed = vmm.getVm(vmm.deployVms(Arrays.asList(vm)).get(0));
-			System.out.println("\t" + vmDeployed.getIpAddress() +" : " + vmDeployed.toString());
-			try {
-				Thread.sleep(1*60*1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-//		List<String> vmIds = vmm.deployVms(toDeploy);
-//		for(String id : vmIds) {
-//			VmDeployed vmDeployed = vmm.getVm(id);
-//			System.out.println("\t" + vmDeployed.getIpAddress() +" : " + vmDeployed.toString());
-//		}
-
 	}
 
 	@Ignore

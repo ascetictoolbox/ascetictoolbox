@@ -42,5 +42,12 @@ public class EstimatesCallsManager {
         ListVmsToBeEstimated listVmsToBeEstimated = gson.fromJson(vms, ListVmsToBeEstimated.class);
         return Config.INSTANCE.getVmManager().getVmEstimates(listVmsToBeEstimated.getVms()).toJSON();
     }
+    
+    //TODO: Use isRenegotiation to change estimates i.e. the VMM could know that we’re talking about VMMs that are already defined if a renegotiation is in place (estimate should take into consideration slaTerms)
+    public String getEstimates(String vms, String renegotiate) throws CloudMiddlewareException {
+        Boolean isRenegotiation = gson.fromJson(renegotiate, Boolean.class);
+        ListVmsToBeEstimated listVmsToBeEstimated = gson.fromJson(vms, ListVmsToBeEstimated.class);
+        return Config.INSTANCE.getVmManager().getVmEstimates(listVmsToBeEstimated.getVms()).toJSON();
+    }
 
 }

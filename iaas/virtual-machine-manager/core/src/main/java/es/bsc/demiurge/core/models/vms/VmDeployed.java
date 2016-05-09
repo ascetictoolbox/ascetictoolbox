@@ -44,6 +44,16 @@ public class VmDeployed extends Vm {
         this.created = new Date(created.getTime());
         this.hostName = hostName;
     }
+    
+    public VmDeployed(String name, String image, VmRequirements vmDeployRequirements, String initScript, String applicationId, String id,
+            String ipAddress, String state, Date created, String hostName) {
+        super(name, image, vmDeployRequirements, initScript, applicationId);
+        this.id = id;
+        this.ipAddress = ipAddress;
+        this.state = state;
+        this.created = new Date(created.getTime());
+        this.hostName = hostName;
+    }
 
     public String getId() {
         return id;

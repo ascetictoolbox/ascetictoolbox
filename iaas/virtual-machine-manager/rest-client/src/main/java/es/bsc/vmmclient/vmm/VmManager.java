@@ -18,6 +18,8 @@
 
 package es.bsc.vmmclient.vmm;
 
+import es.bsc.demiurge.core.models.vms.Vm;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.models.*;
 

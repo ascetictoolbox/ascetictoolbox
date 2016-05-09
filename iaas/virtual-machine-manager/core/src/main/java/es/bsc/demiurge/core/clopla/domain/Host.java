@@ -33,6 +33,9 @@ public class Host extends AbstractPersistable {
     private final int ncpus;
     private final double ramMb;
     private final double diskGb;
+    private String processorArchitecture = null;
+    private String processorBrand = null;
+    private String diskType = null;
     private final List<Long> fixedVmsIds = new ArrayList<>(); // IDs of the VMs that need to be deployed in this host
     private final boolean initiallyOff; // The host was off before the planning started
 
@@ -42,6 +45,21 @@ public class Host extends AbstractPersistable {
         this.ncpus = ncpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
+        this.processorArchitecture = null;
+        this.processorBrand = null;
+        this.diskType = null;
+        this.initiallyOff = initiallyOff;
+    }
+    
+    public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb, String processorArchitecture, String processorBrand, String diskType, boolean initiallyOff) {
+        this.hostname = hostname;
+        this.id = id;
+        this.ncpus = ncpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.processorArchitecture = processorArchitecture;
+        this.processorBrand = processorBrand;
+        this.diskType = diskType;
         this.initiallyOff = initiallyOff;
     }
 
@@ -84,6 +102,30 @@ public class Host extends AbstractPersistable {
         return getCpuOverCapacityScore(hostUsage)
                 + getRamOverCapacityScore(hostUsage)
                 + getDiskOverCapacityScore(hostUsage);
+    }
+    
+    /**
+     * Checks if a group of VMs matches hardware requirements of a specific host.
+     * 
+     * @param vms
+     * @return 
+     */
+    public boolean matchesHardwareRequirements(List<Vm> vms) {
+        for(Vm vm : vms){
+            String vmDiskType = vm.getDiskType();
+            if(vmDiskType != null && diskType != null && !diskType.equals(vmDiskType) ){
+                return false;
+            }
+            String vmProcessorBrand = vm.getProcessorBrand();
+            if(vmProcessorBrand != null && processorBrand != null && !processorBrand.equals(vmProcessorBrand)){
+                return false;
+            }
+            String vmProcessorArchitecture = vm.getProcessorArchitecture();
+            if(vm.getProcessorArchitecture() != null && processorArchitecture != null && !processorArchitecture.equals(vmProcessorArchitecture)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -140,19 +182,61 @@ public class Host extends AbstractPersistable {
      * Originally (ncpus - ncpusused) < 0?
      */
     private double getCpuOverCapacityScore(HostUsage hostUsage) {
-        if(ncpus < hostUsage.getNcpusUsed()) {
-            return (hostUsage.getNcpusUsed()/(double)ncpus);
+        if(ncpus > 0 && ncpus < hostUsage.getNcpusUsed()) {
+            return (hostUsage.getNcpusUsed()/(double)ncpus );
         } else {
             return 0;
         }
     }
 
     private double getRamOverCapacityScore(HostUsage hostUsage) {
-        return ((ramMb - hostUsage.getRamMbUsed()) < 0) ? - (hostUsage.getRamMbUsed()/ramMb) : 0.0;
+        return (ramMb > 0 && ramMb - hostUsage.getRamMbUsed() < 0) ? - (hostUsage.getRamMbUsed()/ramMb) : 0.0;
     }
 
     private double getDiskOverCapacityScore(HostUsage hostUsage) {
-        return ((diskGb - hostUsage.getDiskGbUsed()) < 0) ? - (hostUsage.getDiskGbUsed()/diskGb) : 0.0;
+        return (diskGb > 0 && diskGb - hostUsage.getDiskGbUsed() < 0) ? - (hostUsage.getDiskGbUsed()/diskGb) : 0.0;
+    }
+
+    /**
+     * @return the processorArchitecture
+     */
+    public String getProcessorArchitecture() {
+        return processorArchitecture;
+    }
+
+    /**
+     * @param processorArchitecture the processorArchitecture to set
+     */
+    public void setProcessorArchitecture(String processorArchitecture) {
+        this.processorArchitecture = processorArchitecture;
+    }
+
+    /**
+     * @return the processorBrand
+     */
+    public String getProcessorBrand() {
+        return processorBrand;
+    }
+
+    /**
+     * @param processorBrand the processorBrand to set
+     */
+    public void setProcessorBrand(String processorBrand) {
+        this.processorBrand = processorBrand;
+    }
+
+    /**
+     * @return the diskType
+     */
+    public String getDiskType() {
+        return diskType;
+    }
+
+    /**
+     * @param diskType the diskType to set
+     */
+    public void setDiskType(String diskType) {
+        this.diskType = diskType;
     }
 
 }

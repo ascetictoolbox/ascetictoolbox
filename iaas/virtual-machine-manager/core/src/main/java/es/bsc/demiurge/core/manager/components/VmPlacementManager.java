@@ -30,10 +30,12 @@ import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
 import es.bsc.demiurge.core.vmplacement.CloplaConversor;
 import es.bsc.demiurge.core.configuration.Config;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.optaplanner.core.api.score.Score;
 
 /**
  * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
@@ -98,21 +100,26 @@ public class VmPlacementManager {
     public RecommendedPlan getRecommendedPlan(String schedulingAlgorithm,
                                               RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
-                                              List<Vm> vmsToDeploy) throws CloudMiddlewareException {
+                                              List<Vm> vmsToDeploy,
+                                              Map<String, HardwareInfo> hwinfo) throws CloudMiddlewareException {
         CloplaConversor cc = Config.INSTANCE.getCloplaConversor();
         List<Host> hosts = hostsManager.getHosts();
         ClusterState clusterStateRecommendedPlan = clopla.getBestSolution(
-                cc.getCloplaHosts(hosts),
+                cc.getCloplaHosts(hosts, hwinfo),
                 cc.getCloplaVms(
                         getVmsDeployedAndScheduledNonDeployed(),
                         vmsToDeploy,
-                        cc.getCloplaHosts(hosts),
+                        cc.getCloplaHosts(hosts, hwinfo),
                         assignVmsToCurrentHosts),
                 cc.getCloplaConfig(
 						schedulingAlgorithm,
                         recommendedPlanRequest,
                         estimatesManager));
-        return cc.getRecommendedPlan(clusterStateRecommendedPlan);
+        RecommendedPlan recommendedPlan = cc.getRecommendedPlan(clusterStateRecommendedPlan);
+        if(recommendedPlan == null){
+            throw new CloudMiddlewareException("No suitable deployment plan found!");
+        }
+        return recommendedPlan;
     }
 
     /**

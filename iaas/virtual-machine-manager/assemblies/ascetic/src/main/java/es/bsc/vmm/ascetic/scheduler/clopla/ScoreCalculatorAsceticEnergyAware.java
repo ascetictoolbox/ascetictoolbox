@@ -30,7 +30,8 @@ public class ScoreCalculatorAsceticEnergyAware implements SimpleScoreCalculator<
 	}
 
 	private int calculateHardScore(ClusterState solution) {
-		return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+		return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution) 
+                + ScoreCalculatorCommon.getClusterHardwareScore(solution)
 				+ ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
 	}
 

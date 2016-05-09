@@ -19,6 +19,11 @@
 
 package es.bsc.demiurge.core.clopla.domain;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -29,8 +34,6 @@ import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScor
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
-
-import java.util.*;
 
 /**
  * This class defines the state of the cluster at any given time. 
@@ -297,6 +300,23 @@ public class ClusterState extends AbstractPersistable implements Solution<Score>
     private double calculateUnusedCpuRatio(Host host) {
         double unusedPerc = (double)(host.getNcpus() - cpusAssignedInHost(host))/(host.getNcpus());
         return unusedPerc > 0 ? unusedPerc : 0; // If a host is overbooked simply return 0
+    }
+    
+    /**
+     * We should not accept solutions with a hard score inferior to 0.
+     * @param clusterState
+     * @return 
+     */
+    public boolean hasHardScorePositive() {
+        Score clusterStateScore = getScore();
+        if(clusterStateScore instanceof org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore){
+            int score = clusterStateScore.toLevelNumbers()[0].intValue();
+            if(score < 0){
+                return false;
+            }
+        }
+        
+        return true;
     }
     
 }

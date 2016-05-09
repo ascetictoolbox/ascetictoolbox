@@ -49,7 +49,8 @@ public class ScoreCalculatorDistribution implements SimpleScoreCalculator<Cluste
     }
 
     private int calculateHardScore(ClusterState solution) {
-        return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+        return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution) 
+                + ScoreCalculatorCommon.getClusterHardwareScore(solution) 
                 + ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
     }
 

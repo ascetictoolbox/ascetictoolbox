@@ -1,6 +1,7 @@
+import es.bsc.demiurge.core.models.vms.Vm;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.models.Node;
-import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmDeployed;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import junit.framework.TestCase;
 import org.junit.Ignore;
@@ -25,16 +26,16 @@ public class DeployAndMigrateTest extends TestCase{
         super.setUp();
         vmm = new VmManagerClient(null); //URL_BSCGRID);
     }
-
+    
     @Ignore
     public void testVmDeployment() throws InterruptedException {
-
-		Vm vm = new Vm("MustBeInBSCGRID30", IMAGE_ID, 2,1024,1,6*512,null,"testSlaAppId", "", "sla", "bscgrid30");
+        VmRequirements vmReq = new VmRequirements(2, 1024, 1, 6*512);
+		Vm vm = new Vm("MustBeInBSCGRID30", IMAGE_ID, vmReq, null, "testSlaAppId", "", "sla", "bscgrid30");
 		List<String> id1 = vmm.deployVms(Arrays.asList(vm));
 		VmDeployed vmd = vmm.getVm(id1.get(0));
 		System.out.println("deployed: " + vmd.toString());
-
-		vm = new Vm("MustBeInBSCGRID28", IMAGE_ID, 2,1024,1,6*512,null,"testSlaAppId", "", "sla", "bscgrid28");
+        
+		vm = new Vm("MustBeInBSCGRID28", IMAGE_ID, vmReq, null, "testSlaAppId", "", "sla", "bscgrid28");
 		List<String> id2 = vmm.deployVms(Arrays.asList(vm));
 		vmd = vmm.getVm(id2.get(0));
 		System.out.println("deployed: " + vmd.toString());

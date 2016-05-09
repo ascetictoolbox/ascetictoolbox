@@ -20,9 +20,7 @@
 package es.bsc.demiurge.core.clopla.lib;
 
 import es.bsc.demiurge.core.clopla.domain.*;
-import es.bsc.demiurge.core.clopla.domain.*;
 import es.bsc.demiurge.core.clopla.placement.config.VmPlacementConfig;
-import es.bsc.demiurge.core.clopla.domain.*;
 
 import java.util.List;
 import java.util.Map;

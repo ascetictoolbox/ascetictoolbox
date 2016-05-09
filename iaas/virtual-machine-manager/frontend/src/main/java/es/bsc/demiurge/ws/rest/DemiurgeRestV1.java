@@ -23,7 +23,9 @@ import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.core.db.VmManagerDbFactory;
 import es.bsc.demiurge.core.manager.VmManager;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
+import es.bsc.demiurge.core.monitoring.hosts.Slot;
 
 import es.bsc.demiurge.ws.rest.error.ErrorHandler;
 import org.apache.log4j.LogManager;
@@ -37,6 +39,7 @@ import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST interface for the VM Manager.
@@ -255,7 +258,19 @@ public class DemiurgeRestV1 {
 			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+    
+    @GET
+    @Path("/slots")
+    @Consumes("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Slot> getSlots() {
+		try {
+			return vmPlacementCallsManager.getSlots();
+		} catch (CloudMiddlewareException e) {
+			log.error("Error getting available slots: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
     //================================================================================
     //  Self Adaptation Methods
@@ -308,7 +323,20 @@ public class DemiurgeRestV1 {
     public void pressHostPowerButton(@PathParam("hostname") String hostname) {
         nodeCallsManager.pressHostPowerButton(hostname);
     }
-
+    
+    @GET
+    @Path("/hwinfo")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, HardwareInfo> getHardwareInfo() {
+        return nodeCallsManager.getHardwareInfo();
+    }
+    
+    @GET
+    @Path("/hwinfo/{hostname}/{hardware}/{property}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getHardwareInfo(@PathParam("hostname") String hostname, @PathParam("hardware") String hardware, @PathParam("property") String property) {
+        return nodeCallsManager.getHardwareInfo(hostname, hardware, property);
+    }
     
     //================================================================================
     // Logs Methods

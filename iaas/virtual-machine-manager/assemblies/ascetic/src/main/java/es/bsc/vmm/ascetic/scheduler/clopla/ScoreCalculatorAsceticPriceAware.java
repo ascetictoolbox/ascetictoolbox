@@ -30,7 +30,8 @@ public class ScoreCalculatorAsceticPriceAware implements SimpleScoreCalculator<C
 	}
 
 	private int calculateHardScore(ClusterState solution) {
-		return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution)
+		return (int) (ScoreCalculatorCommon.getClusterOverCapacityScore(solution) 
+                + ScoreCalculatorCommon.getClusterHardwareScore(solution) 
 				+ ScoreCalculatorCommon.getClusterPenaltyScoreForFixedVms(solution));
 	}
 

@@ -18,11 +18,24 @@
 
 package es.bsc.demiurge.openstackjclouds;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import com.google.common.collect.FluentIterable;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddleware;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.configuration.Config;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
@@ -32,6 +45,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.UrlValidator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jclouds.collect.IterableWithMarker;
 import org.jclouds.collect.PagedIterable;
 import org.jclouds.openstack.neutron.v2.NeutronApi;
@@ -40,12 +55,8 @@ import org.jclouds.openstack.nova.v2_0.domain.*;
 import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPApi;
 import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 import org.jclouds.openstack.v2_0.domain.Resource;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.logging.Level;
+import org.jclouds.openstack.nova.v2_0.domain.regionscoped.HypervisorDetails;
+import org.jclouds.openstack.nova.v2_0.extensions.HypervisorApi;
 
 /**
  * Class that performs requests to OpenStack using the JClouds library.
@@ -782,4 +793,32 @@ public class OpenStackJclouds implements CloudMiddleware {
 		System.out.println("OpenStackJclouds.confirmResize(): vmId = " + vmId);
 		openStackJcloudsApis.getServerApi().confirmResize(vmId);
 	}
+
+    @Override
+    public Map<String, HardwareInfo> getHypervisors(String region) {
+        Map<String, HardwareInfo> result = new HashMap<>();
+        if(region == null || region.equals("")){
+            logger.warn("A region must be provided to check hypervisors' data from OpenStack");
+            return result;
+        }
+        
+        HypervisorApi api = openStackJcloudsApis.getNovaApi().getHypervisorApi(region).get();
+        List<HypervisorDetails> l = api.listInDetail().toList();
+        for(int i = 0; i < l.size(); i++){
+            try{
+                HypervisorDetails hd = l.get(i);
+                if(!hd.getCpuInfo().equals("?")){
+                    HardwareInfo hinfo = new HardwareInfo();
+                    JsonNode jsonCpuInfo = new ObjectMapper().readTree(hd.getCpuInfo());
+                    hinfo.setCpuArchitecture( jsonCpuInfo.get("arch").asText() );
+                    hinfo.setCpuVendor( jsonCpuInfo.get("vendor").asText()  );
+                    result.put(hd.getName(), hinfo);
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }        
+        return result;
+    }
 }

@@ -1,5 +1,6 @@
-import es.bsc.vmmclient.models.Vm;
-import es.bsc.vmmclient.models.VmDeployed;
+import es.bsc.demiurge.core.models.vms.Vm;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import junit.framework.TestCase;
 import org.junit.Ignore;
@@ -26,10 +27,11 @@ public class SLATest extends TestCase{
         super.setUp();
         vmm = new VmManagerClient(URL_TESTING);
     }
-
+    
     @Ignore
     public void testVmDeployment() {
-        Vm vm = new Vm("testSlaVm", IMAGE_ID, 2,1024,1,6*512,null,"testSlaAppId", OVF_ID, SLA_ID );
+        VmRequirements vmReq = new VmRequirements(2, 1024, 1, 6*512);
+        Vm vm = new Vm("testSlaVm", IMAGE_ID, vmReq, null, "testSlaAppId", OVF_ID, SLA_ID );
         List<String> id = vmm.deployVms(Arrays.asList(vm));
         VmDeployed vmd = vmm.getVm(id.get(0));
 

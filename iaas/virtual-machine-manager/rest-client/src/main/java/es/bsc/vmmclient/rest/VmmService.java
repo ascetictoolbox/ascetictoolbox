@@ -18,12 +18,16 @@
 
 package es.bsc.vmmclient.rest;
 
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
+import es.bsc.demiurge.core.monitoring.hosts.Slot;
 import es.bsc.vmmclient.models.*;
 import retrofit.client.Response;
 import retrofit.http.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface VmmService {
     
@@ -85,4 +89,13 @@ public interface VmmService {
     
     @POST("/vms/{vmId}/confirmResize")
     Response confirmResize(@Path("vmId") String vmId);
+    
+    @GET("/hwinfo")
+    Map<String,HardwareInfo> getHardwareInfo();
+    
+    @GET("/hwinfo/{hostname}/{hardware}/{property}")
+    String getHardwareInfo(@Path("hostname") String hostname, @Path("hardware") String hardware, @Path("property") String property);
+    
+    @GET("/slots")
+    List<Slot> getSlots();
 }

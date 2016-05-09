@@ -74,6 +74,7 @@ public class VmmRestClient {
             }
 
         RestAdapter restAdapter = new RestAdapter.Builder()
+            .setErrorHandler(VmmErrorHandler.getInstance())
             .setEndpoint(url)
             .setClient(new OkClient(okHttpClient))
             .build();

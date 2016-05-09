@@ -35,6 +35,7 @@ import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.core.db.VmManagerDbFactory;
 import es.bsc.demiurge.core.models.estimates.ListVmEstimates;
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
@@ -316,8 +317,7 @@ public class GenericVmManager implements VmManager {
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
                                               boolean assignVmsToCurrentHosts,
                                               List<Vm> vmsToDeploy) throws CloudMiddlewareException {
-
-        return vmPlacementManager.getRecommendedPlan(db.getCurrentSchedulingAlg(),recommendedPlanRequest, assignVmsToCurrentHosts, vmsToDeploy);
+        return vmPlacementManager.getRecommendedPlan(db.getCurrentSchedulingAlg(),recommendedPlanRequest, assignVmsToCurrentHosts, vmsToDeploy, vmsManager.getHardwareInfo());
     }
 
     /**
@@ -427,7 +427,7 @@ public class GenericVmManager implements VmManager {
         List<Host> hosts = new ArrayList<>();
 
         for(String hostname : Config.INSTANCE.hosts) {
-                hosts.add(hf.getHost(hostname));
+            hosts.add(hf.getHost(hostname));
         }
 
         hostsManager = new HostsManager(hosts);
@@ -435,10 +435,10 @@ public class GenericVmManager implements VmManager {
         // initializes other subcomponents
         estimatesManager = new EstimatesManager(this, conf.getEstimators());
 
-        vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, estimatesManager, conf.getVmmListeners());
+        vmsManager = new VmsManager(hostsManager, cloudMiddleware, db, selfAdaptationManager, estimatesManager, conf.getVmmListeners(), conf.getHwinfo());
 
         selfAdaptationOptsManager = new SelfAdaptationOptsManager(selfAdaptationManager);
-        vmPlacementManager = new VmPlacementManager(vmsManager, hostsManager,estimatesManager);
+        vmPlacementManager = new VmPlacementManager(vmsManager, hostsManager, estimatesManager);
 
         // Start periodic self-adaptation thread if it is not already running.
         // This check would not be needed if only one instance of this class was created.
@@ -448,17 +448,17 @@ public class GenericVmManager implements VmManager {
         }
 
         for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
-                l.onVmmStart();
+            l.onVmmStart();
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                        log.debug("Notifying vmm global listeners on shutdown hook");
-                        for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
-                                l.onVmmStop();
-                        }
+            @Override
+            public void run() {
+                log.debug("Notifying vmm global listeners on shutdown hook");
+                for(VmmGlobalListener l : conf.getVmmGlobalListeners()) {
+                    l.onVmmStop();
                 }
+            }
         }));
     }
 
@@ -551,5 +551,15 @@ public class GenericVmManager implements VmManager {
     @Override
     public void confirmResize(String vmId) {
         vmsManager.confirmResize(vmId);
+    }
+    
+    @Override
+    public Map<String,HardwareInfo> getHardwareInfo() {
+        return vmsManager.getHardwareInfo();
+    }
+    
+    @Override
+    public String getHardwareInfo(String hostname, String hardware, String property) {
+        return vmsManager.getHardwareInfo(hostname, hardware, property);
     }
 }

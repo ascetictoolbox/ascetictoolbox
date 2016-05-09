@@ -38,13 +38,16 @@ public class CloplaHostFactory {
 
     private static Long cloplaHostId = (long) 0;
 
-    public static es.bsc.demiurge.core.clopla.domain.Host getCloplaHost(es.bsc.demiurge.core.monitoring.hosts.Host host) {
+    public static es.bsc.demiurge.core.clopla.domain.Host getCloplaHost(
+            es.bsc.demiurge.core.monitoring.hosts.Host host, es.bsc.demiurge.core.models.hosts.HardwareInfo hwinfo) {
         es.bsc.demiurge.core.clopla.domain.Host result = cloplaHosts.get(host.getHostname());
         if (result != null) {
             return result;
         }
-        result = new es.bsc.demiurge.core.clopla.domain.Host(cloplaHostId, host.getHostname(), host.getTotalCpus(),
-                host.getTotalMemoryMb(), host.getTotalDiskGb(), !host.isOn());
+        result = new es.bsc.demiurge.core.clopla.domain.Host(cloplaHostId, host.getHostname(), 
+                host.getTotalCpus(), host.getTotalMemoryMb(), host.getTotalDiskGb(), 
+                hwinfo.getCpuArchitecture(), hwinfo.getCpuVendor(), hwinfo.getDiskType(), 
+                !host.isOn());
         ++cloplaHostId;
         cloplaHosts.put(host.getHostname(), result);
         return result;

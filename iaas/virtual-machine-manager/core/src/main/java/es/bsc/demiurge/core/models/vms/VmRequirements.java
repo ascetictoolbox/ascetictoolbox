@@ -27,12 +27,27 @@ public class VmRequirements {
     protected final int diskGb;
     protected final int swapMb;
     private boolean autoConfirmResize;
+    
+    private String processorArchitecture = null;
+    private String processorBrand = null;
+    private String diskType = null;
 
     public VmRequirements(int cpus, int ramMb, int diskGb, int swapMb) {
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
         this.swapMb = swapMb;
+        this.autoConfirmResize = true;
+    }
+    
+    public VmRequirements(int cpus, int ramMb, int diskGb, int swapMb, String processorArchitecture, String processorBrand, String diskType) {
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        this.processorArchitecture = processorArchitecture;
+        this.processorBrand = processorBrand;
+        this.diskType = diskType;
         this.autoConfirmResize = true;
     }
 
@@ -52,16 +67,6 @@ public class VmRequirements {
         return swapMb;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("cpus", cpus)
-                .add("ramMb", ramMb)
-                .add("diskGb", diskGb)
-                .add("swapMb", swapMb)
-                .toString();
-    }
-
     /**
      * @return checks if confirmResize has to be done automatically
      */
@@ -74,5 +79,60 @@ public class VmRequirements {
      */
     public void setAutoConfirm(boolean autoConfirm) {
         this.autoConfirmResize = autoConfirm;
+    }
+
+    /**
+     * @return the processorArchitecture
+     */
+    public String getProcessorArchitecture() {
+        return processorArchitecture;
+    }
+
+    /**
+     * @param processorArchitecture the processorArchitecture to set
+     */
+    public void setProcessorArchitecture(String processorArchitecture) {
+        this.processorArchitecture = processorArchitecture;
+    }
+
+    /**
+     * @return the processorBrand
+     */
+    public String getProcessorBrand() {
+        return processorBrand;
+    }
+
+    /**
+     * @param processorBrand the processorBrand to set
+     */
+    public void setProcessorBrand(String processorBrand) {
+        this.processorBrand = processorBrand;
+    }
+
+    /**
+     * @return the diskType
+     */
+    public String getDiskType() {
+        return diskType;
+    }
+
+    /**
+     * @param diskType the diskType to set
+     */
+    public void setDiskType(String diskType) {
+        this.diskType = diskType;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("cpus", cpus)
+                .add("ramMb", ramMb)
+                .add("diskGb", diskGb)
+                .add("swapMb", swapMb)
+                .add("processorArchitecture", processorArchitecture)
+                .add("processorBrand", processorBrand)
+                .add("diskType", diskType)
+                .toString();
     }
 }

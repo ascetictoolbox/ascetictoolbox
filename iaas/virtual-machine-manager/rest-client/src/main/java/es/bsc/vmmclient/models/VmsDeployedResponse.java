@@ -2,6 +2,7 @@ package es.bsc.vmmclient.models;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import es.bsc.demiurge.core.models.vms.VmDeployed;
 
 import java.util.ArrayList;
 import java.util.Collections;

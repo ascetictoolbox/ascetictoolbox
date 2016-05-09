@@ -30,11 +30,25 @@ import es.bsc.demiurge.core.clopla.domain.Host;
 public abstract class ScoreCalculatorCommon {
 
     public final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
+    public final static int PENALTY_FOR_WRONG_HARDWARE = 10000;
 
     public static double getClusterOverCapacityScore(ClusterState clusterState) {
         double result = 0;
         for (Host host: clusterState.getHosts()) {
             result -= host.getOverCapacityScore(clusterState.getVms());
+        }
+        return result;
+    }
+    
+    public static double getClusterHardwareScore(ClusterState clusterState) {
+        double result = 0;
+        for (Host host: clusterState.getHosts()) {
+            if(!host.matchesHardwareRequirements(clusterState.getVms())){
+                result -= PENALTY_FOR_WRONG_HARDWARE;
+            }
+        }
+        if(result < 0) {
+            System.out.println("getClusterHardwareScore: " + result);
         }
         return result;
     }

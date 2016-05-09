@@ -24,8 +24,11 @@ import es.bsc.demiurge.core.models.scheduling.VmPlacement;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.manager.VmManager;
+import es.bsc.demiurge.core.monitoring.hosts.Host;
+import es.bsc.demiurge.core.monitoring.hosts.Slot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements the REST calls that are related with the placement of VMs.
@@ -56,6 +59,14 @@ public class VmPlacementCallsManager {
 
     public void executeDeploymentPlan(String deploymentPlan) throws CloudMiddlewareException {
         vmManager.executeDeploymentPlan(gson.fromJson(deploymentPlan, VmPlacement[].class));
+    }
+    
+    public List<Slot> getSlots() throws CloudMiddlewareException {
+        List<Slot> slots = new ArrayList<>();
+        for(Host host : vmManager.getHosts()){
+            slots.add(new Slot(host));
+        }
+        return slots;
     }
 
 }

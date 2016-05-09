@@ -19,6 +19,7 @@
 package es.bsc.vmmclient.models;
 
 import com.google.common.base.MoreObjects;
+import es.bsc.demiurge.core.models.vms.Vm;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -25,7 +25,6 @@ import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.selfadaptation.options.PeriodicSelfAdaptationOps;
 import es.bsc.demiurge.core.manager.VmManager;
 import es.bsc.demiurge.core.selfadaptation.options.AfterVmDeleteSelfAdaptationOps;
-import es.bsc.demiurge.core.models.scheduling.*;
 import es.bsc.demiurge.core.selfadaptation.options.AfterVmDeploymentSelfAdaptationOps;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
 import es.bsc.demiurge.core.db.VmManagerDbFactory;
@@ -45,16 +44,15 @@ public class SelfAdaptationManager {
     private VmManager vmManager;
     private VmManagerDb db;
 	private Logger logger = LogManager.getLogger(SelfAdaptationManager.class);
-
+    
     /**
-     * Class constructor.
-     *
+     * 
      * @param vmManager instance of the VMM
      * @param dbName The name of the DB used by the VMM
      */
     public SelfAdaptationManager(VmManager vmManager, String dbName) {
         this.vmManager = vmManager;
-        db = VmManagerDbFactory.getDb(dbName);
+        this.db = VmManagerDbFactory.getDb(dbName);
     }
 
     /**
@@ -120,7 +118,7 @@ public class SelfAdaptationManager {
         if (localSearchAlg != null) {
 			try {
 				vmManager.executeDeploymentPlan(
-						vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
 			} catch (CloudMiddlewareException e) {
 				logger.error(e.getMessage(),e);
 			}
@@ -141,7 +139,7 @@ public class SelfAdaptationManager {
 
 			try {
 				vmManager.executeDeploymentPlan(
-						vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
+                    vmManager.getRecommendedPlan(recommendedPlanRequest, true, new ArrayList<Vm>()).getVMPlacements());
 			} catch (CloudMiddlewareException e) {
 				logger.error(e.getMessage(),e);
 			}

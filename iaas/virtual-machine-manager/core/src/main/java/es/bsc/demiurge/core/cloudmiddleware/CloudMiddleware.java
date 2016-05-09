@@ -18,6 +18,7 @@
 
 package es.bsc.demiurge.core.cloudmiddleware;
 
+import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.images.ImageToUpload;
 import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.vms.Vm;
@@ -197,4 +198,11 @@ public interface CloudMiddleware {
      * @param vmId
      */
 	void confirmResize(String vmId);
+    
+    /**
+     * Returns information about hypervisors.
+     * @param region
+     * @return 
+     */
+	Map<String, HardwareInfo>  getHypervisors(String region);
 }
