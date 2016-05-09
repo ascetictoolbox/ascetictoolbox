@@ -74,8 +74,9 @@ public class Manifest {
 	public static final String VMIC_OS_CONSTRAINT = "asceticVMICImageOS";
 	public static final String VMIC_ARC_CONSTRAINT ="asceticVMICImaceArchitecture";
 	public static final String VMIC_FILE_PREFIX = "asceticVMICFile";
-	public static final String VMIC_EXEC_CONSTRAINT = "asceticVMICExecution";
+	//private static final String VMIC_EXEC_CONSTRAINT = "asceticVMICExecution";
 	public static final String VMIC_MODE_CONSTRAINT = "asceticVmicMode";
+	public static final String VMIC_SCRIPT_PROPERTY = "asceticVmicScript";
 	public static final String PM_ELEMENTS_CONSTRAINT = "asceticPMElements";
 	public static final String PM_INSTALL_DIR_CONSTRAINT ="asceticPMInstallDir";
 	public static final String PM_APP_DIR_CONSTRAINT ="asceticPMAppDir";
@@ -202,12 +203,12 @@ public class Manifest {
 	}
 
 
-	private VirtualSystem getComponent(String component) throws Exception {
+	public VirtualSystem getComponent(String component) throws Exception {
 		VirtualSystemCollection vsc =  ovf.getVirtualSystemCollection();
 		if (vsc == null)
 			throw new Exception("There are no components in the ovf. ");
 		for (VirtualSystem vs : vsc.getVirtualSystemArray()){
-			log.debug("Evaluating virtual system: " +vs.toString());
+			//log.debug("Evaluating virtual system: " +vs.toString());
 			if (vs.getName().equals(component)){
 				return vs;
 			}
@@ -676,6 +677,14 @@ public class Manifest {
 				return ASCETIC_PREFIX + selectedPackage;
 	}
 	
+	/** Generate the package name for the service manifest
+	 * @param selectedPackage Selected package
+	 * @return Package name for the service manifest
+	 */
+	public static String generateManifestImageName(String selectedPackage) {
+				return ASCETIC_PREFIX + selectedPackage + IMAGE_SUFFIX;
+	}
+	
 	/** 
 	 * Get package names from the service manifest
 	 * 
@@ -878,7 +887,7 @@ public class Manifest {
 			return null;
 		}
 		ProductSection ps = component.getProductSectionAtIndex(0);
-		if (ps.getPropertyByKey("asceticVmicScript")!= null){
+		if (ps.getPropertyByKey(VMIC_SCRIPT_PROPERTY)!= null){
 			String script =ps.getVmicScript();
 			if (script!=null && !script.isEmpty()){
 				InstallationScript is = new InstallationScript();
@@ -898,10 +907,11 @@ public class Manifest {
 		VirtualSystemCollection vsc =  ovf.getVirtualSystemCollection();
 		if (vsc != null)
 			for (VirtualSystem vs : vsc.getVirtualSystemArray()){
-				if (vs.getProductSectionArray() == null || vs.getProductSectionArray().length<1){
+				if (vs.getProductSectionArray() != null && vs.getProductSectionArray().length>0){
 					ProductSection ps = vs.getProductSectionAtIndex(0);
-					if (ps.getPropertyByKey("asceticVmiccript")!= null){
-						ps.removePropertyByKey("asceticVmicScript");
+					if (ps.getPropertyByKey(VMIC_SCRIPT_PROPERTY)!= null){
+						ps.removePropertyByKey(VMIC_SCRIPT_PROPERTY);
+						log.debug("Removing scripts");
 					}
 				}
 		}
@@ -1084,7 +1094,7 @@ public class Manifest {
 	}
 
 
-	public int getVMsToDeploy() {
+	public int getVMsToDeploy(boolean max) {
 		int vms = 0;
 		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
 		if (vsc == null){
@@ -1096,7 +1106,10 @@ public class Manifest {
 			if (ps == null)
 				vms ++;
 			else
-				vms = vms + ps.getUpperBound();
+				if (max){
+					vms = vms + ps.getUpperBound();
+				}
+				vms = vms + ps.getLowerBound();
 		}
 		return vms;
 	}
@@ -1125,7 +1138,6 @@ public class Manifest {
 		
 	}
 
-
 	public void setPowerBoundary(String power) {
 		ProductSection ps = getOrCreateGlobalProductSection();
 		ps.setEnergyOptimizationBoundary(power);
@@ -1142,6 +1154,12 @@ public class Manifest {
 		ProductSection ps = getOrCreateGlobalProductSection();
 		ps.setOptimizationParameter(param);
 		
+	}
+
+
+	public Integer getMaxVMs() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

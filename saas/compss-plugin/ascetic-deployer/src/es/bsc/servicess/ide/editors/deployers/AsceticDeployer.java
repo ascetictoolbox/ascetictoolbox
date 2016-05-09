@@ -394,7 +394,7 @@ public class AsceticDeployer extends Deployer {
 
 						manifest.setApplicationMonitorEPR(monLoc);
 						deploymentSection.setDeploymentOptionsInManifest(manifest);
-						final int vms = manifest.getVMsToDeploy();
+						final int vms = manifest.getVMsToDeploy(false);
 						deploymentSection.setApplicationSecurityInManifest(manifest);
 						
 						manifest.setApplicationMangerEPR(location);

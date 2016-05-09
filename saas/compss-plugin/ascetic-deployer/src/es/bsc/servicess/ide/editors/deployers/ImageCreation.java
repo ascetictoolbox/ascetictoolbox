@@ -16,7 +16,21 @@
 package es.bsc.servicess.ide.editors.deployers;
 
 import integratedtoolkit.types.project.ProjectFile;
+import integratedtoolkit.types.project.jaxb.CloudProviderType;
+import integratedtoolkit.types.project.jaxb.CloudType;
+import integratedtoolkit.types.project.jaxb.ImageType;
+import integratedtoolkit.types.project.jaxb.InstancesListTypes;
 import integratedtoolkit.types.resources.ResourcesFile;
+import integratedtoolkit.types.resources.jaxb.ApplicationSoftwareType;
+import integratedtoolkit.types.resources.jaxb.CapabilitiesType;
+import integratedtoolkit.types.resources.jaxb.HostType;
+import integratedtoolkit.types.resources.jaxb.HostType.TaskCount;
+import integratedtoolkit.types.resources.jaxb.MemoryType;
+import integratedtoolkit.types.resources.jaxb.OSTypeType;
+import integratedtoolkit.types.resources.jaxb.OsType;
+import integratedtoolkit.types.resources.jaxb.ProcessorType;
+import integratedtoolkit.types.project.jaxb.ResourceType;
+import integratedtoolkit.types.resources.jaxb.StorageElementType;
 import integratedtoolkit.util.RuntimeConfigManager;
 import static es.bsc.servicess.ide.Constants.*;
 
@@ -57,6 +71,7 @@ import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.editors.RuntimeConfigurationSection;
 import es.bsc.servicess.ide.model.Dependency;
 import es.bsc.servicess.ide.model.ServiceElement;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.vmic.api.VmicApi;
 import eu.ascetic.vmic.api.core.ProgressException;
 import eu.ascetic.vmic.api.datamodel.ProgressDataFile;
@@ -74,6 +89,7 @@ public class ImageCreation {
 	private static final long CREATION_PULL_INTERVAL = 30000;
 	private static final String TMP_FOLDER= "/tmp";
 	//private static final String SHARED_FOLDER = null;
+	private static final String ASCETIC_CONNECTOR ="integratedtoolkit.connectors.ascetic.AsceticConnector";
 	
 	
 	public static void uploadOrchestrationPackages(VmicApi vmic,
@@ -217,7 +233,7 @@ public class ImageCreation {
 			throw new InterruptedException("Creation Cancelled");
 		}
 		monitor.subTask("Uploading dependencies");
-		f = packageFolder.getFile(packName + "_deps.zip");
+		f = packageFolder.getFile(packName + "_cores_deps.zip");
 		if (f != null && f.exists()) {
 			uploadAndUnzip(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		}
@@ -328,15 +344,17 @@ public class ImageCreation {
 	 * 
 	 * @param servicename Name of the implemented service
 	 * @param packs Array of service packages names 
+	 * @param manifest 
+	 * @param asceticProperties 
 	 * @param monitor Object to monitor the progress of the image creation
 	 * @throws Exception 
 	 */
 	public static void generateConfigurationFiles(final String[] packs, IFolder outFolder, 
-			ProjectMetadata prMeta,	IProgressMonitor monitor) throws Exception {
+			ProjectMetadata prMeta,	Manifest manifest, AsceticProperties properties, IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Updating config file for the Ascetic Cloud", 2);
-		addCloudProviderToProject(packs, outFolder, prMeta);
+		addCloudProviderToProject(packs, outFolder, prMeta, manifest, properties);
 		monitor.worked(1);
-		addCloudProviderToResources(packs, outFolder, prMeta);
+		addCloudProviderToResources(packs, outFolder, prMeta, manifest, properties);
 		monitor.done();
 		outFolder.refreshLocal(1, monitor);
 
@@ -373,22 +391,25 @@ public class ImageCreation {
 	 * @param packageFolder 
 	 * @param project 
 	 * @param prMeta 
+	 * @param manifest 
 	 * @throws Exception 
 	 */
-	private static void addCloudProviderToResources(String[] packs, IFolder packageFolder, ProjectMetadata prMeta)
+	private static void addCloudProviderToResources(String[] packs, IFolder packageFolder, 
+			ProjectMetadata prMeta, Manifest manifest, AsceticProperties properties)
 			throws Exception {
 		ResourcesFile res = new ResourcesFile(
 				new File(packageFolder.getProject().getLocation()
 						+ File.separator + File.separator
 						+ prMeta.getMainPackageFolder() + File.separator+ RESOURCES_FILENAME));
-		//TODO ADD Other Cloud Provider definition
-		/*res.addCloudProvider("Ascetic");
+		integratedtoolkit.types.resources.jaxb.CloudType cloud = res.addCloudProvider("Ascetic");
+		cloud.setConnector(ASCETIC_CONNECTOR);
+		cloud.setServer(properties.getDSLocation());
 		HashMap<String, String> shares = new HashMap<String, String>();
-		res.addDisk("shared", SHARED_FOLDER);
-		shares.put("shared", SHARED_FOLDER);
 		for (String p : packs) {
-			res.addImageToCloudProvider("Ascetic", Manifest.generateManifestName(p), shares);
-		}*/
+			res.addImageToCloudProvider("Ascetic", Manifest.generateManifestImageName(p), shares);
+			VirtualSystem vs = manifest.getComponent(Manifest.generateManifestName(p));
+			addResourceTypeToResourceCloudProvider(cloud, vs.getName(),	"x86_64", (float) 1000, 1, vs.getVirtualHardwareSection().getNumberOfVirtualCPUs(), "Linux", 10.0f, (float)vs.getVirtualHardwareSection().getMemorySize(), new String[]{"Java"}, 0 , new String[0]);
+		}
 		File file = packageFolder.getFile("resources.xml").getRawLocation().toFile();
 		if (file.exists()) {
 			file.delete();
@@ -396,10 +417,95 @@ public class ImageCreation {
 		res.toFile(file);
 	}
 
+	private static void addResourceTypeToResourceCloudProvider(
+			integratedtoolkit.types.resources.jaxb.CloudType cloud,
+			String name, String proc_arch, Float proc_speed,
+			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
+			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) throws Exception{
+		integratedtoolkit.types.resources.jaxb.ResourceType res = createResourceType(name, proc_arch, proc_speed, proc_count, proc_cores, os_type,
+				storage_size, memory_size, appSoftware, taskCount, queues);
+		integratedtoolkit.types.resources.jaxb.InstanceTypesList list = cloud.getInstanceTypes();
+		if (list ==null){
+			list = new integratedtoolkit.types.resources.jaxb.InstanceTypesList();
+			cloud.setInstanceTypes(list);
+		}
+		list.getResource().add(res);
+	
+		
+	}
+
+	private static integratedtoolkit.types.resources.jaxb.ResourceType createResourceType(String name, String proc_arch, Float proc_speed,
+			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
+			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) throws Exception{
+		integratedtoolkit.types.resources.jaxb.ResourceType res = new integratedtoolkit.types.resources.jaxb.ResourceType();
+		CapabilitiesType cap = createResourceCapabilities(name, proc_arch, proc_speed, proc_count, proc_cores, os_type, storage_size, memory_size, appSoftware);
+		HostType host = createResourceHost(taskCount, queues);
+		cap.setHost(host);
+		res.setCapabilities(cap);                       
+		return res;
+		
+	}
+	
+	private static HostType createResourceHost(Integer taskCount, String[] queues){
+		HostType host = new HostType();
+		if (taskCount!=null){
+			TaskCount tc = new TaskCount();
+			tc.setValue(taskCount);
+			host.setTaskCount(tc);
+		}
+		if(queues!=null&&queues.length>0){
+			for (String q:queues)
+				host.getQueue().add(q);
+		}
+		return host;
+	}
+	
+	private static CapabilitiesType createResourceCapabilities(String name, String proc_arch, Float proc_speed,
+			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
+		    Float memory_size, String[] appSoftware) throws Exception{
+		CapabilitiesType cap = new CapabilitiesType();
+		ProcessorType proc = new ProcessorType();
+		if (proc_arch != null)
+			proc.setArchitecture(proc_arch);
+		if (proc_speed != null)
+			proc.setSpeed(proc_speed);
+		if (proc_count != null)
+			proc.setCPUCount(proc_count);
+		if (proc_cores != null)
+			proc.setCoreCount(proc_cores);
+		else
+			throw new Exception("Number of cores should be defined");
+		cap.setProcessor(proc);
+		if (os_type!=null){
+			OsType os = new OsType();
+			os.setOSType(OSTypeType.fromValue(os_type));
+			cap.setOS(os);
+		}
+		if (storage_size!=null){
+			StorageElementType storage = new StorageElementType();
+			storage.setSize(storage_size.floatValue());
+			cap.setStorageElement(storage);
+		}
+		if (memory_size!=null){
+			MemoryType memory = new MemoryType();
+			memory.setPhysicalSize(memory_size.floatValue());
+			cap.setMemory(memory);
+		}
+		if(appSoftware!=null&&appSoftware.length>0){
+			ApplicationSoftwareType apps = new ApplicationSoftwareType();
+			for (String app:appSoftware)
+				apps.getSoftware().add(app);
+			cap.setApplicationSoftware(apps);
+		}
+		return cap;
+	}
+
 	/**
 	 * Add cloud provider description in the project configuration file
 	 * 
 	 * @param packs Names of the service packages
+	 * @param manifest 
+	 * @param properties 
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
@@ -407,16 +513,30 @@ public class ImageCreation {
 	 * @throws TransformerException
 	 * @throws JAXBException 
 	 */
-	private static void addCloudProviderToProject(String[] packs, IFolder packageFolder, ProjectMetadata prMeta)
+	private static void addCloudProviderToProject(String[] packs, IFolder packageFolder, 
+			ProjectMetadata prMeta, Manifest manifest, AsceticProperties properties)
 			throws ParserConfigurationException, SAXException, IOException,
 			CoreException, TransformerException, JAXBException {
 		ProjectFile res = new ProjectFile(new File(packageFolder.getProject().getLocation()
 				+ File.separator + File.separator
 				+ prMeta.getMainPackageFolder() + File.separator+ "project.xml"));
-		/*res.addCloudProvider("Ascetic");
+		/* 1.3 version for compiling */
+		CloudProviderType cloud = res.addCloudProvider("Ascetic");
+		cloud.setLimitOfVMs(manifest.getVMsToDeploy(true));
 		for (String p : packs) {
-			res.addImageToProvider("Ascetic", Manifest.generateManifestName(p), 
-					ASCETIC_USER, null, IMAGE_DEPLOYMENT_FOLDER);
+			ImageType image = res.addImageToProvider("Ascetic", Manifest.generateManifestImageName(p), 
+					ASCETIC_USER, "/tmp", IMAGE_DEPLOYMENT_FOLDER+"scripts/system/");
+			image.setAppDir(IMAGE_DEPLOYMENT_FOLDER);
+			
+			addResourceTypeToProvider(cloud, Manifest.generateManifestName(p));
+		}
+		/* Updated version CloudProviderType cloud = res.addCloudProvider("Ascetic");
+		cloud.setLimitOfVMs(manifest.getVMsToDeploy(true));
+		for (String p : packs) {
+			ImageType image = res.addImageToProvider(cloud, Manifest.generateManifestImageName(p), 
+					ASCETIC_USER, "/tmp", IMAGE_DEPLOYMENT_FOLDER+"scripts/system/");
+			image.setAppDir(IMAGE_DEPLOYMENT_FOLDER);
+			res.addResourceTypeToProvider(cloud, Manifest.generateManifestName(p));
 		}*/
 		File file = packageFolder.getFile("project.xml").getRawLocation().toFile();
 		if (file.exists()) {
@@ -424,6 +544,20 @@ public class ImageCreation {
 		}
 		res.toFile(file);
 
+	}
+
+	private static void addResourceTypeToProvider(CloudProviderType cloud,
+			String manifestName) {
+		InstancesListTypes resList = cloud.getInstanceTypes();
+		if (resList==null){
+			 resList = new InstancesListTypes();
+			 cloud.setInstanceTypes(resList);
+		}
+		ResourceType res = new ResourceType();
+		res.setName(manifestName);
+		resList.getResource().add(res);
+
+		
 	}
 
 	/**

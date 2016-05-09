@@ -21,26 +21,30 @@ public class InstallationScript {
 	private String script;
 	
 	public InstallationScript(){
-		script = new String("#!/bin/sh\n");
+		//script = new String("#!/bin/sh\n");
+		script = new String();
 	}
 	
 	public InstallationScript(String imageDeploymentFolder) {
-		script = new String("#!/bin/sh\n");
+		//script = new String("#!/bin/sh\n");
+		script = new String();
 		script = script.concat("sudo mkdir -p "+ imageDeploymentFolder + ";");		
 	}
 
 	public void addPermission(String file, String permission, boolean recursive) {
+		//script = script.concat("sudo find . -name \""+file+"\" -exec chmod ");
 		script = script.concat("sudo chmod ");
 		if (recursive){
 			script = script.concat("-R ");
 		}
-		script = script.concat(permission +" "+ file + ";");
+		//script = script.concat(permission +" {};");
+		script = script.concat(permission +" "+ file+";");
 		
 	}
 	
 
 	public void addUnZip(String file, String imageDeploymentFolder) {
-		script = script.concat("sudo unzip "+ file +" -d "+imageDeploymentFolder+";");
+		script = script.concat("sudo unzip -o "+ file +" -d "+imageDeploymentFolder+";");
 		
 	}
 
