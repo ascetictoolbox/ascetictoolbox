@@ -240,7 +240,8 @@ public class ApplicationUploader {
 				.path(DEPLOYMENTS_PATH).path(deploymentID).path(AGREEMENTS_PATH)
 				.queryParam(ACCEPT_QP, NO_VALUE).put(ClientResponse.class);
 		if (response.getStatus() != ClientResponse.Status.ACCEPTED.getStatusCode()) {
-			throw new ApplicationUploaderException("Error accepting deployment agreement. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error accepting deployment agreement.\n Returned code is "+ response.getStatus()
+					+ "\n"+ response.getEntity(String.class));
 		}
 	}
 	
@@ -253,7 +254,8 @@ public class ApplicationUploader {
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).path(deploymentID).delete(ClientResponse.class);
 		if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
-			throw new ApplicationUploaderException("Error deleting deployment. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error deleting deployment. \nReturned code is "+ response.getStatus()+
+					"\n"+ response.getEntity(String.class));
 		}
 	}
 	
@@ -266,11 +268,41 @@ public class ApplicationUploader {
 	public int submitApplicationDeployment(String applicationID, String ovf) throws ApplicationUploaderException{
 		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
 				.path(DEPLOYMENTS_PATH).header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML)
-				.accept(MediaType.APPLICATION_XML_TYPE).post(ClientResponse.class);
+				.accept(MediaType.APPLICATION_XML_TYPE).post(ClientResponse.class, ovf);
 		if (response.getStatus() == ClientResponse.Status.CREATED.getStatusCode()) {
 			return response.getEntity(Deployment.class).getId();
 		}else
-			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
+			throw new ApplicationUploaderException("Error submitting applciation. \nReturned code is "+ response.getStatus()
+					+ "\n"+ response.getEntity(String.class));
+	}
+	
+	
+	public VM addNewVM(String applicationID, String deploymentId, String ovfId) throws ApplicationUploaderException {
+		String vms = "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\">\n"+
+		   "\t<ovf-id>"+ovfId+"</ovf-id>\n"+
+		   "</vm>";
+		System.out.println(vms);
+		VM vm = new VM();
+		vm.setOvfId(ovfId);
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentId).path(VMS).header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_XML)
+				.post(ClientResponse.class, vms);
+		
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			return response.getEntity(VM.class);
+		}else
+			throw new ApplicationUploaderException("Error adding a new VM (" + ovfId + ").\nReturned code is "+ response.getStatus() 
+					+ "\n"+ response.getEntity(String.class));
+	}
+	
+	public void deleteVM(String applicationID, String deploymentId, String vmId) throws ApplicationUploaderException {
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationID)
+				.path(DEPLOYMENTS_PATH).path(deploymentId).path(VMS).path(vmId).delete(ClientResponse.class);
+		if (response.getStatus() != ClientResponse.Status.OK.getStatusCode()) {
+			throw new ApplicationUploaderException("Error deleting VM "+vmId+".\n Returned code is "+ response.getStatus()+ 
+					"\n"+ response.getEntity(String.class));
+		}
+		
 	}
 	
 	/** Destroy an application
@@ -289,7 +321,19 @@ public class ApplicationUploader {
 				.path(DEPLOYMENTS_PATH).path(deploymentID).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
 		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
 			return response.getEntity(Deployment.class);
-		}else
+		}else{
 			throw new ApplicationUploaderException("Error getting deployment status. Returned code is "+ response.getStatus());
+		}
+	}
+
+	public VM getVM(String applicationId, String deploymentId, String vmId) throws ApplicationUploaderException{
+		ClientResponse response = resource.path(APPLICATIONS_PATH).path(applicationId)
+				.path(DEPLOYMENTS_PATH).path(deploymentId).path(VMS).path(vmId).accept(MediaType.APPLICATION_XML_TYPE).get(ClientResponse.class);
+		if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
+			return response.getEntity(eu.ascetic.paas.applicationmanager.model.VM.class);	
+		}else{
+			throw new ApplicationUploaderException("Error getting VM "+vmId+"."
+					+ "\nReturned code is "+ response.getStatus()+"\nEntity:"+response.getEntity(String.class));
+		}
 	}
 }
