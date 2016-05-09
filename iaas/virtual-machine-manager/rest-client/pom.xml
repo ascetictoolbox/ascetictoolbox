@@ -38,9 +38,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>es.bsc.demiurge</groupId>
-            <artifactId>core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
         </dependency>
     </dependencies>
 

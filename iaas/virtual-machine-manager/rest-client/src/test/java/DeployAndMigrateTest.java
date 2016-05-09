@@ -1,6 +1,5 @@
-import es.bsc.demiurge.core.models.vms.Vm;
-import es.bsc.demiurge.core.models.vms.VmDeployed;
-import es.bsc.demiurge.core.models.vms.VmRequirements;
+
+import es.bsc.vmmclient.models.*;
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import junit.framework.TestCase;

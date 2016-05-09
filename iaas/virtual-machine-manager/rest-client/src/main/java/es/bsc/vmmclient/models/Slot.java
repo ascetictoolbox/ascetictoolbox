@@ -15,7 +15,7 @@
  License along with this library; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package es.bsc.demiurge.core.monitoring.hosts;
+package es.bsc.vmmclient.models;
 
 /**
  * Status of a host of an infrastructure.
@@ -29,13 +29,6 @@ public class Slot {
     private double freeMemoryMb;
     private double freeCpus;
     private double freeDiskGb;
-    
-    public Slot(Host host){
-        this.hostname = host.getHostname();
-        this.freeCpus = host.getFreeCpus();
-        this.freeDiskGb = host.getFreeDiskGb();
-        this.freeMemoryMb = host.getFreeMemoryMb();
-    }
     
     public Slot(String hostname, double freeCpus, double freeDiskGb, double freeMemoryMb){
         this.hostname = hostname;

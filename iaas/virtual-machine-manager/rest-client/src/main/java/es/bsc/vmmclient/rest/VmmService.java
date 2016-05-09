@@ -18,10 +18,6 @@
 
 package es.bsc.vmmclient.rest;
 
-import es.bsc.demiurge.core.models.hosts.HardwareInfo;
-import es.bsc.demiurge.core.models.vms.VmDeployed;
-import es.bsc.demiurge.core.models.vms.VmRequirements;
-import es.bsc.demiurge.core.monitoring.hosts.Slot;
 import es.bsc.vmmclient.models.*;
 import retrofit.client.Response;
 import retrofit.http.*;
