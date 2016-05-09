@@ -128,7 +128,7 @@ public abstract class AbstractSSHConnector extends AbstractConnector {
                     command = "echo \"\nfor i in " + p[1] + "/*.jar ; "
                             + "do\n"
                             + "\texport CLASSPATH=\\$CLASSPATH:\\$i\n"
-                            + "done\" >> /home/" + user + "/.bashrc";
+                            + "done\" >> .bashrc";
                     executeTask(ip, user, command, c);
                 }
 
@@ -236,12 +236,12 @@ public abstract class AbstractSSHConnector extends AbstractConnector {
             String publicKey, String privateKey, String keyType)
             throws ConnectorException {
         try {
-            String command = "/bin/echo \"" + publicKey + "\" > /home/" + user + "/.ssh/" + keyType + ".pub";
+            String command = "/bin/echo \"" + publicKey + "\" > $HOME/.ssh/" + keyType + ".pub";
             executeTask(workerIP, user, command, c);
-            command = "/bin/echo \"" + publicKey + "\" >> /home/" + user + "/.ssh/authorized_keys";
+            command = "/bin/echo \"" + publicKey + "\" >> $HOME/.ssh/authorized_keys";
             executeTask(workerIP, user, command, c);
-            command = "/bin/echo \"" + privateKey + "\" > /home/" + user + "/.ssh/" + keyType + ";"
-                    + "chmod 600 /home/" + user + "/.ssh/" + keyType;
+            command = "/bin/echo \"" + privateKey + "\" > $HOME/.ssh/" + keyType + ";"
+                    + "chmod 600 $HOME/.ssh/" + keyType;
             executeTask(workerIP, user, command, c);
         } catch (Exception e) {
             throw new ConnectorException(e);

@@ -58,6 +58,7 @@ public class Configuration {
         }
         OvfDefinition ovf = OvfDefinition.Factory.newInstance(ovfContent);
         applicationId = ovf.getVirtualSystemCollection().getId();
+        System.out.println("Application ID is "+applicationId);
         String dId;
         try {
             dId = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getDeploymentId();
@@ -66,6 +67,7 @@ public class Configuration {
             dId = "Test-Deployment";
         }
         deploymentId = dId;
+        System.out.println("Deployment ID is "+deploymentId);
         ProductProperty pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppManagerURL");
         applicationManagerEndpoint = pp.getValue();
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppMonitorURL");

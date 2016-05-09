@@ -2139,6 +2139,7 @@ saas/programming_model/compss/runtime/commons/src/main/java/integratedtoolkit/ut
 saas/programming_model/compss/runtime/config/log/it-log4j -text
 saas/programming_model/compss/runtime/config/log/it-log4j.debug -text
 saas/programming_model/compss/runtime/config/log/it-log4j.info -text
+saas/programming_model/compss/runtime/config/log/it-log4j.instrument -text
 saas/programming_model/compss/runtime/config/log/it-log4j.off -text
 saas/programming_model/compss/runtime/config/xml/monitor/monitor.xsl -text
 saas/programming_model/compss/runtime/config/xml/monitor/monitor_schema.xsd -text
@@ -3694,6 +3695,7 @@ saas/programming_model/doc/licenses/GLlicense.pdf -text svneol=unset#unset
 saas/programming_model/doc/licenses/LICENSE -text
 saas/programming_model/files/paraver/cfgs/3dh_duration_task.cfg -text
 saas/programming_model/files/paraver/cfgs/tasks.cfg -text
+saas/programming_model/pom.xml -text svneol=unset#application/xml
 saas/saas-modelling/eclipse-dependencies.p2f -text
 saas/saas-modelling/kpispecsgen/.classpath -text
 saas/saas-modelling/kpispecsgen/.project -text

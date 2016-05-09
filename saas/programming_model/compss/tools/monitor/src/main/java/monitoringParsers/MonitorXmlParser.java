@@ -206,7 +206,8 @@ public class MonitorXmlParser {
 				data[1] = n.getTextContent();
 			}
 			else if (n.getNodeName().equals("Core")) {
-				data[2] = n.getTextContent();
+				int cores = Integer.parseInt(n.getTextContent())/2;
+				data[2] = Integer.toString(cores);
 			}
 			else if (n.getNodeName().equals("Memory")) {
 				data[3] = n.getTextContent();

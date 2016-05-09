@@ -111,10 +111,12 @@ public class NIOAdaptor extends NIOAgent implements CommAdaptor {
         Semaphore sem = new Semaphore(0);
         ShutdownListener sl = new ShutdownListener(sem);
         for (NIOWorkerNode worker : workers) {
-            worker.stop(sl);
+            logger.info("Stopping "+ worker.getName());
+        	worker.stop(sl);
         }
         sl.enable();
         try {
+        	logger.debug("Waiting for workers to stop");
             sem.acquire();
         } catch (Exception e) {
         }

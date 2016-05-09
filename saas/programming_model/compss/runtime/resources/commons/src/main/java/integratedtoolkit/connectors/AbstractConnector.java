@@ -31,6 +31,7 @@ import integratedtoolkit.types.resources.description.CloudMethodResourceDescript
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.ShutdownListener;
+import integratedtoolkit.util.ResourceManager;
 
 
 public abstract class AbstractConnector implements Connector, Operations, Cost {
@@ -151,23 +152,37 @@ public abstract class AbstractConnector implements Connector, Operations, Cost {
     public void terminateAll() {
         terminate = true;
         dead.terminate();
+        logger.info("Terminating all VMs");
         Semaphore sem = new Semaphore(0);
         ShutdownListener sl = new ShutdownListener(sem);
+        boolean workersToStop = false;
         for (VM vm : IPToVM.values()) {
-            try {
+        	if (ResourceManager.getDynamicResource(vm.getWorker().getName())!=null){
+        		logger.info("Stopping worker " + vm.getName());
+        		vm.getWorker().stop(false, sl);
+        		workersToStop = true;
+        		
+        	}
+        }
+        if (workersToStop){
+        	sl.enable();
+        	try {
+        		logger.debug("Waiting for dynamic workers to be stopped");
+        		sem.acquire();
+        		logger.debug("Dynamic workers stopped");
+        	} catch (InterruptedException e) {
+        		//Interrupted. No need to do anything.
+        	}
+        }
+        for (VM vm : IPToVM.values()) {
+        	try {
                 logger.info("Destroying VM " + vm.getName());
-                vm.getWorker().stop(false, sl);
                 destroy(vm.getEnvId());
             } catch (Exception e) {
-                logger.info("Error while trying to shut down the virtual machine " + vm.getName());
+                logger.error("Error while trying to shut down the virtual machine " + vm.getName(), e);
             }
         }
-        sl.enable();
-        try {
-            sem.acquire();
-        } catch (InterruptedException e) {
-            //Interrupted. No need to do anything.
-        }
+       
         synchronized (this) {
             IPToVM.clear();
             vmsToDelete.clear();
@@ -431,7 +446,7 @@ public abstract class AbstractConnector implements Connector, Operations, Cost {
                     logger.info("Destroying VM " + vm.getName());
                     ac.destroy(vm.getEnvId());
                 } catch (Exception e) {
-                    logger.info("Error while trying to shut down the virtual machine " + vm.getName());
+                    logger.info("Error while trying to shut down the virtual machine " + vm.getName(),e);
                 }
             }
         }

@@ -26,6 +26,7 @@ import integratedtoolkit.types.resources.jaxb.HostType;
 import integratedtoolkit.types.resources.jaxb.HostType.TaskCount;
 import integratedtoolkit.types.resources.jaxb.ImageListType;
 import integratedtoolkit.types.resources.jaxb.ImageType;
+import integratedtoolkit.types.resources.jaxb.InstanceTypesList;
 import integratedtoolkit.types.resources.jaxb.MemoryType;
 import integratedtoolkit.types.resources.jaxb.ObjectFactory;
 import integratedtoolkit.types.resources.jaxb.OsType;
@@ -124,8 +125,8 @@ public class ResourcesFile {
 		ResourceType resource = this.getResource(name);
 		resource.setCapabilities(cap);
 	}
-	
-	public ResourceType addResource(String name, String proc_arch, Float proc_speed,
+	// Modified
+	public static ResourceType createResource(String name, String proc_arch, Float proc_speed,
 			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
 			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) throws Exception{
 		ResourceType res = new ResourceType(); 
@@ -178,11 +179,21 @@ public class ResourcesFile {
 				host.getQueue().add(q);
 		}
 		cap.setHost(host);
-		res.setCapabilities(cap);			
+		res.setCapabilities(cap);
+		return res;
+	}
+	
+	public ResourceType addResource(String name, String proc_arch, Float proc_speed,
+			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
+			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) 
+					throws Exception{
+		ResourceType res = createResource(name, proc_arch, proc_speed, proc_count, proc_cores, 
+				os_type, storage_size, memory_size, appSoftware, taskCount, queues)	;	
 		resources.getDiskOrDataNodeOrResource().add(res);
 		return res;
 	}
 	
+	//End modified
 	
 	
 	public ResourceType getResource(String name) throws Exception{
@@ -444,6 +455,57 @@ public class ResourcesFile {
 		imgList.getImage().add(img);
 		return img;
 	}
+	
+	/* Added to manage Cloud Providers at IDE */
+	
+	public void addImageToCloudProvider(CloudType provider, ImageType image) throws Exception {
+		
+		ImageListType imgList = provider.getImageList();
+		if (imgList==null){
+			imgList = new ImageListType();
+			provider.setImageList(imgList);
+		}
+		imgList.getImage().add(image);
+	}
+	
+	public ImageType addImageToCloudProvider(CloudType provider, String imageId,
+			Map<String, String> shares) throws Exception {
+		ImageType img = new ImageType();
+		img.setName(imageId);
+		if (shares!=null&&!shares.isEmpty()){
+			SharedDiskListType sd = new SharedDiskListType();
+			for (Map.Entry<String,String> e:shares.entrySet()){
+				DiskType d = new DiskType();
+				d.setName(e.getKey());
+				d.setMountPoint(e.getValue());
+				sd.getDisk().add(d);
+			}
+			img.setSharedDisks(sd);
+		}
+		addImageToCloudProvider(provider, img);
+		return img;
+	}
+	
+	public void addResourceTypeToCloudProvider(CloudType provider, ResourceType resource){
+		InstanceTypesList list = provider.getInstanceTypes();
+		if (list ==null){
+			list = new InstanceTypesList();
+			provider.setInstanceTypes(list);
+		}
+		list.getResource().add(resource);
+	}
+	
+	public void addResourceTypeToCloudProvider(CloudType provider,String name, String proc_arch, Float proc_speed,
+			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
+			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) throws Exception{
+		ResourceType res = createResource(name, proc_arch, proc_speed, proc_count, proc_cores, os_type, 
+				storage_size, memory_size, appSoftware, taskCount, queues);
+		addResourceTypeToCloudProvider(provider, res);
+		
+	}
+	
+	//End remove
+	
 	
 	public List<ServiceType> getServices(){
 		ArrayList<ServiceType> list = new ArrayList<ServiceType>();

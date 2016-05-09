@@ -263,7 +263,11 @@ public class AsceticScheduler extends TaskScheduler {
         LinkedList<Integer> compatibleCores = resource.getExecutableCores();
         LinkedList<Integer> executableCores = new LinkedList();
         LinkedList<Implementation>[] fittingImplementations = new LinkedList[CoreManager.getCoreCount()];
-
+        if (compatibleCores==null){
+        	System.out.println("WARNING: Resource " + resource.getName() + " has no executable cores");
+        	logger.warn("WARNING: Resource " + resource.getName() + " has no executable cores");
+        	return false;
+        }
         for (int coreId : compatibleCores) {
             LinkedList<Implementation> impls = checkBoundaries(resource.getRunnableImplementations(coreId), resource);
             fittingImplementations[coreId] = schedulerPolicies.sortImplementationsForResource(impls, resource, profile);

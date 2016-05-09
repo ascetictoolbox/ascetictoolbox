@@ -82,7 +82,13 @@ public class Ascetic {
         	logger.error("Error getting resources");
         }
     }
-
+    public static void addNewResource(VM vm ){
+    	resources.put(vm.getIPv4(), vm);
+    }
+    
+    public static void removeResource(String ip){
+    	resources.remove(ip);
+    }
     public static void updateConsumptions() {
     	if (realValues){
     		try {
@@ -107,7 +113,13 @@ public class Ascetic {
             currentCost += priceEnd - priceStart;
             currentPower += powerEnd - powerStart;
             if (powerEnd != powerStart || priceEnd != priceStart) {
-                ResourceManager.updatedConsumptions(vm.getWorker());
+            	logger.debug("Updating consumptions "+ vm.getIPv4());
+            	Worker w= vm.getWorker();
+                if (w!=null){
+                	ResourceManager.updatedConsumptions(vm.getWorker());
+                }else{
+                	logger.warn("Worker is null. Nothing to update");
+                }
             }
         }
     }
@@ -154,14 +166,21 @@ public class Ascetic {
     public static boolean executionWithinBoundaries(Worker r, Implementation impl) {
         String IPv4 = r.getName();
         VM vm = resources.get(IPv4);
-        double cost = vm.getPrice(impl.getCoreId(), impl.getImplementationId());
-        double power = vm.getPower(impl.getCoreId(), impl.getImplementationId());
+        double cost = 0;
+        double power = 0;
+        if (vm!=null){
+        	cost = vm.getPrice(impl.getCoreId(), impl.getImplementationId());
+        	power = vm.getPower(impl.getCoreId(), impl.getImplementationId());
+        }else{
+        	logger.debug("VM "+IPv4+ "not found in resources.");
+        }
         double nextCost = currentCost + cost;
         double nextPower = currentPower + power;
         logger.debug("nextCost = " + nextCost + "("+Configuration.getEconomicalBoundary()+") nextPower="+nextPower +"("+Configuration.getEnergyBoundary()+")");
         return ((nextCost < Configuration.getEconomicalBoundary())
                 && (nextPower < Configuration.getEnergyBoundary()));
     }
+    
 
     public static void startEvent(Worker resource, Task t, Implementation impl) {
         String IPv4 = resource.getName();
@@ -230,16 +249,17 @@ public class Ascetic {
     private static class AsceticMonitor extends Thread {
 
         private boolean stop = false;
-
+        
         @Override
         public void run() {
+        	Ascetic.discoverNewResources();
             while (!stop) {
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException ex) {
                     //Interupted. Do nothing
                 }
-                Ascetic.discoverNewResources();
+                //Ascetic.discoverNewResources();
                 Ascetic.updateConsumptions();
             }
         }
