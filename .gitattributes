@@ -707,6 +707,8 @@ iaas/virtual-machine-manager/assemblies/ascetic/src/main/java/es/bsc/vmm/ascetic
 iaas/virtual-machine-manager/assemblies/ascetic/src/main/java/es/bsc/vmm/ascetic/scheduler/legacy/SchedAlgCostAware.java -text
 iaas/virtual-machine-manager/assemblies/ascetic/src/main/java/es/bsc/vmm/ascetic/scheduler/legacy/SchedAlgEnergyAware.java -text
 iaas/virtual-machine-manager/assemblies/ascetic/src/main/resources/Beans.xml -text
+iaas/virtual-machine-manager/assemblies/ascetic/src/main/resources/hwinfo.json -text
+iaas/virtual-machine-manager/assemblies/ascetic/src/main/resources/vmmanager.sh -text
 iaas/virtual-machine-manager/assemblies/ascetic/src/test/java/es/bsc/vmm/ascetic/db/VmManagerDbHsqlTest.java -text
 iaas/virtual-machine-manager/assemblies/ascetic/src/test/java/es/bsc/vmm/ascetic/manager/components/HostsManagerTest.java -text
 iaas/virtual-machine-manager/assemblies/ascetic/src/test/java/es/bsc/vmm/ascetic/manager/components/ImageManagerTest.java -text
@@ -822,6 +824,7 @@ iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/monitoring/
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/monitoring/hosts/Host.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/monitoring/hosts/HostButtonPresserRunnable.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/monitoring/hosts/HostFactory.java -text
+iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/monitoring/hosts/Slot.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/scheduler/DeploymentPlanFilterer.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/scheduler/DeploymentPlanGenerator.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/scheduler/EstimatesGenerator.java -text
@@ -1079,16 +1082,16 @@ iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/I
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/Node.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/NodesResponse.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/UploadImageResponse.java -text
-iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmAction.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmActionQuery.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmCost.java -text
-iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmEstimate.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmToBeEstimated.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmsDeployedResponse.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmsList.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmsToBeEstimatedList.java -text
+iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/rest/VmmErrorHandler.java -text
+iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/rest/VmmException.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/rest/VmmRestClient.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/rest/VmmService.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/vmm/VmManager.java -text

@@ -1,0 +1,35 @@
+{
+    "compute1": {
+        "hostname": 
+            "compute1",
+        "cpu": {
+            "vendor": "Intel",
+            "arch": "x86_64"
+        },
+        "disk": {
+            "type": "SSD"
+        }
+    },
+    "compute2": {
+        "hostname": 
+            "compute2",
+        "cpu": {
+            "vendor": "Intel",
+            "arch": "x86_64"
+        },
+        "disk": {
+            "type": "SSD"
+        }
+    },
+    "compute3": {
+        "hostname": 
+            "compute3",
+        "cpu": {
+            "vendor": "Intel",
+            "arch": "x86_64"
+        },
+        "disk": {
+            "type": "SSD"
+        }
+    }
+}
