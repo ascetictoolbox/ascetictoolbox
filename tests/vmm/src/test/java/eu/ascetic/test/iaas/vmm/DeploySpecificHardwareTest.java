@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * 
  * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
-public class DeploySpecificHardware  extends VmmTestBase{
+public class DeploySpecificHardwareTest  extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("DeploySpecificHardware");
     
     public void testHwInfo() throws Exception {
