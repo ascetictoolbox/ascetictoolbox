@@ -36,6 +36,9 @@ paas/paas-pricing-modeller/target/classes
 paas/paas-pricing-modeller/target/test-classes
 paas/virtual-machine-contextualizer/logs/vmc.log.1
 paas/virtual-machine-contextualizer/velocity.log.1
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/jvmmonitor-core.jar
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/lib/jvmmonitor-agent.jar
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/jvmmonitor-ui.jar
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
 saas/programming_model/compss/programming_model/annotations/target
