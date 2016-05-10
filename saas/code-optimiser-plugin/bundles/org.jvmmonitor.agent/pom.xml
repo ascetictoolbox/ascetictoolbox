@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>eu.ascetic.saas.code-optimizer-plugin.bundles</groupId>
+    <artifactId>code-optimizer-plugin.bundles</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.jvmmonitor</groupId>
+  <artifactId>org.jvmmonitor.agent</artifactId>
+  <version>3.8.1-SNAPSHOT</version>
+  <name>JVM Monitor Agent</name>
+  <description>JVM Monitor is a Java profiler integrated with Eclipse to monitor CPU, threads and memory usage of Java applications</description>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <archive>
+                <!-- <manifest> <mainClass>org.jvmmonitor.internal.agent.Agent</mainClass> </manifest> -->
+                <manifestEntries>
+                  <Premain-Class>org.jvmmonitor.internal.agent.Agent</Premain-Class>
+                  <Agent-Class>org.jvmmonitor.internal.agent.Agent</Agent-Class>
+                  <!-- <Can-Redefine-Classes>true</Can-Redefine-Classes> -->
+                  <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <tasks>
+                <copy tofile="../org.jvmmonitor.core/lib/jvmmonitor-agent.jar">
+                  <fileset file="${project.build.directory}/${project.artifactId}-${project.version}-jar-with-dependencies.jar" />
+                </copy>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

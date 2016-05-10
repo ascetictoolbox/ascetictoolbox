@@ -1926,6 +1926,143 @@ saas/ascetic-application-packager/src/main/resources/cfg.properties -text
 saas/ascetic-application-packager/src/main/resources/log4j.properties -text
 saas/ascetic-eclipse-site/category.xml -text
 saas/ascetic-eclipse-site/pom.xml -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/META-INF/MANIFEST.MF -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/build.jardesc -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/META-INF/MANIFEST.MF -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/jvmmonitor-core.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/lib/jvmmonitor-agent.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.agentLoadHandler.exsd -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.heapDumpHandler.exsd -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.jvmAttachHandler.exsd -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/META-INF/MANIFEST.MF -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/domain.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/gettingStarted/img/jvm_explorer.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/gettingStarted/img/monitor_persp.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/gettingStarted/img/start_monitoring.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/img/domain.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/img/email.jpg -text svneol=unset#image/jpeg
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/img/hyper_link.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/img/ngrelt.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/screenshots.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/add_jvm.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/attribute_editor.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/attribute_selection_dialog.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/call_tree.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/callers_callees.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/clear_co.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/configure.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/configure_chart_dialog.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/configure_cpu_profiler_dialog.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/deadlock.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/editable_attribute.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/hot_spots.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/invoke_operation_dialog.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/memory.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/monitor_swt_resource_leak.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/new_chart.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/new_jvm_connection_dialog.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/notification_details_dialog.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/notifications.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/operations.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/refresh.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/resume_co.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/suspend_co.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/take_hprof_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/threads.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/tasks/img/timeline.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.tools/META-INF/MANIFEST.MF -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/META-INF/MANIFEST.MF -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/about.ini -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/clear.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/new_chart.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/refresh.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/resume.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/suspend.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/take_cpu_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/take_heap_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/take_hprof_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/take_thread_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/dlcl16/trash.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/add_jvm.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/automatic_orientation.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/clear_co.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/collapseall.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/configure.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/connect.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/details.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/disconnect.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/expandall.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/horizontal_orientation.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/new_chart.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/next.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/prev.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/refresh.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/resume_co.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/snapshot.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/suspend_co.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/take_cpu_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/take_heap_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/take_hprof_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/take_thread_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/trash.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/elcl16/vertical_orientation.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/etool16/layout_automatic.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/etool16/layout_horizontal.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/etool16/layout_single.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/etool16/layout_vertical.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/eview16/monitor_persp.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/eview16/vm_explorer.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/0percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/100percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/10percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/15percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/20percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/25percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/2percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/30percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/35percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/40percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/4percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/50percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/60percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/70percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/7percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/80percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/90percent.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/attribute.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/attribute_folder.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/call_tree.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/caller_callee.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/class_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/connected_jvm_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/cpu_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/disconnected_jvm_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/heap_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/hot_spots.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/hprof_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/info.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/local_host_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/mbean.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/mbean_folder.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/memory.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/method_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/notification.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/package_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/remote_host_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/stckframe_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/terminated_jvm_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_blocked_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_deadlocked_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_dump.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_runnable_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_suspended_obj.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_waiting_obj.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/ovr16/write.gif -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/wizban/new_jvm_connection_wiz.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/jvmmonitor32.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/jvmmonitor-ui.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/org.swtchart_0.8.0.v20120301.jar -text
 saas/compss-plugin/LICENSE.TXT -text
 saas/compss-plugin/ascetic-deployer-feature/.project -text
 saas/compss-plugin/ascetic-deployer-feature/.settings/org.eclipse.m2e.core.prefs -text

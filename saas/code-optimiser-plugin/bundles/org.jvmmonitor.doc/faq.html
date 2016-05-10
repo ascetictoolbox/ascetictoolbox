@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>FAQ</title>
+    <link rel="stylesheet" href="./book.css" type="text/css">
+</head>
+
+<body>
+<h1>
+    FAQ
+</h1>
+
+<p>
+<a href="#Cannot_Find_JVMs">Why cannot I find any JVMs on JVM Explorer?</a>
+</p>
+<p>
+<a href="#Cannot_Connect_to_JVM">Why do I get the message "Monitoring is not supported for the selected JVM"?</a>
+</p>
+<p>
+<a href="#How_to_enable_BCI_CPU_profiler">How can I enable the BCI mode of CPU profiler on remote host?</a>
+</p>
+<p>
+<a href="#How_to_monitor_app_that_runs_for_short_time">How can I monitor my application that runs only for very short time?</a>
+</p>
+<br>
+
+
+<a name="Cannot_Find_JVMs"></a>
+<h2>
+    Why cannot I find any JVMs on JVM Explorer?
+</h2>
+<p>
+    At least one JVM (Eclipse itself) should be shown on JVM Explorer. 
+    If no JVM is shown, there are two possible causes.
+</p>
+<p>
+    cause 1) Eclipse is not started with supported JDK.
+    For example, JRE might be used instead of JDK.
+</p>
+<p>
+    To solve the issue,
+</p>
+<ol>
+    <li>
+    Check the value of system property <b>java.home</b> with <b>Help > About Eclipse > Installation Details > Configuration</b>.
+    You may see that the supported JDK is not specified to java.home.
+    </li>
+    <li>
+    Close Eclipse. 
+    </li>
+    <li>
+    To enforce using a desired JDK on Eclipse, specify the option <b>-vm</b> to the eclipse executable, 
+    or alternatively specify it in <b>eclipse.ini</b>.
+    See the <img src="./img/hyper_link.gif"/>
+    <a href="http://help.eclipse.org/helios/topic/org.eclipse.platform.doc.user/tasks/running_eclipse.htm">
+    Workbench User Guide</a> to learn how to specify that option.
+    </li>
+    <li>
+    Start Eclipse.
+    </li>
+</ol>
+<p>
+    <b>Note:</b> If failed to specify -vm option or if you don't want to change the eclipse launch settings, 
+    you may try specifying the JDK on preference page
+    <b>Window > Preferences > Java > Monitor > Tools > JDK Root Directory</b>.
+</p>
+<p>
+    cause 2) The folder %TMP%\hsperfdata_* could be not permitted for JVM to create a new file on Windows.
+</p>
+<p>
+    To solve the issue,
+</p>
+<ul>
+    <li>
+    Change the security settings for that folder, 
+    </li>
+    <li>
+    Or alternatively set TMP environmental variable to writable directory.
+    </li>
+</ul>
+<p>
+    <b>Note:</b> After changing settings, not only your application but also Eclipse have to be restarted.
+</p>
+<br>
+
+
+<a name="Cannot_Connect_to_JVM"></a>
+<h2>
+    Why do I get the message "Monitoring is not supported for the selected JVM"?
+</h2>
+<p>
+    There are several cases that this message is shown.
+</p>
+<ul>
+    <li>
+    If you see the additional message "Agent JAR loaded but agent failed to initialize",
+    giving the following JVM option to target JVM may solve the issue.
+    <pre>
+    -Dcom.sun.management.jmxremote
+    </pre>
+    </li>
+    <li>
+    If you see the additional message "Unable to attach to 32-bit process running under WOW64", 
+    your application is running with 32bit Java while using 64bit Eclipse on Windows.
+    Either using 64bit Java for your application or using 32bit Eclipse solves the issue.
+    </li>
+    <li>
+    If you see the additional message "Unable to attach to 64-bit process",
+    your application is running with 64bit Java while using 32bit Eclipse on Windows.
+    Either using 32bit Java for your application or using 64bit Eclipse solves the issue.
+    </li>
+    <li>
+    If you see the additional message "The VM does not support the attach mechanism", 
+    your application might be running with unsupported Java version (e.g. Java 1.5).
+    Using Java 1.6 or 1.7 for your application solves the issue.
+    </li>
+    <li>
+    If you see the additional message "Unable to open socket file: target process not responding or Hotspot VM not loaded",
+    either your application didn't respond creating a socket file like /tmp/.java_pid1234 (e.g. due to hangup, file system 
+    permission), or JVM Monitor was not able to find the created socket file (e.g. due to the bug 
+    <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7009828">7009828</a>).
+    </li>
+    <li>
+    If you see the additional message "No providers installed",
+    JDK root directory specified on preference page doesn't match with JDK with which Eclipse is started.
+    See the <a href="#Cannot_Find_JVMs">previous question</a> for the procedure to start Eclipse with supported JDK.
+    After changing JDK root directory on preference page, Eclipse has to be restarted.
+    </li>
+    <li>
+    If you see error message "Could not open PerfMemory" on Error Log view on Windows, 
+    the directory %TMP%\hsperfdata_* is not permitted to create a new file.
+    See the <a href="#Cannot_Find_JVMs">previous question</a> for the solution.
+    </li>
+    <li>
+    If you don't see any additional message, your application might be shut down in the meantime.
+    </li>
+</ul>
+<br>
+
+
+<a name="How_to_enable_BCI_CPU_profiler"></a>
+<h2>
+    How can I enable the BCI mode of CPU profiler on remote host?
+</h2>
+
+<p>
+    To enable BCI mode of CPU profiler on remote host,
+</p>
+<ol>
+    <li>
+    Find the agent file <b>jvmmonitor-agent.jar</b> at plug-ins instalation directory.
+    <pre>
+    <i>&lt;plug-ins instalation directory&gt;</i>/org.jvmmonitor.core/lib/jvmmonitor-agent.jar</pre>
+    </li>
+    <li>
+    Copy the agent file to arbitrary directory on remote host.
+    </li>
+    <li>
+    Start your application on remote host with the following options.
+    <pre>
+    -javaagent:<i>&lt;path&gt;</i>/jvmmonitor-agent.jar</pre>
+    </li>
+</ol>
+<p>
+    <b>Note:</b> When you upgrade the version of JVM Monitor, jvmmonitor-agent.jar has to be copied again.
+</p>
+<p>
+    <b>Note:</b> If you use JDK/JRE 6, white space cannot be contained in the path due to the bug 
+    <a href="http://bugs.sun.com/bugdatabase/view_bug.do;jsessionid=f84d44729bd8affffffffeb9b87963e2d752?bug_id=6459832">6459832</a>
+</p>
+<br>
+
+
+<a name="How_to_monitor_app_that_runs_for_short_time"></a>
+<h2>
+    How can I monitor my application that runs only for very short time?
+</h2>
+
+<p>
+    To monitor the application that runs for so short time that you cannot connect JVM Monitor,
+</p>
+<ol>
+    <li>
+    Set a break point at point of interest, and run your application with debug mode.
+    </li>
+    <li>
+    Connect JVM Monitor to the application while stopped at break point.
+    </li>
+    <li>
+    Collect profiling data with JVM Monitor.
+    </li>
+</ol>
+<p>
+    <b>Note:</b> If your application is started from outside Eclipse, you may specify the following option
+    for your application to suspend until debugger is attached.
+    <pre>
+    -agentlib:jdwp=transport=dt_socket,address=<i>&lt;port number&gt;</i>,server=y,suspend=y</pre>
+    </li>
+</p>
+
+</body>
+</html>

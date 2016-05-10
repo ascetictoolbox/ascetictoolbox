@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- =========================================================================== -->
+<!-- Copyright (c) 2010-2013 JVM Monitor project. All rights reserved.           -->
+<!--                                                                             -->
+<!-- This code is distributed under the terms of the Eclipse Public License v1.0 -->
+<!-- which is available at http://www.eclipse.org/legal/epl-v10.html             -->
+<!-- =========================================================================== -->
+<feature
+      id="org.jvmmonitor.feature"
+      label="%featureName"
+      version="3.8.1.qualifier"
+      provider-name="%providerName"
+      plugin="org.jvmmonitor.ui">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      %license
+   </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://jvmmonitor.org/updates/3.8"/>
+   </url>
+
+   <plugin
+         id="org.jvmmonitor.core"
+         download-size="0"
+         install-size="0"
+         version="3.8.1.qualifier"/>
+
+   <plugin
+         id="org.jvmmonitor.tools"
+         download-size="0"
+         install-size="0"
+         version="3.8.1.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="org.jvmmonitor.ui"
+         download-size="0"
+         install-size="0"
+         version="3.8.1.qualifier"/>
+
+   <plugin
+         id="org.jvmmonitor.doc"
+         download-size="0"
+         install-size="0"
+         version="3.8.1.qualifier"
+         unpack="false"/>
+
+</feature>

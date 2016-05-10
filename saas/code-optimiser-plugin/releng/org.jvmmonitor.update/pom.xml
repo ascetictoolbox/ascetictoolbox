@@ -1,0 +1,17 @@
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+    <groupId>eu.ascetic.saas.code-optimizer-plugin.releng</groupId>
+    <artifactId>code-optimizer-plugin.releng</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>org.jvmmonitor</groupId>
+	<artifactId>org.jvmmonitor.update</artifactId>
+	<version>3.8.1</version>
+	<name>JVM Monitor Update Site</name>
+	<description>JVM Monitor is a Java profiler integrated with Eclipse to monitor CPU, threads and memory usage of Java applications</description>
+	<packaging>eclipse-update-site</packaging>
+</project>
