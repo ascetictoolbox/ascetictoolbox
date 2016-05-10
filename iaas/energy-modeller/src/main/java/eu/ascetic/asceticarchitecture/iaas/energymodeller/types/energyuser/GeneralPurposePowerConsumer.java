@@ -43,61 +43,71 @@ public class GeneralPurposePowerConsumer extends Host {
     }
 
     /**
-     * This converts a host list into a general purpose node list. It filters all
-     * none general purpose hosts from the list.
+     * This converts a host list into a general purpose node list. It filters
+     * all none general purpose hosts from the list.
      *
      * @param hostList The host list to convert to general purpose.
      * @return The new general purpose host list.
      */
     public static Collection<GeneralPurposePowerConsumer> hostListToGeneralPurposeHostList(Collection<Host> hostList) {
         Collection<GeneralPurposePowerConsumer> answer = new ArrayList<>();
-        for (Host current : hostList) {
-            if (current.getClass().equals(GeneralPurposePowerConsumer.class)) {
-                answer.add((GeneralPurposePowerConsumer) current);
+        if (hostList != null) {
+            for (Host current : hostList) {
+                if (current.getClass().equals(GeneralPurposePowerConsumer.class)) {
+                    answer.add((GeneralPurposePowerConsumer) current);
+                }
             }
         }
         return answer;
-    }  
+    }
 
     /**
-     * This converts a host list into a general purpose node list. It filters all
-     * none general purpose hosts from the list.
+     * This converts a host list into a general purpose node list. It filters
+     * all none general purpose hosts from the list.
      *
      * @param hostList The host list to convert to general purpose.
      * @return The new general purpose host list.
      */
     public static List<GeneralPurposePowerConsumer> hostListToGeneralPurposeHostList(List<Host> hostList) {
         List<GeneralPurposePowerConsumer> answer = new ArrayList<>();
-        for (Host current : hostList) {
-            if (current.getClass().equals(GeneralPurposePowerConsumer.class)) {
-                answer.add((GeneralPurposePowerConsumer) current);
+        if (hostList != null) {
+            for (Host current : hostList) {
+                if (current.getClass().equals(GeneralPurposePowerConsumer.class)) {
+                    answer.add((GeneralPurposePowerConsumer) current);
+                }
             }
         }
         return answer;
-    }    
-    
+    }
+
     /**
      * This converts a general purpose list into a host list.
      *
-     * @param generalPurposeHostList The general purpose list to convert to hosts.
+     * @param generalPurposeHostList The general purpose list to convert to
+     * hosts.
      * @return The new host list.
      */
     public static List<Host> generalPurposeHostListToHostList(List<GeneralPurposePowerConsumer> generalPurposeHostList) {
         List<Host> answer = new ArrayList<>();
-        answer.addAll(generalPurposeHostList);
+        if (generalPurposeHostList != null) {
+            answer.addAll(generalPurposeHostList);
+        }
         return answer;
     }
-    
+
     /**
      * This converts a general purpose list into a host list.
      *
-     * @param generalPurposeHostList The general purpose list to convert to hosts.
+     * @param generalPurposeHostList The general purpose list to convert to
+     * hosts.
      * @return The new host list.
      */
     public static Collection<Host> generalPurposeHostListToHostList(Collection<GeneralPurposePowerConsumer> generalPurposeHostList) {
         Collection<Host> answer = new ArrayList<>();
-        answer.addAll(generalPurposeHostList);
+        if (generalPurposeHostList != null) {
+            answer.addAll(generalPurposeHostList);
+        }
         return answer;
-    }    
+    }
 
 }
