@@ -33,3 +33,4 @@ Export-Package: org.jvmmonitor.internal.ui;x-friends:="org.jvmmonitor.ui.tests",
 Bundle-Vendor: %providerName
 Bundle-ClassPath: lib/org.swtchart_0.8.0.v20120301.jar,
  jvmmonitor-ui.jar
+Eclipse-BundleShape: dir

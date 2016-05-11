@@ -11,4 +11,23 @@
   <name>JVM Monitor Core</name>
   <description>JVM Monitor is a Java profiler integrated with Eclipse to monitor CPU, threads and memory usage of Java applications</description>
   <packaging>eclipse-plugin</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>lib/</directory>
+              <includes>
+                <include>jvmmonitor-agent.jar</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
