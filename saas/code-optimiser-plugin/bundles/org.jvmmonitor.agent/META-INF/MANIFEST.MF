@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.jvmmonitor.agent;singleton:=true
 Bundle-Version: 3.8.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: jvmmonitor-agent.jar
 Premain-Class: org.jvmmonitor.internal.agent.Agent
 Agent-Class: org.jvmmonitor.internal.agent.Agent
 Can-Retransform-Classes: true

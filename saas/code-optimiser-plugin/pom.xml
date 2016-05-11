@@ -5,14 +5,16 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <parent>
-    <groupId>org.jvmmonitor</groupId>
-    <artifactId>org.jvmmonitor.configuration</artifactId>
+    <groupId>eu.ascetic.saas.code-optimizer-plugin.releng.configuration</groupId>
+    <artifactId>code-optimizer-plugin.releng.configuration</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>./releng/org.jvmmonitor.configuration</relativePath>
+    <relativePath>./releng/code-optimizer-plugin.releng.configuration</relativePath>
   </parent>
   <modules>
     <module>releng</module>
     <module>features</module>
     <module>bundles</module>
   </modules>
+  <description>The ASCETiC Code Optimizer Plug-in parent module.</description>
+  <name>Code Optimizer Plug-in</name>
 </project>

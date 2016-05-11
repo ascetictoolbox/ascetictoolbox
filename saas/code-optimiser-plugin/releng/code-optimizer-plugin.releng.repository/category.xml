@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.jvmmonitor.feature_3.8.1.qualifier.jar" id="org.jvmmonitor.feature" version="3.8.1.qualifier">
+      <category name="Code Optimizer Plug-in 1.0.0"/>
+   </feature>
+   <category-def name="Code Optimizer Plug-in 1.0.0" label="Code Optimizer Plug-in 1.0.0">
+      <description>
+         ASCETiC Code Optimizer Plug-in
+      </description>
+   </category-def>
+</site>

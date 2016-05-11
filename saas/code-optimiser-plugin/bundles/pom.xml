@@ -16,4 +16,6 @@
     <module>org.jvmmonitor.ui</module>
     <module>org.jvmmonitor.doc</module>
   </modules>
+  <name>Code Optimizer Plug-in Bundles</name>
+  <description>The ASCETiC Code Optimizer Plug-in bundles module.</description>
 </project>

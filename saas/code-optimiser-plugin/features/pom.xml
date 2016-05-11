@@ -17,5 +17,7 @@
     <modules>
         <module>org.jvmmonitor.feature</module>
     </modules>
+    <description>The ASCETiC Code Optimizer Plug-in features module.</description>
+    <name>Code Optimizer Plug-in Features</name>
 </project> 
 
