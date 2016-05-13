@@ -1,0 +1,5 @@
+[
+  { "id": 1, "name":"Response time", "unit":"ms", "source":"appmon", "attribute":"duration"},
+  { "id": 2, "name":"Power consumption", "unit":"Wh", "source":"appmon", "attribute":"energy" },
+  { "id": 3, "name":"Cost", "unit":"€", "source":"appmon", "attribute":"cost" }
+]

@@ -1,0 +1,5 @@
+[
+    {"id": 1, "name": "Time", "unit":"ms", "descr": "Average request processing time", "aggfunc":"avg", "metric": 1 },
+    {"id": 2, "name": "Energy", "unit":"Wh", "descr": "Total energy consumed during workload", "aggfunc":"avg", "metric": 2 },
+    {"id": 3, "name": "Cost", "unit":"€", "descr": "Total cost for workload", "aggfunc":"avg", "metric": 3 }
+]

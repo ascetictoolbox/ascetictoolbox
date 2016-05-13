@@ -1,0 +1,73 @@
+<h2>KPIs </h2>
+
+<div class="row" id="selectbar">
+     <div class="row bs-wizard" style="border-bottom:0;">
+                
+                <div class="col-xs-3 bs-wizard-step complete">
+                  <div class="text-center bs-wizard-stepnum"><strong>Step 1</strong></div>
+                  <div class="progress"><div class="progress-bar"></div></div>
+                  <a href="#" class="bs-wizard-dot"></a>
+                  <div class="bs-wizard-info text-center"> Select an application
+    <select name="appSelect" ng-model="currentAppId" ng-change="selectApp()" ng-options="appId for appId in appIds" class="form-control" style="width:75%; margin-left:10%;">
+</select></div>
+                </div>
+                
+                <div class="col-xs-3 bs-wizard-step complete"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum"><strong>Step 2</strong></div>
+                  <div class="progress"><div class="progress-bar"></div></div>
+                  <a href="#" class="bs-wizard-dot"></a>
+                  <div class="bs-wizard-info text-center">Select the X axis of the chart <select ng-model="scatterX" class="form-control" style="width:150px; margin-left:30%;">
+            <option value="{{kpi.value}}" ng-repeat="kpi in kpis" ng-selected="kpi.value == 0">{{kpi.name}}</option>
+        </select></div>
+                </div>
+            
+                
+                <div class="col-xs-3 bs-wizard-step complete"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum"><strong>Step 3</strong></div>
+                  <div class="progress"><div class="progress-bar"></div></div>
+                  <a href="#" class="bs-wizard-dot"></a>
+                  <div class="bs-wizard-info text-center"> Select the Y axis of the chart <select ng-model="scatterY" class="form-control"  style="width:150px;  margin-left:30%;">
+            <option value="{{kpi.value}}" ng-repeat="kpi in kpis" ng-selected="kpi.value == 1">{{kpi.name}}</option>
+        </select></div>
+                </div>
+         <div class="col-xs-3 bs-wizard-step complete"><!-- complete -->
+             <div class="text-center bs-wizard-stepnum"><strong>Step 4</strong></div>
+                  <div class="progress"><div class="progress-bar"></div></div>
+                  <a href="#" class="bs-wizard-dot"></a>
+                  <div class="bs-wizard-info text-center">  Select a deployment
+    <select name="deplSelect" size="1" multiple ng-multiple="true" ng-model="currentDeplIds" ng-options="deplId for deplId in deplIds" ng-change="selectDepl()" class="form-control" style="width:150px;  margin-left:30%;">
+    </select></div>
+                </div>
+            </div>
+
+    
+</div>
+<hr/>
+<!--div class="progress">
+   
+  <div id="progressbar" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="queriesDone" aria-valuemin="0" aria-valuemax="queryCount" style="width: {{pctDone}}%" > {{ queriesDone }} / {{ queryCount }}
+  </div>
+</div-->
+
+<div id="charts">
+
+</div> 
+<div class="row" id="bottom" style="display:none;">
+    <div class="box" style="height:600px; width:480px;">
+  <span id="totals"><span id="active">-</span> of <span id="total">-</span> workloads selected.</span>
+
+<div id="lists" class="lists">
+  
+    <div id="fact-list">
+       
+    <h5>Workload Deployment</span></h5></td></tr>
+        
+    <table id="fact-table" >
+        
+    </table>
+    </div>
+
+</div>
+</div>
+
+</div>

@@ -1,0 +1,8 @@
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-1/energy-consumption">
+<value>1.2000706666666667</value>
+<description>
+Aggregated energy consumption in Wh for an event in a specific VM
+</description>
+<link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-1" type="application/xml"/>
+<link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-1/energy-consumption" type="application/xml"/>
+</energy-measurement>
