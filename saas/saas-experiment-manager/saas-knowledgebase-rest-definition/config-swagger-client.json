@@ -1,0 +1,8 @@
+{
+  "groupId":"eu.ascetic.saas.experimentmanager",
+  "artifactId":"saasKnowledgeBaseClient",
+  "artifactVersion":"1.0.0",
+  "invokerPackage":"eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api",
+  "apiPackage" : "eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client",
+  "modelPackage" : "eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model"
+}

@@ -1,0 +1,251 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "0.0.2"
+  title: ASCETIC SaaS Knowledge Base
+
+# Describe your paths here
+paths:
+  # This is a path endpoint. Change it.
+  /experiments:
+    get:
+      x-swagger-router-controller: Default
+      # Describe this verb here. Note: you can use markdown
+      operationId: experimentsGet
+      description: |
+        Gets `Experiments` objects.
+      # This is array of GET operation parameters:
+      #parameters:
+        # An example parameter that is in query and is required
+        #-
+         # name: size
+          #in: query
+          #description: Size of array
+          #required: true
+          #type: number
+          #format: double
+      # Expected responses for this operation:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Experiment"
+    post:
+      x-swagger-router-controller: Default
+      operationId: experimentsPost
+      description:
+        Push an `experiment` object
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: body
+          description: experiment object to be pushed
+          required: true
+          schema:
+            $ref: "#/definitions/Experiment"
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Experiment"
+        "400":
+          description: Invalid Experiment
+  /snapshots:
+    get:
+      x-swagger-router-controller: Default
+      operationId: snapshotsGet
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Gets `Snapshot` objects according to a specific experiments.
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        -
+          name: expId
+          in: query
+          description: Experiment's ID
+          required: true
+          type: string
+      # Expected responses for this operation:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Snapshot"
+    post:
+      x-swagger-router-controller: Default
+      operationId: snapshotsPost
+      description:
+        Push an `Snapshot` object
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: body
+          description: Snapshot object to be pushed
+          required: true
+          schema:
+            $ref: "#/definitions/Snapshot"
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            $ref: "#/definitions/Snapshot"
+        "400":
+          description: Invalid Snapshot
+definitions:
+  Experiment:
+    type: object
+    properties:
+      _id:
+        type: string
+        description : UUID
+      name:
+        type: string
+      appId:
+        type: string
+      kpis:
+        type: array
+        description: the list of KPIs used to analyze this experiment
+        items:
+          $ref: "#/definitions/KPI"
+      events:
+        type: array
+        description: the list of events used to measure the current deployment
+        items:
+          $ref: "#/definitions/Event"
+  KPI:
+    type: object
+    properties:
+      _id:
+        type: string
+        description : UUID
+      name:
+        type: string
+      description:
+        type: string
+      metrics:
+        type: array
+        items:
+          $ref: "#/definitions/Metric"
+  Metric:
+    type: object
+    description: metrics
+    properties:
+      _id:
+        type: string
+        description : UUID
+      name:
+        type: string
+      description:
+        type: string
+  Event:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: UUID
+      name:
+        type: string
+      description:
+        type: string
+  Snapshot:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: UUID
+      experimentId:
+        type: string
+        description: UUID of the experiment
+      name:
+        type: string
+      deplId:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+        format: date-time
+      vms:
+        type: array
+        description: deployed Virtual machines
+        items:
+          $ref: "#/definitions/VM"
+      measures:
+        type: array
+        description: list of computed measures
+        items:
+          $ref: "#/definitions/Measure"
+  VM:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: UUID
+      vmId:
+        type: string
+      description:
+        type: string
+      events:
+        type: array
+        description: List of event ID passing trought this vms
+        items:
+          type: string
+  Measure:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: UUID
+      description:
+        type: string
+      refersTo:
+        type: array
+        description: list of items (scope) on which the measure has been computed
+        items:
+          $ref: "#/definitions/Item"
+      value:
+        type: string
+        description: measure value
+      metric:
+        type: string
+        description: id of the metric
+  Item:
+    type: object
+    properties:
+      category:
+        type: string
+        description: Item category (VM, event) describing a part of a scope
+      reference:
+        type: string
+        description: Complete item reference

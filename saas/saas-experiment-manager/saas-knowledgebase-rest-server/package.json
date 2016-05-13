@@ -1,0 +1,20 @@
+{
+  "name": "ascetic-saa-s-knowledge-base",
+  "version": "0.0.2",
+  "description": "",
+  "main": "index.js",
+  "keywords": [
+    "swagger"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "swagger-tools": "0.9.*",
+    "mongodb": "~2.0.33",
+    "colors":"~1.1.2",
+    "mongoose":"~4.4.7",
+    "swagger-mongoose":"~0.1.3" 
+  }
+}
