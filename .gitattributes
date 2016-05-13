@@ -3949,6 +3949,7 @@ saas/saas-experiment-manager/saas-knowledgebase-rest-definition/ascetic-swagger.
 saas/saas-experiment-manager/saas-knowledgebase-rest-definition/config-swagger-client.json -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-definition/config-swagger-server.json -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-definition/run.sh -text
+saas/saas-experiment-manager/saas-knowledgebase-rest-server/LICENSE -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-server/README.md -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-server/api/swagger.yaml -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-server/ascetic-swagger.yaml -text
