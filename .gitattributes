@@ -3944,6 +3944,7 @@ saas/saas-experiment-manager/saas-knowledgebase-rest-client/src/main/java/eu/asc
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/src/main/java/eu/ascetic/saas/experimentmanager/saasKnowledgeBaseClient/model/Metric.java -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/src/main/java/eu/ascetic/saas/experimentmanager/saasKnowledgeBaseClient/model/Snapshot.java -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/src/main/java/eu/ascetic/saas/experimentmanager/saasKnowledgeBaseClient/model/VM.java -text
+saas/saas-experiment-manager/saas-knowledgebase-rest-definition/LICENSE -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-definition/ascetic-swagger.yaml -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-definition/config-swagger-client.json -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-definition/config-swagger-server.json -text
