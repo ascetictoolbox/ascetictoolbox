@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location">
+	        <value>classpath:eu/ascetic/saas/experimentmanager/runner/runner.properties</value>
+	    </property>
+	</bean>
+
+	<bean id="MeasureInterceptor" class="eu.ascetic.saas.experimentmanager.business.ExperimentHandler">
+		<constructor-arg ref="InformationProvider"/>
+	</bean>
+	
+	<bean id="InformationProvider" class="eu.ascetic.saas.experimentmanager.paasAPI.InformationProviderImpl">
+		<constructor-arg type="java.lang.String" value="${urlToApplicationManager}"/>
+		<constructor-arg type="java.lang.String" value="${urlToApplicationMonitor}"/>
+	</bean>
+	
+	   
+</beans>

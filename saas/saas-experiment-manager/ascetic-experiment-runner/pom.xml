@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>eu.ascetic.saas</groupId>
+	<artifactId>ascetic-experiment-runner</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Experiment Manager Runner</name>
+	
+	<properties>
+	    <swagger-annotations-version>1.5.4</swagger-annotations-version>
+	    <jersey-version>1.18</jersey-version>
+	    <jackson-version>2.4.2</jackson-version>
+	    <jodatime-version>2.3</jodatime-version>
+	    <maven-plugin-version>1.0.0</maven-plugin-version>
+	    <junit-version>4.8.1</junit-version>
+	  </properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.ascetic.saas.experimentmanager</groupId>
+			<artifactId>saasKnowledgeBaseClient</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.2.5.RELEASE</version>
+		</dependency>
+
+	</dependencies>
+
+  <build>
+	<plugins>
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location">
+	        <value>classpath:eu/ascetic/saas/experimentmanager/runner/runner.properties</value>
+	    </property>
+	</bean>
+
+	<bean id="KPIs" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<ref bean="CostKPI"/>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="CostKPI" class="eu.ascetic.saas.experimentmanager.models.KPI">
+		<constructor-arg type="java.lang.String" value="cost-estimation"/>
+		<constructor-arg type="java.lang.String" value="cost of a workload"/>
+		<constructor-arg>
+			<ref bean="CostMetric"/>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="CostMetric" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<constructor-arg type="java.lang.String" value="cost-estimation"/>
+		<constructor-arg>
+			<bean id="SimpleCostEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
+				<constructor-arg type="java.lang.String" value="cost-estimation-vm"/>
+				<constructor-arg type="java.lang.String" value="${costPattern}"/>
+				<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
+				<constructor-arg type="java.lang.String" value="//charges/text()"/>
+			</bean>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="EnergyMetric" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<constructor-arg type="java.lang.String" value="energy-estimation"/>
+		<constructor-arg>
+			<bean id="SimpleEnergyEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
+				<constructor-arg type="java.lang.String" value="energy-consumption-vm"/>
+				<constructor-arg type="java.lang.String" value="${energyPattern}"/>
+				<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
+				<constructor-arg type="java.lang.String" value="//energy-value/text()"/>
+			</bean>
+		</constructor-arg>
+	</bean>
+	
+	
+	<bean id="EventScope" class="eu.ascetic.saas.experimentmanager.models.Scope">
+		<constructor-arg type="java.lang.String" value="Scope corresponding to whole event for a specific application and deployment"/>
+		<constructor-arg>
+			<list>
+				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.lang.String" value="newsAsset"/>
+					<constructor-arg type="java.lang.String" value="490"/>
+					<constructor-arg type="java.lang.String" value="1765"/>
+					<constructor-arg type="java.lang.String" value="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
+				</bean>
+			</list>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String" value="events"/>
+	</bean>
+	
+	
+       
+</beans>
