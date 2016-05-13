@@ -31,6 +31,13 @@
 			</notifier>
 		</notifiers>
 	</ciManagement>
+	
+	<scm>
+		<connection>scm:svn:https://ascetic-dev.cit.tu-berlin.de/svn/trunk/</connection>
+		<developerConnection>scm:svn:https://ascetic-dev.cit.tu-berlin.de/svn/trunk/</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://ascetic-dev.cit.tu-berlin.de/svn/trunk/</url>
+	</scm>
 
 	<repositories>
 		<!-- Override (disable) central repo -->
