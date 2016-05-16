@@ -35,7 +35,7 @@ package org.jvmmonitor.internal.agent.asm;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-@SuppressWarnings({"hiding", "nls"})
+@SuppressWarnings({"nls"})
 final class AnnotationWriter implements AnnotationVisitor {
 
     /**

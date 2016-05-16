@@ -37,7 +37,7 @@ package org.jvmmonitor.internal.agent.asm;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-@SuppressWarnings({"hiding", "nls"})
+@SuppressWarnings({"nls"})
 class MethodWriter implements MethodVisitor {
 
     /**

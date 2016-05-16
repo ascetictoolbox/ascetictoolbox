@@ -7,3 +7,4 @@ Bundle-ClassPath: jvmmonitor-agent.jar
 Premain-Class: org.jvmmonitor.internal.agent.Agent
 Agent-Class: org.jvmmonitor.internal.agent.Agent
 Can-Retransform-Classes: true
+Require-Bundle: org.eclipse.ui

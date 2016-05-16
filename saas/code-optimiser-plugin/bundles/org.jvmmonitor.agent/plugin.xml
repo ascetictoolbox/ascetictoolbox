@@ -7,4 +7,8 @@
 <!-- which is available at http://www.eclipse.org/legal/epl-v10.html             -->
 <!-- =========================================================================== -->
 <plugin>
+   <!-- Dummy extension point to avoid eclipse warning -->
+   <extension
+         point="org.eclipse.ui.commands">
+   </extension>
 </plugin>

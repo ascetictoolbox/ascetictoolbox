@@ -38,7 +38,7 @@ package org.jvmmonitor.internal.agent.asm;
  *
  * @author Eric Bruneton
  */
-@SuppressWarnings({"hiding", "nls"})
+@SuppressWarnings({"nls"})
 public class ClassWriter implements ClassVisitor {
 
     /**

@@ -211,11 +211,11 @@ public class MBeanServer implements IMBeanServer {
         try {
             return connection.getAttribute(objectName, attributeName);
         } catch (JMException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getAttributeFailedMsg, attributeName), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getAttributeFailedMsg, attributeName), e);
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getAttributeFailedMsg, attributeName), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getAttributeFailedMsg, attributeName), e);
         }
     }
 
@@ -345,9 +345,10 @@ public class MBeanServer implements IMBeanServer {
             memoryMXBean = (MemoryMXBean) getMXBean(MemoryMXBean.class,
                     ManagementFactory.MEMORY_MXBEAN_NAME);
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.MEMORY_MXBEAN_NAME), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.MEMORY_MXBEAN_NAME),
+                    e);
         }
         if (memoryMXBean != null) {
             memoryMXBean.gc();
@@ -370,11 +371,11 @@ public class MBeanServer implements IMBeanServer {
         try {
             return connection.invoke(objectName, method, params, signatures);
         } catch (JMException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.mBeanOperationFailedMsg, method), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.mBeanOperationFailedMsg, method), e);
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.mBeanOperationFailedMsg, method), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.mBeanOperationFailedMsg, method), e);
         }
     }
 
@@ -415,21 +416,23 @@ public class MBeanServer implements IMBeanServer {
             threadMXBean = (ThreadMXBean) getMXBean(ThreadMXBean.class,
                     ManagementFactory.THREAD_MXBEAN_NAME);
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.THREAD_MXBEAN_NAME), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.THREAD_MXBEAN_NAME),
+                    e);
         }
 
         if (threadMXBean == null) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.THREAD_MXBEAN_NAME), null);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.THREAD_MXBEAN_NAME),
+                    null);
         }
 
         long[] ids = threadMXBean.findDeadlockedThreads();
         LinkedHashMap<String, ThreadElement> newThreadListElements = new LinkedHashMap<String, ThreadElement>();
-        List<ThreadInfo> allThreads = Arrays.asList(threadMXBean
-                .dumpAllThreads(true, false));
+        List<ThreadInfo> allThreads = Arrays
+                .asList(threadMXBean.dumpAllThreads(true, false));
         Collections.reverse(allThreads);
 
         for (ThreadInfo threadInfo : allThreads) {
@@ -459,8 +462,8 @@ public class MBeanServer implements IMBeanServer {
             }
             previousThreadProcessCpuTime.put(threadId, processCpuTime);
             if (oldElement == null) {
-                newThreadListElements.put(threadName, new ThreadElement(
-                        threadInfo, isDeadlocked, cpuUsage));
+                newThreadListElements.put(threadName,
+                        new ThreadElement(threadInfo, isDeadlocked, cpuUsage));
             } else {
                 oldElement.setThreadInfo(threadInfo);
                 oldElement.setDeadlocked(isDeadlocked);
@@ -498,8 +501,8 @@ public class MBeanServer implements IMBeanServer {
                 .getHeapDumpHandler();
         if (heapDumpHandler != null) {
             String heap = heapDumpHandler.dumpHeap(jvm.getPid(), isLive);
-            int maxNumberOfClasses = JvmModel.getInstance()
-                    .getHeapDumpHandler().getMaxClassesNumber();
+            int maxNumberOfClasses = JvmModel.getInstance().getHeapDumpHandler()
+                    .getMaxClassesNumber();
             parseHeap(heap, maxNumberOfClasses);
         }
     }
@@ -539,8 +542,8 @@ public class MBeanServer implements IMBeanServer {
             return null;
         }
 
-        ObjectName objectName = jvm.getMBeanServer().getObjectName(
-                "com.sun.management:type=HotSpotDiagnostic"); //$NON-NLS-1$
+        ObjectName objectName = jvm.getMBeanServer()
+                .getObjectName("com.sun.management:type=HotSpotDiagnostic"); //$NON-NLS-1$
         invoke(objectName, "dumpHeap", new Object[] { fileName, Boolean.TRUE }, //$NON-NLS-1$
                 new String[] { String.class.getCanonicalName(), "boolean" }); //$NON-NLS-1$
 
@@ -589,7 +592,8 @@ public class MBeanServer implements IMBeanServer {
      * @see IMBeanServer#removeServerChangeListener(IMBeanServerChangeListener)
      */
     @Override
-    public void removeServerChangeListener(IMBeanServerChangeListener listener) {
+    public void removeServerChangeListener(
+            IMBeanServerChangeListener listener) {
         listeners.remove(listener);
     }
 
@@ -605,11 +609,11 @@ public class MBeanServer implements IMBeanServer {
         try {
             return ObjectName.getInstance(name);
         } catch (MalformedObjectNameException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getObjectNameFailedMsg, name), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getObjectNameFailedMsg, name), e);
         } catch (NullPointerException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getObjectNameFailedMsg, name), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getObjectNameFailedMsg, name), e);
         }
     }
 
@@ -693,8 +697,8 @@ public class MBeanServer implements IMBeanServer {
      */
     public void setSamplingPeriod(Integer samplingPeriod) {
         this.samplingPeriod = samplingPeriod;
-        if (jvm.getCpuProfiler().getState() == ProfilerState.RUNNING
-                && jvm.getCpuProfiler().getProfilerType() == ProfilerType.SAMPLING) {
+        if (jvm.getCpuProfiler().getState() == ProfilerState.RUNNING && jvm
+                .getCpuProfiler().getProfilerType() == ProfilerType.SAMPLING) {
             resumeSampling();
         }
     }
@@ -715,10 +719,9 @@ public class MBeanServer implements IMBeanServer {
                     RuntimeMXBean.class, ManagementFactory.RUNTIME_MXBEAN_NAME);
             arguments = runtimeMXBean.getInputArguments();
         } catch (IOException e) {
-            Activator
-                    .log(IStatus.ERROR,
-                            NLS.bind(Messages.getAttributeFailedMsg,
-                                    "InputArguments"), e); //$NON-NLS-1$
+            Activator.log(IStatus.ERROR,
+                    NLS.bind(Messages.getAttributeFailedMsg, "InputArguments"), //$NON-NLS-1$
+                    e);
             return ""; //$NON-NLS-1$
         }
 
@@ -808,16 +811,18 @@ public class MBeanServer implements IMBeanServer {
             RuntimeMXBean runtimeMXBean = (RuntimeMXBean) getMXBean(
                     RuntimeMXBean.class, ManagementFactory.RUNTIME_MXBEAN_NAME);
             if (runtimeMXBean == null) {
-                throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                        Messages.getMBeanFailedMsg,
-                        ManagementFactory.RUNTIME_MXBEAN_NAME), new Exception());
+                throw new JvmCoreException(IStatus.ERROR,
+                        NLS.bind(Messages.getMBeanFailedMsg,
+                                ManagementFactory.RUNTIME_MXBEAN_NAME),
+                        new Exception());
             }
 
             return runtimeMXBean.getName();
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.RUNTIME_MXBEAN_NAME), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.RUNTIME_MXBEAN_NAME),
+                    e);
         }
     }
 
@@ -857,10 +862,11 @@ public class MBeanServer implements IMBeanServer {
         for (IMonitoredMXBeanGroup group : monitoredAttributeGroups) {
             for (IMonitoredMXBeanAttribute attribute : group.getAttributes()) {
                 String attributeName = attribute.getAttributeName();
-                Object attributeObject = getAttribute(
-                        attribute.getObjectName(), attributeName);
+                Object attributeObject = getAttribute(attribute.getObjectName(),
+                        attributeName);
 
-                Number value = getAttributeValue(attributeObject, attributeName);
+                Number value = getAttributeValue(attributeObject,
+                        attributeName);
                 if (value == null) {
                     continue;
                 }
@@ -872,7 +878,8 @@ public class MBeanServer implements IMBeanServer {
                         continue;
                     }
 
-                    Double percent = ((Long) value - previousProcessCpuTime) / 1000000000d;
+                    Double percent = ((Long) value - previousProcessCpuTime)
+                            / 1000000000d;
                     previousProcessCpuTime = (Long) value;
                     value = percent > 1 ? 1 : percent;
                 }
@@ -916,8 +923,8 @@ public class MBeanServer implements IMBeanServer {
             CompositeData compositeData = (CompositeData) attributeObject;
             if (attributeName.contains(".")) { //$NON-NLS-1$
                 Object value = compositeData.get(attributeName.split("\\.")[1]); //$NON-NLS-1$
-                return getAttributeValue(value,
-                        attributeName.substring(attributeName.indexOf(".") + 1)); //$NON-NLS-1$
+                return getAttributeValue(value, attributeName
+                        .substring(attributeName.indexOf(".") + 1)); //$NON-NLS-1$
             }
         } else if (attributeObject instanceof TabularData) {
             TabularData tabularData = (TabularData) attributeObject;
@@ -926,9 +933,9 @@ public class MBeanServer implements IMBeanServer {
                 @SuppressWarnings("unchecked")
                 Object[] keys = ((List<Object>) keyList).toArray(new Object[0]);
                 if (String.valueOf(keys[0]).equals(key)) {
-                    return getAttributeValue(
-                            tabularData.get(keys),
-                            attributeName.substring(attributeName.indexOf(".") + 1)); //$NON-NLS-1$
+                    return getAttributeValue(tabularData.get(keys),
+                            attributeName
+                                    .substring(attributeName.indexOf(".") + 1)); //$NON-NLS-1$
                 }
             }
         }
@@ -979,9 +986,10 @@ public class MBeanServer implements IMBeanServer {
                 threadMXBean.setThreadContentionMonitoringEnabled(true);
             }
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.THREAD_MXBEAN_NAME), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.THREAD_MXBEAN_NAME),
+                    e);
         }
     }
 
@@ -1000,7 +1008,8 @@ public class MBeanServer implements IMBeanServer {
             String mxBeanName) throws IOException {
         Object mxBean = mxBeans.get(mxBeanClass);
         if (mxBean == null && connection != null) {
-            mxBean = newPlatformMXBeanProxy(connection, mxBeanName, mxBeanClass);
+            mxBean = newPlatformMXBeanProxy(connection, mxBeanName,
+                    mxBeanClass);
             mxBeans.put(mxBeanClass, mxBean);
         }
         return mxBean;
@@ -1021,19 +1030,23 @@ public class MBeanServer implements IMBeanServer {
         for (String line : lines) {
             Scanner scanner = new Scanner(line);
             if (!scanner.hasNext()) {
+                scanner.close();
                 continue;
             }
             scanner.next();
             if (!scanner.hasNextLong()) {
+                scanner.close();
                 continue;
             }
             long count = scanner.nextLong();
             if (!scanner.hasNextLong()) {
+                scanner.close();
                 continue;
             }
             long size = scanner.nextLong();
             if (scanner.hasNext()) {
                 String className = scanner.next();
+                scanner.close();
                 if (className.startsWith("<")) { //$NON-NLS-1$
                     continue;
                 }
@@ -1041,8 +1054,8 @@ public class MBeanServer implements IMBeanServer {
 
                 HeapElement oldElement = heapListElements.get(className);
                 if (oldElement == null) {
-                    newHeapElements.put(className, new HeapElement(className,
-                            size, count));
+                    newHeapElements.put(className,
+                            new HeapElement(className, size, count));
                 } else {
                     // WORKAROUND heap from target JVM has a
                     // duplicated entry...
@@ -1105,9 +1118,8 @@ public class MBeanServer implements IMBeanServer {
         AbstractJvm abstractJvm = jvm;
         if (!((Host) jvm.getHost()).getJvms().contains(jvm)) {
             jvm.saveJvmProperties();
-            abstractJvm = (AbstractJvm) ((Host) jvm.getHost())
-                    .addTerminatedJvm(jvm.getPid(), jvm.getPort(),
-                            jvm.getMainClass());
+            abstractJvm = (AbstractJvm) ((Host) jvm.getHost()).addTerminatedJvm(
+                    jvm.getPid(), jvm.getPort(), jvm.getMainClass());
         }
 
         OutputStream os = null;
@@ -1117,7 +1129,8 @@ public class MBeanServer implements IMBeanServer {
                 os = fileStore.openOutputStream(EFS.NONE, null);
                 os.write(dump.getBytes());
             } else if (type == SnapshotType.Hprof && jvm.isRemote()) {
-                ObjectName objectName = getObjectName(DATA_TRANSFER_MXBEAN_NAME);
+                ObjectName objectName = getObjectName(
+                        DATA_TRANSFER_MXBEAN_NAME);
                 os = fileStore.openOutputStream(EFS.NONE, null);
                 byte[] bytes;
                 int offset = 0;
@@ -1142,13 +1155,13 @@ public class MBeanServer implements IMBeanServer {
             Snapshot snapshot = new Snapshot(fileStore, abstractJvm);
             abstractJvm.addSnapshot(snapshot);
 
-            JvmModel.getInstance().fireJvmModelChangeEvent(
-                    new JvmModelEvent(State.ShapshotTaken, abstractJvm,
-                            snapshot));
+            JvmModel.getInstance().fireJvmModelChangeEvent(new JvmModelEvent(
+                    State.ShapshotTaken, abstractJvm, snapshot));
         } catch (CoreException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.openOutputStreamFailedMsg, fileStore.toURI()
-                            .getPath()), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.openOutputStreamFailedMsg,
+                            fileStore.toURI().getPath()),
+                    e);
         } catch (IOException e) {
             try {
                 fileStore.delete(EFS.NONE, null);
@@ -1185,8 +1198,8 @@ public class MBeanServer implements IMBeanServer {
         StringBuffer buffer = new StringBuffer();
         buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"); //$NON-NLS-1$
         buffer.append("<?JvmMonitor version=\""); //$NON-NLS-1$
-        buffer.append(Activator.getDefault().getBundle().getVersion()
-                .toString());
+        buffer.append(
+                Activator.getDefault().getBundle().getVersion().toString());
         buffer.append("\"?>\n"); //$NON-NLS-1$
 
         if (type == SnapshotType.Heap) {
@@ -1258,15 +1271,17 @@ public class MBeanServer implements IMBeanServer {
             threadMXBean = (ThreadMXBean) getMXBean(ThreadMXBean.class,
                     ManagementFactory.THREAD_MXBEAN_NAME);
         } catch (IOException e) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.THREAD_MXBEAN_NAME), e);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.THREAD_MXBEAN_NAME),
+                    e);
         }
 
         if (threadMXBean == null) {
-            throw new JvmCoreException(IStatus.ERROR, NLS.bind(
-                    Messages.getMBeanFailedMsg,
-                    ManagementFactory.THREAD_MXBEAN_NAME), null);
+            throw new JvmCoreException(IStatus.ERROR,
+                    NLS.bind(Messages.getMBeanFailedMsg,
+                            ManagementFactory.THREAD_MXBEAN_NAME),
+                    null);
         }
 
         CpuModel cpuModel = (CpuModel) jvm.getCpuProfiler().getCpuModel();
@@ -1376,11 +1391,11 @@ public class MBeanServer implements IMBeanServer {
                     currentFrameNode, methodName, isNewStack, period,
                     i == stackTrace.length - 1);
 
-            hotSpotThreadNode.setTotalTime(hotSpotThreadNode.getTotalTime()
-                    + period);
+            hotSpotThreadNode
+                    .setTotalTime(hotSpotThreadNode.getTotalTime() + period);
             if (isRootStack) {
-                callTreeThreadNode.setTotalTime(callTreeThreadNode
-                        .getTotalTime() + period);
+                callTreeThreadNode.setTotalTime(
+                        callTreeThreadNode.getTotalTime() + period);
             }
 
             isRootStack = false;
@@ -1419,14 +1434,13 @@ public class MBeanServer implements IMBeanServer {
 
         if (frameNode == null) {
             if (currentFrameNode == null) {
-                frameNode = new CallTreeNode(
-                        jvm.getCpuProfiler().getCpuModel(), methodName, period,
-                        1, callTreeThreadNode);
+                frameNode = new CallTreeNode(jvm.getCpuProfiler().getCpuModel(),
+                        methodName, period, 1, callTreeThreadNode);
                 callTreeThreadNode.addChild(frameNode);
             } else {
-                frameNode = new CallTreeNode(
-                        jvm.getCpuProfiler().getCpuModel(), methodName, period,
-                        1, currentFrameNode, callTreeThreadNode);
+                frameNode = new CallTreeNode(jvm.getCpuProfiler().getCpuModel(),
+                        methodName, period, 1, currentFrameNode,
+                        callTreeThreadNode);
                 currentFrameNode.addChild(frameNode);
             }
         } else {

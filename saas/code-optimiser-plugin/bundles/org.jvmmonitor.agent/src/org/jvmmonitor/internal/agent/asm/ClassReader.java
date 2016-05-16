@@ -41,7 +41,7 @@ import java.io.IOException;
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
-@SuppressWarnings({"hiding", "nls"})
+@SuppressWarnings({"nls"})
 public class ClassReader {
 
     /**

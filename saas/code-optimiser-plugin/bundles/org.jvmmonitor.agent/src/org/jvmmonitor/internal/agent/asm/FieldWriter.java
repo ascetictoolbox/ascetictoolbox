@@ -34,7 +34,7 @@ package org.jvmmonitor.internal.agent.asm;
  * 
  * @author Eric Bruneton
  */
-@SuppressWarnings({"hiding", "nls"})
+@SuppressWarnings({"nls"})
 final class FieldWriter implements FieldVisitor {
 
     /**

@@ -35,7 +35,6 @@ package org.jvmmonitor.internal.agent.asm;
  * 
  * @author Eric Bruneton
  */
-@SuppressWarnings("hiding")
 public class ByteVector {
 
     /**

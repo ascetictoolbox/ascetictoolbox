@@ -70,7 +70,8 @@ public class JvmExplorer extends ViewPart implements
      * @see WorkbenchPart#getAdapter(Class)
      */
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Object getAdapter(Class adapter) {
         if (adapter == IPropertySheetPage.class) {
             return new TabbedPropertySheetPage(this){
                 @Override

@@ -39,7 +39,7 @@ import java.lang.reflect.Method;
  * @author Eric Bruneton
  * @author Chris Nokleberg
  */
-@SuppressWarnings({"hiding", "nls"})
+@SuppressWarnings({"nls"})
 public class Type {
 
     /**
