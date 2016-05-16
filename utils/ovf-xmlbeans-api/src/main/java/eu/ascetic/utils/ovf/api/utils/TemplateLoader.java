@@ -26,6 +26,7 @@ import org.dmtf.schemas.ovf.envelope.x1.XmlBeanEnvelopeDocument;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -161,8 +162,8 @@ public class TemplateLoader {
      */
     private void putPropertiesToVelocityContext(Properties properties,
             VelocityContext ctx) {
-        for (Object key : properties.keySet()) {
-            ctx.put(key.toString(), properties.get(key));
+        for (Map.Entry<Object,Object> entry : properties.entrySet()) {
+            ctx.put(entry.getKey().toString(), entry.getValue());
         }
     }
 }

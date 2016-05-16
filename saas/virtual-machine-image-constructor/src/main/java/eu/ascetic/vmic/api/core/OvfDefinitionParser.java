@@ -71,10 +71,9 @@ public class OvfDefinitionParser {
                 .getId();
         this.vmicApi = vmicApi;
         this.applicationRepositoryPath = this.vmicApi.getGlobalState()
-                .getConfiguration().getRepositoryPath()
-                + "/" + ovfDefinitionId;
-        LOGGER.info("Application repository path is: "
-                + applicationRepositoryPath);
+                .getConfiguration().getRepositoryPath() + "/" + ovfDefinitionId;
+        LOGGER.info(
+                "Application repository path is: " + applicationRepositoryPath);
 
         // Parse the mode of operation
         try {
@@ -107,131 +106,36 @@ public class OvfDefinitionParser {
         LOGGER.info("Parsing " + virtualSystems.length + " Virtual Systems");
 
         try {
-            for (int i = 0; i < virtualSystems.length; i++) {
-                VirtualSystem virtualSystem = virtualSystems[i];
+            for (int virtualSystemIndex = 0; virtualSystemIndex < virtualSystems.length; virtualSystemIndex++) {
+                VirtualSystem virtualSystem = virtualSystems[virtualSystemIndex];
 
                 Item[] items = virtualSystem.getVirtualHardwareSection()
                         .getItemArray();
-                LOGGER.info("Looking for disk ID in " + items.length + " Items");
+                LOGGER.info(
+                        "Looking for disk ID in " + items.length + " Items");
 
-                // Find the disk ID for this Virtual System
-                String diskId = "";
-                for (int j = 0; j < items.length; j++) {
-                    if (ResourceType.DISK_DRIVE.equals(items[j]
-                            .getResourceType())) {
-                        // FIXME: Assuming only one host resource per item (i.e.
-                        // no
-                        // support for cow disks)
-                        LOGGER.debug(items[j].getHostResourceAtIndex(0));
+                String diskId = findDiskId(items);
 
-                        diskId = items[j].findHostRosourceId(items[j]
-                                .getHostResourceAtIndex(0));
-                        LOGGER.debug("Found diskId: " + diskId);
-                        break;
-                    }
-                }
+                String imageName = findDiskElementFromDiskId(diskId);
 
-                // Find the disk element from the disk ID.
-                String imageName = null;
-                Disk[] disks = ovfDefinition.getDiskSection().getDiskArray();
-                for (int j = 0; j < disks.length; j++) {
-                    if (disks[j].getDiskId().equals(diskId)) {
-                        String refId = disks[j].getFileRef();
-                        imageName = refId + ".img";
-                        // Set the image name
-                        imageNames.add(imageName);
-                        LOGGER.debug("Added image name: " + imageName);
-                        // Add the new file references
-                        String href = applicationRepositoryPath + "/"
-                                + imageName;
-                        File file = File.Factory.newInstance(refId, href);
-                        ovfDefinition.getReferences().addFile(file);
-                        break;
-                    }
-                }
-
-                // Get the script for this virtual system
+                // Parse productSection details for this virtual system
+                // depending on VMIC mode
                 // FIXME: Assuming only a single product section per Virtual
                 // System
                 ProductSection productSection = virtualSystem
                         .getProductSectionAtIndex(0);
                 if (this.mode.equals("offline")) {
-                    String script = productSection.getVmicScript();
-
-                    // Add the script replacing variables to local storage
-                    imageScripts.add(replaceVariablesInScript(script,
-                            ovfDefinition.getReferences(),
-                            getImageMountPointPath(i)));
-                    LOGGER.debug("Added script for image: " + imageName);
+                    parseOfflineProperties(virtualSystemIndex, imageName,
+                            productSection);
                 } else if (this.mode.equals("online")) {
-                    // Parse online related properties from SaaS modelling
-                    // tools.
-
-                    // Get the OS for this virtual system (TODO: currently only
-                    // used in online mode for selecting an image).
-                    OperatingSystemType os = virtualSystem.getOperatingSystem()
-                            .getId();
-                    switch (os) {
-                    case LINUX:
-                        // Linux (TODO: add support for distribution flavours
-                        // and versions)
-                        imageOperatingSystems.add(OperatingSystemType.LINUX);
-                        LOGGER.debug("Parsed Linux as OS for image: "
-                                + imageName);
-                        break;
-                    case MICROSOFT_WINDOWS_SERVER_2003:
-                        // Windows
-                        imageOperatingSystems
-                                .add(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003);
-                        LOGGER.debug("Parsed Windows 2003 as OS for image: "
-                                + imageName);
-                        break;
-                    default:
-                        // Unsupported OS, will cause an error later on
-                        imageOperatingSystems.add(OperatingSystemType.UNKNOWN);
-                        LOGGER.warn("Parsed unknown or unsupported OS!");
-                        break;
-                    }
-
-                    Integer softwareDendencyNumber = productSection
-                            .getSoftwareDependencyNumber();
-                    LinkedHashMap<String, LinkedHashMap<String,String>> softwareDependencies = new LinkedHashMap<String, LinkedHashMap<String, String>>();
-
-                    LOGGER.debug("Number of software depenencies for image "
-                            + imageName + " is : " + softwareDendencyNumber);
-                    for (int j = 0; j < softwareDendencyNumber; j++) {
-                        Integer packageAttributeNumber = productSection
-                                .getSoftwareDependencyPackageAttributeNumber(j);
-                        // Get URI to package (e.g. chef cookbook zipped up)
-                        String packageUri = productSection
-                                .getSoftwareDependencyPackageUri(j);
-                        LOGGER.debug("Found package for " + imageName
-                                + ", URI is : " + packageUri);
-                        LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
-                        // Get attributes describing the package (e.g. chef
-                        // cookbook attributes)
-                        for (int k = 0; k < packageAttributeNumber; k++) {
-                            String key = productSection
-                                    .getSoftwareDependencyPackageAttributeName(
-                                            j, k);
-                            String value = productSection
-                                    .getSoftwareDependencyPackageAttributeValue(
-                                            j, k);
-                            LOGGER.debug("Found attribute for package, key:value is: "
-                                    + key + " = " + value);
-                            attributes.put(key, value);
-                        }
-                        softwareDependencies.put(packageUri, attributes);
-                    }
-                    imageSoftwareDependencies.add(softwareDependencies);
-
+                    parseOnlineProperties(virtualSystem, imageName,
+                            productSection);
                 } else {
                     LOGGER.error("Unknown VMIC mode set in OVF! Value is: '"
                             + this.mode
                             + "'. Expected either 'offline' or 'online'");
                     OvfInvalidDocumentException e = new OvfInvalidDocumentException(
-                            "Unknown mode set in OVF! Value is: '"
-                                    + this.mode
+                            "Unknown mode set in OVF! Value is: '" + this.mode
                                     + "'. Expected either 'offline' or 'online'",
                             ovfDefinition.getXmlObject());
                     vmicApi.getGlobalState().getProgressData(ovfDefinitionId)
@@ -249,6 +153,148 @@ public class OvfDefinitionParser {
                     .setException(e);
             return;
         }
+    }
+
+    /**
+     * Finds the disk ID within the items of a Virtual System.
+     * 
+     * @param items
+     *            The items to search
+     * @return the disk ID
+     */
+    private String findDiskId(Item[] items) {
+        String diskId = "";
+        for (int j = 0; j < items.length; j++) {
+            if (ResourceType.DISK_DRIVE.equals(items[j].getResourceType())) {
+                // FIXME: Assuming only one host resource per item (i.e. no
+                // support for cow disks)
+                LOGGER.debug(items[j].getHostResourceAtIndex(0));
+
+                diskId = items[j]
+                        .findHostRosourceId(items[j].getHostResourceAtIndex(0));
+                LOGGER.debug("Found diskId: " + diskId);
+                break;
+            }
+        }
+        return diskId;
+    }
+
+    /**
+     * Finds the image name within the disk section for a given disk ID.
+     * 
+     * @param diskId
+     *            The ID to search
+     * @return the image name found
+     */
+    private String findDiskElementFromDiskId(String diskId) {
+        String imageName = null;
+        Disk[] disks = ovfDefinition.getDiskSection().getDiskArray();
+        for (int j = 0; j < disks.length; j++) {
+            if (disks[j].getDiskId().equals(diskId)) {
+                String refId = disks[j].getFileRef();
+                imageName = refId + ".img";
+                // Set the image name
+                imageNames.add(imageName);
+                LOGGER.debug("Added image name: " + imageName);
+                // Add the new file references
+                String href = applicationRepositoryPath + "/" + imageName;
+                File file = File.Factory.newInstance(refId, href);
+                ovfDefinition.getReferences().addFile(file);
+                break;
+            }
+        }
+        return imageName;
+    }
+
+    /**
+     * Parses offline related properties from SaaS modelling component.
+     * 
+     * @param virtualSystemIndex
+     *            The index of the virtual system to get properties for
+     * @param imageName
+     *            The image name the properties are for
+     * @param productSection
+     *            The product section to parse
+     */
+    private void parseOfflineProperties(int virtualSystemIndex,
+            String imageName, ProductSection productSection) {
+
+        // Get the vmic script
+        String script = productSection.getVmicScript();
+
+        // Add the script replacing variables to local storage
+        imageScripts.add(
+                replaceVariablesInScript(script, ovfDefinition.getReferences(),
+                        getImageMountPointPath(virtualSystemIndex)));
+
+        LOGGER.debug("Added script for image: " + imageName);
+    }
+
+    /**
+     * Parse online related properties from SaaS modelling tools.
+     * 
+     * @param virtualSystem
+     *            The index of the virtual system to get properties for
+     * @param imageName
+     *            The image name the properties are for
+     * @param productSection
+     *            The product section to parse
+     */
+    private void parseOnlineProperties(VirtualSystem virtualSystem,
+            String imageName, ProductSection productSection) {
+
+        // Get the OS for this virtual system (TODO: currently only
+        // used in online mode for selecting an image).
+        OperatingSystemType os = virtualSystem.getOperatingSystem().getId();
+        switch (os) {
+        case LINUX:
+            // Linux (TODO: add support for distribution flavours
+            // and versions)
+            imageOperatingSystems.add(OperatingSystemType.LINUX);
+            LOGGER.debug("Parsed Linux as OS for image: " + imageName);
+            break;
+        case MICROSOFT_WINDOWS_SERVER_2003:
+            // Windows
+            imageOperatingSystems
+                    .add(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003);
+            LOGGER.debug("Parsed Windows 2003 as OS for image: " + imageName);
+            break;
+        default:
+            // Unsupported OS, will cause an error later on
+            imageOperatingSystems.add(OperatingSystemType.UNKNOWN);
+            LOGGER.warn("Parsed unknown or unsupported OS!");
+            break;
+        }
+
+        Integer softwareDendencyNumber = productSection
+                .getSoftwareDependencyNumber();
+        LinkedHashMap<String, LinkedHashMap<String, String>> softwareDependencies = new LinkedHashMap<String, LinkedHashMap<String, String>>();
+
+        LOGGER.debug("Number of software depenencies for image " + imageName
+                + " is : " + softwareDendencyNumber);
+        for (int j = 0; j < softwareDendencyNumber; j++) {
+            Integer packageAttributeNumber = productSection
+                    .getSoftwareDependencyPackageAttributeNumber(j);
+            // Get URI to package (e.g. chef cookbook zipped up)
+            String packageUri = productSection
+                    .getSoftwareDependencyPackageUri(j);
+            LOGGER.debug("Found package for " + imageName + ", URI is : "
+                    + packageUri);
+            LinkedHashMap<String, String> attributes = new LinkedHashMap<String, String>();
+            // Get attributes describing the package (e.g. chef
+            // cookbook attributes)
+            for (int k = 0; k < packageAttributeNumber; k++) {
+                String key = productSection
+                        .getSoftwareDependencyPackageAttributeName(j, k);
+                String value = productSection
+                        .getSoftwareDependencyPackageAttributeValue(j, k);
+                LOGGER.debug("Found attribute for package, key:value is: " + key
+                        + " = " + value);
+                attributes.put(key, value);
+            }
+            softwareDependencies.put(packageUri, attributes);
+        }
+        imageSoftwareDependencies.add(softwareDependencies);
     }
 
     /**
@@ -361,9 +407,11 @@ public class OvfDefinitionParser {
      * @return The base image path
      */
     public String getBaseImagePath(int i) {
-        // TODO: FIXME: Using hard coded image URI, for Y2 select using OVF operating
+        // TODO: FIXME: Using hard coded image URI, for Y2 select using OVF
+        // operating
         // system section
-        LOGGER.warn("Using hardcoded base image path: /mnt/cephfs/ascetic/vmic/base-images/linux/deb-wheezy.raw.img");
+        LOGGER.warn(
+                "Using hardcoded base image path: /mnt/cephfs/ascetic/vmic/base-images/linux/deb-wheezy.raw.img");
         return "/mnt/cephfs/ascetic/vmic/base-images/linux/deb-wheezy.raw.img";
     }
 
@@ -409,12 +457,14 @@ public class OvfDefinitionParser {
      * @param i
      *            The index i of the image defined by the order in which the
      *            disks appears in the OVF
-     * @return A LinkedHashMap describing the software dependencies of type: LinkedHashMap&ltString
-     *         <i>packageUri</i>, LinkedHashMap <i>attributes</i>&gt, where
-     *         <i>attributes</i> is a nested LinkedHashMap of type: LinkedHashMap&ltString
-     *         <i>attributeKey</i>, String <i>attributeValue</i>&gt
+     * @return A LinkedHashMap describing the software dependencies of type:
+     *         LinkedHashMap&ltString <i>packageUri</i>, LinkedHashMap
+     *         <i>attributes</i>&gt, where <i>attributes</i> is a nested
+     *         LinkedHashMap of type: LinkedHashMap&ltString <i>attributeKey</i>
+     *         , String <i>attributeValue</i>&gt
      */
-    public LinkedHashMap<String, LinkedHashMap<String, String>> getImageSoftwareDependencies(int i) {
+    public LinkedHashMap<String, LinkedHashMap<String, String>> getImageSoftwareDependencies(
+            int i) {
         return imageSoftwareDependencies.get(i);
     }
 }

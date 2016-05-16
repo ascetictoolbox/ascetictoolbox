@@ -69,7 +69,7 @@ public abstract class AbstractProgressData {
      */
     public AbstractProgressData(String[] phases) {
         super();
-        this.phases = phases;
+        this.phases = phases.clone();
         currentPhaseId = 0;
         currentPercentageCompletion = COMPLETED_PERCENTAGE;
         this.history = new HashMap<Integer, Double>(1);
@@ -222,8 +222,8 @@ public abstract class AbstractProgressData {
         if (currentPhaseId == 0) {
             return 0.0;
         } else {
-            return ((COMPLETED_PERCENTAGE / (phases.length / (currentPhaseId))) + (COMPLETED_PERCENTAGE / phases.length)
-                    * (currentPercentageCompletion / COMPLETED_PERCENTAGE));
+            return ((COMPLETED_PERCENTAGE / (double) (phases.length / (double) (currentPhaseId))) + (COMPLETED_PERCENTAGE / (double) phases.length)
+                    * (currentPercentageCompletion / (double) COMPLETED_PERCENTAGE));
         }
     }
 

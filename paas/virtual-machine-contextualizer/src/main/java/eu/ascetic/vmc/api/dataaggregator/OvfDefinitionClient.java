@@ -16,6 +16,7 @@
 package eu.ascetic.vmc.api.dataaggregator;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,10 +79,10 @@ public class OvfDefinitionClient {
         if (sshPublicKey != null && sshPrivateKey != null) {
             LOGGER.debug("SSH keys found in VirtualSystemCollection");
             SecurityKey publicKey = new SecurityKey("ssh-public",
-                    sshPublicKey.getBytes());
+                    sshPublicKey.getBytes(StandardCharsets.ISO_8859_1));
             contextData.getSecurityKeys().put("ssh-public", publicKey);
             SecurityKey privateKey = new SecurityKey("ssh-private",
-                    sshPrivateKey.getBytes());
+                    sshPrivateKey.getBytes(StandardCharsets.ISO_8859_1));
             contextData.getSecurityKeys().put("ssh-private", privateKey);
         } else {
             LOGGER.debug("Public/Private SSH key pair not found in VirtualSystemCollection");
@@ -286,15 +287,14 @@ public class OvfDefinitionClient {
                     item.setDescription("VM CDROM");
                     item.setElementName("Context Base CD 1");
                     item.addHostResource("ovf:/disk/" + diskId);
-                    Integer lastInstanceId = new Integer(virtualSystemArray[i]
+                    Integer lastInstanceId = Integer.valueOf(virtualSystemArray[i]
                             .getVirtualHardwareSection()
                             .getItemAtIndex(
                                     virtualSystemArray[i]
                                             .getVirtualHardwareSection()
                                             .getItemArray().length - 1)
                             .getInstanceID());
-                    item.setInstanceId(new Integer(lastInstanceId + 1)
-                            .toString());
+                    item.setInstanceId(Integer.toString(lastInstanceId + 1));
                     item.setResourceType(ResourceType.CD_DRIVE);
                     virtualSystemArray[i].getVirtualHardwareSection().addItem(
                             item);

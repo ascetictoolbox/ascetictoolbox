@@ -31,10 +31,10 @@ public class GlobalConfiguration {
 
     protected static final Logger LOGGER = Logger
             .getLogger(GlobalConfiguration.class);
-    
+
     private static final String REPOSITORY_PROPERTY = "repository";
     private static final String RUNTIME_PROPERTY = "runtime";
-    
+
     private static final String HOST_ADDRESS_PROPERTY_KEY = "hostAddress";
     private static final String REPOSITORY_PROPERTY_KEY = "repositoryPath";
     private static final String RUNTIME_PROPERTY_KEY = "runtimePath";
@@ -63,11 +63,12 @@ public class GlobalConfiguration {
      * @throws Exception
      *             If config file is not present or unreadable
      */
-    public GlobalConfiguration(String configPropertiesFileUri) throws Exception {
+    public GlobalConfiguration(String configPropertiesFileUri)
+            throws Exception { // NOSONAR Fixing this will alter the API
 
         this.configPropertiesFileUri = configPropertiesFileUri;
-        LOGGER.info("Using configPropertiesFileUri: '"
-                + configPropertiesFileUri + "'");
+        LOGGER.info("Using configPropertiesFileUri: '" + configPropertiesFileUri
+                + "'");
         defaultValues = false;
 
         config();
@@ -96,7 +97,7 @@ public class GlobalConfiguration {
      * @throws Exception
      *             Thrown if config file is not present or unreadable
      */
-    private void config() throws Exception {
+    private void config() throws Exception { // NOSONAR Fixing this will alter the API
 
         // Read properties file.
         Properties properties = new Properties();
@@ -114,7 +115,7 @@ public class GlobalConfiguration {
 
             // Set repositoryPath URI for testing
             properties.setProperty(REPOSITORY_PROPERTY_KEY, vmicDirectory);
-            
+
             // Set runtimePath URI for testing
             properties.setProperty(RUNTIME_PROPERTY_KEY, vmicDirectory);
 
@@ -134,25 +135,31 @@ public class GlobalConfiguration {
             properties.setProperty(SSH_USER_PROPERTY_KEY, "ubuntu");
 
         } else {
+            FileInputStream stream = null;
             try {
-                properties.load(new FileInputStream(
-                        this.configPropertiesFileUri));
+               stream  = new FileInputStream(this.configPropertiesFileUri);
+                properties.load(stream);
             } catch (IOException e) {
                 LOGGER.error(
                         "The configuration properties file does not exist at location: "
-                                + this.configPropertiesFileUri, e);
-                throw new Exception(
+                                + this.configPropertiesFileUri,
+                        e);
+                throw new Exception( // NOSONAR Fixing this will alter the API
                         "The configuration properties file does not exist!", e);
+            } finally {
+                stream.close();
             }
         }
 
         this.hostAddress = properties.getProperty(HOST_ADDRESS_PROPERTY_KEY);
         LOGGER.info("Using hostAddress: '" + hostAddress + "'");
 
-        this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY) + "/" + REPOSITORY_PROPERTY;
+        this.repositoryPath = properties.getProperty(REPOSITORY_PROPERTY_KEY)
+                + "/" + REPOSITORY_PROPERTY;
         LOGGER.info("Using repositoryPath dir: '" + repositoryPath + "'");
-        
-        this.runtimePath = properties.getProperty(RUNTIME_PROPERTY_KEY) + "/" + RUNTIME_PROPERTY;
+
+        this.runtimePath = properties.getProperty(RUNTIME_PROPERTY_KEY) + "/"
+                + RUNTIME_PROPERTY;
         LOGGER.info("Using runtimePath dir: '" + runtimePath + "'");
 
         this.rsyncPath = properties.getProperty(RSYNC_PROPERTY_KEY);
@@ -225,7 +232,8 @@ public class GlobalConfiguration {
     /**
      * Sets the runtime path.
      * 
-     * @param runtimePath the runtimePath to set
+     * @param runtimePath
+     *            the runtimePath to set
      */
     public void setRuntimePath(String runtimePath) {
         this.runtimePath = runtimePath;

@@ -58,7 +58,7 @@ public class GlobalConfiguration {
      * @throws Exception
      *             If config file is not present or unreadable.
      */
-    public GlobalConfiguration(String configFilePath) throws Exception {
+    public GlobalConfiguration(String configFilePath) throws Exception { // NOSONAR Fixing this will alter the API
 
         this.configFilePath = configFilePath;
         LOGGER.info("Using configFilePath: '" + configFilePath + "'");
@@ -89,7 +89,7 @@ public class GlobalConfiguration {
      * @throws Exception
      *             Thrown if config file is not present or unreadable.
      */
-    private void config() throws Exception {
+    private void config() throws Exception { // NOSONAR Fixing this will alter the API
 
         // Read properties file.
         Properties properties = new Properties();
@@ -98,24 +98,35 @@ public class GlobalConfiguration {
             // TODO: Changes these paths to OS specific temp folders
             String systemTempDir = System.getProperty("java.io.tmpdir");
             String vmcTemp = systemTempDir + "vmc";
-            properties.setProperty("installDirectory", vmcTemp + File.separator
-                    + "runtime");
-            new File(properties.getProperty("installDirectory")).mkdirs();
-            properties.setProperty(REPOSITORY_PROPERTY, vmcTemp
-                    + File.separator + REPOSITORY_PROPERTY);
-            new File(properties.getProperty(REPOSITORY_PROPERTY)).mkdirs();
+            properties.setProperty("installDirectory",
+                    vmcTemp + File.separator + "runtime");
+            if (!new File(properties.getProperty("installDirectory"))
+                    .mkdirs()) {
+                throw new IOException("Failed to execute mkdirs()");
+            }
+            properties.setProperty(REPOSITORY_PROPERTY,
+                    vmcTemp + File.separator + REPOSITORY_PROPERTY);
+            if (!new File(properties.getProperty(REPOSITORY_PROPERTY))
+                    .mkdirs()) {
+                throw new IOException("Failed to execute mkdirs()");
+            }
             properties.setProperty("addRecontextFiles", "false");
         } else {
+            FileInputStream stream = null;
             try {
-                properties.load(new FileInputStream(this.configFilePath
-                        + File.separator + "config.properties"));
+                stream = new FileInputStream(this.configFilePath
+                        + File.separator + "config.properties");
+                properties.load(stream);
             } catch (IOException e) {
                 LOGGER.error(
                         "The config.properties file does not exist at location: "
                                 + this.configFilePath + File.separator
-                                + "config.properties", e);
-                throw new Exception(
+                                + "config.properties",
+                        e);
+                throw new Exception( // NOSONAR Fixing this will alter the API
                         "The config.properties file does not exist!", e);
+            } finally {
+                stream.close();
             }
         }
 
@@ -128,8 +139,8 @@ public class GlobalConfiguration {
         LOGGER.info("Using repository dir: '" + repository + "'");
 
         this.addRecontextFiles = false;
-        addRecontextFiles = Boolean.parseBoolean(properties
-                .getProperty("addRecontextFiles"));
+        addRecontextFiles = Boolean
+                .parseBoolean(properties.getProperty("addRecontextFiles"));
         LOGGER.info("Using addRecontextFiles value: '"
                 + addRecontextFiles.toString() + "'");
 

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +120,7 @@ public class SystemCall {
         String line = null;
         InputStream stdout = p.getInputStream();
         BufferedReader reader = new BufferedReader(
-                new InputStreamReader(stdout));
+                new InputStreamReader(stdout, StandardCharsets.UTF_8));
 
         try {
             while ((line = reader.readLine()) != null) {
@@ -129,7 +130,16 @@ public class SystemCall {
         } catch (IOException e) {
             LOGGER.error("Error!", e);
             returnValue = RETURN_VALUE_ON_ERROR;
-            throw new SystemCallException("Failed to read line from!", e);
+            throw new SystemCallException("Failed to read line from stdout!",
+                    e);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                LOGGER.error("Error!", e);
+                returnValue = RETURN_VALUE_ON_ERROR;
+                throw new SystemCallException("Failed to close stdout!", e);
+            }
         }
 
         try {

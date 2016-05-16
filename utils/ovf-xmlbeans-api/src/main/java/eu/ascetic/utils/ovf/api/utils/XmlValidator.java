@@ -70,7 +70,7 @@ public final class XmlValidator {
                 errors = errors.concat(System.getProperty("line.separator"));
                 errors = errors.concat(error.toString());
                 errors = errors.concat(" Line: ");
-                errors = errors.concat(new Integer(error.getLine()).toString());
+                errors = errors.concat(Integer.toString(error.getLine()));
             }
         }
         return errors;

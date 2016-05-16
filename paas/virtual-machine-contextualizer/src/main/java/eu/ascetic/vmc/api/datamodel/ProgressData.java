@@ -275,7 +275,7 @@ public class ProgressData {
         if (currentPhaseId == 0) {
             return 0.0;
         } else {
-            return COMPLETED_PERCENTAGE / (PHASES.length / (currentPhaseId));
+            return COMPLETED_PERCENTAGE / (double) (PHASES.length / (double) (currentPhaseId));
         }
     }
 

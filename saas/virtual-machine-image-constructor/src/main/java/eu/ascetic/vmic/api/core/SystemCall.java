@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Vector;
 
@@ -133,10 +134,10 @@ public class SystemCall implements Runnable {
 
         command.add(commandName);
 
-        if ( arguments != null ) {
+        if (arguments != null) {
             for (int i = 0; i < arguments.size(); i++) {
                 command.add(arguments.get(i));
-                commandString = commandString + " \"" + arguments.get(i) + "\"";
+                commandString = commandString + " \"" + arguments.get(i) + "\""; // NOSONAR
             }
         }
 
@@ -182,7 +183,7 @@ public class SystemCall implements Runnable {
         String line = null;
         InputStream stdout = process.getInputStream();
         BufferedReader reader = new BufferedReader(
-                new InputStreamReader(stdout));
+                new InputStreamReader(stdout, StandardCharsets.UTF_8));
 
         try {
             while ((line = reader.readLine()) != null) {
@@ -192,7 +193,16 @@ public class SystemCall implements Runnable {
         } catch (IOException e) {
             LOGGER.error("Error!", e);
             returnValue = RETURN_VALUE_ON_ERROR;
-            throw new SystemCallException("Failed to read line from!", e);
+            throw new SystemCallException("Failed to read line from stdout!",
+                    e);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                LOGGER.error("Error!", e);
+                returnValue = RETURN_VALUE_ON_ERROR;
+                throw new SystemCallException("Failed to close stdout!", e);
+            }
         }
 
         try {

@@ -148,7 +148,7 @@ public class SystemCallRemote extends SystemCall {
 
         for (int i = 0; i < arguments.size(); i++) {
             systemCallCommand.add(arguments.get(i));
-            commandString = commandString + " \"" + arguments.get(i) + "\"";
+            commandString = commandString + " \"" + arguments.get(i) + "\""; // NOSONAR
         }
 
         // Run the command...
@@ -168,8 +168,8 @@ public class SystemCallRemote extends SystemCall {
      */
     public static String scriptToSingleLineCommand(File scriptFile)
             throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(scriptFile
-                .getAbsolutePath()));
+        byte[] encoded = Files
+                .readAllBytes(Paths.get(scriptFile.getAbsolutePath()));
         String scriptAsString = new String(encoded, Charset.defaultCharset());
         scriptAsString = scriptAsString.replaceAll("(?m)^#.*(?:\r?\n)?", "");
         scriptAsString = scriptAsString.replaceAll("(?m)^\\s+", "");

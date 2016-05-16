@@ -47,8 +47,8 @@ import eu.ascetic.utils.ovf.api.enums.*;
  * @author Django Armstrong (ULeeds)
  * 
  */
-public class VirtualHardwareSection extends
-        AbstractElement<XmlBeanVirtualHardwareSectionType> {
+public class VirtualHardwareSection
+        extends AbstractElement<XmlBeanVirtualHardwareSectionType> {
 
     /**
      * A static reference to the {@link VirtualHardwareSectionFactory} class for
@@ -138,8 +138,8 @@ public class VirtualHardwareSection extends
         for (int i = 0; i < itemArray.length; i++) {
             newItemArray.add(itemArray[i].getXmlObject());
         }
-        delegate.setItemArray(newItemArray
-                .toArray(new XmlBeanRASDType[newItemArray.size()]));
+        delegate.setItemArray(
+                newItemArray.toArray(new XmlBeanRASDType[newItemArray.size()]));
     }
 
     /**
@@ -188,7 +188,7 @@ public class VirtualHardwareSection extends
     }
 
     /**
-     * Gets the number of virtual CPUs. Returns zero if no {@link Item} no CPU
+     * Gets the number of virtual CPUs. Returns zero if no CPU {@link Item}
      * number element can be found.
      * 
      * @return The number of virtual CPUs
@@ -205,7 +205,7 @@ public class VirtualHardwareSection extends
     }
 
     /**
-     * Sets the number of virtual CPUs. Returns false if no {@link Item} no CPU
+     * Sets the number of virtual CPUs. Returns false if no CPU {@link Item}
      * number element can be found.
      * 
      * @param numberOfVirtualCPUs
@@ -217,8 +217,8 @@ public class VirtualHardwareSection extends
         for (int i = 0; i < itemArray.length; i++) {
             if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
                     && itemArray[i].isSetResourceSubType() == false) {
-                itemArray[i].setVirtualQuantity(new BigInteger(new Integer(
-                        numberOfVirtualCPUs).toString()));
+                itemArray[i].setVirtualQuantity(
+                        new BigInteger(Integer.toString(numberOfVirtualCPUs)));
                 return true;
             }
         }
@@ -257,8 +257,8 @@ public class VirtualHardwareSection extends
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
             if (ResourceType.MEMORY.equals(itemArray[i].getResourceType())) {
-                itemArray[i].setVirtualQuantity(new BigInteger(new Integer(
-                        memorySize).toString()));
+                itemArray[i].setVirtualQuantity(
+                        new BigInteger(new Integer(memorySize).toString()));
                 return true;
             }
         }
@@ -299,12 +299,12 @@ public class VirtualHardwareSection extends
 
         Item[] itemArray = getItemArray();
         for (int i = 0; i < itemArray.length; i++) {
-        		if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
                     && "cpuspeed".equals(itemArray[i].getResourceSubType())) {
-        			itemArray[i].setReservation(new BigInteger(
-                        new Integer(cpuSpeed).toString()));
-        			return true;
-        		}
+                itemArray[i].setReservation(
+                        new BigInteger(Integer.toString(cpuSpeed)));
+                return true;
+            }
         }
         return false;
     }

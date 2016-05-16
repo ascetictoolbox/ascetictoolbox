@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -93,8 +95,10 @@ public class IsoImageCreation {
                 + this.addRecontextFiles);
 
         // Create the iso output directory
-        new File(iso.getUri().substring(0,
-                iso.getUri().lastIndexOf(File.separator))).mkdirs();
+        if (!new File(iso.getUri().substring(0,
+                iso.getUri().lastIndexOf(File.separator))).mkdirs()) {
+            LOGGER.warn("Failed to invoke mkdirs() for iso output directory");
+        }
     }
 
     /**
@@ -110,10 +114,9 @@ public class IsoImageCreation {
      */
     public IsoImageCreation(GlobalConfiguration configuration,
             String existingIsoPath) throws IOException {
-        String fileName = "recontext_"
-                + existingIsoPath.substring(
-                        existingIsoPath.lastIndexOf(File.separator) + 1,
-                        existingIsoPath.length());
+        String fileName = "recontext_" + existingIsoPath.substring(
+                existingIsoPath.lastIndexOf(File.separator) + 1,
+                existingIsoPath.length());
         // Not used in this context, for VirtualMachine
         String imageId = "0";
         String uri = configuration.getRepository() + File.separator + fileName;
@@ -128,54 +131,74 @@ public class IsoImageCreation {
         this.addRecontextFiles = configuration.getAddRecontextFiles();
 
         // Create the iso output directory
-        new File(iso.getUri().substring(0,
-                iso.getUri().lastIndexOf(File.separator))).mkdirs();
+        if (!new File(iso.getUri().substring(0,
+                iso.getUri().lastIndexOf(File.separator))).mkdirs()) {
+            LOGGER.warn("Failed to invoke mkdirs() for iso output directory");
+        }
     }
 
     /**
      * 0) Store the INSTANCE_ID and SERVICE_ID files
      */
     private void storeIds() {
-        
-        String instanceId = virtualMachine.getComponentId() + "_" + iso.getImageId();
-        File instanceIdFile = new File(isoDataDirectory + File.separator
-                + "INSTANCE_ID");
+
+        String instanceId = virtualMachine.getComponentId() + "_"
+                + iso.getImageId();
+        File instanceIdFile = new File(
+                isoDataDirectory + File.separator + "INSTANCE_ID");
+        FileOutputStream fos = null;
         try {
-            FileOutputStream fos = new FileOutputStream(instanceIdFile);
+            fos = new FileOutputStream(instanceIdFile);
             fos.write(instanceId.getBytes());
-            fos.close();
-            LOGGER.debug("Writing instance ID: \"" + instanceId + "\" complete!");
+            LOGGER.debug(
+                    "Writing instance ID: \"" + instanceId + "\" complete!");
 
         } catch (FileNotFoundException e) {
             LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
         } catch (IOException e) {
             LOGGER.error(IO_EXCEPTION + e);
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                LOGGER.error(IO_EXCEPTION + e);
+            }
         }
-        
-        String serviceId = ovfDefinition.getVirtualSystemCollection().getProductSectionAtIndex(0).getDeploymentId();
-        File serviceIdFile = new File(isoDataDirectory + File.separator
-                + "SERVICE_ID");
+
+        String serviceId = ovfDefinition.getVirtualSystemCollection()
+                .getProductSectionAtIndex(0).getDeploymentId();
+        File serviceIdFile = new File(
+                isoDataDirectory + File.separator + "SERVICE_ID");
+        fos = null;
         try {
-            FileOutputStream fos = new FileOutputStream(serviceIdFile);
-            fos.write(serviceId.getBytes());
-            fos.close();
+            fos = new FileOutputStream(serviceIdFile);
+            fos.write(serviceId.getBytes(StandardCharsets.ISO_8859_1));
             LOGGER.debug("Writing service ID: \"" + serviceId + "\" complete!");
-
         } catch (FileNotFoundException e) {
             LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
         } catch (IOException e) {
             LOGGER.error(IO_EXCEPTION + e);
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                LOGGER.error(IO_EXCEPTION + e);
+            }
         }
-        
+
     }
-    
+
     /**
      * 1) Store the security keys if the are to be added to this VM instance
      */
     private void storeSecurityKeys() {
-        File securityKeysDirectory = new File(isoDataDirectory + File.separator
-                + "securitykeys");
-        securityKeysDirectory.mkdirs();
+        File securityKeysDirectory = new File(
+                isoDataDirectory + File.separator + "securitykeys");
+
+        if (!securityKeysDirectory.mkdirs()) {
+            LOGGER.warn(
+                    "Failed to invoke mkdirs() for security keys directory");
+        }
 
         if (!contextData.getSecurityKeys().isEmpty()) {
             for (SecurityKey securityKey : contextData.getSecurityKeys()
@@ -192,33 +215,43 @@ public class IsoImageCreation {
                     securityKeyFile = new File(securityKeysDirectory
                             + File.separator + "ssh-private.key");
                 } else {
-                    LOGGER.warn("Unknown key name type!");
+                    LOGGER.error("Unknown key name type!");
+                    return;
                 }
 
                 try {
                     LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
                             + securityKeyFile.getPath());
-                    securityKeyFile.createNewFile();
+                    if (!securityKeyFile.createNewFile()) {
+                        LOGGER.warn("Security key file already exists!");
+                    }
                     LOGGER.debug(CREATED_FILE + securityKeyFile.getPath());
                 } catch (IOException e) {
                     LOGGER.error(
                             "Failed to create security key file with name: "
-                                    + name + ".key", e);
+                                    + name + ".key",
+                            e);
                 }
 
                 // Write out security key...
                 LOGGER.warn("Writing out security key with path: "
                         + securityKeyFile.getPath());
+                FileOutputStream fos = null;
                 try {
-                    FileOutputStream fos = new FileOutputStream(securityKeyFile);
+                    fos = new FileOutputStream(securityKeyFile);
                     fos.write(keyData);
-                    fos.close();
                     LOGGER.debug("Writing security key complete!");
 
                 } catch (FileNotFoundException e) {
                     LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
                 } catch (IOException e) {
                     LOGGER.error(IO_EXCEPTION + e);
+                } finally {
+                    try {
+                        fos.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to close fileOutputStream");
+                    }
                 }
             }
         } else {
@@ -231,9 +264,11 @@ public class IsoImageCreation {
      */
     private void storeEndpoints() {
 
-        File endPointDirectory = new File(isoDataDirectory + File.separator
-                + "endpoints");
-        endPointDirectory.mkdirs();
+        File endPointDirectory = new File(
+                isoDataDirectory + File.separator + "endpoints");
+        if (!endPointDirectory.mkdirs()) {
+            LOGGER.warn("Failed to invoke mkdirs() for end point directory");
+        }
 
         if (virtualMachine.getEndPoints().size() != 0) {
             for (EndPoint endPoint : virtualMachine.getEndPoints().values()) {
@@ -247,9 +282,11 @@ public class IsoImageCreation {
                 File endPointFile = new File(endPointDirectory + File.separator
                         + id + ".properties");
                 try {
-                    LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
-                            + endPointFile.getPath());
-                    endPointFile.createNewFile();
+                    LOGGER.debug(
+                            ATTEMPTING_TO_CREATE_FILE + endPointFile.getPath());
+                    if (!endPointFile.createNewFile()) {
+                        LOGGER.warn("End point file already exists!");
+                    }
                     LOGGER.debug(CREATED_FILE + endPointFile.getPath());
                 } catch (IOException e) {
                     LOGGER.error("Failed to create endpoint file with name: "
@@ -263,18 +300,23 @@ public class IsoImageCreation {
                 props.setProperty("subtype", subtype);
                 props.setProperty("interval", interval);
 
+                FileOutputStream fileOutputStream = null;
                 try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(
-                            endPointFile);
+                    fileOutputStream = new FileOutputStream(endPointFile);
                     props.store(fileOutputStream,
                             "VMC properties file for end points:");
-                    fileOutputStream.close();
                     LOGGER.debug("Writing endpoint complete!");
 
                 } catch (FileNotFoundException e) {
                     LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
                 } catch (IOException e) {
                     LOGGER.error(IO_EXCEPTION + e);
+                } finally {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to close fileOutputStream");
+                    }
                 }
 
             }
@@ -292,9 +334,12 @@ public class IsoImageCreation {
         // TODO: Create a script to invoke the software dependency installation
         // scripts and store it in \scripts\softwaredeps.sh
 
-        File softwareDependenciesDirectory = new File(isoDataDirectory
-                + File.separator + "softwaredeps");
-        softwareDependenciesDirectory.mkdirs();
+        File softwareDependenciesDirectory = new File(
+                isoDataDirectory + File.separator + "softwaredeps");
+        if (!softwareDependenciesDirectory.mkdirs()) {
+            LOGGER.warn(
+                    "Failed to invoke mkdirs() for software dependencies directory");
+        }
 
         if (!virtualMachine.getSoftwareDependencies().isEmpty()) {
             for (SoftwareDependency softwareDependency : virtualMachine
@@ -313,13 +358,16 @@ public class IsoImageCreation {
                 try {
                     LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
                             + softwareDependencyFile.getPath());
-                    softwareDependencyFile.createNewFile();
-                    LOGGER.debug(CREATED_FILE
-                            + softwareDependencyFile.getPath());
+                    if (!softwareDependencyFile.createNewFile()) {
+                        LOGGER.warn("Software dependency file already exists!");
+                    }
+                    LOGGER.debug(
+                            CREATED_FILE + softwareDependencyFile.getPath());
                 } catch (IOException e) {
                     LOGGER.error(
                             "Failed to create software dependency property file with name: "
-                                    + id + ".properties", e);
+                                    + id + ".properties",
+                            e);
                 }
 
                 Properties props = new Properties();
@@ -327,30 +375,42 @@ public class IsoImageCreation {
                 props.setProperty("type", type);
 
                 // Write out properties
+                FileOutputStream fileOutputStream = null;
                 try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(
+                    fileOutputStream = new FileOutputStream(
                             softwareDependencyFile);
                     props.store(fileOutputStream,
                             "VMC properties file for software dependencies:");
-                    fileOutputStream.close();
-                    LOGGER.debug("Writing software dependencie property file complete!");
+                    LOGGER.debug(
+                            "Writing software dependencie property file complete!");
                 } catch (FileNotFoundException e) {
                     LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
                 } catch (IOException e) {
                     LOGGER.error(IO_EXCEPTION + e);
+                } finally {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to close fileOutputStream");
+                    }
                 }
 
                 // Create the directory to store the software dependency files
                 File softwareDependencyDirectory = new File(
                         softwareDependenciesDirectory + File.separator + id);
-                softwareDependencyDirectory.mkdirs();
+                if (!softwareDependencyDirectory.mkdirs()) {
+                    LOGGER.warn(
+                            "Failed to invoke mkdirs() for software dependency directory");
+                }
                 LOGGER.debug("Creating directory for software dependency: "
                         + softwareDependencyDirectory.getPath());
 
                 // Store the software dependency package from the URI
+                fileOutputStream = null;
                 try {
-                    LOGGER.debug("Copying software dependency package from uri: "
-                            + packageUri);
+                    LOGGER.debug(
+                            "Copying software dependency package from uri: "
+                                    + packageUri);
 
                     Path packageUriPath = Paths.get(packageUri);
 
@@ -358,7 +418,7 @@ public class IsoImageCreation {
                             softwareDependencyDirectory + File.separator
                                     + packageUriPath.getFileName());
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(
+                    fileOutputStream = new FileOutputStream(
                             softwareDependencyPackage);
 
                     Files.copy(packageUriPath, fileOutputStream);
@@ -368,14 +428,23 @@ public class IsoImageCreation {
                 } catch (IOException e) {
                     LOGGER.error(
                             "Failed to create software dependency with id: "
-                                    + id, e);
+                                    + id,
+                            e);
+                } finally {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to close fileOutputStream");
+                    }
                 }
 
                 // Store the script that installs and configures the software
                 // dependency from the URI
+                fileOutputStream = null;
                 try {
-                    LOGGER.debug("Copying software dependency install script from uri: "
-                            + installScriptUri);
+                    LOGGER.debug(
+                            "Copying software dependency install script from uri: "
+                                    + installScriptUri);
 
                     Path installScriptUriPath = Paths.get(installScriptUri);
 
@@ -383,17 +452,25 @@ public class IsoImageCreation {
                             softwareDependencyDirectory + File.separator
                                     + installScriptUriPath.getFileName());
 
-                    FileOutputStream fileOutputStream = new FileOutputStream(
+                    fileOutputStream = new FileOutputStream(
                             softwareDependencyPackage);
 
                     Files.copy(installScriptUriPath, fileOutputStream);
 
-                    LOGGER.debug("Copied software dependency install script to: "
-                            + softwareDependencyPackage.getPath());
+                    LOGGER.debug(
+                            "Copied software dependency install script to: "
+                                    + softwareDependencyPackage.getPath());
                 } catch (IOException e) {
                     LOGGER.error(
                             "Failed to create software dependency with id: "
-                                    + id, e);
+                                    + id,
+                            e);
+                } finally {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to close fileOutputStream");
+                    }
                 }
 
             }
@@ -406,24 +483,31 @@ public class IsoImageCreation {
      * 4) Store the entire ovfDefinition
      */
     private void storeOvfDefinition() {
-        File ovfDefinitionFile = new File(isoDataDirectory + File.separator
-                + "ovf.xml");
+        File ovfDefinitionFile = new File(
+                isoDataDirectory + File.separator + "ovf.xml");
+        FileOutputStream fos = null;
         try {
-            LOGGER.debug(ATTEMPTING_TO_CREATE_FILE
-                    + ovfDefinitionFile.getPath());
-            ovfDefinitionFile.createNewFile();
+            LOGGER.debug(
+                    ATTEMPTING_TO_CREATE_FILE + ovfDefinitionFile.getPath());
+            if (!ovfDefinitionFile.createNewFile()) {
+                LOGGER.warn("OVF definition file already exists!");
+            }
             LOGGER.debug(CREATED_FILE + ovfDefinitionFile.getPath());
 
             // Write out the OVF Definition file
-            FileOutputStream fos = new FileOutputStream(
-                    ovfDefinitionFile.getPath());
-            fos.write(ovfDefinition.toString().getBytes());
-            fos.close();
+            fos = new FileOutputStream(ovfDefinitionFile.getPath());
+            fos.write(ovfDefinition.toString()
+                    .getBytes(StandardCharsets.ISO_8859_1));
             LOGGER.debug("Writing OVF Definition complete!");
-
         } catch (IOException e) {
             LOGGER.error("Failed to create OVF Definition file with name: "
                     + ovfDefinitionFile.getName(), e);
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                LOGGER.error("Failed to close fileOutputStream");
+            }
         }
     }
 
@@ -434,11 +518,15 @@ public class IsoImageCreation {
      *            The directory to copy scripts from
      */
     private void storeBootstrapScripts(File scriptsDirectory) {
-        File bootStrapFile = new File(scriptsDirectory + File.separator
-                + "bootstrap.sh");
+        File bootStrapFile = new File(
+                scriptsDirectory + File.separator + "bootstrap.sh");
+
+        FileOutputStream fos = null;
         try {
             LOGGER.debug(ATTEMPTING_TO_CREATE_FILE + bootStrapFile.getPath());
-            bootStrapFile.createNewFile();
+            if (!bootStrapFile.createNewFile()) {
+                LOGGER.warn("Boostrap file already exists!");
+            }
             LOGGER.debug(CREATED_FILE + bootStrapFile.getPath());
 
             // TODO: This should be stored somewhere else and not hard coded
@@ -458,18 +546,22 @@ public class IsoImageCreation {
                     + "  chmod 700 /root/.ssh/id_rsa\n"
                     + "  #Run software dependency install script if present\n"
                     + "  if [ -f /mnt/context/scripts/softwaredeps.sh ]; then\n"
-                    + "    sh /mnt/context/scripts/softwaredeps.sh\n"
-                    + "  fi\n" + "fi\n";
+                    + "    sh /mnt/context/scripts/softwaredeps.sh\n" + "  fi\n"
+                    + "fi\n";
 
             // Write out the boostrap file
-            FileOutputStream fos = new FileOutputStream(bootStrapFile.getPath());
-            fos.write(bootStrapScript.getBytes());
-            fos.close();
+            fos = new FileOutputStream(bootStrapFile.getPath());
+            fos.write(bootStrapScript.getBytes(StandardCharsets.ISO_8859_1));
             LOGGER.debug("Writing boobstrap script complete!");
-
         } catch (IOException e) {
             LOGGER.error("Failed to create boobstrap script file with name: "
                     + bootStrapFile.getName(), e);
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                LOGGER.error("Failed to close fileOutputStream");
+            }
         }
     }
 
@@ -479,15 +571,15 @@ public class IsoImageCreation {
      * @param addRecontextScripts
      *            True if we are to add recontextualization scripts
      */
-    private void refactorFiles(boolean addRecontextScripts) {
+    private void refactorFiles(boolean addRecontextScripts) { // NOSONAR
         // FIXME: Change this to an ISO structure version number
         if (addRecontextFiles) {
             LOGGER.debug("Performing ISO recontextualization changes...");
 
             LOGGER.debug("Restructuring ISO");
             // Create the data directory
-            String recontextIsoDataDirectory = isoDataDirectory
-                    + File.separator + "data";
+            String recontextIsoDataDirectory = isoDataDirectory + File.separator
+                    + "data";
             // Move the contents in the root of the iso to the new data
             // directory
             LOGGER.debug("Copying context data from: '" + isoDataDirectory
@@ -495,51 +587,60 @@ public class IsoImageCreation {
 
             File recontextIsoDataDirectoryFile = new File(
                     recontextIsoDataDirectory);
-            recontextIsoDataDirectoryFile.mkdir();
+            if (!recontextIsoDataDirectoryFile.mkdir()) {
+                LOGGER.warn(
+                        "Failed to invoke mkdirs() for recontext iso data directory");
+            }
 
             File[] fileList = new File(isoDataDirectory).listFiles();
-            for (File file : fileList) {
-                try {
-                    if (file.isDirectory()) {
-                        LOGGER.debug("Considering directory: " + file.getName());
-                        if (!file.getName().equalsIgnoreCase("data")) {
-                            File newDir = new File(
-                                    recontextIsoDataDirectoryFile
-                                            + File.separator + file.getName());
-                            FileUtils.copyDirectory(file, newDir);
-                            LOGGER.debug("Copied directory: "
-                                    + file.getAbsolutePath() + " to "
-                                    + newDir.getAbsolutePath());
+            if (fileList != null) {
+                for (File file : fileList) {
+                    try {
+                        if (file.isDirectory()) {
+                            LOGGER.debug(
+                                    "Considering directory: " + file.getName());
+                            if (!file.getName().equalsIgnoreCase("data")) {
+                                File newDir = new File(
+                                        recontextIsoDataDirectoryFile
+                                                + File.separator
+                                                + file.getName());
+                                FileUtils.copyDirectory(file, newDir);
+                                LOGGER.debug("Copied directory: "
+                                        + file.getAbsolutePath() + " to "
+                                        + newDir.getAbsolutePath());
+                            }
+                        } else {
+                            FileUtils.copyFile(file,
+                                    new File(recontextIsoDataDirectoryFile
+                                            + File.separator + file.getName()));
+                            LOGGER.debug("Copying file: " + file.getName());
                         }
-                    } else {
-                        FileUtils.copyFile(file, new File(
-                                recontextIsoDataDirectoryFile + File.separator
-                                        + file.getName()));
-                        LOGGER.debug("Copying file: " + file.getName());
-                    }
 
-                } catch (IOException e) {
-                    LOGGER.error(
-                            "Failed to copy old context data to recontext data directory",
-                            e);
+                    } catch (IOException e) {
+                        LOGGER.error(
+                                "Failed to copy old context data to recontext data directory",
+                                e);
+                    }
                 }
             }
 
             // Delete old context data
             LOGGER.debug("Deleting old context data");
             fileList = new File(isoDataDirectory).listFiles();
-            for (File file : fileList) {
-                if (!file.getName().equalsIgnoreCase("data")) {
-                    try {
-                        FileUtils.forceDelete(file);
-                        LOGGER.debug("Deleted file or directory: '"
-                                + file.getPath() + "'");
-                    } catch (IOException e) {
-                        LOGGER.error("Failed to delete file or directory: '"
-                                + file.getPath() + "'", e);
+            if (fileList != null) {
+                for (File file : fileList) {
+                    if (!file.getName().equalsIgnoreCase("data")) {
+                        try {
+                            FileUtils.forceDelete(file);
+                            LOGGER.debug("Deleted file or directory: '"
+                                    + file.getPath() + "'");
+                        } catch (IOException e) {
+                            LOGGER.error("Failed to delete file or directory: '"
+                                    + file.getPath() + "'", e);
+                        }
+                    } else {
+                        LOGGER.debug("Skipping deletion of 'data' directory");
                     }
-                } else {
-                    LOGGER.debug("Skipping deletion of 'data' directory");
                 }
             }
 
@@ -566,7 +667,8 @@ public class IsoImageCreation {
             LOGGER.debug("ISO recontextualization changes completed");
 
         } else {
-            LOGGER.debug("Recontext files have not been specified in the VMC config, not altering ISO structure!");
+            LOGGER.debug(
+                    "Recontext files have not been specified in the VMC config, not altering ISO structure!");
         }
     }
 
@@ -579,26 +681,32 @@ public class IsoImageCreation {
      *            The ISO type (context vs recontext)
      */
     private void storeMetaDataFile(String version, String type) {
-        LOGGER.debug("Creating meta.data properties file for folder stucture version="
-                + version);
+        LOGGER.debug(
+                "Creating meta.data properties file for folder stucture version="
+                        + version);
         Properties metaDataVersion = new Properties();
         metaDataVersion.setProperty("version", version);
         metaDataVersion.setProperty("type", type);
-        File metaDataFile = new File(isoDataDirectory + File.separator
-                + ".metadata");
+        File metaDataFile = new File(
+                isoDataDirectory + File.separator + ".metadata");
 
         LOGGER.debug("Adding meta.data to ISO");
+        FileOutputStream fileOutputStream = null;
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(
-                    metaDataFile);
+            fileOutputStream = new FileOutputStream(metaDataFile);
             metaDataVersion.store(fileOutputStream,
                     "VMC ISO data structure version:");
-            fileOutputStream.close();
             LOGGER.debug("Writing endpoint complete!");
         } catch (FileNotFoundException e) {
             LOGGER.error(FILE_NOT_FOUND_EXCEPTION + e);
         } catch (IOException e) {
             LOGGER.error(IO_EXCEPTION + e);
+        } finally {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                LOGGER.error("Failed to close fileOutputStream");
+            }
         }
     }
 
@@ -622,14 +730,16 @@ public class IsoImageCreation {
         this.contextData = contextData;
         this.virtualMachine = virtualMachine;
 
-        LOGGER.debug("Iso Data Directory is: " + isoDataDirectory
-                + File.separator);
+        LOGGER.debug(
+                "Iso Data Directory is: " + isoDataDirectory + File.separator);
 
         // Create the directory
-        new File(isoDataDirectory).mkdirs();
+        if (!new File(isoDataDirectory).mkdirs()) {
+            LOGGER.warn("Failed to invoke mkdirs() for iso data directory");
+        }
 
         storeIds();
-        
+
         storeSecurityKeys();
 
         storeEndpoints();
@@ -639,9 +749,11 @@ public class IsoImageCreation {
         storeOvfDefinition();
 
         // Create scripts directory for bootstrap and agents
-        File scriptsDirectory = new File(isoDataDirectory + File.separator
-                + "scripts");
-        scriptsDirectory.mkdirs();
+        File scriptsDirectory = new File(
+                isoDataDirectory + File.separator + "scripts");
+        if (!scriptsDirectory.mkdirs()) {
+            LOGGER.warn("Failed to invoke mkdirs() for scripts directory");
+        }
 
         storeBootstrapScripts(scriptsDirectory);
 
@@ -668,11 +780,13 @@ public class IsoImageCreation {
         this.contextData = contextdata;
         this.virtualMachine = virtualMachine;
 
-        LOGGER.debug("Iso Data Directory is: " + isoDataDirectory
-                + File.separator);
+        LOGGER.debug(
+                "Iso Data Directory is: " + isoDataDirectory + File.separator);
 
         // Create the directory
-        new File(isoDataDirectory).mkdirs();
+        if (!new File(isoDataDirectory).mkdirs()) {
+            LOGGER.warn("Failed to invoke mkdirs() for iso data directory");
+        }
 
         // Add endpoints to be stored in the recontext ISO
         storeEndpoints();
@@ -697,13 +811,16 @@ public class IsoImageCreation {
         // Detect Linux distribution
         String commandName;
         if (new File("/etc/debian_version").exists()) {
-            LOGGER.info("Debian distribution Variant detected using \"genisoimage\"");
+            LOGGER.info(
+                    "Debian distribution Variant detected using \"genisoimage\"");
             commandName = "genisoimage";
         } else if (new File("/etc/redhat-release").exists()) {
-            LOGGER.info("Redhat distribution variant detected using \"mkisofs\"");
+            LOGGER.info(
+                    "Redhat distribution variant detected using \"mkisofs\"");
             commandName = "mkisofs";
         } else {
-            LOGGER.info("Unknown linux distribution detected using default \"mkisofs\"");
+            LOGGER.info(
+                    "Unknown linux distribution detected using default \"mkisofs\"");
             commandName = "mkisofs";
         }
 
@@ -748,7 +865,8 @@ public class IsoImageCreation {
         }
 
         // Print out the directory tree structure for debug purposes:
-        LOGGER.debug("Files in directory: " + isoDataDirectory + File.separator);
+        LOGGER.debug(
+                "Files in directory: " + isoDataDirectory + File.separator);
         try {
             List<File> files = getFileListing(new File(isoDataDirectory));
             for (File file : files) {
@@ -766,6 +884,9 @@ public class IsoImageCreation {
         } catch (FileNotFoundException e) {
             LOGGER.error("Cannot recursively delete isoDataDirectory: "
                     + isoDataDirectory, e);
+        } catch (NotDirectoryException e) {
+            LOGGER.error("Cannot recursively delete isoDataDirectory: "
+                    + isoDataDirectory, e);
         }
 
         return iso;
@@ -777,21 +898,26 @@ public class IsoImageCreation {
      * @param path
      *            Root File Path.
      * @return True if the file and all sub files/directories have been removed.
+     *         False if not a directory or a file was not removed.
+     * @throws NotDirectoryException 
      * @throws FileNotFoundException.
      */
     private static boolean deleteRecursive(File path)
-            throws FileNotFoundException {
+            throws FileNotFoundException, NotDirectoryException {
         if (!path.exists()) {
             throw new FileNotFoundException(path.getAbsolutePath());
         }
 
         boolean ret = true;
-        if (path.isDirectory()) {
-            for (File f : path.listFiles()) {
+        File[] fileList = path.listFiles();
+        if (fileList != null) {
+            for (File f : fileList) {
                 ret = ret && deleteRecursive(f);
             }
+            return ret && path.delete();
+        } else {
+            throw new NotDirectoryException(path.getAbsolutePath());
         }
-        return ret && path.delete();
     }
 
     /**
@@ -802,9 +928,10 @@ public class IsoImageCreation {
      * 
      * @param aStartingDir
      *            is a valid directory, which can be read.
+     * @throws NotDirectoryException 
      */
     private static List<File> getFileListing(File aStartingDir)
-            throws FileNotFoundException {
+            throws FileNotFoundException, NotDirectoryException {
         validateDirectory(aStartingDir);
         List<File> result = getFileListingNoSort(aStartingDir);
         Collections.sort(result);
@@ -820,11 +947,15 @@ public class IsoImageCreation {
      *            The starting directory.
      * @return List of files found.
      * @throws FileNotFoundException
+     * @throws NotDirectoryException 
      */
     private static List<File> getFileListingNoSort(File aStartingDir)
-            throws FileNotFoundException {
+            throws FileNotFoundException, NotDirectoryException {
         List<File> result = new ArrayList<File>();
         File[] filesAndDirs = aStartingDir.listFiles();
+        if (filesAndDirs == null) {
+            throw new NotDirectoryException(aStartingDir.getAbsolutePath());
+        }
         List<File> filesDirs = Arrays.asList(filesAndDirs);
         for (File file : filesDirs) {
             // always add, even if directory
@@ -851,16 +982,16 @@ public class IsoImageCreation {
             throw new IllegalArgumentException("Directory should not be null.");
         }
         if (!aDirectory.exists()) {
-            throw new FileNotFoundException("Directory does not exist: "
-                    + aDirectory);
+            throw new FileNotFoundException(
+                    "Directory does not exist: " + aDirectory);
         }
         if (!aDirectory.isDirectory()) {
-            throw new IllegalArgumentException("Is not a directory: "
-                    + aDirectory);
+            throw new IllegalArgumentException(
+                    "Is not a directory: " + aDirectory);
         }
         if (!aDirectory.canRead()) {
-            throw new IllegalArgumentException("Directory cannot be read: "
-                    + aDirectory);
+            throw new IllegalArgumentException(
+                    "Directory cannot be read: " + aDirectory);
         }
     }
 
