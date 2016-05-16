@@ -64,7 +64,7 @@ public class SecurityKey {
      * @return the keyData
      */
     public byte[] getKeyData() {
-        return keyData;
+        return keyData.clone();
     }
 
     /**

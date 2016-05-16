@@ -258,7 +258,7 @@ public class VirtualHardwareSection
         for (int i = 0; i < itemArray.length; i++) {
             if (ResourceType.MEMORY.equals(itemArray[i].getResourceType())) {
                 itemArray[i].setVirtualQuantity(
-                        new BigInteger(new Integer(memorySize).toString()));
+                        new BigInteger(Integer.toString(memorySize)));
                 return true;
             }
         }

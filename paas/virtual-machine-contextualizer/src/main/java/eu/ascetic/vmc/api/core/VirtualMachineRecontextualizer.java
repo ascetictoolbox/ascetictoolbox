@@ -314,7 +314,7 @@ public class VirtualMachineRecontextualizer implements Runnable,
      * @see java.lang.Object#finalize()
      */
     @Override
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         try {
             if (connection != null) {
                 LOGGER.warn("LibVirt connection still open during finalize, please add a call to close()");

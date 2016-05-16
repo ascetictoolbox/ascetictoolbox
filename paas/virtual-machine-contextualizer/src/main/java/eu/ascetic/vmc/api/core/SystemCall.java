@@ -79,7 +79,7 @@ public class SystemCall {
 
         for (int i = 0; i < arguments.size(); i++) {
             command.add(arguments.get(i));
-            commandString = commandString + " " + arguments.get(i);
+            commandString = commandString + " " + arguments.get(i); // NOSONAR Overhead is minimal
         }
 
         // Run the command...
@@ -97,7 +97,7 @@ public class SystemCall {
      * @throws SystemCallException
      *             Provides a mechanism to propagate all exception to VMC core.
      */
-    private void execute(List<String> command) throws SystemCallException {
+    private void execute(List<String> command) throws SystemCallException { // NOSONAR Complexity necessary
         ProcessBuilder pb = new ProcessBuilder(command);
         File dir = new File(workingDirectory);
         pb.directory(dir);

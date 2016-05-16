@@ -15,6 +15,7 @@
  */
 package eu.ascetic.vmic.api.core;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -767,8 +768,8 @@ public class VirtualMachineImageConstructor implements Runnable {
                 String attributeName = attributesEentry.getKey();
                 String attributeValue = attributesEentry.getValue();
                 byte[] encodedBytes = Base64.encodeBase64((attributeName
-                        + " = " + attributeValue).getBytes());
-                arguments.add(new String(encodedBytes));
+                        + " = " + attributeValue).getBytes(StandardCharsets.ISO_8859_1));
+                arguments.add(new String(encodedBytes, StandardCharsets.ISO_8859_1));
             }
 
             try {

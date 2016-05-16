@@ -17,6 +17,8 @@ package eu.ascetic.utils.ovf.api;
 
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 import org.apache.commons.codec.binary.Base64;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanProductSectionType;
@@ -47,8 +49,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public static ProductSectionFactory Factory = new ProductSectionFactory();
 
     /**
-     * The static KEY used to associate a public IP to a {@link VirtualSystem} once
-     * instantiated.
+     * The static KEY used to associate a public IP to a {@link VirtualSystem}
+     * once instantiated.
      */
     private static final String ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP = "asceticAssociatePublicIp";
 
@@ -99,7 +101,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     private static final String ASCETIC_PRICE_REQUIREMENT = "asceticPriceRequirement";
 
-    
     /**
      * The static KEY used to get and set energy optimization boundary.
      */
@@ -202,16 +203,17 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY = "asceticSoftwareDependencyAttributeValue_";
 
     /**
-     * The static KEY used to get and set the number of adaptation rules that are in the global
-     * scope of {@link VirtualSystemCollection} or locally in {@link VirtualSystem}.
+     * The static KEY used to get and set the number of adaptation rules that
+     * are in the global scope of {@link VirtualSystemCollection} or locally in
+     * {@link VirtualSystem}.
      */
-    private static final String ASCETIC_ADAPTATION_RULE_NUMBER = "asceticAdaptationRuleNumber";    
-    private static final String ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY = "asceticAdaptationRuleAgreementTerm_";    
-    private static final String ASCETIC_ADAPTATION_RULE_DIRECTION_KEY = "asceticAdaptationRuleDirection_";    
-    private static final String ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY = "asceticAdaptationRuleResponseType_";     
-    private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleResponseType_";     
-    private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";     
-    
+    private static final String ASCETIC_ADAPTATION_RULE_NUMBER = "asceticAdaptationRuleNumber";
+    private static final String ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY = "asceticAdaptationRuleAgreementTerm_";
+    private static final String ASCETIC_ADAPTATION_RULE_DIRECTION_KEY = "asceticAdaptationRuleDirection_";
+    private static final String ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY = "asceticAdaptationRuleResponseType_";
+    private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
+    private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
+
     /**
      * Default constructor.
      * 
@@ -326,7 +328,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The property
      */
     public ProductProperty getPropertyByKey(String key) {
-        for (XmlBeanProductSectionType.Property p : delegate.getPropertyArray()) {
+        for (XmlBeanProductSectionType.Property p : delegate
+                .getPropertyArray()) {
             if (p.getKey().equals(key)) {
                 return new ProductProperty(p);
             }
@@ -419,8 +422,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The association of a public IP.
      */
     public boolean isAssociatePublicIp() {
-        return Boolean.parseBoolean(getPropertyByKey(
-                ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP).getValue());
+        return Boolean.parseBoolean(
+                getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP).getValue());
     }
 
     /**
@@ -431,7 +434,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The association of a public IP.
      */
     public void setAssociatePublicIp(Boolean associate) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_PUBLIC_IP,
                     ProductPropertyType.STRING, associate.toString());
@@ -447,8 +451,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The upper bound
      */
     public int getUpperBound() {
-        return Integer.parseInt(getPropertyByKey(
-                ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY).getValue());
+        return Integer.parseInt(
+                getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY)
+                        .getValue());
     }
 
     /**
@@ -459,7 +464,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The upper bound to set
      */
     public void setUpperBound(Integer upperBound) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY,
                     ProductPropertyType.UINT32, upperBound.toString());
@@ -475,8 +481,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The lower bound
      */
     public int getLowerBound() {
-        return Integer.parseInt(getPropertyByKey(
-                ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY).getValue());
+        return Integer.parseInt(
+                getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY)
+                        .getValue());
     }
 
     /**
@@ -487,7 +494,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The lower bound to set
      */
     public void setLowerBound(Integer lowerBound) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY,
                     ProductPropertyType.UINT32, lowerBound.toString());
@@ -513,7 +521,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The deployment ID to set
      */
     public void setDeploymentId(String id) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_COLLECTION_DEPLOYMENT_ID_KEY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VIRTUAL_SYSTEM_COLLECTION_DEPLOYMENT_ID_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VIRTUAL_SYSTEM_COLLECTION_DEPLOYMENT_ID_KEY,
                     ProductPropertyType.STRING, id);
@@ -533,8 +542,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public String getPublicSshKey() {
         ProductProperty property = getPropertyByKey(ASCETIC_PUBLIC_SSH_KEY);
         if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue()
-                    .getBytes()));
+            return new String(
+                    Base64.decodeBase64(property.getValue()
+                            .getBytes(StandardCharsets.ISO_8859_1)),
+                    StandardCharsets.ISO_8859_1);
         } else {
             return null;
         }
@@ -550,9 +561,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The public SSH key to set
      */
     public void setPublicSshKey(String publicKey) {
-        String encodedBytes = new String(Base64.encodeBase64(publicKey
-                .getBytes()));
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_PUBLIC_SSH_KEY);
+        String encodedBytes = new String(
+                Base64.encodeBase64(
+                        publicKey.getBytes(StandardCharsets.ISO_8859_1)),
+                StandardCharsets.ISO_8859_1);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_PUBLIC_SSH_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_PUBLIC_SSH_KEY, ProductPropertyType.STRING,
                     encodedBytes);
@@ -572,8 +586,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public String getPrivateSshKey() {
         ProductProperty property = getPropertyByKey(ASCETIC_PRIVATE_SSH_KEY);
         if (property != null) {
-            return new String(Base64.decodeBase64(property.getValue()
-                    .getBytes()));
+            return new String(
+                    Base64.decodeBase64(property.getValue()
+                            .getBytes(StandardCharsets.ISO_8859_1)),
+                    StandardCharsets.ISO_8859_1);
         } else {
             return null;
         }
@@ -588,10 +604,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The private SSH key to set
      */
     public void setPrivateSshKey(String privateKey) {
-        String encodedBytes = new String(Base64.encodeBase64(privateKey
-                .getBytes()));
+        String encodedBytes = new String(
+                Base64.encodeBase64(privateKey.getBytes()));
 
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_PRIVATE_SSH_KEY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_PRIVATE_SSH_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_PRIVATE_SSH_KEY, ProductPropertyType.STRING,
                     encodedBytes);
@@ -607,8 +624,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The energy requirement boundary
      */
     public String getEnergyRequirement() {
-        return getPropertyByKey(ASCETIC_ENERGY_REQUIREMENT)
-                .getValue();
+        return getPropertyByKey(ASCETIC_ENERGY_REQUIREMENT).getValue();
     }
 
     /**
@@ -619,7 +635,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The energy requirement
      */
     public void setEnergyRequirement(String energyRequirement) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENERGY_REQUIREMENT);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_ENERGY_REQUIREMENT);
         if (productProperty == null) {
             addNewProperty(ASCETIC_ENERGY_REQUIREMENT,
                     ProductPropertyType.STRING, energyRequirement);
@@ -627,7 +644,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             productProperty.setValue(energyRequirement);
         }
     }
-    
+
     /**
      * Gets the power requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
@@ -635,8 +652,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The power requirement boundary
      */
     public String getPowerRequirement() {
-        return getPropertyByKey(ASCETIC_POWER_REQUIREMENT)
-                .getValue();
+        return getPropertyByKey(ASCETIC_POWER_REQUIREMENT).getValue();
     }
 
     /**
@@ -647,7 +663,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The power requirement
      */
     public void setPowerRequirement(String powerRequirement) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_POWER_REQUIREMENT);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_POWER_REQUIREMENT);
         if (productProperty == null) {
             addNewProperty(ASCETIC_POWER_REQUIREMENT,
                     ProductPropertyType.STRING, powerRequirement);
@@ -655,7 +672,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             productProperty.setValue(powerRequirement);
         }
     }
-    
+
     /**
      * Gets the charges requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
@@ -663,8 +680,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The charges requirement boundary
      */
     public String getChargesRequirement() {
-        return getPropertyByKey(ASCETIC_CHARGES_REQUIREMENT)
-                .getValue();
+        return getPropertyByKey(ASCETIC_CHARGES_REQUIREMENT).getValue();
     }
 
     /**
@@ -675,7 +691,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The charges requirement
      */
     public void setChargesRequirement(String chargesRequirement) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_CHARGES_REQUIREMENT);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_CHARGES_REQUIREMENT);
         if (productProperty == null) {
             addNewProperty(ASCETIC_CHARGES_REQUIREMENT,
                     ProductPropertyType.STRING, chargesRequirement);
@@ -683,7 +700,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             productProperty.setValue(chargesRequirement);
         }
     }
-    
+
     /**
      * Gets the price requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
@@ -691,8 +708,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The price requirement boundary
      */
     public String getPriceRequirement() {
-        return getPropertyByKey(ASCETIC_PRICE_REQUIREMENT)
-                .getValue();
+        return getPropertyByKey(ASCETIC_PRICE_REQUIREMENT).getValue();
     }
 
     /**
@@ -703,7 +719,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The price requirement
      */
     public void setPriceRequirement(String priceRequirement) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_PRICE_REQUIREMENT);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_PRICE_REQUIREMENT);
         if (productProperty == null) {
             addNewProperty(ASCETIC_PRICE_REQUIREMENT,
                     ProductPropertyType.STRING, priceRequirement);
@@ -711,7 +728,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             productProperty.setValue(priceRequirement);
         }
     }
-    
+
     /**
      * Gets the energy optimization boundary on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
@@ -733,7 +750,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The energy boundary
      */
     public void setEnergyOptimizationBoundary(String energyBoundary) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_ENERGY_OPTIMIZATION_BOUNDARY,
                     ProductPropertyType.STRING, energyBoundary);
@@ -762,7 +780,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The cost boundary
      */
     public void setCostOptimizationBoundary(String costBoundary) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_COST_OPTIMIZATION_BOUNDARY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_COST_OPTIMIZATION_BOUNDARY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_COST_OPTIMIZATION_BOUNDARY,
                     ProductPropertyType.STRING, costBoundary);
@@ -792,7 +811,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The performance boundary
      */
     public void setPerformanceOptimizationBoundary(String performanceBoundary) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_PERFORMANCE_OPTIMIZATION_BOUNDARY,
                     ProductPropertyType.STRING, performanceBoundary);
@@ -821,7 +841,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The parameter
      */
     public void setOptimizationParameter(String parameter) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_OPTIMIZATION_PARAMETER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_OPTIMIZATION_PARAMETER);
         if (productProperty == null) {
             addNewProperty(ASCETIC_OPTIMIZATION_PARAMETER,
                     ProductPropertyType.STRING, parameter);
@@ -853,8 +874,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         // Find the next end point index
         int i = 0;
         while (true) {
-            ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_ID_KEY
-                    + i);
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_ENDPOINT_ID_KEY + i);
             if (productProperty == null) {
                 break;
             }
@@ -863,8 +884,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         addNewProperty(ASCETIC_ENDPOINT_ID_KEY + i, ProductPropertyType.STRING,
                 id);
-        addNewProperty(ASCETIC_ENDPOINT_URI_KEY + i,
-                ProductPropertyType.STRING, uri);
+        addNewProperty(ASCETIC_ENDPOINT_URI_KEY + i, ProductPropertyType.STRING,
+                uri);
         addNewProperty(ASCETIC_ENDPOINT_TYPE_KEY + i,
                 ProductPropertyType.STRING, type);
         addNewProperty(ASCETIC_ENDPOINT_SUBTYPE_KEY + i,
@@ -873,7 +894,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                 ProductPropertyType.STRING, interval);
 
         // Increment the number of end points stored
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_ENDPOINT_NUMBER);
         if (productProperty == null) {
             addNewProperty(ASCETIC_ENDPOINT_NUMBER, ProductPropertyType.UINT32,
                     "1");
@@ -898,8 +920,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public int getEndPointIndexById(String id) {
 
         for (int i = 0; i < getEndPointNumber(); i++) {
-            ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_ID_KEY
-                    + i);
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_ENDPOINT_ID_KEY + i);
 
             if (productProperty != null
                     && id.equals(productProperty.getValue())) {
@@ -1075,8 +1097,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The interval at which to report to the end point
      */
     public void setEndPointInterval(int index, String interval) {
-        getPropertyByKey(ASCETIC_ENDPOINT_INTERVAL_KEY + index).setValue(
-                interval);
+        getPropertyByKey(ASCETIC_ENDPOINT_INTERVAL_KEY + index)
+                .setValue(interval);
     }
 
     /**
@@ -1097,7 +1119,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
 
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_ENDPOINT_NUMBER);
         Integer newEndPointNumber = ((Integer) productProperty
                 .getValueAsJavaObject()) - 1;
         productProperty.setValue(newEndPointNumber.toString());
@@ -1110,7 +1133,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The number of end points
      */
     public int getEndPointNumber() {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_ENDPOINT_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_ENDPOINT_NUMBER);
         if (productProperty == null) {
             return 0;
         } else {
@@ -1134,7 +1158,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The VMIC script to set
      */
     public void setVmicScript(String script) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_VMIC_SCRIPT_KEY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VMIC_SCRIPT_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VMIC_SCRIPT_KEY, ProductPropertyType.STRING,
                     script);
@@ -1159,7 +1184,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The VMIC mode to set
      */
     public void setVmicMode(String mode) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_VMIC_MODE_KEY);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VMIC_MODE_KEY);
         if (productProperty == null) {
             addNewProperty(ASCETIC_VMIC_MODE_KEY, ProductPropertyType.STRING,
                     mode);
@@ -1192,8 +1218,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         // Find the next software property index
         int i = 0;
         while (true) {
-            ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY
-                    + i);
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + i);
             if (productProperty == null) {
                 break;
             }
@@ -1210,7 +1236,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                 ProductPropertyType.STRING, instalScriptUri);
 
         // Increment the number of software dependencies stored
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
         if (productProperty == null) {
             addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_NUMBER,
                     ProductPropertyType.UINT32, "1");
@@ -1236,8 +1263,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public int getSoftwareDependencyIndexById(String id) {
 
         for (int i = 0; i < getSoftwareDependencyNumber(); i++) {
-            ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY
-                    + i);
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + i);
 
             if (productProperty != null
                     && id.equals(productProperty.getValue())) {
@@ -1301,8 +1328,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The ID of the software dependency (e.g. "memory-probe")
      */
     public void setSoftwareDependencyId(int index, String id) {
-        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + index).setValue(
-                id);
+        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + index)
+                .setValue(id);
     }
 
     /**
@@ -1379,7 +1406,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public String getSoftwareDependencyInstallScriptUri(int index) {
         return getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
-                .getValue();
+                        .getValue();
     }
 
     /**
@@ -1398,7 +1425,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             String installScriptUri) {
         getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
-                .setValue(installScriptUri);
+                        .setValue(installScriptUri);
     }
 
     /**
@@ -1428,35 +1455,42 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         // Find the next software property attribute index
         int i = 0;
         while (true) {
-            ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                    + softwareDependencyIndex + "_" + i);
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                            + softwareDependencyIndex + "_" + i);
             if (productProperty == null) {
                 break;
             }
             i++;
         }
 
-        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                + softwareDependencyIndex + "_" + i,
+        addNewProperty(
+                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                        + softwareDependencyIndex + "_" + i,
                 ProductPropertyType.STRING, attributeId);
-        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
-                + softwareDependencyIndex + "_" + i,
+        addNewProperty(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                        + softwareDependencyIndex + "_" + i,
                 ProductPropertyType.STRING, attributeName);
-        addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
-                + softwareDependencyIndex + "_" + i,
+        addNewProperty(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                        + softwareDependencyIndex + "_" + i,
                 ProductPropertyType.STRING, attributeValue);
 
         // Increment the number of software dependency attributes stored
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                + softwareDependencyIndex);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                        + softwareDependencyIndex);
         if (productProperty == null) {
-            addNewProperty(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                    + softwareDependencyIndex, ProductPropertyType.UINT32, "1");
+            addNewProperty(
+                    ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                            + softwareDependencyIndex,
+                    ProductPropertyType.UINT32, "1");
         } else {
             Integer newSoftwareDependencyAttributeNumber = ((Integer) productProperty
                     .getValueAsJavaObject()) + 1;
-            productProperty.setValue(newSoftwareDependencyAttributeNumber
-                    .toString());
+            productProperty
+                    .setValue(newSoftwareDependencyAttributeNumber.toString());
         }
 
         // Return the software dependency's attribute index
@@ -1482,8 +1516,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             int softwareDependencyIndex, String attributeId) {
 
         for (int i = 0; i < getSoftwareDependencyNumber(); i++) {
-            ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                    + softwareDependencyIndex + "_" + i);
+            ProductProperty productProperty = getPropertyByKey(
+                    ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                            + softwareDependencyIndex + "_" + i);
 
             if (productProperty != null
                     && attributeId.equals(productProperty.getValue())) {
@@ -1512,8 +1547,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The value of the attribute
      */
     public void setSoftwareDependencyPackageAttribute(
-            int softwareDependencyIndex, int attributeIndex,
-            String attributeId, String attributeName, String attributeValue) {
+            int softwareDependencyIndex, int attributeIndex, String attributeId,
+            String attributeName, String attributeValue) {
 
         setSoftwareDependencyPackageAttributeId(softwareDependencyIndex,
                 attributeIndex, attributeId);
@@ -1538,10 +1573,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public String getSoftwareDependencyPackageAttributeId(
             int softwareDependencyIndex, int attributeIndex) {
-        return getPropertyByKey(
-                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex)
-                .getValue();
+        return getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                + softwareDependencyIndex + "_" + attributeIndex).getValue();
     }
 
     /**
@@ -1559,11 +1592,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The ID of the software dependency (e.g. "memory-probe")
      */
     public void setSoftwareDependencyPackageAttributeId(
-            int softwareDependencyIndex, int attributeIndex, String attributeid) {
-        getPropertyByKey(
-                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex)
-                .setValue(attributeid);
+            int softwareDependencyIndex, int attributeIndex,
+            String attributeid) {
+        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
+                + softwareDependencyIndex + "_" + attributeIndex)
+                        .setValue(attributeid);
     }
 
     /**
@@ -1584,7 +1617,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         return getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
                         + softwareDependencyIndex + "_" + attributeIndex)
-                .getValue();
+                                .getValue();
     }
 
     /**
@@ -1604,10 +1637,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public void setSoftwareDependencyPackageAttributeName(
             int softwareDependencyIndex, int attributeIndex,
             String attributeName) {
-        getPropertyByKey(
-                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex)
-                .setValue(attributeName);
+        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                + softwareDependencyIndex + "_" + attributeIndex)
+                        .setValue(attributeName);
     }
 
     /**
@@ -1628,7 +1660,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         return getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
                         + softwareDependencyIndex + "_" + attributeIndex)
-                .getValue();
+                                .getValue();
     }
 
     /**
@@ -1648,10 +1680,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public void setSoftwareDependencyPackageAttributeValue(
             int softwareDependencyIndex, int attributeIndex,
             String attributeValue) {
-        getPropertyByKey(
-                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex)
-                .setValue(attributeValue);
+        getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                + softwareDependencyIndex + "_" + attributeIndex)
+                        .setValue(attributeValue);
     }
 
     /**
@@ -1669,16 +1700,19 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             int softwareDependencyIndex, int attributeIndex) {
         removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
                 + softwareDependencyIndex + "_" + attributeIndex);
-        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
-                + softwareDependencyIndex + "_" + attributeIndex);
-        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
-                + softwareDependencyIndex + "_" + attributeIndex);
+        removePropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex);
+        removePropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
+                        + softwareDependencyIndex + "_" + attributeIndex);
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
 
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                + softwareDependencyIndex);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                        + softwareDependencyIndex);
         Integer newSoftwareDependencyNumber = ((Integer) productProperty
                 .getValueAsJavaObject()) - 1;
         productProperty.setValue(newSoftwareDependencyNumber.toString());
@@ -1692,8 +1726,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public int getSoftwareDependencyPackageAttributeNumber(
             int softwareDependencyIndex) {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                + softwareDependencyIndex);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
+                        + softwareDependencyIndex);
         if (productProperty == null) {
             return 0;
         } else {
@@ -1711,15 +1746,17 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public void removeSoftwareDependencyProperties(int index) {
         removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + index);
-        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + index);
+        removePropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + index);
         removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_TYPE_KEY + index);
-        removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY
-                + index);
+        removePropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index);
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
 
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
         Integer newSoftwareDependencyNumber = ((Integer) productProperty
                 .getValueAsJavaObject()) - 1;
         productProperty.setValue(newSoftwareDependencyNumber.toString());
@@ -1732,29 +1769,35 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The number of software dependencies
      */
     public int getSoftwareDependencyNumber() {
-        ProductProperty productProperty = getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
         if (productProperty == null) {
             return 0;
         } else {
             return ((Integer) productProperty.getValueAsJavaObject());
         }
     }
-    
+
     /**
      * Adds a new set of properties that define an adaptation rule.
      * 
-     * @param agreementTerm The agreement term of the rule (e.g.
-     *            ("energy_usage_per_app or power_usage_per_app etc")
-     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
-     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
-     * @return The index of the new adaptation rule (not to be confused with the 
-     * index of a {@link ProductProperty})
+     * @param agreementTerm
+     *            The agreement term of the rule (e.g. (
+     *            "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction
+     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
+     *            )
+     * @param responseType
+     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @return The index of the new adaptation rule (not to be confused with the
+     *         index of a {@link ProductProperty})
      */
     public int addAdaptationRule(String agreementTerm, String direction,
             String responseType) {
-       
+
         // Find the next adaptation rule index
-        int i = getNextFreeIndexKeyValue(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY);
+        int i = getNextFreeIndexKeyValue(
+                ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY);
 
         addNewProperty(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + i,
                 ProductPropertyType.STRING, agreementTerm);
@@ -1762,197 +1805,235 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                 ProductPropertyType.STRING, direction);
         addNewProperty(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + i,
                 ProductPropertyType.STRING, responseType);
-        
+
         // Increment the number of adaptation rules stored
         incrementIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
 
         // Return the adaptation rule index
         return i;
     }
-    
+
     /**
      * Adds a new set of properties that define an adaptation rule.
      * 
-     * @param agreementTerm The agreement term of the rule (e.g.
-     *            ("energy_usage_per_app or power_usage_per_app etc")
-     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
-     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
-     * @param lowerBound The lower bound for the magnitude, i.e. different 
-     * between guaranteed value and actual value. 
-     * @param upperBound The upper bound for the magnitude, i.e. different 
-     * between guaranteed value and actual value. 
-     * @return The index of the new adaptation rule (not to be confused with the 
-     * index of a {@link ProductProperty})
+     * @param agreementTerm
+     *            The agreement term of the rule (e.g. (
+     *            "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction
+     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
+     *            )
+     * @param responseType
+     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param lowerBound
+     *            The lower bound for the magnitude, i.e. different between
+     *            guaranteed value and actual value.
+     * @param upperBound
+     *            The upper bound for the magnitude, i.e. different between
+     *            guaranteed value and actual value.
+     * @return The index of the new adaptation rule (not to be confused with the
+     *         index of a {@link ProductProperty})
      */
     public int addAdaptationRule(String agreementTerm, String direction,
             String responseType, String lowerBound, String upperBound) {
-       
+
         int answer = addAdaptationRule(agreementTerm, direction, responseType);
-        //The extended extra section
-         addNewProperty(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + answer,
+        // The extended extra section
+        addNewProperty(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + answer,
                 ProductPropertyType.STRING, lowerBound);
         addNewProperty(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + answer,
-                ProductPropertyType.STRING, upperBound);       
+                ProductPropertyType.STRING, upperBound);
         return answer;
-    }    
-    
-/**
-     * Sets a set of properties that define an adaptation rule at a specific 
+    }
+
+    /**
+     * Sets a set of properties that define an adaptation rule at a specific
      * adaptation rule property set index.
      * 
      * @param index
-     *            The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param agreementTerm The agreement term of the rule (e.g.
-     *            ("energy_usage_per_app or power_usage_per_app etc")
-     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
-     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param agreementTerm
+     *            The agreement term of the rule (e.g. (
+     *            "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction
+     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
+     *            )
+     * @param responseType
+     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
      */
-    public void setAdaptationRule(int index, String agreementTerm, String direction,
-            String responseType) {
+    public void setAdaptationRule(int index, String agreementTerm,
+            String direction, String responseType) {
         setAdaptationRuleAgreementTerm(index, agreementTerm);
         setAdaptationRuleDirection(index, direction);
         setAdaptationRuleResponseType(index, responseType);
     }
-    
+
     /**
      * Gets the agreement term of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The agreement term of the rule (e.g.
-     *            ("energy_usage_per_app or power_usage_per_app etc")
+     * @return The agreement term of the rule (e.g. (
+     *         "energy_usage_per_app or power_usage_per_app etc")
      */
     public String getAdaptationRuleAgreementTerm(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index).getValue();
+        return getPropertyByKey(
+                ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index).getValue();
     }
 
     /**
      * Sets the agreement term of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param agreementTerm The agreement term of the rule (e.g.
-     *            ("energy_usage_per_app or power_usage_per_app etc")
+     * @param agreementTerm
+     *            The agreement term of the rule (e.g. (
+     *            "energy_usage_per_app or power_usage_per_app etc")
      */
-    public void setAdaptationRuleAgreementTerm(int index, String agreementTerm) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index).setValue(agreementTerm);
-    }    
+    public void setAdaptationRuleAgreementTerm(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index)
+                .setValue(agreementTerm);
+    }
 
     /**
      * Gets the direction of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
      * @return The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
      */
     public String getAdaptationRuleDirection(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index).getValue();
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index)
+                .getValue();
     }
 
     /**
      * Sets the direction of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     * @param direction
+     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
+     *            )
      */
     public void setAdaptationRuleDirection(int index, String direction) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index).setValue(direction);
-    }    
-    
-     /**
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index)
+                .setValue(direction);
+    }
+
+    /**
      * Gets the response type of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The response type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @return The response type of adaptation to apply (e.g.
+     *         "REMOVE_VM, ADD_VM")
      */
     public String getAdaptationRuleResponseType(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index).getValue();
+        return getPropertyByKey(
+                ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index).getValue();
     }
 
     /**
      * Sets the response type of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param responseType
+     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
      */
     public void setAdaptationRuleResponseType(int index, String responseType) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index).setValue(responseType);
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index)
+                .setValue(responseType);
     }
-    
+
     /**
      * Gets the lower bound of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
      * @return The lower bound of the adaptation rule
      */
     public String getAdaptationRuleLowerBound(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).getValue();
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
+                .getValue();
     }
 
     /**
      * Sets the lower bound of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param lowerBound The lower bound of the adaptation rule
+     * @param lowerBound
+     *            The lower bound of the adaptation rule
      */
     public void setAdaptationRuleLowerBound(int index, String lowerBound) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).setValue(lowerBound);
-    }     
-    
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
+                .setValue(lowerBound);
+    }
+
     /**
      * Gets the upper bound of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
      * @return The upper bound of the adaptation rule
      */
     public String getAdaptationRuleUpperBound(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).getValue();
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
+                .getValue();
     }
 
     /**
      * Sets the upper bound of an adaptation rule set at a specific index.
      * 
-     * @param index The index of the adaptation rule (not to be confused with the index
-     *            of a {@link ProductProperty}, see
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param upperBound The upper bound of the adaptation rule
+     * @param upperBound
+     *            The upper bound of the adaptation rule
      */
     public void setAdaptationRuleUpperBound(int index, String upperBound) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index).setValue(upperBound);
-    }     
-    
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
+                .setValue(upperBound);
+    }
+
     /**
      * Remove a set of adaptation rule properties at a specific index.
      * 
      * @param index
-     *            The index of the adaptation rule to remove (not to be confused with
-     *            the index of a {@link ProductProperty}, see
+     *            The index of the adaptation rule to remove (not to be confused
+     *            with the index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
      */
     public void removeAdaptationRule(int index) {
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index);
-        removePropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index); 
-        removePropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index); 
-        
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index);
+
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
 
@@ -1968,12 +2049,14 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public int getAdaptationRuleNumber() {
         return getIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
     }
-    
+
     /**
      * This gets from the XML the number of items that are held in an array like
      * structure.
-     * @param keyOfCountingField The key of the field that is used for counting
-     * the amount of items that are in the array structure.
+     * 
+     * @param keyOfCountingField
+     *            The key of the field that is used for counting the amount of
+     *            items that are in the array structure.
      * @return The number of items held in the array structure.
      */
     private int getIndexPropertyNumber(String keyOfCountingField) {
@@ -1984,33 +2067,36 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             return ((Integer) productProperty.getValueAsJavaObject());
         }
     }
-    
+
     /**
      * This increments the number of items that are held in an array like
      * structure that is held within the xml.
-     * @param keyOfCountingField The key of the field that is used for counting
-     * the amount of items that are in the array structure.
+     * 
+     * @param keyOfCountingField
+     *            The key of the field that is used for counting the amount of
+     *            items that are in the array structure.
      * @return The number of items held in the array structure.
      */
     private int incrementIndexPropertyNumber(String keyOfCountingField) {
-        ProductProperty productProperty = getPropertyByKey(keyOfCountingField);     
+        ProductProperty productProperty = getPropertyByKey(keyOfCountingField);
         if (productProperty == null) {
-            addNewProperty(keyOfCountingField, ProductPropertyType.UINT32,
-                    "1");
+            addNewProperty(keyOfCountingField, ProductPropertyType.UINT32, "1");
             return 1;
         } else {
             Integer newItemCountNumber = ((Integer) productProperty
                     .getValueAsJavaObject()) + 1;
             productProperty.setValue(newItemCountNumber.toString());
-        return newItemCountNumber;
+            return newItemCountNumber;
         }
     }
-    
+
     /**
      * This decrements the number of items that are held in an array like
      * structure that is held within the xml.
-     * @param keyOfCountingField The key of the field that is used for counting
-     * the amount of items that are in the array structure.
+     * 
+     * @param keyOfCountingField
+     *            The key of the field that is used for counting the amount of
+     *            items that are in the array structure.
      * @return The number of items held in the array structure.
      */
     private int decrementIndexPropertyNumber(String keyOfCountingField) {
@@ -2020,19 +2106,22 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         productProperty.setValue(newAdaptationRuleNumber.toString());
         return newAdaptationRuleNumber;
     }
-    
+
     /**
-     * This scans through a named property field and finds the next free index 
+     * This scans through a named property field and finds the next free index
      * value
-     * @param property The property to search (e.g. ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY)
+     * 
+     * @param property
+     *            The property to search (e.g.
+     *            ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY)
      * @return The next free index value for inserting a new item
      */
     private int getNextFreeIndexKeyValue(String property) {
-        // This scans through a named property and finds the next free index value
+        // This scans through a named property and finds the next free index
+        // value
         int i = 0;
         while (true) {
-            ProductProperty productProperty = getPropertyByKey(property
-                    + i);
+            ProductProperty productProperty = getPropertyByKey(property + i);
             if (productProperty == null) {
                 break;
             }
@@ -2040,7 +2129,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         }
         return i;
     }
-    
+
     // TODO: Add additional helper methods here to standardise access to ASCETIC
     // specific product properties.
 }

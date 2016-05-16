@@ -126,7 +126,9 @@ public class GlobalConfiguration {
                 throw new Exception( // NOSONAR Fixing this will alter the API
                         "The config.properties file does not exist!", e);
             } finally {
-                stream.close();
+                if (stream != null) {
+                    stream.close();
+                }
             }
         }
 

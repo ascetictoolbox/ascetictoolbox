@@ -149,7 +149,7 @@ public class IsoImageCreation {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(instanceIdFile);
-            fos.write(instanceId.getBytes());
+            fos.write(instanceId.getBytes(StandardCharsets.ISO_8859_1));
             LOGGER.debug(
                     "Writing instance ID: \"" + instanceId + "\" complete!");
 
@@ -159,7 +159,9 @@ public class IsoImageCreation {
             LOGGER.error(IO_EXCEPTION + e);
         } finally {
             try {
-                fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException e) {
                 LOGGER.error(IO_EXCEPTION + e);
             }
@@ -180,7 +182,9 @@ public class IsoImageCreation {
             LOGGER.error(IO_EXCEPTION + e);
         } finally {
             try {
-                fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException e) {
                 LOGGER.error(IO_EXCEPTION + e);
             }
@@ -191,7 +195,7 @@ public class IsoImageCreation {
     /**
      * 1) Store the security keys if the are to be added to this VM instance
      */
-    private void storeSecurityKeys() {
+    private void storeSecurityKeys() { // NOSONAR Complexity necessary
         File securityKeysDirectory = new File(
                 isoDataDirectory + File.separator + "securitykeys");
 
@@ -248,7 +252,9 @@ public class IsoImageCreation {
                     LOGGER.error(IO_EXCEPTION + e);
                 } finally {
                     try {
-                        fos.close();
+                        if (fos != null) {
+                            fos.close();
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Failed to close fileOutputStream");
                     }
@@ -313,7 +319,9 @@ public class IsoImageCreation {
                     LOGGER.error(IO_EXCEPTION + e);
                 } finally {
                     try {
-                        fileOutputStream.close();
+                        if (fileOutputStream != null) {
+                            fileOutputStream.close();
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Failed to close fileOutputStream");
                     }
@@ -329,7 +337,7 @@ public class IsoImageCreation {
      * 3) Provides per VM instance configuration information for software
      * dependencies
      */
-    private void storeSoftwareDependencies() {
+    private void storeSoftwareDependencies() { // NOSOAR Complexity necessary
 
         // TODO: Create a script to invoke the software dependency installation
         // scripts and store it in \scripts\softwaredeps.sh
@@ -389,7 +397,9 @@ public class IsoImageCreation {
                     LOGGER.error(IO_EXCEPTION + e);
                 } finally {
                     try {
-                        fileOutputStream.close();
+                        if (fileOutputStream != null) {
+                            fileOutputStream.close();
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Failed to close fileOutputStream");
                     }
@@ -432,7 +442,9 @@ public class IsoImageCreation {
                             e);
                 } finally {
                     try {
-                        fileOutputStream.close();
+                        if (fileOutputStream != null) {
+                            fileOutputStream.close();
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Failed to close fileOutputStream");
                     }
@@ -467,7 +479,9 @@ public class IsoImageCreation {
                             e);
                 } finally {
                     try {
-                        fileOutputStream.close();
+                        if (fileOutputStream != null) {
+                            fileOutputStream.close();
+                        }
                     } catch (IOException e) {
                         LOGGER.error("Failed to close fileOutputStream");
                     }
@@ -504,7 +518,9 @@ public class IsoImageCreation {
                     + ovfDefinitionFile.getName(), e);
         } finally {
             try {
-                fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException e) {
                 LOGGER.error("Failed to close fileOutputStream");
             }
@@ -558,7 +574,9 @@ public class IsoImageCreation {
                     + bootStrapFile.getName(), e);
         } finally {
             try {
-                fos.close();
+                if (fos != null) {
+                    fos.close();
+                }
             } catch (IOException e) {
                 LOGGER.error("Failed to close fileOutputStream");
             }
@@ -703,7 +721,9 @@ public class IsoImageCreation {
             LOGGER.error(IO_EXCEPTION + e);
         } finally {
             try {
-                fileOutputStream.close();
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
             } catch (IOException e) {
                 LOGGER.error("Failed to close fileOutputStream");
             }
@@ -806,7 +826,7 @@ public class IsoImageCreation {
      *             Thrown if the command to create the ISO via a system call
      *             fails.
      */
-    public Iso create() throws SystemCallException {
+    public Iso create() throws SystemCallException { // NOSONAR Complexity necessary
 
         // Detect Linux distribution
         String commandName;
