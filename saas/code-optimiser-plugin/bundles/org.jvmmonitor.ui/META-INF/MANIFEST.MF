@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.eclipse.jdt.ui,
  org.jvmmonitor.core
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7,
+ JavaSE-1.8
 Export-Package: org.jvmmonitor.internal.ui;x-friends:="org.jvmmonitor.ui.tests",
  org.jvmmonitor.internal.ui.actions;x-friends:="org.jvmmonitor.ui.tests",
  org.jvmmonitor.internal.ui.editors;x-friends:="org.jvmmonitor.ui.tests",
