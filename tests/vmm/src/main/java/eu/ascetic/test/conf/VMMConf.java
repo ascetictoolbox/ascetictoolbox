@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 public class VMMConf {
 	private static Logger logger = Logger.getLogger(VMMConf.class);
 	public static String vmManagerURL = "";
+    public static String activeMqUrl = "";
     public static String imageId = "";
     public static String environment = "";
 	
@@ -41,6 +42,7 @@ public class VMMConf {
         	
         	org.apache.commons.configuration.Configuration config = new PropertiesConfiguration(propertiesFile);
         	vmManagerURL = config.getString("vm.manager.url");
+            activeMqUrl = config.getString("activemq.url");
             imageId = config.getString("image.id");
             environment = config.getString("environment");
         }
