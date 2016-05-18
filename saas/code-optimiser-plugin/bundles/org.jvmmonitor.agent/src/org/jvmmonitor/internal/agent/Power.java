@@ -29,4 +29,13 @@ public class Power implements PowerMXBean {
         return true;
     }
     
+    /**
+     * Gets the value for the attribute power
+     * 
+     * @return the value for power
+     */
+    public double getPower() {
+        return 0.5;
+    }    
+    
 }

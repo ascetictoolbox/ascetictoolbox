@@ -12,7 +12,7 @@ import org.jvmmonitor.core.JvmModel;
 public class PowerMonitor implements IPowerMonitor {
 
 	/** The MXBean name. */
-//    public final static String POWER_MXBEAN_NAME = "org.jvmmonitor.internal.core:type=PowerMonitor";
+
     public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
 
     /** The Tracking attribute in SWTResourceMonitorMXBean. */
