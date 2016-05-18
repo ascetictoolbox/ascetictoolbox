@@ -33,7 +33,13 @@ public enum CallTreeColumn {
             Messages.selfTimeInPercentageToolTip),
 
     /** The method invocation count. */
-    COUNT(Messages.countLabel, 70, SWT.LEFT, Messages.countToolTip);
+    COUNT(Messages.countLabel, 70, SWT.LEFT, Messages.countToolTip),
+	
+	/** The method invocation count. */
+    POWER(Messages.powerLabel, 70, SWT.LEFT, Messages.powerToolTip),
+    
+	/** The method invocation count. */
+    ENERGY(Messages.energyLabel, 70, SWT.LEFT, Messages.energyToolTip);    
 
     /** The label for series type. */
     public final String label;

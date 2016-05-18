@@ -31,6 +31,7 @@ import org.jvmmonitor.core.mbean.IMonitoredMXBeanGroup;
 import org.jvmmonitor.core.mbean.IMonitoredMXBeanGroup.AxisUnit;
 import org.jvmmonitor.internal.ui.properties.AbstractJvmPropertySection;
 import org.jvmmonitor.ui.Activator;
+import org.jvmmonitor.internal.core.PowerMonitor;
 
 /**
  * The action to select chart set.
@@ -273,6 +274,7 @@ public class LoadChartSetAction extends AbstractChartSetAction {
      */
     private void loadOverviewChartSet() throws JvmCoreException {
         final int[] blue = new int[] { 0, 0, 255 };
+        final int[] red = new int[] { 255, 0, 0 };
         IMBeanServer server = section.getJvm().getMBeanServer();
         server.getMonitoredAttributeGroups().clear();
 
@@ -295,6 +297,11 @@ public class LoadChartSetAction extends AbstractChartSetAction {
                 .addMonitoredAttributeGroup("CPU Usage", AxisUnit.Percent); //$NON-NLS-1$
         group.addAttribute(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME,
                 "ProcessCpuTime", blue); //$NON-NLS-1$
+        
+        group = server.addMonitoredAttributeGroup("Power", AxisUnit.None); //$NON-NLS-1$
+        group.addAttribute(PowerMonitor.POWER_MXBEAN_NAME,
+                "Power", red); //$NON-NLS-1$  
+        
     }
 
     /**

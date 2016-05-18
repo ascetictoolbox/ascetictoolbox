@@ -207,6 +207,11 @@ public class MBeanServer implements IMBeanServer {
         if (attributeName.contains(".")) { //$NON-NLS-1$
             attributeName = attributeName.split("\\.")[0]; //$NON-NLS-1$
         }
+        
+        //TODO Fix this temporary fix here.
+        if (attributeName.equals("Power")) {
+        	return new Attribute("Power", 0.25);
+        }
 
         try {
             return connection.getAttribute(objectName, attributeName);

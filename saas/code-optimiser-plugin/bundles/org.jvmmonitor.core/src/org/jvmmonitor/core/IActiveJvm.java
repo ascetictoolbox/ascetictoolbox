@@ -74,6 +74,13 @@ public interface IActiveJvm extends IJvm {
      * @return The SWT resource monitor
      */
     ISWTResourceMonitor getSWTResourceMonitor();
+    
+    /**
+     * Gets the power monitor.
+     * 
+     * @return The power monitor
+     */    
+    IPowerMonitor getPowerMonitor();
 
     /**
      * Gets the MBean server.

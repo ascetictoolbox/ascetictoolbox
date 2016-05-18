@@ -57,6 +57,12 @@ public final class Messages extends NLS {
     public static String countLabel;
 
     /** */
+    public static String powerLabel;
+    
+    /** */
+    public static String energyLabel;    
+    
+    /** */
     public static String callTreeColumnToolTip;
 
     /** */
@@ -82,6 +88,12 @@ public final class Messages extends NLS {
 
     /** */
     public static String countToolTip;
+    
+    /** */
+    public static String powerToolTip;
+    
+    /** */
+    public static String energyToolTip;
 
     /** */
     public static String percentageLabel;

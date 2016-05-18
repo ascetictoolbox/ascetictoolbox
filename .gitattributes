@@ -1928,10 +1928,14 @@ saas/ascetic-eclipse-site/category.xml -text
 saas/ascetic-eclipse-site/pom.xml -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/META-INF/MANIFEST.MF -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/build.jardesc -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/src/org/jvmmonitor/internal/agent/Power.java -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/src/org/jvmmonitor/internal/agent/PowerMXBean.java -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/META-INF/MANIFEST.MF -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.agentLoadHandler.exsd -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.heapDumpHandler.exsd -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.jvmAttachHandler.exsd -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/src/org/jvmmonitor/core/IPowerMonitor.java -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/src/org/jvmmonitor/internal/core/PowerMonitor.java -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/META-INF/MANIFEST.MF -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/domain.png -text svneol=unset#image/png
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.doc/gettingStarted/img/jvm_explorer.png -text svneol=unset#image/png

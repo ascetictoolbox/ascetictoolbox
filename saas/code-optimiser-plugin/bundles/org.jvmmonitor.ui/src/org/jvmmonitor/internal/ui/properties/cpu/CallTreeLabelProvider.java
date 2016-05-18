@@ -82,6 +82,10 @@ public class CallTreeLabelProvider extends AbstractLabelProvider {
             text = getSelfTimeInPercentageColumnText(element);
         } else if (columnIndex == getColumnIndex(CallTreeColumn.COUNT)) {
             text = getCountColumnText(element);
+        }  else if (columnIndex == getColumnIndex(CallTreeColumn.POWER)) {
+            text = getPowerColumnText(element);
+        }  else if (columnIndex == getColumnIndex(CallTreeColumn.ENERGY)) {
+            text = getEnergyColumnText(element);
         }
 
         return text;
@@ -222,6 +226,50 @@ public class CallTreeLabelProvider extends AbstractLabelProvider {
         }
         return ""; //$NON-NLS-1$
     }
+    
+    /**
+     * Gets the count column text.
+     * 
+     * @param element
+     *            the element
+     * @return the count column text
+     */
+    private String getPowerColumnText(Object element) {
+        ICpuModel cpuModel = (ICpuModel) treeViewer.getInput();
+        if (cpuModel == null) {
+            return ""; //$NON-NLS-1$
+        }
+
+        if (element instanceof ICallTreeNode) {
+            int length = String.valueOf(cpuModel.getMaxInvocationCount())
+                    .length();
+            return String.format("%" + length + "d", //$NON-NLS-1$ //$NON-NLS-2$
+                    ((ICallTreeNode) element).getInvocationCount());
+        }
+        return ""; //$NON-NLS-1$
+    }
+    
+    /**
+     * Gets the count column text.
+     * 
+     * @param element
+     *            the element
+     * @return the count column text
+     */
+    private String getEnergyColumnText(Object element) {
+        ICpuModel cpuModel = (ICpuModel) treeViewer.getInput();
+        if (cpuModel == null) {
+            return ""; //$NON-NLS-1$
+        }
+
+        if (element instanceof ICallTreeNode) {
+            int length = String.valueOf(cpuModel.getMaxInvocationCount())
+                    .length();
+            return String.format("%" + length + "d", //$NON-NLS-1$ //$NON-NLS-2$
+                    ((ICallTreeNode) element).getInvocationCount());
+        }
+        return ""; //$NON-NLS-1$
+    }    
 
     /**
      * Gets the image for call tree column.

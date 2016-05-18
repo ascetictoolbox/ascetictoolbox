@@ -22,6 +22,7 @@ import org.jvmmonitor.core.Activator;
 import org.jvmmonitor.core.IActiveJvm;
 import org.jvmmonitor.core.IHost;
 import org.jvmmonitor.core.IJvm;
+import org.jvmmonitor.core.IPowerMonitor;
 import org.jvmmonitor.core.ISWTResourceMonitor;
 import org.jvmmonitor.core.IThreadElement;
 import org.jvmmonitor.core.JvmCoreException;
@@ -65,6 +66,9 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
 
     /** The SWT resource monitor. */
     private ISWTResourceMonitor swtResourceMonitor;
+
+    /** The power monitor. */
+    private IPowerMonitor powerMonitor;
 
     /**
      * The constructor for local JVM.
@@ -201,6 +205,17 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
             swtResourceMonitor.setTracking(true);
         }
 
+//        System.err.println("Starting Power is Supported Test");
+//        try {
+//	        if (powerMonitor.isSupported()) {
+//	        	System.err.println("Power is Supported Test = true");
+//	        	powerMonitor.setTracking(true);
+//	        }
+//	        System.err.println("Ending Power is Supported Test");
+//        } catch (Exception ex) {
+//        	ex.printStackTrace();
+//        }
+        
         JvmModel.getInstance().fireJvmModelChangeEvent(
                 new JvmModelEvent(State.JvmConnected, this));
     }
@@ -220,6 +235,13 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
         } catch (JvmCoreException e) {
             // do nothing
         }
+//        try {
+//            if (powerMonitor.isSupported()) {
+//            	powerMonitor.setTracking(false);
+//            }
+//        } catch (JvmCoreException e) {
+//            // do nothing
+//        }        
 
         JvmModel.getInstance().fireJvmModelChangeEvent(
                 new JvmModelEvent(State.JvmDisconnected, this));
@@ -280,6 +302,14 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
     public ISWTResourceMonitor getSWTResourceMonitor() {
         return swtResourceMonitor;
     }
+
+    /*
+     * @see IActiveJvm#getgetPowerMonitor()
+     */
+    @Override
+    public IPowerMonitor getPowerMonitor() {
+        return powerMonitor;
+    }    
 
     /*
      * @see Object#toString()
@@ -367,6 +397,7 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
         isConnected = false;
         cpuProfiler = new CpuProfiler(this);
         mBeanServer = new MBeanServer(url, this);
+        powerMonitor = new PowerMonitor(this);
         swtResourceMonitor = new SWTResourceMonitor(this);
     }
 
