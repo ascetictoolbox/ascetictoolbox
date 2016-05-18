@@ -23,16 +23,7 @@ public class PowerMonitor implements IPowerMonitor {
      *            The JVM
      */
     public PowerMonitor(ActiveJvm jvm) {
-        System.err.println("Power Monitor Seen");
         this.jvm = jvm;
-        // Attribute attr = new Attribute("Power", 25);
-        // try {
-        // ObjectName power = new ObjectName("Power");
-        // jvm.getMBeanServer().setAttribute(power, attr);
-        // } catch (MalformedObjectNameException | JvmCoreException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
     }
 
     /*

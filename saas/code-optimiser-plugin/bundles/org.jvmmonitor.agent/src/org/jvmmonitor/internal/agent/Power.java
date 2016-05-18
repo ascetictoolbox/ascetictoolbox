@@ -40,32 +40,25 @@ public class Power implements PowerMXBean {
 
         long nanoAfter = System.nanoTime();
         long cpuAfter = getProcessCpuTime();
-        System.err.println("nanoAfter = " + nanoAfter);
-        System.err.println("cpuAfter = " + cpuAfter);
 
-        long cpuPercentage;
+        double cpuPercentage = 0.0;
         if (nanoAfter > nanoBefore) {
-            cpuPercentage = ((cpuAfter - cpuBefore) * 100L)
-                    / (nanoAfter - nanoBefore);
-        } else {
-            cpuPercentage = 0;
+            cpuPercentage = ((cpuAfter - cpuBefore) * 100.0)
+                    / (double) (nanoAfter - nanoBefore);
         }
-        System.err.println("cpuPercentage = " + cpuPercentage);
 
         nanoBefore = nanoAfter;
         cpuBefore = cpuAfter;
-        System.err.println("nanoBefore = " + nanoBefore);
-        System.err.println("cpuBefore = " + cpuBefore);
 
         // FIXME Eventually this cpuPercentage will be passed to an Energy Model
         // along with some calibration data
-        long power = 0L;
-        if (cpuPercentage != 0) {
-            long maxPower = 18L;
-            power = (maxPower / 100L) * cpuPercentage;
+        double power = 0.0;
+        if (cpuPercentage != 0.0) {
+            double maxPower = 15;
+            double baseline = 10;
+            power = (maxPower / 100.0) * cpuPercentage + baseline; // y=mx+c
         }
 
-        System.err.println("power = " + power);
         return power;
     }
 
@@ -77,7 +70,6 @@ public class Power implements PowerMXBean {
                         .getDeclaredMethod("getProcessCpuTime");
                 processCpuTime.setAccessible(true);
                 long time = (Long) processCpuTime.invoke(operatingSystemMXBean);
-                System.err.println("processCpuTime() returned: " + time);
                 return time; 
             } else {
                 // FIXME Add alternative method if sun packages is not available
