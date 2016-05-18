@@ -1,5 +1,7 @@
 package org.jvmmonitor.internal.agent;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Power implements PowerMXBean {
 
     /** The MXBean name. */
@@ -26,7 +28,12 @@ public class Power implements PowerMXBean {
      * @return the value for power
      */
     public double getPower() {
-        return 0.5;
+        
+        double least = 0.5;
+        double bound = 2.5;
+        double randomNum = ThreadLocalRandom.current().nextDouble(least, bound);
+
+        return randomNum;
     }
 
 }
