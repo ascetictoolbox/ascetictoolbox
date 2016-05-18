@@ -2,6 +2,9 @@ package org.jvmmonitor.core;
 
 public interface IPowerMonitor {
 
+    /** The MXBean name. */
+    public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
+    
     /**
      * Sets the tracking state.
      * 

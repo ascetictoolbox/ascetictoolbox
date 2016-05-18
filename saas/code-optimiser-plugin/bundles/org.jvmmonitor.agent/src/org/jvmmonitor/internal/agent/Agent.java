@@ -176,7 +176,7 @@ public class Agent {
         }
         
         if (!server.isRegistered(powerObjectName)) {
-            Power power = new Power(inst);
+            Power power = new Power();
             if (power.isSupported()) {
                 server.registerMBean(power, powerObjectName);
             }

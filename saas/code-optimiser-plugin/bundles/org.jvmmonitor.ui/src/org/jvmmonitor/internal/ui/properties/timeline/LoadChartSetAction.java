@@ -31,7 +31,7 @@ import org.jvmmonitor.core.mbean.IMonitoredMXBeanGroup;
 import org.jvmmonitor.core.mbean.IMonitoredMXBeanGroup.AxisUnit;
 import org.jvmmonitor.internal.ui.properties.AbstractJvmPropertySection;
 import org.jvmmonitor.ui.Activator;
-import org.jvmmonitor.internal.core.PowerMonitor;
+import org.jvmmonitor.core.IPowerMonitor;
 
 /**
  * The action to select chart set.
@@ -299,7 +299,7 @@ public class LoadChartSetAction extends AbstractChartSetAction {
                 "ProcessCpuTime", blue); //$NON-NLS-1$
         
         group = server.addMonitoredAttributeGroup("Power", AxisUnit.None); //$NON-NLS-1$
-        group.addAttribute(PowerMonitor.POWER_MXBEAN_NAME,
+        group.addAttribute(IPowerMonitor.POWER_MXBEAN_NAME,
                 "Power", red); //$NON-NLS-1$  
         
     }

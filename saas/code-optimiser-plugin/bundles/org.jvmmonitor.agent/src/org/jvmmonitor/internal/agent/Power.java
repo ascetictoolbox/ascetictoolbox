@@ -1,25 +1,16 @@
 package org.jvmmonitor.internal.agent;
 
-import java.lang.instrument.Instrumentation;
-
 public class Power implements PowerMXBean {
 
-	/** The MXBean name. */
-	public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";	
+    /** The MXBean name. */
+    public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
 
-    /** The instrumentation. */
-    private Instrumentation inst;    
-    
     /**
      * The constructor.
-     * 
-     * @param inst
-     *            The instrumentation
      */
-    public Power(Instrumentation inst) {
-        this.inst = inst;
-    } 
-    
+    public Power() {
+    }
+
     /**
      * Gets the state indicating if monitoring SWT resources is supported.
      * 
@@ -28,7 +19,7 @@ public class Power implements PowerMXBean {
     public boolean isSupported() {
         return true;
     }
-    
+
     /**
      * Gets the value for the attribute power
      * 
@@ -36,6 +27,6 @@ public class Power implements PowerMXBean {
      */
     public double getPower() {
         return 0.5;
-    }    
-    
+    }
+
 }
