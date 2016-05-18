@@ -1,16 +1,25 @@
 package org.jvmmonitor.internal.agent;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
 
 public class Power implements PowerMXBean {
 
     /** The MXBean name. */
     public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
+    private OperatingSystemMXBean operatingSystemMXBean;
+
+    private long nanoBefore = 0;
+    private long cpuBefore = 0;
 
     /**
      * The constructor.
      */
     public Power() {
+        operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+        nanoBefore = System.nanoTime();
+        cpuBefore = getProcessCpuTime();
     }
 
     /**
@@ -28,12 +37,50 @@ public class Power implements PowerMXBean {
      * @return the value for power
      */
     public double getPower() {
-        
-        double least = 0.5;
-        double bound = 2.5;
-        double randomNum = ThreadLocalRandom.current().nextDouble(least, bound);
 
-        return randomNum;
+        long cpuAfter = getProcessCpuTime();
+        long nanoAfter = System.nanoTime();
+
+        long cpuPercentage;
+        if (nanoAfter > nanoBefore) {
+            cpuPercentage = ((cpuAfter - cpuBefore) * 100L)
+                    / (nanoAfter - nanoBefore);
+        } else {
+            cpuPercentage = 0;
+        }
+
+        nanoBefore = nanoAfter;
+        cpuBefore = cpuAfter;
+
+        // FIXME Eventually this cpuPercentage will be passed to an Energy Model
+        // along with some calibration data
+        long power = 0L;
+        if (cpuPercentage != 0) {
+            long maxPower = 18L;
+            power = (maxPower / 100L) * cpuPercentage;
+        }
+
+        return power;
     }
 
+    private long getProcessCpuTime() {
+        try {
+            if (Class.forName("com.sun.management.OperatingSystemMXBean")
+                    .isInstance(operatingSystemMXBean)) {
+                Method processCpuTime = operatingSystemMXBean.getClass()
+                        .getDeclaredMethod("getProcessCpuTime");
+                processCpuTime.setAccessible(true);
+                return (Long) processCpuTime.invoke(operatingSystemMXBean);
+            } else {
+                // FIXME Add alternative method if sun packages is not available
+                System.err.println("Reflection using com.sun.management.OperatingSystemMXBean failed");
+                return 0;
+            }
+        } catch (Exception e) {
+            System.err.println(
+                    "Error invoking getProcessCpuTime() by reflection: "
+                            + e.getMessage());
+            return 0;
+        }
+    }
 }
