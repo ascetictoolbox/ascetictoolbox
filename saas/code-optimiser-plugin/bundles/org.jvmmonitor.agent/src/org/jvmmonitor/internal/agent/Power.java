@@ -38,8 +38,10 @@ public class Power implements PowerMXBean {
      */
     public double getPower() {
 
-        long cpuAfter = getProcessCpuTime();
         long nanoAfter = System.nanoTime();
+        long cpuAfter = getProcessCpuTime();
+        System.err.println("nanoAfter = " + nanoAfter);
+        System.err.println("cpuAfter = " + cpuAfter);
 
         long cpuPercentage;
         if (nanoAfter > nanoBefore) {
@@ -48,9 +50,12 @@ public class Power implements PowerMXBean {
         } else {
             cpuPercentage = 0;
         }
+        System.err.println("cpuPercentage = " + cpuPercentage);
 
         nanoBefore = nanoAfter;
         cpuBefore = cpuAfter;
+        System.err.println("nanoBefore = " + nanoBefore);
+        System.err.println("cpuBefore = " + cpuBefore);
 
         // FIXME Eventually this cpuPercentage will be passed to an Energy Model
         // along with some calibration data
@@ -60,6 +65,7 @@ public class Power implements PowerMXBean {
             power = (maxPower / 100L) * cpuPercentage;
         }
 
+        System.err.println("power = " + power);
         return power;
     }
 
@@ -70,7 +76,9 @@ public class Power implements PowerMXBean {
                 Method processCpuTime = operatingSystemMXBean.getClass()
                         .getDeclaredMethod("getProcessCpuTime");
                 processCpuTime.setAccessible(true);
-                return (Long) processCpuTime.invoke(operatingSystemMXBean);
+                long time = (Long) processCpuTime.invoke(operatingSystemMXBean);
+                System.err.println("processCpuTime() returned: " + time);
+                return time; 
             } else {
                 // FIXME Add alternative method if sun packages is not available
                 System.err.println("Reflection using com.sun.management.OperatingSystemMXBean failed");
