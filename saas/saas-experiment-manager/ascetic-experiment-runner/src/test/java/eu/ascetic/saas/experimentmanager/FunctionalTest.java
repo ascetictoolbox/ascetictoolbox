@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -31,6 +32,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
  * @author ddu
  *
  */
+@Ignore
 public class FunctionalTest {
 	
 	public static List<String> eventNames(){
