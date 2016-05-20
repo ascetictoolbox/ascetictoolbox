@@ -69,12 +69,12 @@ public class API {
 		return scopes;
 	}
 
-	public static Experiment createExperiment(String label, String appId, String eventsFile, String deplsFile, String kpisFile){
+	public static Experiment createExperiment(String label, String appId, String appName, String eventsFile, String deplsFile, String kpisFile){
 		List<Event> events = getEvents(eventsFile);
 		List<Deployment> depls = getDeployment(deplsFile);
 		List<KPI> kpis = getKPIs(kpisFile);
 		
-		return new Experiment(label,appId, events,depls,kpis);
+		return new Experiment(label,appId, appName, events,depls,kpis);
 	}
 	
 	

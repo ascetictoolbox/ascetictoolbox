@@ -41,7 +41,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.auth.HttpBa
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.auth.ApiKeyAuth;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.auth.OAuth;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-11T09:58:20.351+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-20T17:52:06.825+02:00")
 public class ApiClient {
   private Map<String, Client> hostMap = new HashMap<String, Client>();
   private Map<String, String> defaultHeaderMap = new HashMap<String, String>();

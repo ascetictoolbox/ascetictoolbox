@@ -133,6 +133,8 @@ definitions:
         type: string
       appId:
         type: string
+      appName:
+        type: String
       kpis:
         type: array
         description: the list of KPIs used to analyze this experiment
@@ -190,6 +192,8 @@ definitions:
       name:
         type: string
       deplId:
+        type: string
+      deplName:
         type: string
       description:
         type: string

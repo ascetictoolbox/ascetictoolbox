@@ -91,7 +91,7 @@ var examples = {};
   
   examples['application/json'] = [ {
   "deplId" : "aeiou",
-  "date" : "2016-05-11T07:58:21.170+0000",
+  "date" : "2016-05-20T15:52:07.654+0000",
   "measures" : [ {
     "refersTo" : [ {
       "reference" : "aeiou",
@@ -103,6 +103,7 @@ var examples = {};
     "value" : "aeiou"
   } ],
   "name" : "aeiou",
+  "deplName" : "aeiou",
   "description" : "aeiou",
   "experimentId" : "aeiou",
   "_id" : "aeiou",
@@ -136,7 +137,7 @@ var examples = {};
   
   examples['application/json'] = {
   "deplId" : "aeiou",
-  "date" : "2016-05-11T07:58:21.178+0000",
+  "date" : "2016-05-20T15:52:07.662+0000",
   "measures" : [ {
     "refersTo" : [ {
       "reference" : "aeiou",
@@ -148,6 +149,7 @@ var examples = {};
     "value" : "aeiou"
   } ],
   "name" : "aeiou",
+  "deplName" : "aeiou",
   "description" : "aeiou",
   "experimentId" : "aeiou",
   "_id" : "aeiou",

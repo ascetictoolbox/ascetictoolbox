@@ -11,7 +11,7 @@ import java.util.*;
 
 
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-11T09:58:20.351+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-20T17:52:06.825+02:00")
 public class VM   {
   
   private String id = null;

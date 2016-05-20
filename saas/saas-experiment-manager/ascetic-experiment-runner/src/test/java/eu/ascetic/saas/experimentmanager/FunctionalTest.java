@@ -56,8 +56,8 @@ public class FunctionalTest {
 		return deployments;
 	}
 		
-	public static Experiment getExperiment(String label, String appId, InformationProvider sp){
-		Experiment exp = new Experiment(label,appId, getEvents(),getDeployment(),getKPIs());
+	public static Experiment getExperiment(String label, String appId, String appName, InformationProvider sp){
+		Experiment exp = new Experiment(label,appId, appName, getEvents(),getDeployment(),getKPIs());
 		return exp;
 	}
 
@@ -69,7 +69,7 @@ public class FunctionalTest {
 		DefaultApi api = new DefaultApi();
 		api.getApiClient().setBasePath("http://localhost:8080");
 		
-		Experiment exp = getExperiment("News Asset Experiment","newsAsset",mi.getSaaSProvider());
+		Experiment exp = getExperiment("News Asset Experiment","newsAsset", "News Asset",mi.getSaaSProvider());
 		
 		try {
 			System.out.println("start");

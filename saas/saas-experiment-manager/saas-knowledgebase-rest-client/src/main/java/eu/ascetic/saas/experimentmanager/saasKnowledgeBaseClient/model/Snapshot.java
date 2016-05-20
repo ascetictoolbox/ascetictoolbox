@@ -14,13 +14,14 @@ import java.util.Date;
 
 
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-11T09:58:20.351+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-20T17:52:06.825+02:00")
 public class Snapshot   {
   
   private String id = null;
   private String experimentId = null;
   private String name = null;
   private String deplId = null;
+  private String deplName = null;
   private String description = null;
   private Date date = null;
   private List<VM> vms = new ArrayList<VM>();
@@ -78,6 +79,19 @@ public class Snapshot   {
   }
   public void setDeplId(String deplId) {
     this.deplId = deplId;
+  }
+
+  
+  /**
+   **/
+  
+  @ApiModelProperty(value = "")
+  @JsonProperty("deplName")
+  public String getDeplName() {
+    return deplName;
+  }
+  public void setDeplName(String deplName) {
+    this.deplName = deplName;
   }
 
   
@@ -149,6 +163,7 @@ public class Snapshot   {
         Objects.equals(experimentId, snapshot.experimentId) &&
         Objects.equals(name, snapshot.name) &&
         Objects.equals(deplId, snapshot.deplId) &&
+        Objects.equals(deplName, snapshot.deplName) &&
         Objects.equals(description, snapshot.description) &&
         Objects.equals(date, snapshot.date) &&
         Objects.equals(vms, snapshot.vms) &&
@@ -157,7 +172,7 @@ public class Snapshot   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, experimentId, name, deplId, description, date, vms, measures);
+    return Objects.hash(id, experimentId, name, deplId, deplName, description, date, vms, measures);
   }
 
   @Override
@@ -169,6 +184,7 @@ public class Snapshot   {
     sb.append("    experimentId: ").append(toIndentedString(experimentId)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    deplId: ").append(toIndentedString(deplId)).append("\n");
+    sb.append("    deplName: ").append(toIndentedString(deplName)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    vms: ").append(toIndentedString(vms)).append("\n");

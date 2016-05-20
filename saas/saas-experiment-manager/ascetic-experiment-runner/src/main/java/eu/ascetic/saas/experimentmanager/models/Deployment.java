@@ -8,12 +8,16 @@ import java.util.stream.Collectors;
 
 public class Deployment {
 	
+	private String name;
+	
+	
 	public Deployment(){
 		
 	}
 	
-	public Deployment(String id, List<Component> components){
+	public Deployment(String id, String name, List<Component> components){
 		this.id = id;
+		this.setName(name);
 		this.components = components;
 		linkComponents();
 	}
@@ -36,6 +40,14 @@ public class Deployment {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	private String id;

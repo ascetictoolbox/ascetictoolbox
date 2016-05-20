@@ -7,15 +7,17 @@ public class Experiment {
 	
 	private String name;
 	private String applicationId;
+	private String applicationName;
 	
 	private List<Event> event;
 	private List<Deployment> deployments;
 	private List<KPI> kpis;
 	
 	
-	public Experiment(String name, String applicationId, List<Event> event, List<Deployment> deployments, List<KPI> kpis) {
+	public Experiment(String name, String applicationId, String applicationName, List<Event> event, List<Deployment> deployments, List<KPI> kpis) {
 		this.name = name;
 		this.applicationId = applicationId;
+		this.applicationName = applicationName;
 		this.event = event;
 		this.deployments = deployments;
 		this.kpis = kpis;
@@ -64,6 +66,14 @@ public class Experiment {
 			}
 		}
 		return null;
+	}
+
+	public String getApplicationName() {
+		return applicationName;
+	}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
 	}
 
 	

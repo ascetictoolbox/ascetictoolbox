@@ -158,6 +158,8 @@ definitions:
         type: "string"
       deplId:
         type: "string"
+      deplName:
+        type: "string"
       description:
         type: "string"
       date:
