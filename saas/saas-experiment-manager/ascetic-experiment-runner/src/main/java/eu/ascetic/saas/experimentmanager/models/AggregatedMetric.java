@@ -21,11 +21,7 @@ public class AggregatedMetric extends Metric {
 	@Override
 	public String get(Scope scope) throws MetricDefinitionIncorrectException, NoMeasureException {
 		Double res=0.;
-		for (ScopableItem spi:scope.getScopableItems()){
-			Scope subscope = new Scope(
-					"subscope of"+this.name,
-					new ArrayList<ScopableItem>(){{add(spi);}},
-					scope.getCategory());
+		for (Scope subscope:scope.subScopes()){
 			res += Double.parseDouble(metric.get(subscope));
 		}
 		

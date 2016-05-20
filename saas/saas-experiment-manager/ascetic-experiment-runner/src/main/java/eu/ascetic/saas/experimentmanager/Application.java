@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.ascetic.saas.experimentmanager.business.ExperimentHandler;
+import eu.ascetic.saas.experimentmanager.factories.ScopeFactory;
 import eu.ascetic.saas.experimentmanager.models.Component;
 import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Event;
@@ -62,36 +63,6 @@ public class Application {
 		return exp;
 	}
 	
-	public static List<Scope> getFullDeploymentScope(String appId, String deplId, List<String> events, List<String> vms){
-		List<Scope> scopes = new ArrayList<>();
-		List<ScopableItem> items = new ArrayList<ScopableItem>();
-		
-		for (String event:events){
-			for(String vm: vms){
-				items.add(new ScopableItem(appId, deplId, vm, event));
-			}
-		}
-		
-		scopes.add(new Scope("Scope covering the full deployment item (event and components)",items,"Deployment"));
-		return scopes;
-	}
-	
-	public static List<Scope> getScopeByEvent(String appId, String deplId, List<String> events, List<String> vms){
-		List<Scope> scopes = new ArrayList<>();
-		
-		for (String event:events){
-			List<ScopableItem> items = new ArrayList<ScopableItem>();
-			for(String vm: vms){
-				items.add(new ScopableItem(appId, deplId, vm, event));
-			}
-			
-			Scope s = new Scope("Scope covering the full deployment item (event and components)",items,"Deployment");
-			scopes.add(s);
-		}
-		
-		
-		return scopes;
-	}
 
 	public static void main(String[] args) throws Exception{
 		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -105,7 +76,8 @@ public class Application {
 		try {
 			System.out.println("start");
 			List<String> vms = exp.getDeployment("490").getComponents().stream().map(comp -> comp.getName()).collect(Collectors.toList());
-			List<Scope> eventScopes = getScopeByEvent("newsAsset", "490", eventNames(), vms);
+			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", "490", eventNames(), vms);
+			System.out.println("number of scopes : "+ eventScopes.size());
 			Map<KPI,List<Scope>> scopes = new HashMap<>();
 			for(KPI kpi:exp.getKpis()){
 				scopes.put(kpi,eventScopes);

@@ -60,6 +60,8 @@ public class ExperimentHandler {
 	}
 	
 	public Measure measure(Metric metric, Scope s) throws Exception{
+		Logger.getLogger("ExperimentHandler").info("computing measure for metric "
+				+metric.getName() +  " on scope on size "+s.getScopableItems().size());
 		Measure m = new Measure();
 		m.setMetric(metric.getName());
 		m.setRefersTo(s.getRefersTo().stream().map(str->{

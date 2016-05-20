@@ -3893,6 +3893,7 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/IncorrectScopeException.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/MetricDefinitionIncorrectException.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/NoMeasureException.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/factories/ScopeFactory.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/AggregatedMetric.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Component.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Deployment.java -text
@@ -3907,6 +3908,7 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/WebserviceValue.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProvider.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProviderImpl.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/util/Generator.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/wslayer/Handler.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/wslayer/JSONHandler.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/wslayer/RESSOURCEFORMAT.java -text
@@ -3922,6 +3924,7 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/beans.
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/eu/ascetic/saas/experimentmanager/runner/runner.properties -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/events.xml -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/kpis.xml -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/test/java/eu/ascetic/saas/experimentmanager/util/GeneratorTest.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/META-INF/persistence.xml -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/README.md -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/build.gradle -text

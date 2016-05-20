@@ -1,5 +1,6 @@
 package eu.ascetic.saas.experimentmanager.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,18 @@ public class Scope {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+	
+	
+	public List<Scope> subScopes(){
+		List<Scope> subscopes = new ArrayList<>(); 
+		for (ScopableItem spi:this.getScopableItems()){
+			subscopes.add(new Scope(
+					getDescription()+" (subscope)",
+					new ArrayList<ScopableItem>(){{add(spi);}},
+					this.getCategory()));
+		}
+		return subscopes;
 	}
 
 }

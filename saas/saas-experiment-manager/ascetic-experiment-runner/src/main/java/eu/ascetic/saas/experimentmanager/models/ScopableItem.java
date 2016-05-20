@@ -1,42 +1,38 @@
 package eu.ascetic.saas.experimentmanager.models;
 
+import java.util.Map;
 
+/**
+ * 
+ * @author ddu
+ *
+ * Be care that location map's values shall support the toString() method
+ *
+ */
 public class ScopableItem {
-
-	public String getReference(){
-		return applicationId+"/"+deplId+"/"+vmId+"/"+eventId;
-	}
 	
-	private String applicationId;
-	private String deplId;
-	private String vmId;
-	private String eventId;
+	private Map<String,Object> location;
 	
-	public ScopableItem(String applicationId, String deplId, String vmId, String eventId) {
+	public ScopableItem(Map<String,Object> location) {
 		super();
-		this.applicationId = applicationId;
-		this.deplId = deplId;
-		this.vmId = vmId;
-		this.eventId = eventId;
-	}
-
-	public String getApplicationId() {
-		return applicationId;
-	}
-
-	public String getDeplId() {
-		return deplId;
-	}
-
-	public String getVmId() {
-		return vmId;
-	}
-
-	public String getEventId() {
-		return eventId;
+		this.location = location;
 	}
 	
+	public Map<String,Object> getLocation(){
+		return this.location;
+	}
+
 	
-	
+	public String getReference(){
+		StringBuilder sb = new StringBuilder();
+		for(Map.Entry<String,Object> e:location.entrySet()){
+			sb.append('/');
+			sb.append(e.getKey());
+			sb.append(':');
+			sb.append(e.getValue().toString());
+		}
+		
+		return sb.toString();
+	}
 
 }

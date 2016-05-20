@@ -40,6 +40,15 @@ public class WebserviceValue extends Metric {
 		this.format = format;
 	}
 	
+	/**
+	 * This method just replace a set of labels in a string by a value.
+	 * 
+	 * 
+	 * 
+	 * @param pattern the string in which replace terms
+	 * @param parametrization
+	 * @return
+	 */
 	private String instanciate(String pattern, Map<String,Object> parametrization) {
 		if(pattern==null) return null;
 		String instanciation = new String(pattern);
@@ -63,11 +72,7 @@ public class WebserviceValue extends Metric {
 		
 		ScopableItem item = scope.getScopableItems().get(0);
 		
-		Map<String, Object> parametrization = new HashMap<String,Object>();
-		parametrization.put("appId", item.getApplicationId());
-		parametrization.put("deplId", item.getDeplId());
-		parametrization.put("event", item.getEventId());
-		parametrization.put("vmId", item.getVmId());
+		Map<String, Object> parametrization = item.getLocation();
 		
 		String url = instanciate(urlPattern,parametrization);
 		String post = instanciate(postPattern,parametrization);

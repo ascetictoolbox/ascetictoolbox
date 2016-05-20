@@ -27,6 +27,14 @@
 		</constructor-arg>
 	</bean>
 	
+	<bean id="DurationKPI" class="eu.ascetic.saas.experimentmanager.models.KPI">
+		<constructor-arg type="java.lang.String" value="duration-estimation"/>
+		<constructor-arg type="java.lang.String" value="duration of a workload"/>
+		<constructor-arg>
+			<ref bean="DurationMetric"/>
+		</constructor-arg>
+	</bean>
+	
 	<bean id="CostMetric" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
 		<constructor-arg type="java.lang.String" value="cost-estimation"/>
 		<constructor-arg>
@@ -51,8 +59,21 @@
 		</constructor-arg>
 	</bean>
 	
+	<bean id="DurationMetric" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<constructor-arg type="java.lang.String" value="duration-estimation"/>
+		<constructor-arg>
+			<bean id="SimpleDurationEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
+				<constructor-arg type="java.lang.String" value="event-duration"/>
+				<constructor-arg type="java.lang.String" value="${costPattern}"/>
+				<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
+				<constructor-arg type="java.lang.String" value="$..dur"/>
+				<constructor-arg type="java.lang.String" value="FROM events MATCH appId = &quot;:appId&quot; AND deploymentId = &quot;:deplId&quot; AND data.eventType = &quot;:event&quot;, GROUP BY data.eventType , avg(data.duration) as dur"/>
+			</bean>
+		</constructor-arg>
+	</bean>
 	
-	<bean id="EventScope" class="eu.ascetic.saas.experimentmanager.models.Scope">
+	
+	<!-- bean id="EventScope" class="eu.ascetic.saas.experimentmanager.models.Scope">
 		<constructor-arg type="java.lang.String" value="Scope corresponding to whole event for a specific application and deployment"/>
 		<constructor-arg>
 			<list>
@@ -65,7 +86,7 @@
 			</list>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String" value="events"/>
-	</bean>
+	</bean-->
 	
 	
        
