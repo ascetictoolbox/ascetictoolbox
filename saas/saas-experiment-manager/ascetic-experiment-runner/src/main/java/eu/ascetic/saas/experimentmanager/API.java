@@ -23,7 +23,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client.DefaultA
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 
 public class API {
-	public static Snapshot run(Experiment exp, String scopeDefinitionPath){
+	public static Snapshot run(Experiment exp, String deplId, String scopeDefinitionPath){
 		Logger.getLogger("Experiment Runner").info("begin snapshot computation...");
 		Map<String,List<Scope>> scopedefinition = getScope(scopeDefinitionPath);
 		
@@ -31,7 +31,7 @@ public class API {
 		ExperimentHandler mi = (ExperimentHandler) context.getBean("MeasureInterceptor");
 		
 		try {
-			return mi.takeSnapshot(exp, "A snapshot", "This is a snapshot", "490",scopedefinition);
+			return mi.takeSnapshot(exp, "A snapshot", "This is a snapshot", deplId, scopedefinition);
 		} catch (NoMeasureException e) {
 			e.printStackTrace();
 			return null;
