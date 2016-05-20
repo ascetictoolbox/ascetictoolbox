@@ -3886,7 +3886,12 @@ saas/saas-experiment-manager/ascetic-experiment-dashboard/svgtest.html -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/workloads.json -text
 saas/saas-experiment-manager/ascetic-experiment-runner/LICENSE -text
 saas/saas-experiment-manager/ascetic-experiment-runner/README.txt -text
+saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/deployments.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/events.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/kpis.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/scopes.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/pom.xml -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/API.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/Application.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/business/ExperimentAdaptator.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/business/ExperimentHandler.java -text
@@ -3919,13 +3924,14 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/wslayer/exception/WSBaseException.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/wslayer/exception/WSException.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/ascetic-swagger.yaml -text
-saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/beans.out.xml -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/beans.xml -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/eu/ascetic/saas/experimentmanager/runner/runner.properties -text
-saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/events.xml -text
-saas/saas-experiment-manager/ascetic-experiment-runner/src/main/resources/kpis.xml -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/test/java/eu/ascetic/saas/experimentmanager/FunctionalTest.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/java/eu/ascetic/saas/experimentmanager/util/GeneratorTest.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/META-INF/persistence.xml -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/deployments.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/events.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/kpis.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/README.md -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/build.gradle -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/gradle.properties -text

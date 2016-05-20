@@ -14,7 +14,7 @@
 	<bean id="KPIs" class="java.util.ArrayList">
 		<constructor-arg>
 			<list>
-				<ref bean="CostKPI"/>
+				<ref bean="duration-estimation"/>
 			</list>
 		</constructor-arg>
 	</bean>
@@ -27,7 +27,7 @@
 		</constructor-arg>
 	</bean>
 	
-	<bean id="DurationKPI" class="eu.ascetic.saas.experimentmanager.models.KPI">
+	<bean id="duration-estimation" class="eu.ascetic.saas.experimentmanager.models.KPI">
 		<constructor-arg type="java.lang.String" value="duration-estimation"/>
 		<constructor-arg type="java.lang.String" value="duration of a workload"/>
 		<constructor-arg>
@@ -64,30 +64,12 @@
 		<constructor-arg>
 			<bean id="SimpleDurationEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
 				<constructor-arg type="java.lang.String" value="event-duration"/>
-				<constructor-arg type="java.lang.String" value="${costPattern}"/>
-				<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
+				<constructor-arg type="java.lang.String" value="${durationPattern}"/>
+				<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="JSON"/>
 				<constructor-arg type="java.lang.String" value="$..dur"/>
 				<constructor-arg type="java.lang.String" value="FROM events MATCH appId = &quot;:appId&quot; AND deploymentId = &quot;:deplId&quot; AND data.eventType = &quot;:event&quot;, GROUP BY data.eventType , avg(data.duration) as dur"/>
 			</bean>
 		</constructor-arg>
 	</bean>
-	
-	
-	<!-- bean id="EventScope" class="eu.ascetic.saas.experimentmanager.models.Scope">
-		<constructor-arg type="java.lang.String" value="Scope corresponding to whole event for a specific application and deployment"/>
-		<constructor-arg>
-			<list>
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.lang.String" value="newsAsset"/>
-					<constructor-arg type="java.lang.String" value="490"/>
-					<constructor-arg type="java.lang.String" value="1765"/>
-					<constructor-arg type="java.lang.String" value="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
-				</bean>
-			</list>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String" value="events"/>
-	</bean-->
-	
-	
-       
+	   
 </beans>

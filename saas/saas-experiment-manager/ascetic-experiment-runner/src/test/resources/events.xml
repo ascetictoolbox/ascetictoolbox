@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	
+	<bean id="Events" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<value>Create-Object-Light-Load-9</value>
+				<value>Update-Object-Light-Load-8</value>
+				<value>Get-Attachment-Contents-Light-Load-8</value>
+				<value>Simple-Search-Light-Load-8</value>
+				<value>GROUP-Advanced-Editor-Medium-Video-Light-Load-8</value>
+				<value>GROUP-Advanced-Editor-Large-Video-Light-Load-7</value>
+				<value>Group-Advanced-Editor-Large-Image-Light-Load-7</value>
+				<value>GROUP-Simple-Editor-Small-Video-Light-Load-7</value>
+				<value>GROUP-Advanced-Editor-Small-Image-Light-Load-7</value>
+				<value>GROUP-Simple-Editor-Large-Video-Light-Load-7</value>
+				<value>GROUP-Simple-Editor-Small-Image-Light-Load-7</value>
+				<value>GROUP-Simple-Editor-Medium-Video-Light-Load-7</value>
+				<value>Create-Object-Light-Load-8</value>
+				<value>Update-Object-Light-Load-7</value>
+				<value>Group-External-User-Light-Load-7</value>
+				<value>GROUP-Simple-Editor-Medium-Image-Light-Load-7</value>
+				<value>GROUP-Advanced-Editor-Medium-Video-Light-Load-7</value>
+				<value>Get-Object-Light-Load-8</value>
+				<value>GROUP-Simple-Editor-Large-Image-Light-Load-7</value>
+				<value>Get-Object-Light-Load-7</value>
+				<value>Get-Attachment-FileNames-Light-Load-7</value>
+				<value>Simple-Search-Light-Load-7</value>
+				<value>Get-Attachment-Contents-Light-Load-7</value>
+				<value>Advanced-Search-Light-Load-7</value>
+				<value>Store-Object-Light-Load-7</value>
+				<value>GROUP-Advanced-Editor-Medium-Image-Light-Load-7</value>
+				<value>Create-Object-Light-Load-7</value>
+				<value>GROUP-Advanced-Editor-Small-Image-Light-Load-8</value>
+				<value>Create-Object-Light-Load-1</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+</beans>

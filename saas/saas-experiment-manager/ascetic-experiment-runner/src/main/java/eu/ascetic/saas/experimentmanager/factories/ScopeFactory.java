@@ -6,7 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import eu.ascetic.saas.experimentmanager.models.Component;
+import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.ScopableItem;
 import eu.ascetic.saas.experimentmanager.models.Scope;
 import eu.ascetic.saas.experimentmanager.util.Generator;
@@ -66,16 +69,18 @@ public class ScopeFactory {
 	}
 	
 	public static List<Scope> getScopeByEvent(String appId, 
-			String deplId, List<String> events, List<String> vms){
+			String deplId, List<Event> events, List<Component> components){
 		LinkedList<LinkedList<String>> axes = new LinkedList<>();
-		axes.add(new LinkedList<String>(vms));
+		axes.add(new LinkedList<String>(
+				components.stream().map(c -> c.getName()).collect(Collectors.toList())));
 		
 		List<String> staticPart=new ArrayList<String>(){{
 			add(appId);
 			add(deplId);
 		}};
 		
-		List<String> pivots=events;
+		List<String> pivots=events.stream()
+				.map(e -> e.getName()).collect(Collectors.toList());
 		
 		return generateScopes("Events", staticPart, 
 				pivots,axes,itemLabels);

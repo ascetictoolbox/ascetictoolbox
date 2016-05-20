@@ -16,16 +16,17 @@ import eu.ascetic.saas.experimentmanager.wslayer.exception.WSException;
 public class WSBasic {
 	
 	private static InputStream getFromUrl(String url,String accept,String post) throws WSException{
-		Logger.getLogger("WSBasic").info("Querying " + url + " ... ");
 		Client client = Client.create();
 		WebResource webResource = client.resource(url);
 
 		ClientResponse response;
 		if(post==null){
+			Logger.getLogger("WSBasic").info("Querying " + url + " ... ");
 			response = webResource.accept(accept)
 	                   .get(ClientResponse.class);
 		}
 		else{
+			Logger.getLogger("WSBasic").info("Querying " + url + " ... with post: "+post);
 			response = webResource.accept(accept).header("Content-Type", "text/plain")
                    .post(ClientResponse.class,post);
 		}
@@ -36,6 +37,7 @@ public class WSBasic {
 				+ response.getStatus());
 			}
 		
+		Logger.getLogger("WSBasic").info("Response : "+response.toString());
 		return response.getEntity(InputStream.class);
 	}
 	

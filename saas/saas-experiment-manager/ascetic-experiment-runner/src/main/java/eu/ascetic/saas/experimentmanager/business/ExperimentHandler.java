@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
+import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
@@ -30,7 +32,7 @@ public class ExperimentHandler {
 		this.saaSProvider = provider;
 	}
 	
-	public Snapshot takeSnapshot(Experiment experiment, String label, String description, String deplId, Map<KPI,List<Scope>> scope) throws Exception{
+	public Snapshot takeSnapshot(Experiment experiment, String label, String description, String deplId, Map<String,List<Scope>> scope)  throws MetricDefinitionIncorrectException, NoMeasureException{
 		Deployment deployment = experiment.getDeployment(deplId);
 		
 		Snapshot s= new Snapshot();
@@ -47,19 +49,24 @@ public class ExperimentHandler {
 		return s;
 	}
 	
-	private List<Measure> computeMeasure(Experiment exp, Map<KPI,List<Scope>> scopes) throws Exception{
+	private List<Measure> computeMeasure(Experiment exp, Map<String,List<Scope>> scopes)  throws MetricDefinitionIncorrectException, NoMeasureException{
 		List <Measure> measures = new ArrayList<>();
 		
 		for (KPI kpi: exp.getKpis()){
-			for (Scope scope: scopes.get(kpi)){
-				measures.add(measure(kpi.getMetric(),scope));
+			if (scopes.containsKey(kpi.getName())){
+				for (Scope scope: scopes.get(kpi.getName())){
+					measures.add(measure(kpi.getMetric(),scope));
+				}
+			}
+			else{
+				Logger.getLogger("Experiment Runner").warning("Missing scope definition for kpi " + kpi.getName());
 			}
 		}
 		
 		return measures;
 	}
 	
-	public Measure measure(Metric metric, Scope s) throws Exception{
+	public Measure measure(Metric metric, Scope s) throws MetricDefinitionIncorrectException, NoMeasureException {
 		Logger.getLogger("ExperimentHandler").info("computing measure for metric "
 				+metric.getName() +  " on scope on size "+s.getScopableItems().size());
 		Measure m = new Measure();
