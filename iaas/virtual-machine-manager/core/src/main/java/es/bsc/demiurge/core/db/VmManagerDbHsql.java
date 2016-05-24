@@ -21,6 +21,7 @@ package es.bsc.demiurge.core.db;
 import com.google.gson.Gson;
 import es.bsc.demiurge.core.auth.JdbcUserDao;
 import es.bsc.demiurge.core.auth.UserDao;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
 import org.apache.log4j.Logger;
 
@@ -30,6 +31,9 @@ import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 
 /**
  * This class implements the interaction of the VM Manager with a HSQL database.
@@ -49,6 +53,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     private final Gson gson = new Gson(); // Using JSON provisionally
 
 	private UserDao userDao;
+    private List<Integer> lastRequirementsAdded;
 
     // Error messages
     private static final String ERROR_DB_CONNECTION = "There was an error while connecting to the DB";
@@ -73,6 +78,7 @@ public class VmManagerDbHsql implements VmManagerDb {
 			e.printStackTrace();
         }
 		userDao = new JdbcUserDao(conn);
+        lastRequirementsAdded = new ArrayList<>();
 
 		setupDb();
     }
@@ -177,10 +183,20 @@ public class VmManagerDbHsql implements VmManagerDb {
 			log.error(ERROR_INSERT_VM, e);
         }
     }
+    
+    @Override
+    public void insertVm(String vmId, String appId, String ovfId, String slaId, VmRequirements vmRequirements) {
+        this.insertVm(vmId, appId, ovfId, slaId);
+        //TODO: Include cpu, ram, disk, swap, requirements. Now they are included via OpenStack and cannot be changed.
+        for(Entry<String, String> req : vmRequirements.getOptionalRequirements().entrySet()){
+            insertRequirement(vmId, req.getKey(), req.getValue());
+        }
+    }
 
     @Override
     public void deleteVm(String vmId) {
         try {
+            update("DELETE FROM vm_requirements WHERE fk_id_virtual_machines = '" + vmId + "'");
             update("DELETE FROM virtual_machines WHERE id = '" + vmId + "'");
         } catch (SQLException e) {
 			log.error(ERROR_DELETE_VM,e);
@@ -190,6 +206,7 @@ public class VmManagerDbHsql implements VmManagerDb {
     @Override
     public void deleteAllVms() {
         try {
+            update("DELETE FROM vm_requirements");
             update("DELETE FROM virtual_machines");
         } catch (SQLException e) {
 			log.error(ERROR_DELETE_ALL_VMS, e);
@@ -239,6 +256,23 @@ public class VmManagerDbHsql implements VmManagerDb {
             appId.add("");
         }
         return appId.get(0);
+    }
+    
+    @Override
+    public String getRequirementValue(String vmId, String requirement) {
+        List<String> requirementValue = new ArrayList<>();
+        try {
+            requirementValue = 
+                query("SELECT requirement_value FROM vm_requirements WHERE fk_id_virtual_machines = '" + vmId + "' AND requirement = '" + requirement + "'");
+        } catch (SQLException e) {
+            log.error(e.getMessage(),e);
+        }
+        
+        if (!requirementValue.isEmpty()) {
+            return requirementValue.get(requirementValue.size()-1);
+        }
+        
+        return null;
     }
 
     @Override
@@ -324,4 +358,85 @@ public class VmManagerDbHsql implements VmManagerDb {
 	public UserDao getUserDao() {
 		return userDao;
 	}
+    
+    private int getLastId(String table) {
+        List<String> lastId = new ArrayList<>();
+        try {
+            lastId = query("SELECT max(id) FROM " + table);
+        } catch (SQLException e) {
+            log.error(e.getMessage(),e);
+        }
+        if (!lastId.isEmpty()) {
+            return Integer.parseInt(lastId.get(0));
+        }
+        return -1;
+    }
+    
+    /**
+     * Adds a new requirement to an existing VM. The id must be saved in case we need to rollback.
+     * 
+     * @param vmId
+     * @param requirement
+     * @param value
+     * @return 
+     */
+    @Override
+    public int insertRequirement(String vmId, String requirement, String value) {
+        try {
+            update("INSERT INTO vm_requirements (fk_id_virtual_machines, requirement, requirement_value) VALUES ('" + vmId + "', '" + requirement + "', '" + value + "')");
+        } catch (SQLException e) {
+            log.error(e.getMessage(),e);
+            return -1;
+        }
+        
+        int id = getLastId("vm_requirements");
+        lastRequirementsAdded.add(id);
+        
+        return id;
+    }
+    
+    /**
+     * Inserts a set of requirements for a set of VMs.
+     * 
+     * @param newRequirements a map where each key is a vmId and the value a map with all requirements and its values.
+     */
+    @Override
+    public void insertRequirements(Map<String,Map<String, String>> newRequirements){
+        if(newRequirements == null || newRequirements.isEmpty()){
+            return;
+        }
+        for(String vmId : newRequirements.keySet()){
+            for(Entry<String, String> requirement : newRequirements.get(vmId).entrySet()){
+                insertRequirement(vmId, requirement.getKey(), requirement.getValue());
+            }
+        }
+    }
+    
+    private int deleteRequirement(int id) {
+        try {
+            update("DELETE FROM vm_requirements WHERE id = " + id);
+        } catch (SQLException e) {
+            log.error(e.getMessage(),e);
+        }
+        return 1;
+    }
+    
+    /**
+     * Rollbacks last requirements added to VMs. For that we use the list lastRequirementsAdded which is mantained by insertRequirement method.
+     * TODO: Check situations where this data can become corrupt i.e. VMM turning off in a middle of a rollback.
+     */
+    @Override
+    public void rollbackRequirements() {
+        for(int id : lastRequirementsAdded){
+            deleteRequirement(id);
+        }
+    }
+    
+    /**
+     * We commit last requirements by erasing list of last requirements added (so rollback become impossible after this)
+     */
+    @Override
+    public void commitRequirements() {
+        lastRequirementsAdded.clear();
+    }
 }

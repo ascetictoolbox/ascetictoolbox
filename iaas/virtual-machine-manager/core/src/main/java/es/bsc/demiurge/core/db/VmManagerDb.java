@@ -19,9 +19,11 @@
 package es.bsc.demiurge.core.db;
 
 import es.bsc.demiurge.core.auth.UserDao;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.demiurge.core.selfadaptation.options.SelfAdaptationOptions;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for the connection of the VM Manager with the DB.
@@ -54,6 +56,17 @@ public interface VmManagerDb {
      * @param slaId the SLA ID of the VM
      */
     void insertVm(String vmId, String appId, String ovfId, String slaId);
+    
+    /**
+     * Inserts a VM on the DB.
+     *
+     * @param vmId the ID of the VM to be inserted
+     * @param appId the ID of the application to which the VM belongs to.
+     * @param ovfId the OVF ID of the VM
+     * @param slaId the SLA ID of the VM
+     * @param vmRequirements the requirements that this particular VM has
+     */
+    void insertVm(String vmId, String appId, String ovfId, String slaId, VmRequirements vmRequirements);
 
     /**
      * Deletes a VM from the DB.
@@ -135,5 +148,15 @@ public interface VmManagerDb {
     SelfAdaptationOptions getSelfAdaptationOptions();
 
 	UserDao getUserDao();
+    
+    String getRequirementValue(String vmId, String requirement);
+    
+    int insertRequirement(String vmId, String requirement, String value);
+    
+    void insertRequirements(Map<String,Map<String, String>> newRequirements);
+    
+    void rollbackRequirements();
+    
+    void commitRequirements();
 
 }
