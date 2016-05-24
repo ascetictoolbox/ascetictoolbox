@@ -40,14 +40,6 @@ public class HardwareInfo {
     
     public HardwareInfo() { }
     
-    public HardwareInfo(String hostname, String cpuVendor, String cpuArchitecture, String diskType) {
-        this.hostname = hostname;
-        this.cpuVendor = cpuVendor;
-        this.cpuArchitecture = cpuArchitecture;
-        this.cpuModel = null;
-        this.diskType = diskType;
-    }
-    
     public HardwareInfo(String hostname, String cpuVendor, String cpuArchitecture, String cpuModel, String diskType) {
         this.hostname = hostname;
         this.cpuVendor = cpuVendor;

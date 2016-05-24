@@ -30,14 +30,16 @@ public class HardwareInfo {
     private String hostname;
     private String cpuVendor;
     private String cpuArchitecture;
+    private String cpuModel;
     private String diskType;
     
     public HardwareInfo() { }
     
-    public HardwareInfo(String hostname, String cpuVendor, String cpuArchitecture, String diskType) {
+    public HardwareInfo(String hostname, String cpuVendor, String cpuArchitecture, String cpuModel, String diskType) {
         this.hostname = hostname;
         this.cpuVendor = cpuVendor;
         this.cpuArchitecture = cpuArchitecture;
+        this.cpuModel = cpuModel;
         this.diskType = diskType;
     }
     
@@ -60,6 +62,10 @@ public class HardwareInfo {
             
             if(h1 != null && h2.getCpuVendor() != null){
                 h1.setCpuVendor( h2.getCpuVendor() );
+            }
+            
+            if(h1 != null && h2.getCpuModel() != null){
+                h1.setCpuModel( h2.getCpuModel() );
             }
             
             if(h1 != null && h2.getDiskType() != null){
@@ -112,6 +118,20 @@ public class HardwareInfo {
      */
     public void setCpuArchitecture(String cpuArchitecture) {
         this.cpuArchitecture = cpuArchitecture;
+    }
+
+    /**
+     * @return the cpuModel
+     */
+    public String getCpuModel() {
+        return cpuModel;
+    }
+
+    /**
+     * @param cpuModel the cpuModel to set
+     */
+    public void setCpuModel(String cpuModel) {
+        this.cpuModel = cpuModel;
     }
 
     /**

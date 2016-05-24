@@ -133,8 +133,11 @@ public class SelfAdaptationManager {
                     action, 
                     new ArrayList<Vm>()
                 ).getVMPlacements();
-            vmManager.executeDeploymentPlan(deploymentPlan);
+            
             action.setDeploymentPlan(deploymentPlan);
+            vmManager.executeDeploymentPlan(deploymentPlan);
+            action.setSuccess(true);
+            
         } catch (CloudMiddlewareException e) {
             action.setException(e);
             logger.error(e.getMessage(),e);
@@ -167,8 +170,11 @@ public class SelfAdaptationManager {
                     action, 
                     new ArrayList<Vm>()
                 ).getVMPlacements();
-            vmManager.executeDeploymentPlan(deploymentPlan);
+            
             action.setDeploymentPlan(deploymentPlan);
+            vmManager.executeDeploymentPlan(deploymentPlan);
+            action.setSuccess(true);
+            
         } catch (CloudMiddlewareException e) {
             logger.error(e.getMessage(),e);
             action.setException(e);
@@ -207,12 +213,13 @@ public class SelfAdaptationManager {
                     action,
                     new ArrayList<Vm>()
                 ).getVMPlacements();
-            action.setDeploymentPlan(deploymentPlan);
             
+            action.setDeploymentPlan(deploymentPlan);
             vmManager.executeDeploymentPlan(deploymentPlan);
             db.commitRequirements();
-        }
-        catch(Exception e){
+            action.setSuccess(true);
+            
+        } catch(Exception e){
             logger.error("applyOnDemandSelfAdaptation failed - " + e.getMessage(), e);
             action.setException(e);
             db.rollbackRequirements();
@@ -246,8 +253,9 @@ public class SelfAdaptationManager {
                     new ArrayList<Vm>()
                 ).getVMPlacements();
             
-            vmManager.executeDeploymentPlan(deploymentPlan);
             action.setDeploymentPlan(deploymentPlan);
+            vmManager.executeDeploymentPlan(deploymentPlan);
+            action.setSuccess(true);
             
 		} catch(CloudMiddlewareException ex) {
             logger.error(ex.getMessage(),ex);

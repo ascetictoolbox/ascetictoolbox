@@ -125,6 +125,7 @@ public class VmsManager {
             //optional vm requirements
             vm.setProcessorArchitecture( db.getRequirementValue(vmId, "processor_architecture") );
             vm.setProcessorBrand( db.getRequirementValue(vmId, "processor_brand") );
+            vm.setProcessorModel( db.getRequirementValue(vmId, "processor_model") );
             vm.setDiskType( db.getRequirementValue(vmId, "disk_type") );
         }
         return vm;
@@ -484,6 +485,9 @@ public class VmsManager {
             }
             else if(property.equalsIgnoreCase("architecture") || property.equalsIgnoreCase("arch")){
                 return hostnameHwInfo.getCpuArchitecture();
+            }
+            else if(property.equalsIgnoreCase("model")){
+                return hostnameHwInfo.getCpuModel();
             }
         }
         

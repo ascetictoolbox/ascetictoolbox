@@ -75,7 +75,6 @@ public final class SelfAdaptationAction {
      */
     public void setDeploymentPlan(VmPlacement[] deploymentPlan) {
         this.deploymentPlan = deploymentPlan;
-        this.success = true;
     }
 
     /**
@@ -103,7 +102,6 @@ public final class SelfAdaptationAction {
      * @param exception the exception to set
      */
     public void setException(Exception exception) {
-        this.success = false;
         this.exception = exception.getLocalizedMessage();
     }
 
