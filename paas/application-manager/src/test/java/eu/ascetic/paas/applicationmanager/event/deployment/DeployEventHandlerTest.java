@@ -282,10 +282,10 @@ public class DeployEventHandlerTest extends AbstractTest {
 		when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
 		
 		// We mock the calls to get VMs
-		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
 		
 		// We mock the calls to the PRClient
 		Configuration.providerRegistryEndpoint = "http://provider-registry.com";
@@ -568,11 +568,11 @@ public class DeployEventHandlerTest extends AbstractTest {
 		when(imageDAO.getById(0)).thenReturn(image1, image2, image3, image4);
 		
 		// We mock the calls to get VMs
-		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jboss-vm2")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
-		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "",  "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jboss-vm1")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "",  "10.0.0.2", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jboss-vm2")).thenReturn(new VmDeployed("jbossVM", "jboss-img", 1, 2, 3,  0, "", "", "", "10.0.0.2", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("mysql-vm1")).thenReturn(new VmDeployed("mysqlVM", "mysql-img", 1, 2, 3,  0, "", "", "", "10.0.0.3", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("jmeter-vm1")).thenReturn(new VmDeployed("jmeterVM", "jmeter-img", 1, 2, 3,  0, "", "", "", "10.0.0.4", "ACTIVE", new Date(), ""));
 		
 		// We mock the calls to the PRClient
 		Configuration.providerRegistryEndpoint = "http://provider-registry.com";

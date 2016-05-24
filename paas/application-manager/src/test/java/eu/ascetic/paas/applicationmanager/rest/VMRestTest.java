@@ -1146,7 +1146,7 @@ public class VMRestTest extends AbstractTest {
 		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
 		
 		// We mock the calls to get VMs
-		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
 		
 		// Test 1
 		VMRest vmRest = new VMRest();
@@ -1232,7 +1232,7 @@ public class VMRestTest extends AbstractTest {
 		
 		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
 		// We mock the calls to get VMs
-		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
 		
 		//We mock the image DAO
 		ImageDAO imageDAO = mock(ImageDAO.class);

@@ -30,45 +30,45 @@ public class VmWithEquals extends Vm {
 
         Vm vm = (Vm) obj;
         
-        if(this.ovfId == null) {
+        if(this.getOvfId() == null) {
         	if(vm.getOvfId() != null) {
         		return false;
         	}
-        } else if(!this.ovfId.equals(vm.getOvfId())) {
+        } else if(!this.getOvfId().equals(vm.getOvfId())) {
         	return false;
         }
         
         
-        if(this.name == null) {
+        if(this.getName() == null) {
         	if(vm.getName() != null ) {
         		return false;
         	}
-        } else if(!this.name.equals(vm.getName())) {
+        } else if(!this.getName().equals(vm.getName())) {
         	return false;
         }
         
         
-        if(this.image == null) {
+        if(this.getImage() == null) {
         	if(vm.getImage() != null) {
         		return false;
         	}
-        } else if(!this.image.equals(vm.getImage())) {
+        } else if(!this.getImage().equals(vm.getImage())) {
         	return false;
         }
         
-        if(this.initScript == null) {
+        if(this.getInitScript() == null) {
         	if(vm.getInitScript() != null) {
         		return false;
         	}
-        } else if(!this.initScript.equals(vm.getInitScript())) {
+        } else if(!this.getInitScript().equals(vm.getInitScript())) {
         	return false;
         }
         
-        if(this.applicationId == null) {
+        if(this.getApplicationId() == null) {
         	if(vm.getApplicationId() != null) {
         		return false;
         	}
-        } else if(!this.applicationId.equals(vm.getApplicationId())) {
+        } else if(!this.getApplicationId().equals(vm.getApplicationId())) {
         	return false;
         } 
         
@@ -82,11 +82,11 @@ public class VmWithEquals extends Vm {
 //        	return false;
 //        }
         
-        if(this.cpus == vm.getCpus()
-           && this.ramMb == vm.getRamMb()
-           && this.diskGb == vm.getDiskGb()
-           && this.swapMb == vm.getSwapMb()
-           && this.needsFloatingIp == vm.needsFloatingIp()) {
+        if(this.getCpus() == vm.getCpus()
+           && this.getRamMb() == vm.getRamMb()
+           && this.getDiskGb() == vm.getDiskGb()
+           && this.getSwapMb() == vm.getSwapMb()
+           && this.needsFloatingIp() == vm.needsFloatingIp()) {
         	return true;
         } else {
         	return false;
