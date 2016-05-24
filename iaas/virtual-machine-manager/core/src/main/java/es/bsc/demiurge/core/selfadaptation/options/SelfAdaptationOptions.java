@@ -26,13 +26,16 @@ public class SelfAdaptationOptions {
     private final AfterVmDeploymentSelfAdaptationOps afterVmDeploymentSelfAdaptationOps;
     private final AfterVmDeleteSelfAdaptationOps afterVmDeleteSelfAdaptationOps;
     private final PeriodicSelfAdaptationOps periodicSelfAdaptationOps;
+    private final OnDemandSelfAdaptationOps onDemandSelfAdaptationOps;
 
     public SelfAdaptationOptions(AfterVmDeploymentSelfAdaptationOps afterVmDeploymentSelfAdaptationOps,
                                  AfterVmDeleteSelfAdaptationOps afterVmDeleteSelfAdaptationOps,
-                                 PeriodicSelfAdaptationOps periodicSelfAdaptationOps) {
+                                 PeriodicSelfAdaptationOps periodicSelfAdaptationOps,
+                                 OnDemandSelfAdaptationOps onDemandSelfAdaptationOps) {
         this.afterVmDeploymentSelfAdaptationOps = afterVmDeploymentSelfAdaptationOps;
         this.afterVmDeleteSelfAdaptationOps = afterVmDeleteSelfAdaptationOps;
         this.periodicSelfAdaptationOps = periodicSelfAdaptationOps;
+        this.onDemandSelfAdaptationOps = onDemandSelfAdaptationOps;
     }
 
     public AfterVmDeploymentSelfAdaptationOps getAfterVmDeploymentSelfAdaptationOps() {
@@ -46,6 +49,10 @@ public class SelfAdaptationOptions {
     public PeriodicSelfAdaptationOps getPeriodicSelfAdaptationOps() {
         return periodicSelfAdaptationOps;
     }
+    
+    public OnDemandSelfAdaptationOps getOnDemandSelfAdaptationOps() {
+        return onDemandSelfAdaptationOps;
+    }
 
     @Override
     public String toString() {
@@ -53,6 +60,7 @@ public class SelfAdaptationOptions {
                 "afterVmDeploymentSelfAdaptationOps=" + afterVmDeploymentSelfAdaptationOps +
                 ", afterVmDeleteSelfAdaptationOps=" + afterVmDeleteSelfAdaptationOps +
                 ", periodicSelfAdaptationOps=" + periodicSelfAdaptationOps +
+                ", onDemandSelfAdaptationOps=" + onDemandSelfAdaptationOps +
                 '}';
     }
 }

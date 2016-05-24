@@ -20,6 +20,7 @@ package es.bsc.vmm.ascetic.vmplacement;
 
 import es.bsc.demiurge.core.clopla.domain.Vm;
 import es.bsc.demiurge.core.models.hosts.HardwareInfo;
+import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
 
 import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
@@ -50,9 +51,10 @@ public class CloplaConversorTest {
         List<VmDeployed> vmsDeployed = new ArrayList<>();
         vmsDeployed.add(new VmDeployed("vm", "fakeImage", 1, 1024, 1, 0, "", "appId", "vmId", "172.16.8.1", "ACTIVE",
                 new Date(), "host1"));
-
+        
+        SelfAdaptationAction action = new SelfAdaptationAction(false);
         Vm cloplaVm = cc.getCloplaVms(vmsDeployed, new ArrayList<es.bsc.demiurge.core.models.vms.Vm>(),
-                new ArrayList<es.bsc.demiurge.core.clopla.domain.Host>(), false).get(0);
+                new ArrayList<es.bsc.demiurge.core.clopla.domain.Host>(), action).get(0);
         assertEquals(1, cloplaVm.getNcpus());
         assertEquals(1024, cloplaVm.getRamMb());
         assertEquals(1, cloplaVm.getDiskGb());

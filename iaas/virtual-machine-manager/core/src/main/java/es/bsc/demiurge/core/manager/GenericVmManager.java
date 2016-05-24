@@ -309,15 +309,15 @@ public class GenericVmManager implements VmManager {
      * This function calculates a deployment plan based on a request. It uses the VM placement library.
      *
      * @param recommendedPlanRequest the request
-     * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
+     * @param selfAdaptationAction indicates whether the hosts should be set in the VM instances
      * @param vmsToDeploy list of VMs that need to be deployed
      * @return the recommended plan
      */
     @Override
     public RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
-                                              boolean assignVmsToCurrentHosts,
+                                              SelfAdaptationAction selfAdaptationAction,
                                               List<Vm> vmsToDeploy) throws CloudMiddlewareException {
-        return vmPlacementManager.getRecommendedPlan(db.getCurrentSchedulingAlg(),recommendedPlanRequest, assignVmsToCurrentHosts, vmsToDeploy, vmsManager.getHardwareInfo());
+        return vmPlacementManager.getRecommendedPlan(db.getCurrentSchedulingAlg(),recommendedPlanRequest, selfAdaptationAction, vmsToDeploy, vmsManager.getHardwareInfo());
     }
 
     /**
@@ -416,7 +416,7 @@ public class GenericVmManager implements VmManager {
     public void doInitActions() {
         this.cloudMiddleware = conf.getCloudMiddleware();
 
-        selfAdaptationManager = new SelfAdaptationManager(this, GenericVmManager.conf.dbName);
+        selfAdaptationManager = new SelfAdaptationManager(this, GenericVmManager.conf.dbName, conf.getVmmGlobalListeners());
 
         // Initialize all the VMM components
         imageManager = new ImageManager(cloudMiddleware);
@@ -488,20 +488,42 @@ public class GenericVmManager implements VmManager {
     public VmsManager getVmsManager() {
         return vmsManager;
     }
-
+    
+    /**
+     * Starts a self-adaptation thread triggered externally.
+     * 
+     * @throws CloudMiddlewareException 
+     */
     @Override
     public void executeOnDemandSelfAdaptation() throws CloudMiddlewareException {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    log.debug("Starting new Thread for self-adaptaion");
-                    selfAdaptationManager.applyOnDemandSelfAdaptation();
-                    log.debug("Self-adaptation thread ended");
-
-                } catch (CloudMiddlewareException e) {
-                    log.error(e.getMessage(),e);
-                }
+                log.debug("Starting new Thread for self-adaptaion");
+                selfAdaptationManager.applyOnDemandSelfAdaptation(
+                        new SelfAdaptationAction()
+                );
+                log.debug("Self-adaptation thread ended");
+            }
+        },"onDemandSelfAdaptationThread").start();
+    }
+    
+    /**
+     * Executes a self-adaptation thread based on new requirements that can be obtained from SLAm.
+     * 
+     * @param slamMessage the message received via SLA manager.
+     * @throws CloudMiddlewareException 
+     */
+    @Override
+    public void executeOnDemandSelfAdaptation(final String slamMessage) throws CloudMiddlewareException {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                log.debug("Starting new Thread for self-adaptaion");
+                selfAdaptationManager.applyOnDemandSelfAdaptation( 
+                    new SelfAdaptationAction(slamMessage) 
+                );
+                log.debug("Self-adaptation thread ended");
             }
         },"onDemandSelfAdaptationThread").start();
     }

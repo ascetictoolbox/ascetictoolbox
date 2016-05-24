@@ -21,6 +21,7 @@ package es.bsc.demiurge.core.clopla.placement.scorecalculators;
 
 import es.bsc.demiurge.core.clopla.domain.ClusterState;
 import es.bsc.demiurge.core.clopla.domain.Host;
+import es.bsc.demiurge.core.clopla.domain.Vm;
 
 /**
  * This class includes score functions that are used in several score calculators.
@@ -28,14 +29,13 @@ import es.bsc.demiurge.core.clopla.domain.Host;
  * @author Mario Macias (github.com/mariomac), David Ortiz (david.ortiz@bsc.es)
  */
 public abstract class ScoreCalculatorCommon {
-
     public final static int PENALTY_FOR_MOVING_FIXED_VMS = 10000;
-    public final static int PENALTY_FOR_WRONG_HARDWARE = 10000;
+    public final static int PENALTY_FOR_WRONG_HARDWARE = 9000;
 
     public static double getClusterOverCapacityScore(ClusterState clusterState) {
         double result = 0;
         for (Host host: clusterState.getHosts()) {
-            result -= host.getOverCapacityScore(clusterState.getVms());
+            result -= host.getOverCapacityScore(clusterState.getVmsDeployedInHost(host));
         }
         return result;
     }
@@ -43,7 +43,10 @@ public abstract class ScoreCalculatorCommon {
     public static double getClusterHardwareScore(ClusterState clusterState) {
         double result = 0;
         for (Host host: clusterState.getHosts()) {
-            if(!host.matchesHardwareRequirements(clusterState.getVms())){
+            //System.out.println("Host=" + host.toString());
+            //for(Vm vm : clusterState.getVmsDeployedInHost(host)){ System.out.println("vm=" + vm.toString()); }
+            
+            if(!host.matchesHardwareRequirements(clusterState.getVmsDeployedInHost(host))){
                 result -= PENALTY_FOR_WRONG_HARDWARE;
             }
         }
@@ -56,7 +59,7 @@ public abstract class ScoreCalculatorCommon {
     public static double getClusterPenaltyScoreForFixedVms(ClusterState clusterState) {
         double result = 0;
         for (Host host: clusterState.getHosts()) {
-            if (host.missingFixedVMs(clusterState.getVms())) {
+            if (host.missingFixedVMs(clusterState.getVmsDeployedInHost(host))) {
                 result -= PENALTY_FOR_MOVING_FIXED_VMS;
             }
         }

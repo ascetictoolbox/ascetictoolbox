@@ -5,6 +5,12 @@ CREATE TABLE IF NOT EXISTS virtual_machines
   slaId VARCHAR(255),
 PRIMARY KEY (id)) ;
 
+CREATE TABLE IF NOT EXISTS vm_requirements(
+  id IDENTITY,
+  fk_id_virtual_machines VARCHAR(255) FOREIGN KEY REFERENCES virtual_machines(id),
+  requirement VARCHAR(255),
+  requirement_value VARCHAR(255)) ;
+
 CREATE TABLE IF NOT EXISTS current_scheduling_alg
 (algorithm VARCHAR(255),
 PRIMARY KEY (algorithm));
@@ -15,7 +21,7 @@ CREATE TABLE IF NOT EXISTS self_adaptation_options
 CREATE TABLE IF NOT EXISTS users
 (
   username VARCHAR(256) UNIQUE not null,
-password VARCHAR(2048) NOT NULL,
+  password VARCHAR(2048) NOT NULL,
   enabled BOOLEAN not null
 );
 

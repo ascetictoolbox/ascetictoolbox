@@ -9,25 +9,25 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-	<groupId>es.bsc.demiurge.assemblies</groupId>
+    <groupId>es.bsc.demiurge.assemblies</groupId>
     <artifactId>ascetic</artifactId>
 
-	<repositories>
-		<!-- ASCETiC's private repo -->
-		<repository>
-			<id>ascetic-repository</id>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<name>repo</name>
-			<url>https://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <!-- ASCETiC's private repo -->
+        <repository>
+            <id>ascetic-repository</id>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <name>repo</name>
+            <url>https://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -50,26 +50,26 @@
             <artifactId>energy-modeller</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-		<dependency>
+	<dependency>
             <groupId>eu.ascetic.iaas</groupId>
             <artifactId>iaas-pricing-modeller</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.3.2</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.4</version>
-		</dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -99,6 +99,11 @@
             <artifactId>fake-plugins</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+                <groupId>org.apache.qpid</groupId>
+                <artifactId>qpid-jms-client</artifactId>
+                <version>0.1.0</version>
         </dependency>
 	</dependencies>
 

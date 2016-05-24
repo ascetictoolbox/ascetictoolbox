@@ -37,6 +37,7 @@ public class Vm extends AbstractPersistable {
     private int diskGb;
     private String processorArchitecture = null;
     private String processorBrand = null;
+    private String processorModel = null;
     private String diskType = null;
     private String appId;
     private Host host; // The host where the Vm should be deployed according to the planner.
@@ -54,6 +55,7 @@ public class Vm extends AbstractPersistable {
         private final int diskGb;
         private String processorArchitecture = null;
         private String processorBrand = null;
+        private String processorModel = null;
         private String diskType = null;
         
         // Optional parameters
@@ -67,16 +69,18 @@ public class Vm extends AbstractPersistable {
             this.diskGb = diskGb;
             this.processorArchitecture = null;
             this.processorBrand = null;
+            this.processorModel = null;
             this.diskType = null;
         }
         
-        public Builder (Long id, int ncpus, int ramMb, int diskGb, String processorArchitecture, String processorBrand, String diskType) {
+        public Builder (Long id, int ncpus, int ramMb, int diskGb, String processorArchitecture, String processorBrand, String processorModel, String diskType) {
             this.id = id;
             this.ncpus = ncpus;
             this.ramMb = ramMb;
             this.diskGb = diskGb;
             this.processorArchitecture = processorArchitecture;
             this.processorBrand = processorBrand;
+            this.processorModel = processorModel;
             this.diskType = diskType;
         }
         
@@ -93,7 +97,6 @@ public class Vm extends AbstractPersistable {
         public Vm build() {
             return new Vm(this);
         }
-        
     }
     
     private Vm(Builder builder) {
@@ -103,6 +106,7 @@ public class Vm extends AbstractPersistable {
         diskGb = builder.diskGb;
         processorArchitecture = builder.processorArchitecture;
         processorBrand = builder.processorBrand;
+        processorModel = builder.processorModel;
         diskType = builder.diskType;
         appId = builder.appId;
         alphaNumericId = builder.alphaNumericId;
@@ -152,6 +156,14 @@ public class Vm extends AbstractPersistable {
         this.processorBrand = processorBrand;
     }
     
+    public String getProcessorModel() {
+        return processorModel;
+    }
+    
+    public void setProcessorModel(String processorModel) {
+        this.processorModel = processorModel;
+    }
+    
     public String getDiskType() {
         return diskType;
     }
@@ -176,11 +188,28 @@ public class Vm extends AbstractPersistable {
     public void setHost(Host host) {
         this.host = host;
     }
+    
+    public String toStringOptionals() {
+        String optionals = "";
+        if(this.processorArchitecture != null){
+            optionals += "processorArchitecture:'" + processorArchitecture + "'";
+        }
+        if(this.processorBrand != null){
+            optionals += ", processorBrand:'" + processorBrand + "'";
+        }
+        if(this.processorModel != null){
+            optionals += ", processorModel:'" + processorModel + "'";
+        }
+        if(this.diskType != null){
+            optionals += ", diskType:'" + diskType + "'";
+        }
+        
+        return optionals;
+    }
 
     @Override
     public String toString() {
         return "VM - ID:" + id.toString() + ", cpus:" + ncpus + ", ram:" + ramMb + ", disk:" + diskGb
-                + ", app:" + appId;
+                + ", app:" + appId + "; OPTIONALS= " + toStringOptionals();
     }
-
 }

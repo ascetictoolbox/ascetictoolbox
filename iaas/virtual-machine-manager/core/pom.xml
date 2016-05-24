@@ -206,6 +206,11 @@
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
 		</dependency>
+                <dependency>
+                        <groupId>org.json</groupId>
+                        <artifactId>json</artifactId>
+                        <version>20160212</version>
+                </dependency>
 	</dependencies>
 
 	<build>

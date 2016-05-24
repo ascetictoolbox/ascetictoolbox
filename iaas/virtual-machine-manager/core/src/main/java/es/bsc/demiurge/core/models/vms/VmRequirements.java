@@ -19,6 +19,8 @@
 package es.bsc.demiurge.core.models.vms;
 
 import com.google.common.base.MoreObjects;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VmRequirements {
 
@@ -30,6 +32,7 @@ public class VmRequirements {
     
     private String processorArchitecture = null;
     private String processorBrand = null;
+    private String processorModel = null;
     private String diskType = null;
 
     public VmRequirements(int cpus, int ramMb, int diskGb, int swapMb) {
@@ -47,6 +50,18 @@ public class VmRequirements {
         this.swapMb = swapMb;
         this.processorArchitecture = processorArchitecture;
         this.processorBrand = processorBrand;
+        this.diskType = diskType;
+        this.autoConfirmResize = true;
+    }
+    
+    public VmRequirements(int cpus, int ramMb, int diskGb, int swapMb, String processorArchitecture, String processorBrand, String processorModel, String diskType) {
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        this.processorArchitecture = processorArchitecture;
+        this.processorBrand = processorBrand;
+        this.processorModel = processorModel;
         this.diskType = diskType;
         this.autoConfirmResize = true;
     }
@@ -110,6 +125,20 @@ public class VmRequirements {
     }
 
     /**
+     * @return the processorModel
+     */
+    public String getProcessorModel() {
+        return processorModel;
+    }
+
+    /**
+     * @param processorModel the processorModel to set
+     */
+    public void setProcessorModel(String processorModel) {
+        this.processorModel = processorModel;
+    }
+
+    /**
      * @return the diskType
      */
     public String getDiskType() {
@@ -122,6 +151,29 @@ public class VmRequirements {
     public void setDiskType(String diskType) {
         this.diskType = diskType;
     }
+    
+    /**
+     * Delivers those requirements that are optional.
+     * 
+     * @return the list of optional requirements
+     */
+    public Map<String, String> getOptionalRequirements() {
+        Map<String, String> requirements = new HashMap<>();
+        if(this.processorArchitecture != null){
+            requirements.put("processor_architecture", processorArchitecture);
+        }
+        if(this.processorBrand != null){
+            requirements.put("processor_brand", processorBrand);
+        }
+        if(this.processorModel != null){
+            requirements.put("processor_model", processorModel);
+        }
+        if(diskType != null){
+            requirements.put("disk_type", diskType);
+        }
+        
+        return requirements;
+    }
 
     @Override
     public String toString() {
@@ -132,6 +184,7 @@ public class VmRequirements {
                 .add("swapMb", swapMb)
                 .add("processorArchitecture", processorArchitecture)
                 .add("processorBrand", processorBrand)
+                .add("processorModel", processorModel)
                 .add("diskType", diskType)
                 .toString();
     }

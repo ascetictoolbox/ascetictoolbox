@@ -18,6 +18,8 @@
 
 package es.bsc.demiurge.core.selfadaptation;
 
+import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
+
 /**
  * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
  */
@@ -44,7 +46,9 @@ public class PeriodicSelfAdaptationRunnable implements Runnable {
             try {
                 Thread.sleep(threadSleepMinutes*60*1000); // minutes to milliseconds
                 if (applySelfAdaptation) {
-                    selfAdaptationManager.applyPeriodicSelfAdaptation();
+                    selfAdaptationManager.applyPeriodicSelfAdaptation(
+                        new SelfAdaptationAction()
+                    );
                 }
                 applySelfAdaptation = selfAdaptationOptionIsActive();
                 threadSleepMinutes = getThreadSleepMinutes(applySelfAdaptation);
@@ -52,7 +56,6 @@ public class PeriodicSelfAdaptationRunnable implements Runnable {
                 e.printStackTrace();
             }
         }
-
     }
 
     private boolean selfAdaptationOptionIsActive() {

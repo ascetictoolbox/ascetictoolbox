@@ -16,24 +16,28 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package es.bsc.demiurge.core.selfadaptation;
-
-import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
+package es.bsc.vmmclient.models;
 
 /**
+ *
+ *
  * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
  */
-public class AfterVmDeleteSelfAdaptationRunnable implements Runnable {
+public class VmPlacement {
 
-    private final SelfAdaptationManager selfAdaptationManager;
+    private final String vmId;
+    private final String hostname;
 
-    public AfterVmDeleteSelfAdaptationRunnable(SelfAdaptationManager selfAdaptationManager) {
-        this.selfAdaptationManager = selfAdaptationManager;
+    public VmPlacement(String vmId, String hostname) {
+        this.vmId = vmId;
+        this.hostname = hostname;
     }
 
-    @Override
-    public void run() {
-        selfAdaptationManager.applyAfterVmDeleteSelfAdaptation(new SelfAdaptationAction());
+    public String getVmId() {
+        return vmId;
     }
 
+    public String getHostname() {
+        return hostname;
+    }
 }

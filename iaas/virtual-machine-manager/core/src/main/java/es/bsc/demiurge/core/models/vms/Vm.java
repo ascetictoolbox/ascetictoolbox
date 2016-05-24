@@ -44,6 +44,7 @@ public class Vm {
     private boolean needsFloatingIp = false;
     private String processorArchitecture = null;
     private String processorBrand = null;
+    private String processorModel = null;
     private String diskType = null;
 
     private String preferredHost;
@@ -61,8 +62,7 @@ public class Vm {
      * @param swapMb The amount of swap in MB.
      * @param initScript Script that will be executed when the VM is deployed.
      */
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb,
-              String initScript, String applicationId) {
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId) {
         validateConstructorParams(cpus, ramMb, diskGb, swapMb);
         this.name = name;
         this.image = image;
@@ -86,6 +86,19 @@ public class Vm {
         this.applicationId = applicationId;
     }
     
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId, String preferredHost) {
+        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.preferredHost = preferredHost;
+    }
+    
     public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId, String preferredHost) {
         validateConstructorParams(cpus, ramMb, diskGb, 0);
         this.name = name;
@@ -99,24 +112,7 @@ public class Vm {
         this.preferredHost = preferredHost;
     }
 
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
-              String ovfId, String slaId, boolean needsFloatingIp) {
-        validateConstructorParams(cpus, ramMb, diskGb, 0);
-        this.name = name;
-        this.image = image;
-        this.cpus = cpus;
-        this.ramMb = ramMb;
-        this.diskGb = diskGb;
-        this.swapMb = 0;
-        setInitScript(initScript);
-        this.applicationId = applicationId;
-        this.ovfId = ovfId;
-        this.slaId = slaId;
-        this.needsFloatingIp = needsFloatingIp;
-    }
-
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId,
-              String ovfId, String slaId, boolean needsFloatingIp) {
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId, String ovfId, String slaId, boolean needsFloatingIp) {
         validateConstructorParams(cpus, ramMb, diskGb, swapMb);
         this.name = name;
         this.image = image;
@@ -131,8 +127,7 @@ public class Vm {
         this.needsFloatingIp = needsFloatingIp;
     }
 
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId,
-              String ovfId, String slaId, String preferredHost) {
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId, String ovfId, String slaId, boolean needsFloatingIp) {
         validateConstructorParams(cpus, ramMb, diskGb, 0);
         this.name = name;
         this.image = image;
@@ -140,6 +135,49 @@ public class Vm {
         this.ramMb = ramMb;
         this.diskGb = diskGb;
         this.swapMb = 0;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.needsFloatingIp = needsFloatingIp;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId, String ovfId, String slaId) {
+        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId, String ovfId, String slaId) {
+        validateConstructorParams(cpus, ramMb, diskGb, 0);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = 0;
+        setInitScript(initScript);
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+    }
+
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId, String ovfId, String slaId, String preferredHost) {
+        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
+        this.name = name;
+        this.image = image;
+        this.cpus = cpus;
+        this.ramMb = ramMb;
+        this.diskGb = diskGb;
+        this.swapMb = swapMb;
         setInitScript(initScript);
         this.applicationId = applicationId;
         this.ovfId = ovfId;
@@ -147,15 +185,14 @@ public class Vm {
         this.preferredHost = preferredHost;
     }
 
-    public Vm(String name, String image, int cpus, int ramMb, int diskGb, int swapMb, String initScript, String applicationId,
-              String ovfId, String slaId, String preferredHost) {
-        validateConstructorParams(cpus, ramMb, diskGb, swapMb);
+    public Vm(String name, String image, int cpus, int ramMb, int diskGb, String initScript, String applicationId, String ovfId, String slaId, String preferredHost) {
+        validateConstructorParams(cpus, ramMb, diskGb, 0);
         this.name = name;
         this.image = image;
         this.cpus = cpus;
         this.ramMb = ramMb;
         this.diskGb = diskGb;
-        this.swapMb = swapMb;
+        this.swapMb = 0;
         setInitScript(initScript);
         this.applicationId = applicationId;
         this.ovfId = ovfId;
@@ -173,6 +210,7 @@ public class Vm {
         this.swapMb = vmDeployRequirements.getSwapMb();
         this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
         this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
         this.diskType = vmDeployRequirements.getDiskType();
         this.initScript = initScript;
         this.applicationId = applicationId;
@@ -188,6 +226,7 @@ public class Vm {
         this.swapMb = vmDeployRequirements.getSwapMb();
         this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
         this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
         this.diskType = vmDeployRequirements.getDiskType();
         this.initScript = initScript;
         this.applicationId = applicationId;
@@ -205,6 +244,7 @@ public class Vm {
         this.swapMb = vmDeployRequirements.getSwapMb();
         this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
         this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
         this.diskType = vmDeployRequirements.getDiskType();
         this.initScript = initScript;
         this.applicationId = applicationId;
@@ -299,12 +339,26 @@ public class Vm {
         this.processorBrand = processorBrand;
     }
     
+    public String getProcessorModel() {
+        return processorModel;
+    }
+    
+    public void setProcessorModel(String processorModel) {
+        this.processorModel = processorModel;
+    }
+    
     public String getDiskType() {
         return diskType;
     }
     
     public void setDiskType(String diskType) {
         this.diskType = diskType;
+    }
+    
+    public VmRequirements getVmRequirements() {
+        return new VmRequirements(
+            this.cpus, this.ramMb, this.diskGb, this.swapMb, this.processorArchitecture, this.processorBrand, this.processorModel, this.diskType
+        );
     }
     
     @Override
@@ -318,5 +372,4 @@ public class Vm {
         Preconditions.checkArgument(diskGb > 0, "Disk GB was %s but expected positive", diskGb);
         Preconditions.checkArgument(swapMb >= 0, "Swap MB was %s but expected non-negative", swapMb);
     }
-    
 }

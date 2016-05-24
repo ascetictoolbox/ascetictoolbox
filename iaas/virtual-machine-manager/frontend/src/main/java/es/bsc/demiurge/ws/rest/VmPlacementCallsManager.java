@@ -24,6 +24,7 @@ import es.bsc.demiurge.core.models.scheduling.VmPlacement;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.manager.VmManager;
+import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
 import es.bsc.demiurge.core.monitoring.hosts.Host;
 import es.bsc.demiurge.core.monitoring.hosts.Slot;
 
@@ -53,8 +54,9 @@ public class VmPlacementCallsManager {
     }
 
     public String getRecommendedPlan(String recommendedPlanRequest) throws CloudMiddlewareException {
+        SelfAdaptationAction action = new SelfAdaptationAction(false);
         return gson.toJson(vmManager.getRecommendedPlan(gson.fromJson(recommendedPlanRequest,
-                RecommendedPlanRequest.class), false, new ArrayList<Vm>()));
+                RecommendedPlanRequest.class), action, new ArrayList<Vm>()));
     }
 
     public void executeDeploymentPlan(String deploymentPlan) throws CloudMiddlewareException {

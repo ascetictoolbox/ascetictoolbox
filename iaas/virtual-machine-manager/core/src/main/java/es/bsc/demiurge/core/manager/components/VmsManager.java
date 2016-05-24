@@ -61,10 +61,8 @@ public class VmsManager {
                       SelfAdaptationManager selfAdaptationManager,
 					  EstimatesManager estimatorsManager,
 					  List<VmmListener> listeners,
-                      Map<String, HardwareInfo> hwinfo
-					  ) {
+                      Map<String, HardwareInfo> hwinfo) {
 		this.listeners = listeners;
-
         this.hostsManager = hostsManager;
         this.cloudMiddleware = cloudMiddleware;
         this.db = db;
@@ -120,9 +118,14 @@ public class VmsManager {
         // The OVF and the SLA IDs are specific for Ascetic.
         VmDeployed vm = cloudMiddleware.getVM(vmId);
         if (vm != null) {
+            //vm deployed identificators
             vm.setApplicationId(db.getAppIdOfVm(vm.getId()));
             vm.setOvfId(db.getOvfIdOfVm(vm.getId()));
             vm.setSlaId(db.getSlaIdOfVm(vm.getId()));
+            //optional vm requirements
+            vm.setProcessorArchitecture( db.getRequirementValue(vmId, "processor_architecture") );
+            vm.setProcessorBrand( db.getRequirementValue(vmId, "processor_brand") );
+            vm.setDiskType( db.getRequirementValue(vmId, "disk_type") );
         }
         return vm;
     }
@@ -219,7 +222,7 @@ public class VmsManager {
                 vmId = deployVm(vmToDeploy, hostForDeployment);
             }
 
-            db.insertVm(vmId, vmToDeploy.getApplicationId(), vmToDeploy.getOvfId(), vmToDeploy.getSlaId());
+            db.insertVm(vmId, vmToDeploy.getApplicationId(), vmToDeploy.getOvfId(), vmToDeploy.getSlaId(), vmToDeploy.getVmRequirements());
             ids.put(vmToDeploy, vmId);
 
             log.debug("[VMM] The Deployment of the VM with ID=" + vmId + " took " + TimeUtils.getDifferenceInSeconds(calendarDeployRequestReceived, Calendar.getInstance()) + " seconds");
@@ -306,7 +309,14 @@ public class VmsManager {
         return cloudMiddleware.existsVm(vmId);
     }
 
-
+    /**
+     * Deploys a Vm into Host only if it is on.
+     * 
+     * @param vm
+     * @param host
+     * @return
+     * @throws CloudMiddlewareException 
+     */
     private String deployVm(Vm vm, Host host) throws CloudMiddlewareException {
         // If the host is not on, turn it on and wait
         if (!host.isOn()) {
@@ -415,8 +425,6 @@ public class VmsManager {
         return null;
     }
 
-
-
 	public String deployVmOnHost(Vm vmToDeploy, String hostName) throws CloudMiddlewareException {
 		Calendar calendarDeployRequestReceived = Calendar.getInstance();
 
@@ -430,7 +438,7 @@ public class VmsManager {
 			vmId = deployVm(vmToDeploy, host);
 		}
 
-		db.insertVm(vmId, vmToDeploy.getApplicationId(), vmToDeploy.getOvfId(), vmToDeploy.getSlaId());
+		db.insertVm(vmId, vmToDeploy.getApplicationId(), vmToDeploy.getOvfId(), vmToDeploy.getSlaId(), vmToDeploy.getVmRequirements());
 
 		log.debug("[VMM] The Deployment of the VM with ID=" + vmId + " took " + TimeUtils.getDifferenceInSeconds(calendarDeployRequestReceived, Calendar.getInstance()) + " seconds");
 

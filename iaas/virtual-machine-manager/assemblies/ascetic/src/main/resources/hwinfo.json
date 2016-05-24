@@ -4,7 +4,8 @@
             "compute1",
         "cpu": {
             "vendor": "Intel",
-            "arch": "x86_64"
+            "arch": "x86_64",
+            "model": "Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz"
         },
         "disk": {
             "type": "SSD"
@@ -15,7 +16,8 @@
             "compute2",
         "cpu": {
             "vendor": "Intel",
-            "arch": "x86_64"
+            "arch": "x86_64",
+            "model": "Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz"
         },
         "disk": {
             "type": "SSD"
@@ -26,7 +28,8 @@
             "compute3",
         "cpu": {
             "vendor": "Intel",
-            "arch": "x86_64"
+            "arch": "x86_64",
+            "model": "Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz"
         },
         "disk": {
             "type": "SSD"

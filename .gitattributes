@@ -812,6 +812,7 @@ iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/sche
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/scheduling/LocalSearchAlgorithmOptionsUnset.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/scheduling/RecommendedPlan.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/scheduling/RecommendedPlanRequest.java -text
+iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/scheduling/SelfAdaptationAction.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/scheduling/VmAssignmentToHost.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/scheduling/VmPlacement.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/models/vms/ListVms.java -text
@@ -841,6 +842,7 @@ iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptat
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptation/SelfAdaptationManager.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptation/options/AfterVmDeleteSelfAdaptationOps.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptation/options/AfterVmDeploymentSelfAdaptationOps.java -text
+iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptation/options/OnDemandSelfAdaptationOps.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptation/options/PeriodicSelfAdaptationOps.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/selfadaptation/options/SelfAdaptationOptions.java -text
 iaas/virtual-machine-manager/core/src/main/java/es/bsc/demiurge/core/utils/CommandExecutor.java -text
@@ -1082,6 +1084,7 @@ iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/I
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/ImagesUploadedResponse.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/Node.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/NodesResponse.java -text
+iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/SelfAdaptationAction.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/Slot.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/UploadImageResponse.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/Vm.java -text
@@ -1090,6 +1093,7 @@ iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/V
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmCost.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmDeployed.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmEstimate.java -text
+iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmPlacement.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmRequirements.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmToBeEstimated.java -text
 iaas/virtual-machine-manager/rest-client/src/main/java/es/bsc/vmmclient/models/VmsDeployedResponse.java -text

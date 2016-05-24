@@ -35,7 +35,6 @@ import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.optaplanner.core.api.score.Score;
 
 /**
  * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
@@ -88,18 +87,21 @@ public class VmPlacementManager {
         }
         return result;
     }
-
+    
     /**
      * This function calculates a deployment plan based on a request. It uses the VM placement library.
-     *
+     * 
+     * @param schedulingAlgorithm
      * @param recommendedPlanRequest the request
-     * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
+     * @param selfAdaptationAction indicates whether the hosts should be set in the VM instances
      * @param vmsToDeploy list of VMs that need to be deployed
-     * @return the recommended plan
+     * @param hwinfo
+     * @return
+     * @throws CloudMiddlewareException 
      */
     public RecommendedPlan getRecommendedPlan(String schedulingAlgorithm,
                                               RecommendedPlanRequest recommendedPlanRequest,
-                                              boolean assignVmsToCurrentHosts,
+                                              SelfAdaptationAction selfAdaptationAction,
                                               List<Vm> vmsToDeploy,
                                               Map<String, HardwareInfo> hwinfo) throws CloudMiddlewareException {
         CloplaConversor cc = Config.INSTANCE.getCloplaConversor();
@@ -110,7 +112,7 @@ public class VmPlacementManager {
                         getVmsDeployedAndScheduledNonDeployed(),
                         vmsToDeploy,
                         cc.getCloplaHosts(hosts, hwinfo),
-                        assignVmsToCurrentHosts),
+                        selfAdaptationAction),
                 cc.getCloplaConfig(
 						schedulingAlgorithm,
                         recommendedPlanRequest,

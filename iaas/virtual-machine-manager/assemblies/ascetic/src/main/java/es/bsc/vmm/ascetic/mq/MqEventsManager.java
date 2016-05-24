@@ -5,6 +5,7 @@ import es.bsc.demiurge.core.VmmGlobalListener;
 import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.core.drivers.VmAction;
 import es.bsc.demiurge.core.drivers.VmmListener;
+import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
 import org.apache.log4j.LogManager;
@@ -78,6 +79,11 @@ public class MqEventsManager implements VmmListener, VmmGlobalListener, MessageL
 		activeMqAdapter.closeAllQueues();
 	}
 
+    @Override
+    public void onVmmSelfAdaptation(SelfAdaptationAction action) {
+        publishMessage( VMM_SELF_ADAPTATION_TOPIC_NAME, action);
+    }
+
 	private long lastSelfAdaptation = 0;
 	private static final long MIN_TIME_BETWEEN_SELF_ADAPTATIONS = 5 * 60 * 1000;
 
@@ -89,24 +95,28 @@ public class MqEventsManager implements VmmListener, VmmGlobalListener, MessageL
 		try {
 			if (message.getJMSTimestamp() + IGNORE_MESSAGES_OLDER_THAN < now) {
 				log.debug("Ignoring old message: " + message.getJMSMessageID());
-			} else {
-				log.debug("received message: " + message.toString());
-				if (message instanceof TextMessage) {
-					TextMessage tm = (TextMessage) message;
-					log.debug(tm.getText());
-					if (lastSelfAdaptation + MIN_TIME_BETWEEN_SELF_ADAPTATIONS < System.currentTimeMillis()) {
-						// By the moment, only overall self-adaptation is performed (limit: 1 each 5 minutes. TO DO: make it lower for testing and maybe longer for production)
-						lastSelfAdaptation = System.currentTimeMillis();
-						Config.INSTANCE.getVmManager().executeOnDemandSelfAdaptation();
-					} else {
-						Calendar c = Calendar.getInstance();
-						c.setTimeInMillis(lastSelfAdaptation);
-						log.warn("Not triggering self-adaptation since last self-adaptation was at " + c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
-					}
-				}
+                return;
 			}
+            
+            log.debug("received message: " + message.toString());
+
+            if (lastSelfAdaptation + MIN_TIME_BETWEEN_SELF_ADAPTATIONS >= System.currentTimeMillis()) {
+                Calendar c = Calendar.getInstance();
+                    c.setTimeInMillis(lastSelfAdaptation);
+                    log.warn("Not triggering self-adaptation since last self-adaptation was at " + 
+                        c.get(Calendar.HOUR) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
+                    return;
+            }
+
+            if (message instanceof TextMessage) {
+                TextMessage tm = (TextMessage) message;
+                log.debug(tm.getText());
+                lastSelfAdaptation = System.currentTimeMillis();
+                Config.INSTANCE.getVmManager().executeOnDemandSelfAdaptation(tm.getText());
+            }
+            
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -127,7 +137,7 @@ public class MqEventsManager implements VmmListener, VmmGlobalListener, MessageL
 	}
 
 	private void publishMessage(String topic, Object messageObject) {
-		String json = gson.toJson(messageObject);
+		String json = gson.toJson(messageObject, messageObject.getClass());
 		log.debug(topic+"\n"+json);
 		activeMqAdapter.publishMessage(topic, json);
 	}
@@ -137,5 +147,8 @@ public class MqEventsManager implements VmmListener, VmmGlobalListener, MessageL
 
 	// virtual-machine-manager.vm.<vmId>.<status>
 	private static final String VM_STATUS_TOPIC_NAME = "virtual-machine-manager.vm.%s.%s";
+    
+    //TODO: Include slaId on VMM_SELF_ADAPTATION topic name
+    private static final String VMM_SELF_ADAPTATION_TOPIC_NAME = "virtual-machine-manager.self-adaptation";
 
 }

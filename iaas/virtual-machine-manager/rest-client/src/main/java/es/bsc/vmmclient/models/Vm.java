@@ -44,6 +44,7 @@ public class Vm {
     private boolean needsFloatingIp = false;
     private String processorArchitecture = null;
     private String processorBrand = null;
+    private String processorModel = null;
     private String diskType = null;
 
     private String preferredHost;
@@ -211,6 +212,7 @@ public class Vm {
         this.swapMb = vmDeployRequirements.getSwapMb();
         this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
         this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
         this.diskType = vmDeployRequirements.getDiskType();
         this.initScript = initScript;
         this.applicationId = applicationId;
@@ -226,6 +228,7 @@ public class Vm {
         this.swapMb = vmDeployRequirements.getSwapMb();
         this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
         this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
         this.diskType = vmDeployRequirements.getDiskType();
         this.initScript = initScript;
         this.applicationId = applicationId;
@@ -243,6 +246,7 @@ public class Vm {
         this.swapMb = vmDeployRequirements.getSwapMb();
         this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
         this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
         this.diskType = vmDeployRequirements.getDiskType();
         this.initScript = initScript;
         this.applicationId = applicationId;
@@ -337,6 +341,14 @@ public class Vm {
         this.processorBrand = processorBrand;
     }
     
+    public String getProcessorModel() {
+        return processorModel;
+    }
+    
+    public void setProcessorModel(String processorModel) {
+        this.processorModel = processorModel;
+    }
+    
     public String getDiskType() {
         return diskType;
     }
@@ -356,5 +368,4 @@ public class Vm {
         Preconditions.checkArgument(diskGb > 0, "Disk GB was %s but expected positive", diskGb);
         Preconditions.checkArgument(swapMb >= 0, "Swap MB was %s but expected non-negative", swapMb);
     }
-    
 }

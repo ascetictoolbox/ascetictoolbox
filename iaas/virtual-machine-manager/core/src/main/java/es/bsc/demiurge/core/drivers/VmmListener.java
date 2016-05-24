@@ -17,6 +17,5 @@ public interface VmmListener {
 	void onVmDestruction(VmDeployed vm);
 	void onVmMigration(VmDeployed vm);
 	void onVmAction(VmDeployed vm, VmAction action);
-
 	void onPreVmDeployment(Vm vm);
 }

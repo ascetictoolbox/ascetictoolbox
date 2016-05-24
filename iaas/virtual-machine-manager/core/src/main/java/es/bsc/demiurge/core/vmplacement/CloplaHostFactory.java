@@ -46,11 +46,10 @@ public class CloplaHostFactory {
         }
         result = new es.bsc.demiurge.core.clopla.domain.Host(cloplaHostId, host.getHostname(), 
                 host.getTotalCpus(), host.getTotalMemoryMb(), host.getTotalDiskGb(), 
-                hwinfo.getCpuArchitecture(), hwinfo.getCpuVendor(), hwinfo.getDiskType(), 
+                hwinfo.getCpuArchitecture(), hwinfo.getCpuVendor(), hwinfo.getCpuModel(), hwinfo.getDiskType(), 
                 !host.isOn());
         ++cloplaHostId;
         cloplaHosts.put(host.getHostname(), result);
         return result;
     }
-
 }

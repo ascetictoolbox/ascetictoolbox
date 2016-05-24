@@ -45,6 +45,10 @@ public class ScoreCalculatorDistribution implements SimpleScoreCalculator<Cluste
 		int migrations = VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution);
 		int stdevCpuPerc = (int)(100 * solution.calculateStdDevCpuPercUsedPerHost());
 		int softScore = -stdevCpuPerc - migrations;
+        //System.out.println("hardScore: " + hardScore);
+        //System.out.println("mediumScore: " + mediumScore);
+        //System.out.println("softScore: " + softScore);
+        //System.out.println("=======================");
 		return HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore);
     }
 

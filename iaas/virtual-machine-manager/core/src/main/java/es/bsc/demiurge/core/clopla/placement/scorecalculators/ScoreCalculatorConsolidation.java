@@ -45,7 +45,9 @@ public class ScoreCalculatorConsolidation implements SimpleScoreCalculator<Clust
 
 		int softScore = 10 * (solution.countOffHosts() + solution.countIdleHosts())
 				- VmPlacementConfig.initialClusterState.get().countVmMigrationsNeeded(solution);
-
+        //System.out.println("hardScore: " + hardScore);
+        //System.out.println("softScore: " + softScore);
+        //System.out.println("=======================");
 		return HardSoftScore.valueOf(hardScore,softScore);
     }
 

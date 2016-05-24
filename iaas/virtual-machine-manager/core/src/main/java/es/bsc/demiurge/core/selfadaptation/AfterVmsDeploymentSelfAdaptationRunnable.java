@@ -18,6 +18,8 @@
 
 package es.bsc.demiurge.core.selfadaptation;
 
+import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
+
 /**
  * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
  */
@@ -31,7 +33,7 @@ public class AfterVmsDeploymentSelfAdaptationRunnable implements Runnable{
 
     @Override
     public void run() {
-        selfAdaptationManager.applyAfterVmsDeploymentSelfAdaptation();
+        selfAdaptationManager.applyAfterVmsDeploymentSelfAdaptation(new SelfAdaptationAction());
     }
 
 }

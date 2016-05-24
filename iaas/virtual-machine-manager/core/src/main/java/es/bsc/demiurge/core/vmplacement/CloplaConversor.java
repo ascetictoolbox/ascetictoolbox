@@ -26,6 +26,7 @@ import es.bsc.demiurge.core.manager.components.EstimatesManager;
 import es.bsc.demiurge.core.models.hosts.HardwareInfo;
 import es.bsc.demiurge.core.models.scheduling.RecommendedPlan;
 import es.bsc.demiurge.core.models.scheduling.RecommendedPlanRequest;
+import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
 
@@ -45,20 +46,21 @@ public class CloplaConversor {
      * Converts a list of VMs as defined in the VMM core to a list of VMs as defined in the VM placement library.
      * It is possible to initialize in each one of the VMs, the host where they are deployed in.
      *
-     * @param vms the list of VMs used by the VMM core
+     * @param vms the list of VMs already deployed
+     * @param vmsToDeploy the list of VMs that we want to deploy
      * @param hosts the list of hosts as defined by the VM placement library
-     * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
+     * @param selfAdaptationAction indicates whether it is needed to set the hosts in the VMs
      * @return the list of VMs used by the VM placement library
      */
     public List<es.bsc.demiurge.core.clopla.domain.Vm> getCloplaVms(List<VmDeployed> vms,
                                                                     List<es.bsc.demiurge.core.models.vms.Vm> vmsToDeploy,
                                                                     List<es.bsc.demiurge.core.clopla.domain.Host> hosts,
-                                                                    boolean assignVmsToHosts) {
+                                                                    SelfAdaptationAction selfAdaptationAction) {
         List<es.bsc.demiurge.core.clopla.domain.Vm> result = new ArrayList<>();
 
         // Add the VMs already deployed
         for (int i = 0; i < vms.size(); ++i) {
-            result.add(getCloplaVm((long) i, vms.get(i), hosts, assignVmsToHosts));
+            result.add(getCloplaVm((long) i, vms.get(i), hosts, selfAdaptationAction));
         }
 
         // Add the VMs that need to be deployed
@@ -151,6 +153,7 @@ public class CloplaConversor {
                         0, // Is this a problem? Clopla does not deal with swap
                         vm.getProcessorArchitecture(),
                         vm.getProcessorBrand(),
+                        vm.getProcessorModel(),
                         vm.getDiskType()
                     ),
                     null,
@@ -165,21 +168,22 @@ public class CloplaConversor {
      * @param id the id of the VM used by the VM placement library
      * @param vm the VM used by the VMM core
      * @param cloplaHosts list of hosts of the cluster as defined by the VM placement library
-     * @param assignVmsToHosts indicates whether it is needed to set the hosts in the VMs
+     * @param selfAdaptationAction indicates whether it is needed to set the hosts in the VMs
      * @return the VM used by the VM placement library
      */
 	protected es.bsc.demiurge.core.clopla.domain.Vm getCloplaVm(Long id, VmDeployed vm,
                                                                 List<es.bsc.demiurge.core.clopla.domain.Host> cloplaHosts,
-                                                                boolean assignVmsToHosts) {
+                                                                SelfAdaptationAction selfAdaptationAction) {
         es.bsc.demiurge.core.clopla.domain.Vm result = new es.bsc.demiurge.core.clopla.domain.Vm.Builder(
                 id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), 
-                vm.getProcessorArchitecture(), vm.getProcessorBrand(), vm.getDiskType())
+                vm.getProcessorArchitecture(), vm.getProcessorBrand(), vm.getProcessorModel(), vm.getDiskType())
                 .appId(vm.getApplicationId())
                 .alphaNumericId(vm.getId())
                 .build();
 
         // If we do not need to assign the VMs to their current hosts, then return the result
-        if (!assignVmsToHosts) {
+        if (!selfAdaptationAction.assignVmsToHosts() || 
+            selfAdaptationAction.shouldVmBeReassigned(vm.getId())) {
             return result;
         }
 
@@ -192,7 +196,7 @@ public class CloplaConversor {
 	protected static es.bsc.demiurge.core.clopla.domain.Vm getCloplaVmToDeploy(Long id, es.bsc.demiurge.core.models.vms.Vm vm) {
         return new es.bsc.demiurge.core.clopla.domain.Vm.Builder(
                 id, vm.getCpus(), vm.getRamMb(), vm.getDiskGb(), 
-                vm.getProcessorArchitecture(), vm.getProcessorBrand(), vm.getDiskType())
+                vm.getProcessorArchitecture(), vm.getProcessorBrand(), vm.getProcessorModel(), vm.getDiskType())
                 .appId(vm.getApplicationId())
                 .alphaNumericId(vm.getName())
                 .build();

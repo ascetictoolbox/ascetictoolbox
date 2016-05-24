@@ -35,6 +35,7 @@ public class Host extends AbstractPersistable {
     private final double diskGb;
     private String processorArchitecture = null;
     private String processorBrand = null;
+    private String processorModel = null;
     private String diskType = null;
     private final List<Long> fixedVmsIds = new ArrayList<>(); // IDs of the VMs that need to be deployed in this host
     private final boolean initiallyOff; // The host was off before the planning started
@@ -51,7 +52,7 @@ public class Host extends AbstractPersistable {
         this.initiallyOff = initiallyOff;
     }
     
-    public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb, String processorArchitecture, String processorBrand, String diskType, boolean initiallyOff) {
+    public Host(Long id, String hostname, int ncpus, double ramMb, double diskGb, String processorArchitecture, String processorBrand, String processorModel, String diskType, boolean initiallyOff) {
         this.hostname = hostname;
         this.id = id;
         this.ncpus = ncpus;
@@ -59,6 +60,7 @@ public class Host extends AbstractPersistable {
         this.diskGb = diskGb;
         this.processorArchitecture = processorArchitecture;
         this.processorBrand = processorBrand;
+        this.processorModel = processorModel;
         this.diskType = diskType;
         this.initiallyOff = initiallyOff;
     }
@@ -112,19 +114,40 @@ public class Host extends AbstractPersistable {
      */
     public boolean matchesHardwareRequirements(List<Vm> vms) {
         for(Vm vm : vms){
-            String vmDiskType = vm.getDiskType();
-            if(vmDiskType != null && diskType != null && !diskType.equals(vmDiskType) ){
-                return false;
-            }
-            String vmProcessorBrand = vm.getProcessorBrand();
-            if(vmProcessorBrand != null && processorBrand != null && !processorBrand.equals(vmProcessorBrand)){
-                return false;
-            }
-            String vmProcessorArchitecture = vm.getProcessorArchitecture();
-            if(vm.getProcessorArchitecture() != null && processorArchitecture != null && !processorArchitecture.equals(vmProcessorArchitecture)){
+            if(!matchesHardwareRequirements(vm)){
                 return false;
             }
         }
+        return true;
+    }
+    
+    /**
+     * Checks if a Vm matches hardware requirements of a specific host.
+     * 
+     * @param vm
+     * @return 
+     */
+    public boolean matchesHardwareRequirements(Vm vm) {
+        String vmProcessorBrand = vm.getProcessorBrand();
+        if(vmProcessorBrand != null && processorBrand != null && !processorBrand.equals(vmProcessorBrand)){
+            return false;
+        }
+        
+        String vmProcessorArchitecture = vm.getProcessorArchitecture();
+        if(vm.getProcessorArchitecture() != null && processorArchitecture != null && !processorArchitecture.equals(vmProcessorArchitecture)){
+            return false;
+        }
+        
+        String vmProcessorModel = vm.getProcessorModel();
+        if(vm.getProcessorModel() != null && processorModel != null && !processorModel.equals(vmProcessorModel)){
+            return false;
+        }
+        
+        String vmDiskType = vm.getDiskType();
+        if(vmDiskType != null && diskType != null && !diskType.equals(vmDiskType) ){
+            return false;
+        }
+        
         return true;
     }
 
@@ -173,9 +196,28 @@ public class Host extends AbstractPersistable {
         return initiallyOff;
     }
     
+    public String toStringOptionals() {
+        String optionals = "";
+        if(this.processorArchitecture != null){
+            optionals += "processorArchitecture:'" + processorArchitecture + "'";
+        }
+        if(this.processorBrand != null){
+            optionals += ", processorBrand:'" + processorBrand + "'";
+        }
+        if(this.processorModel != null){
+            optionals += ", processorModel:'" + processorModel + "'";
+        }
+        if(this.diskType != null){
+            optionals += ", diskType:'" + diskType + "'";
+        }
+        
+        return optionals;
+    }
+    
     @Override
     public String toString() {
-        return "Host - ID:" + id.toString() + ", cpus:" + ncpus + ", ram:" + ramMb + ", disk:" + diskGb;
+        return "Host - ID:" + id.toString() + ", cpus:" + ncpus + ", ram:" + 
+            ramMb + ", disk:" + diskGb + "; OPTIONALS= " + toStringOptionals();
     }
 
     /*
@@ -226,6 +268,20 @@ public class Host extends AbstractPersistable {
     }
 
     /**
+     * @return the processorModel
+     */
+    public String getProcessorModel() {
+        return processorModel;
+    }
+
+    /**
+     * @param processorModel the processorModel to set
+     */
+    public void setProcessorModel(String processorModel) {
+        this.processorModel = processorModel;
+    }
+
+    /**
      * @return the diskType
      */
     public String getDiskType() {
@@ -238,5 +294,4 @@ public class Host extends AbstractPersistable {
     public void setDiskType(String diskType) {
         this.diskType = diskType;
     }
-
 }

@@ -46,7 +46,7 @@ public class VmmErrorHandler implements ErrorHandler{
 
     @Override
     public Throwable handleError(RetrofitError cause){
-        if(cause.getResponse().getBody() != null){
+        if(cause.getResponse() != null && cause.getResponse().getBody() != null){
             cause.printStackTrace();
             String serverResponse = this.readServerResponse(cause.getResponse().getBody());
             throw new RuntimeException(serverResponse);

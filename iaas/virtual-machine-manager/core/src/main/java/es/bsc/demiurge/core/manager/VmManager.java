@@ -194,12 +194,12 @@ public interface VmManager {
      * This function calculates a deployment plan based on a request. It uses the VM placement library.
      *
      * @param recommendedPlanRequest the request
-     * @param assignVmsToCurrentHosts indicates whether the hosts should be set in the VM instances
+     * @param selfAdaptationAction indicates whether the hosts should be set in the VM instances
      * @param vmsToDeploy list of VMs that need to be deployed
      * @return the recommended plan
      */
     RecommendedPlan getRecommendedPlan(RecommendedPlanRequest recommendedPlanRequest,
-                                       boolean assignVmsToCurrentHosts,
+                                       SelfAdaptationAction selfAdaptationAction,
                                        List<Vm> vmsToDeploy) throws CloudMiddlewareException;
 
     /**
@@ -275,6 +275,8 @@ public interface VmManager {
     String getVmsEstimates(List<String> vmIds) throws Exception;
 
     void executeOnDemandSelfAdaptation() throws CloudMiddlewareException ;
+    
+    void executeOnDemandSelfAdaptation(String slamMessage) throws CloudMiddlewareException;
 
     HostsManager getHostsManager();
     VmManagerDb getDB();

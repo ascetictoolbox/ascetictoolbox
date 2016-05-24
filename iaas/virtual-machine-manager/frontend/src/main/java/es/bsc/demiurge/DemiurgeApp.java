@@ -2,21 +2,15 @@ package es.bsc.demiurge;
 
 import es.bsc.demiurge.core.configuration.Config;
 import es.bsc.demiurge.ws.container.EmbeddedJetty;
-import es.bsc.demiurge.ws.rest.DemiurgeRestV1;
-import org.eclipse.jetty.rewrite.handler.RedirectPatternRule;
-import org.eclipse.jetty.rewrite.handler.RewriteHandler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * @author Mario Macías (http://github.com/mariomac)
  */
 public class DemiurgeApp {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        //System.out.println("Waiting initialization...");
+        //Thread.sleep(20000);
+        //System.out.println("Start initialization.");
         Config.INSTANCE.loadBeansConfig();
         try {
             EmbeddedJetty jetty = new EmbeddedJetty();
