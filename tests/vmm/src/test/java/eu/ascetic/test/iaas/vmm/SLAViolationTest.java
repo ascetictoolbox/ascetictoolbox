@@ -47,7 +47,7 @@ public class SLAViolationTest extends VmmTestBase implements MessageListener{
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
-        this.waitForIt(10, "You must wait to test a new self-adpatation...");
+        this.waitForIt(200, "You must wait to test a new self-adpatation...");
         adapter.closeQueue(VMM_SELF_ADAPTATION_TOPIC_NAME);
         messages.clear();
     }
@@ -81,7 +81,7 @@ public class SLAViolationTest extends VmmTestBase implements MessageListener{
         
         logger.info("Migrating to a Xeon cpu... (this migration should fail)");
         sendFakeSLAMessage(vmId, vm.getSlaId(), vm.getOvfId(), "hw_platform", "x86_64/Xeon", "x86_64/Intel;SSD");
-        waitForIt(20, "Waiting self-adaptation to finish...");
+        waitForIt(120, "Waiting self-adaptation to finish...");
         
         //Assert that migration has failed
         vmd = vmm.getVm(deployedVms.get(0));
