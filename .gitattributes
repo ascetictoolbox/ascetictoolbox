@@ -4041,6 +4041,7 @@ tests/vmm/src/main/resources/config.stable.properties -text
 tests/vmm/src/main/resources/config.test.properties -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/DeployAndMigrateTest.java -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/DeploySpecificHardwareTest.java -text
+tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/SLAViolationTest.java -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/VerticalScalabilityTest.java -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/base/VmmTestBase.java -text
 tests/vmm/src/test/resources/log4j.properties -text

@@ -38,12 +38,16 @@ public class DeploySpecificHardwareTest  extends VmmTestBase{
         Map<String, HardwareInfo> hwinfo = vmm.getHardwareInfo();
         
         String hostname = "";
+        String cpuExpectedModel = "";
         if(environment.equals("dev")){
-            hostname = "compute1"; 
+            hostname = "compute1";
+            cpuExpectedModel = "Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz";
         } else if(environment.equals("test")){
-            hostname = "wally152"; 
+            hostname = "wally152";
+            cpuExpectedModel = "Intel Xeon E312xx (Sandy Bridge)";
         } else if(environment.equals("stable")){
-            hostname = "wally157"; 
+            hostname = "wally157";
+            cpuExpectedModel = "Intel Xeon E312xx (Sandy Bridge)";
         } else{
             throw new Exception("Environment must be defined on testHwInfo()");
         }
@@ -51,6 +55,7 @@ public class DeploySpecificHardwareTest  extends VmmTestBase{
         HardwareInfo h1 = hwinfo.get(hostname);
         assertEquals("Intel", h1.getCpuVendor());
         assertEquals("x86_64", h1.getCpuArchitecture());
+        assertEquals(cpuExpectedModel, h1.getCpuModel());
         assertEquals("SSD", h1.getDiskType());
 
         String cpuVendor = vmm.getHardwareInfo(hostname, "cpu", "vendor");
@@ -90,6 +95,63 @@ public class DeploySpecificHardwareTest  extends VmmTestBase{
                 new VmRequirements( 1, 256, 1, 16, "x86_32", "AMD", "RAID");
             logger.info("Deploying " + vmName + " with requirements:" + vmDeployRequirements.toString() + "...");
 
+            Vm vm = new Vm(vmName, VMMConf.imageId, vmDeployRequirements, null, "dsh01", "", "sla");
+            List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
+            VmDeployed vmd = vmm.getVm(deployedVms.get(0));
+            vmId = vmd.getId();
+            
+            assertTrue(deployedVms.isEmpty());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            assertTrue(e.getMessage().contains("No suitable deployment plan found"));
+        }
+    }
+
+    public void testDeployCorrectCpuBrand() throws Exception {
+        String cpuBrand = "";
+        if(environment.equals("dev")){
+            cpuBrand = "Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz";
+        } else if(environment.equals("test")){
+            cpuBrand = "Intel Xeon E312xx (Sandy Bridge)";
+        } else if(environment.equals("stable")){
+            cpuBrand = "Intel Xeon E312xx (Sandy Bridge)";
+        } else{
+            throw new Exception("Environment must be defined on testDeployCorrectCpuBrand()");
+        }
+        
+        String vmName = "deployCorrectCpuBrandTest01";
+        VmRequirements vmDeployRequirements = 
+            new VmRequirements( 1, 256, 1, 16, "x86_64", "Intel", cpuBrand, "SSD");
+
+        logger.info("Deploying " + vmName + " with requirements:" + vmDeployRequirements.toString() + "...");
+        Vm vm = new Vm(vmName, VMMConf.imageId, vmDeployRequirements, null, "dsh01", "", "sla");
+        List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
+        VmDeployed vmd = vmm.getVm(deployedVms.get(0));
+        vmId = vmd.getId();
+
+        assertEquals("ACTIVE", vmd.getState());
+    }
+
+    public void testDeployWrongCpuBrand() throws Exception {
+        String cpuBrand = "";
+        if(environment.equals("dev")){
+            cpuBrand = "Intel(R) Core(TM) i5-650 CPU @ 3.20GHz";
+        } else if(environment.equals("test")){
+            cpuBrand = "Intel Xeon E5-2403";
+        } else if(environment.equals("stable")){
+            cpuBrand = "Intel Xeon E5-2403";
+        } else{
+            throw new Exception("Environment must be defined on testDeployCorrectCpuBrand()");
+        }
+        
+        logger.info("An exception is going to be thrown for testDeployWrongCpuBrand(). This is expected.");
+        try{
+            String vmName = "deployWrongCpuBrandTest01";
+            VmRequirements vmDeployRequirements = 
+                new VmRequirements( 1, 256, 1, 16, "x86_64", "Intel", cpuBrand, "SSD");
+
+            logger.info("Deploying " + vmName + " with requirements:" + vmDeployRequirements.toString() + "...");
             Vm vm = new Vm(vmName, VMMConf.imageId, vmDeployRequirements, null, "dsh01", "", "sla");
             List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
             VmDeployed vmd = vmm.getVm(deployedVms.get(0));
