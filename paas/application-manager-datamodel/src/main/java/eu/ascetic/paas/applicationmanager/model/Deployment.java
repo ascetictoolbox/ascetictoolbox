@@ -202,7 +202,7 @@ public class Deployment {
 		this.endDate = endDate;
 	}	
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="application_id")
 	public Application getApplication() {
 		return application;
