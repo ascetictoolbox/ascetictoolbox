@@ -210,6 +210,43 @@ public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests 
 	}
 	
 	@Test
+	public void getVMWithProviderVMIdTest() {
+		int sizeDeployments = deploymentDAO.getAll().size();
+		Deployment deployment = new Deployment();
+		deployment.setStatus("PEPITO");
+		deploymentDAO.save(deployment);
+		deployment = deploymentDAO.getAll().get(sizeDeployments);
+		
+		int sizeVMs = vmDAO.getAll().size();
+		
+		VM vm1 = new VM();
+		vm1.setProviderId("1");
+		vm1.setProviderVmId("1212");
+		deployment.addVM(vm1);
+		vm1.setDeployment(deployment);
+		vmDAO.save(vm1);
+		vm1 = vmDAO.getAll().get(sizeVMs);
+		deploymentDAO.update(deployment);
+		
+		VM vm2 = new VM();
+		vm2.setProviderId("2");
+		vm2.setProviderVmId("11212");
+		deployment.addVM(vm2);
+		vm2.setDeployment(deployment);
+		vmDAO.save(vm2);
+		vm2 = vmDAO.getAll().get(sizeVMs + 1);
+		deploymentDAO.update(deployment);
+		
+		assertEquals(vm1, vmDAO.getVMWithProviderVMId("1212", "1"));
+		assertEquals(vmDAO.getVMWithProviderVMId("1212", "1").getDeployment().getId(), deployment.getId());
+		
+		assertEquals(vm2, vmDAO.getVMWithProviderVMId("11212", "2"));
+		assertEquals(vmDAO.getVMWithProviderVMId("11212", "2").getDeployment().getId(), deployment.getId());
+		
+		assertEquals(null, vmDAO.getVMWithProviderVMId("112212", "22"));
+	}
+	
+	@Test
 	public void getNoDeletedVMsWithImage() {
 		int size = imageDAO.getAll().size();
 		Image image1 = new Image();

@@ -109,6 +109,24 @@ public class VMDAOJpa implements VMDAO {
 		query.setParameter("id", image.getId());
 		return (List<VM>) query.getResultList();
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public VM getVMWithProviderVMId(String proivderVMId, String providerId) {
+		Query query = entityManager.createQuery("SELECT v FROM VM v " +
+													"WHERE v.providerId = :providerId " + 
+													"AND v.providerVmId = :providerVmId ");
+		
+		query.setParameter("providerId", providerId);
+		query.setParameter("providerVmId", proivderVMId);
+		
+		List<VM> vms = (List<VM>) query.getResultList();
+		
+		if(vms == null || vms.size() < 1) return null;
+		
+		return vms.get(0);
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")

@@ -83,4 +83,12 @@ public interface VMDAO extends DAO<VM> {
 	 * @return list of VMs registered in the DB
 	 */
 	public List<VM> getVMsWithOVfIdForDeploymentNotDeleted(String ovfId, int deploymentId);
+	
+	/**
+	 * Returns the VM with this specific combination of providerID and providerVMID
+	 * @param proivderVMId
+	 * @param providerID
+	 * @return the VM information or null if no VM with that information is avaiblable.
+	 */
+	public VM getVMWithProviderVMId(String proivderVMId, String providerID); 
 }
