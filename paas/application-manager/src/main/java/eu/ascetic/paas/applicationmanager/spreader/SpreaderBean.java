@@ -1,6 +1,8 @@
 package eu.ascetic.paas.applicationmanager.spreader;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -33,14 +35,21 @@ import eu.ascetic.providerregistry.model.Provider;
 @Service("SpreaderBeanService")
 public class SpreaderBean {
 	private static Logger logger = Logger.getLogger(SpreaderBean.class);
+	private String topic = "vm.*.item.*";
+	protected Map<String, MetricsListener> listeners = new HashMap<String, MetricsListener>();
 	
 	public SpreaderBean() {
-//		logger.info("Initializing the Spreader IaaS Monitoring Bean");
-//		
-//		//Getting an initial list of providers
-//		PRClient prClient = new PRClient();
-//		List<Provider> providers = prClient.getProviders();
+		logger.info("Initializing the Spreader IaaS Monitoring Bean");
 		
+		//Getting an initial list of providers
+		PRClient prClient = new PRClient();
+		List<Provider> providers = prClient.getProviders();
+		
+		for(Provider provider : providers) {
+			MetricsListener listener = new MetricsListener(provider.getAmqpUrl(), topic , "" + provider.getId());
+			logger.info("Creating listener for provider: "  + provider.getId());
+			listeners.put("" + provider.getId(), listener);
+		}
 	}
 	
 }

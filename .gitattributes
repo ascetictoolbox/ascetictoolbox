@@ -1347,6 +1347,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/QuantityTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spreader/MetricsListenerTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spreader/SpreaderBeanTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spreader/model/ConverterTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spreader/model/IaaSMessageTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
