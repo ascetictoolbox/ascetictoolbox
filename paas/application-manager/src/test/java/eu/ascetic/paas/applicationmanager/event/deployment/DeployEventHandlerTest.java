@@ -48,6 +48,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
+import eu.ascetic.paas.applicationmanager.spreader.model.Converter;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
