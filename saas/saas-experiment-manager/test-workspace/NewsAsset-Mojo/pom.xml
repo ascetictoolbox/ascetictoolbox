@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>eu.ascetic.saas.experimentmanager.experiments</groupId>
+  <artifactId>NewsAssetExperiment</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>News Asset Experiment 1</name>
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <saasknowledgebase_url>http://localhost:8080</saasknowledgebase_url>
+    <target_depl_id>490</target_depl_id>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>eu.ascetic.saas.experimentmanager</groupId>
+        <artifactId>experiment-manager-mojo</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>save_exp_1</id>
+            <goals>
+              <goal>save-experiment</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>run_exp_1</id>
+            <goals>
+              <goal>run-experiment</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

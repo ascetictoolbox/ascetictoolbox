@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+    	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+    	">
+
+   <import resource="deployments.xml"/>
+   <import resource="events.xml"/>
+   <import resource="kpis.xml"/>
+   
+	<bean id="Experiment" class="eu.ascetic.saas.experimentmanager.models.Experiment">
+		<constructor-arg type="java.lang.String" value="Experiment 1"/>
+		<constructor-arg type="java.lang.String" value="NewsAsset"/>
+		<constructor-arg type="java.lang.String" value="News Asset"/>
+		<constructor-arg type="java.util.List" > <ref bean="Events"/></constructor-arg>
+		<constructor-arg type="java.util.List" > <ref bean="Deployments"/></constructor-arg>
+		<constructor-arg type="java.util.List" > <ref bean="KPIs"/></constructor-arg>
+	</bean>
+
+</beans>
