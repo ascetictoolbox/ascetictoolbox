@@ -54,15 +54,35 @@ public class CpuRecentHistoryWorkloadPredictor extends AbstractWorkloadEstimator
                 config.setFile(new File(CONFIG_FILE));
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
-            cpuUtilObservationTimeMin = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
-            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
-            cpuUtilObservationTimeSec = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
-            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
-            cpuUtilObservationTimeSecTotal = cpuUtilObservationTimeSec + (int) TimeUnit.MINUTES.toSeconds(cpuUtilObservationTimeMin);
+            readSettings(config);
         } catch (ConfigurationException ex) {
             Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
                     "Taking the default load from the settings file did not work", ex);
         }
+    }
+
+    /**
+     * This sets up a CPU Recent History Workload Predictor. The main need is to
+     * establish the time window by which the workload predictor must work.
+     *
+     * @param config The config to use in order to create the abstract energy
+     * predictor.
+     */
+    public CpuRecentHistoryWorkloadPredictor(PropertiesConfiguration config) {
+        readSettings(config);
+    }
+    
+    /**
+     * This takes the settings and reads them into memory and sets defaults
+     * as needed.
+     * @param config The settings to read.
+     */
+    private void readSettings(PropertiesConfiguration config) {
+        cpuUtilObservationTimeMin = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", cpuUtilObservationTimeMin);
+        cpuUtilObservationTimeSec = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", cpuUtilObservationTimeSec);
+        cpuUtilObservationTimeSecTotal = cpuUtilObservationTimeSec + (int) TimeUnit.MINUTES.toSeconds(cpuUtilObservationTimeMin);        
     }
 
     /**
@@ -84,6 +104,6 @@ public class CpuRecentHistoryWorkloadPredictor extends AbstractWorkloadEstimator
     @Override
     public boolean requiresVMInformation() {
         return false;
-    }    
-    
+    }
+
 }

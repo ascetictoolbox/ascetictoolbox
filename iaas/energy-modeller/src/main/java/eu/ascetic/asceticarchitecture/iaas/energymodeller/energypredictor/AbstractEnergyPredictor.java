@@ -89,26 +89,62 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
                 config.setFile(new File(CONFIG_FILE));
             }
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
-            defaultAssumedCpuUsage = config.getDouble("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
-            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
-            String shareRule = config.getString("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
-            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", shareRule);
-            setEnergyShareRule(shareRule);
-            considerIdleEnergy = config.getBoolean("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
-            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
-            defaultPowerOverheadPerHost = config.getDouble("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
-            config.setProperty("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
-            if (defaultAssumedCpuUsage == -1) {
-                String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
-                config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
-                setDataSource(dataSrcStr);
-            }
+            readSettings(config);
             String workloadPredictorStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.workload", "CpuRecentHistoryWorkloadPredictor");
             config.setProperty("iaas.energy.modeller.cpu.energy.predictor.workload", workloadPredictorStr);
             setWorkloadPredictor(workloadPredictorStr);
         } catch (ConfigurationException ex) {
             Logger.getLogger(CpuOnlyEnergyPredictor.class.getName()).log(Level.SEVERE,
                     "Taking the default load from the settings file did not work", ex);
+        }
+    }
+
+    /**
+     * This creates a new abstract energy predictor.
+     *
+     * It will create a energy-modeller-predictor properties file if it doesn't
+     * exist.
+     *
+     * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
+     * should be in the range 0..1 or -1. This indicates the predictor's default
+     * assumption on how much load is been induced. -1 measures the CPU's
+     * current load and uses that to forecast into the future.
+     *
+     * In the case of using -1 as a parameter to additional parameters are used:
+     * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec
+     * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min
+     *
+     * These indicate the window of how long the CPU should be monitored for, to
+     * determine the current load.
+     *
+     * @param config The config to use in order to create the abstract energy
+     * predictor.
+     */
+    public AbstractEnergyPredictor(PropertiesConfiguration config) {
+        readSettings(config);
+        workloadEstimator = new CpuRecentHistoryWorkloadPredictor(config);
+        workloadEstimator.setDataSource(source);
+    }
+
+    /**
+     * This takes the settings and reads them into memory and sets defaults
+     * as needed.
+     * @param config The settings to read.
+     */
+    private void readSettings(PropertiesConfiguration config) {
+        defaultAssumedCpuUsage = config.getDouble("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", defaultAssumedCpuUsage);
+        String shareRule = config.getString("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", shareRule);
+        setEnergyShareRule(shareRule);
+        considerIdleEnergy = config.getBoolean("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", considerIdleEnergy);
+        defaultPowerOverheadPerHost = config.getDouble("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
+        config.setProperty("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
+        if (defaultAssumedCpuUsage == -1) {
+            String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
+            config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
+            setDataSource(dataSrcStr);
         }
     }
 
@@ -136,13 +172,17 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         } catch (ClassNotFoundException ex) {
             if (source == null) {
                 source = new ZabbixDirectDbDataSourceAdaptor();
+
             }
-            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The data source specified was not found", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class
+                    .getName()).log(Level.WARNING, "The data source specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (source == null) {
                 source = new ZabbixDirectDbDataSourceAdaptor();
+
             }
-            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The data source did not work", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class
+                    .getName()).log(Level.WARNING, "The data source did not work", ex);
         }
     }
 
@@ -163,14 +203,18 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             if (workloadEstimator == null) {
                 workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
                 workloadEstimator.setDataSource(source);
+
             }
-            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor specified was not found", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class
+                    .getName()).log(Level.WARNING, "The workload predictor specified was not found", ex);
         } catch (InstantiationException | IllegalAccessException ex) {
             if (workloadEstimator == null) {
                 workloadEstimator = new CpuRecentHistoryWorkloadPredictor();
                 workloadEstimator.setDataSource(source);
+
             }
-            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The workload predictor did not work", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class
+                    .getName()).log(Level.WARNING, "The workload predictor did not work", ex);
         }
         //Set the workload estimators database if it requires one.
         if (workloadEstimator.requiresVMInformation()) {
@@ -233,8 +277,10 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         } catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
             if (energyShareRule == null) {
                 this.energyShareRule = new DefaultEnergyShareRule();
+
             }
-            Logger.getLogger(AbstractEnergyPredictor.class.getName()).log(Level.WARNING, "The energy share rule specified was not found", ex);
+            Logger.getLogger(AbstractEnergyPredictor.class
+                    .getName()).log(Level.WARNING, "The energy share rule specified was not found", ex);
         }
     }
 
@@ -420,6 +466,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
             answer.setTotalEnergyUsed(defaultPowerOverheadPerHost * 1.0); //W * Hrs
         }
         return answer;
+
     }
 
     /**
