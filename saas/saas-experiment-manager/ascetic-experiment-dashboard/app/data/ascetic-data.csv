@@ -1,0 +1,40 @@
+id,date,application,deployment,workload,energy,cost,time
+1,01010001,1,All on same VM,CreateObjectLightLoad,1,2,3
+Upload multiple 3,01010610,1,All on same VM,GROUPSimpleEditorMediumImageLightLoad,3,4,5
+Upload multiple 2,01010615,1,All on same VM,GroupExternalUserLightLoad,4,6,6
+Upload multiple 1,01010615,1,All on same VM,AdvancedSearchLightLoad,4,5,6
+Test 5,01010001,1,All on same VM,SimpleSearchLightLoad,13,2,3
+2,01010530,1,Microservices,CreateObjectLightLoad,2,2,4
+3,01010540,1,Microservices,AdvancedSearchLightLoad,2,1,3
+4,01010600,1,Microservices,SimpleSearchLightLoad,1,8,3
+5,01010600,1,Microservices,GROUPSimpleEditorMediumImageLightLoad,2,9,3
+6,01010600,1,Microservices,GroupExternalUserLightLoad,3,4,3
+Update 3,01010600,1,Load balancer, CreateObjectLightLoad,13,45,12,3
+Search 4,01010600,1,Load balancer, AdvancedSearchLightLoad,14,53,20,31
+Search 3,01010605,1,Load balancer, SimpleSearchLightLoad,33,24,32
+Random data large,01010610,1,Load balancer,GROUPSimpleEditorMediumImageLightLoad,31,4,5
+Random data medium,01010615,1,Load balancer,GroupExternalUserLightLoad,23,6,6
+List multiple,01010001,1,High CPU instance,CreateObjectLightLoad3,12,2,3
+List single,01010530,1,High CPU instance,AdvancedSearchLightLoad3,20,2,4
+List all,01010540,1,High CPU instance,SimpleSearchLightLoad,21,1,3
+Download heavy,01010600,1,High CPU instance,GROUPSimpleEditorMediumImageLightLoad,16,2,3
+Download medium,01010600,1,High CPU instance,GroupExternalUserLightLoad,1,2,3
+Download small,01010605,1,3 small CPU instances,CreateObjectLightLoad3,1,2,31
+Download all,01010610,1,3 small CPU instances,AdvancedSearchLightLoad3,3,4,51
+Upload Heavy,01010615,1,3 small CPU instances,SimpleSearchLightLoad,4,6,61
+Upload medium,01010615,1,3 small CPU instances,GROUPSimpleEditorMediumImageLightLoad,4,5,6
+Upload small,01010001,1,3 small CPU instances,GroupExternalUserLightLoad,1,2,3
+Light 3,01010600,1,Separate DB,CreateObjectLightLoad3,1,2,3
+Light 2,01010600,1,Separate DB,AdvancedSearchLightLoad3,1,2,3
+Light 1,01010605,1,Separate DB,SimpleSearchLightLoad,1,2,3
+Heavy 2,01010610,1,Separate DB,GROUPSimpleEditorMediumImageLightLoad,3,4,5
+Test 1,01010615,1,Separate DB,GroupExternalUserLightLoad,4,6,6
+Medium 1,01010001,1,HA Proxy,CreateObjectLightLoad3,1,2,3
+Medium 2,01010530,1,HA Proxy,AdvancedSearchLightLoad3,2,2,4
+Heavy 1,01010540,1,HA Proxy,SimpleSearchLightLoad,2,1,3
+Query 1,01010600,1,HA Proxy,GROUPSimpleEditorMediumImageLightLoad,1,2,3
+Query 2,01010600,1,HA Proxy,GroupExternalUserLightLoad,1,2,3
+Update 1,01010605,1,Developer station,CreateObjectLightLoad3,1,2,3
+Update 2,01010610,1,Developer station,AdvancedSearchLightLoad3,3,4,5
+Search 1,01010615,1,Developer station,SimpleSearchLightLoad,4,6,6
+Delete 1,01010615,1,Developer station,GROUPSimpleEditorMediumImageLightLoad,4,5,6

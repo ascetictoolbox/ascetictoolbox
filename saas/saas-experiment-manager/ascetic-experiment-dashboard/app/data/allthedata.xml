@@ -1,0 +1,1970 @@
+<!--?xml version="1.0" encoding="UTF-8" standalone="yes"?-->
+<measurements>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>88.42251433333332</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>128.24422781944446</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>176.0114618749996</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>118.81471897222228</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>90.8354467083333</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>53.472085888888884</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-Advanced-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>88.93498893028051</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.146085643564355</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>3.5771339070143564</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>128.98626650866333</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>32.11942722772277</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>5.641564638672771</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>177.1075341295379</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.10231188118811</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>6.045783286688119</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>73.26956865277776</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-Advanced-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>119.4914882820834</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>29.755091500000017</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>5.5618085015695</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>105.5203678472222</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-Advanced-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>91.35387335624996</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.748422499999993</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>5.3254525361925</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>78.16579669444444</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-Advanced-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>54.83179519444444</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-Advanced-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-Advanced-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption">
+    <value>12.937724333333332</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>54.90627189542484</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.219264705882352</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.8762526839215687</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>109.06292496732028</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.13517647058825</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>3.1951685697254897</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>71.55467074509802</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>28.956476470588232</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>2.8800992342588234</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption">
+    <value>14.204378013888888</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption">
+    <value>20.747977083333332</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>56.045250614379086</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.680182352941177</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>2.7498201051607842</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption">
+    <value>15.208216027777778</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>79.9095991633987</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>32.337517647058824</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>2.950280632972549</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-Advanced-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation">
+    <energy-value>14.16704602173913</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.310308695652175</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.1190031865826087</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption">
+    <value>14.358667652777775</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation">
+    <energy-value>27.982227500000008</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.06650000000001</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.23505071100000008</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation">
+    <energy-value>15.343079826086958</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>24.16233043478261</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12888187053913044</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>15.226634013888885</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>17.30435481944444</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>30.014182777777773</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation">
+    <energy-value>15.306301937500006</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>24.10441250000001</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12857293627500005</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation">
+    <energy-value>14.387645021739134</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.65770869565218</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12085621818260874</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>16.003777236111112</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>15.784469305555554</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.380499999999998</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.13258954216666666</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>17.993945392063495</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>25.51327428571429</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.15114914129333337</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption">
+    <value>15.339814875</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption">
+    <value>29.83097695833333</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>31.079123194444428</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.06649999999998</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.2610646348333332</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption">
+    <value>34.43014102777777</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption">
+    <value>59.3254607638889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>16.661623277777775</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.624199999999995</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.13995763553333332</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption">
+    <value>34.9547408888889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation">
+    <energy-value>30.544633422222205</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.169491999999988</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.9640949207466666</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation">
+    <energy-value>15.921174304761905</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.57433142857143</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.13373786416000003</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption">
+    <value>30.181425722222215</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation">
+    <energy-value>35.44237439999999</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>25.724303999999997</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.4372359449599998</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>13.806618458333332</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation">
+    <energy-value>60.73314711111106</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.08050999999996</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.649678435733333</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>15.774185805555556</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation">
+    <energy-value>37.045672018140586</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>26.88798775510204</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.450703644952381</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>27.1008975</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation">
+    <energy-value>31.15747156462585</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.61429387755102</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.401242761142857</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Small-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>14.576253638888893</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>13.90570538888889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>12.929761555555555</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>14.24575220306513</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.395068965517236</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.1196643185057471</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>16.231891064814814</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>25.517383333333335</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.13634788494444444</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>28.03119027777777</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.06649999999999</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.23546199833333328</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>15.036155354406128</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.637624137931034</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.1263037049770115</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>14.643158000000001</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>26.92952777777778</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>14.350800469348657</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.560210344827585</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12054672394252873</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>13.90215976388889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>14.427771541666669</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>14.204320289351852</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.418041666666667</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.11931629043055555</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>16.14608754050926</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>25.482645833333336</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.1356271353402778</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>27.921024027777783</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.066500000000005</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.23453660183333339</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>14.368923796666671</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.677828000000005</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12069895989200004</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>14.904274496666668</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.522748</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12519590577200002</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Video-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-External-User-Light-Load-7/energy-consumption">
+    <value>24.870076847222226</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-External-User-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-External-User-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-External-User-Light-Load-7/energy-consumption">
+    <value>27.040138388888888</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-External-User-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-External-User-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-External-User-Light-Load-7/energy-consumption">
+    <value>48.674125138888876</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-External-User-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-External-User-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-External-User-Light-Load-7/energy-consumption">
+    <value>26.800372222222226</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-External-User-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-External-User-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-External-User-Light-Load-7/energy-consumption">
+    <value>25.10455470833334</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-External-User-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-External-User-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-8/energy-consumption">
+    <value>3.008382819444445</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-8/cost-estimation">
+    <energy-value>3.679408266666667</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.37478</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.030907029440000004</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-8/energy-consumption">
+    <value>4.658142736111111</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-External-User-Light-Load-7/cost-estimation">
+    <energy-value>26.192966863333332</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.355306</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.9275409216520001</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Group-External-User-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-External-User-Light-Load-7/cost-estimation">
+    <energy-value>51.63672084999995</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.07116999999996</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.5732684551399994</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Group-External-User-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-External-User-Light-Load-7/cost-estimation">
+    <energy-value>28.452502596666672</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>24.283786000000006</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.3785210218119999</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Group-External-User-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-8/energy-consumption">
+    <value>6.120347222222222</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-8/energy-consumption">
+    <value>3.8307407638888886</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-External-User-Light-Load-7/cost-estimation">
+    <energy-value>28.241773660000003</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>24.103932000000004</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.376750898744</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Group-External-User-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-8/energy-consumption">
+    <value>2.5712453472222223</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-8" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-8/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-8/cost-estimation">
+    <energy-value>5.7925128</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>35.22474</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.048657107520000006</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-8/cost-estimation">
+    <energy-value>7.246491111111111</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.0665</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.060870525333333335</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>13.68283284722222</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-8/cost-estimation">
+    <energy-value>5.555074755555556</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>33.780860000000004</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.046662627946666674</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>15.102100458333334</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-External-User-Light-Load-7/cost-estimation">
+    <energy-value>26.49567163333333</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.61366</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>1.36208364172</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Group-External-User-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-8/cost-estimation">
+    <energy-value>3.722880800000001</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.639140000000005</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.03127219872000001</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-8/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>14.531175166666666</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>26.623510416666665</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>14.23536901111111</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.320265</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.11957709969333334</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption">
+    <value>13.815521777777777</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>15.7936674</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>24.76359</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.13266680616</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>15.103936244444442</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.682129999999997</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12687306445333332</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>28.104634444444454</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.06650000000001</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.2360789293333334</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-7/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption">
+    <value>14.18696486111111</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-FileNames-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation">
+    <energy-value>14.374127133333333</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.53783</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12074266791999999</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Simple-Editor-Large-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption">
+    <value>16.534166666666664</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-FileNames-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption">
+    <value>16.748291666666667</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-FileNames-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-7/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption">
+    <value>10.735998458333334</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-FileNames-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption">
+    <value>7.2877784722222225</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-FileNames-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-FileNames-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation">
+    <energy-value>15.019332083333337</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.06650000000001</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12616238950000003</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation">
+    <energy-value>17.510312499999998</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>51.375</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.14708662499999997</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation">
+    <energy-value>17.86605729166667</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>52.41875000000001</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.15007488125000001</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Simple-Search-Light-Load-7/energy-consumption">
+    <value>0.40493120416666667</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Simple-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Simple-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation">
+    <energy-value>11.313845338541666</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>33.19465625</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.09503630084374999</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Simple-Search-Light-Load-7/energy-consumption">
+    <value>0.4144075</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Simple-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Simple-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Simple-Search-Light-Load-7/energy-consumption">
+    <value>0.4099658333333333</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Simple-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Simple-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation">
+    <energy-value>7.719566119791666</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.64909375</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.06484435540625</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-FileNames-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Simple-Search-Light-Load-7/energy-consumption">
+    <value>0.19993363</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Simple-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Simple-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Simple-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.3925224305555555</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>45.58325</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.003297188416666667</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Simple-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Simple-Search-Light-Load-7/energy-consumption">
+    <value>0.19803970333333332</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Simple-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Simple-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Simple-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.40170833333333333</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.65</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.00337435</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Simple-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-Contents-Light-Load-7/energy-consumption">
+    <value>14.040076527777774</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-Contents-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-Contents-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Simple-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.39740277777777777</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.15</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0033381833333333334</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Simple-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-Contents-Light-Load-7/energy-consumption">
+    <value>16.097958333333334</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-Contents-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-Contents-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Simple-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.19380683333333332</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.5066</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0016279773999999998</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Simple-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-Contents-Light-Load-7/energy-consumption">
+    <value>14.722861111111108</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-Contents-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-Contents-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-Contents-Light-Load-7/energy-consumption">
+    <value>10.625226722222223</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-Contents-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-Contents-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Simple-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.19197094444444443</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.2934</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0016125559333333333</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Simple-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-Contents-Light-Load-7/energy-consumption">
+    <value>7.212350097222221</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-Contents-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-Contents-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-Contents-Light-Load-7/cost-estimation">
+    <energy-value>15.043813472222228</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.06650000000001</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.12636803316666673</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Get-Attachment-Contents-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-Contents-Light-Load-7/cost-estimation">
+    <energy-value>15.778191176470587</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.21764705882352</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.13253680588235295</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Get-Attachment-Contents-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-Contents-Light-Load-7/cost-estimation">
+    <energy-value>17.234114379084975</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>50.48235294117649</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.1447665607843138</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Get-Attachment-Contents-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Advanced-Search-Light-Load-7/energy-consumption">
+    <value>1.1414223333333335</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Advanced-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Advanced-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-Contents-Light-Load-7/cost-estimation">
+    <energy-value>11.30500067973856</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>33.1147294117647</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.09496200570980391</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Get-Attachment-Contents-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Advanced-Search-Light-Load-7/energy-consumption">
+    <value>1.1438929444444443</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Advanced-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Advanced-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Advanced-Search-Light-Load-7/energy-consumption">
+    <value>1.1908345555555557</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Advanced-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Advanced-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-Contents-Light-Load-7/cost-estimation">
+    <energy-value>7.724417620915032</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.626447058823526</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.06488510801568627</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Get-Attachment-Contents-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-7/energy-consumption">
+    <value>0.5848924744444444</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Advanced-Search-Light-Load-7/cost-estimation">
+    <energy-value>1.1293333333333335</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.2</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.009486400000000002</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Advanced-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Advanced-Search-Light-Load-7/energy-consumption">
+    <value>0.556529858888889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Advanced-Search-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Advanced-Search-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Update-Object-Light-Load-7/energy-consumption">
+    <value>24.56707375</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Update-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Update-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Advanced-Search-Light-Load-7/cost-estimation">
+    <energy-value>1.1782222222222223</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>48.2</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.009897066666666668</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Advanced-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Advanced-Search-Light-Load-7/cost-estimation">
+    <energy-value>1.1317777777777778</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.3</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.009506933333333332</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Advanced-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Update-Object-Light-Load-7/energy-consumption">
+    <value>27.24043055555555</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Update-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Update-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.5786977777777778</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.674</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.004861061333333333</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Advanced-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Update-Object-Light-Load-7/energy-consumption">
+    <value>25.84376388888889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Update-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Update-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Update-Object-Light-Load-7/energy-consumption">
+    <value>19.14775876388889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Update-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Update-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Update-Object-Light-Load-7/cost-estimation">
+    <energy-value>27.39467416666667</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.066500000000005</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.23011526300000004</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Update-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Advanced-Search-Light-Load-7/cost-estimation">
+    <energy-value>0.5506355555555555</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.526</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.004625338666666667</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Advanced-Search-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Update-Object-Light-Load-7/energy-consumption">
+    <value>13.436906888888887</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Update-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Update-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Store-Object-Light-Load-7/energy-consumption">
+    <value>3.9782256944444443</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Store-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Store-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Update-Object-Light-Load-7/cost-estimation">
+    <energy-value>30.588391025641027</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>49.20384615384615</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.2569424846153846</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Update-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Store-Object-Light-Load-7/energy-consumption">
+    <value>3.8466666666666667</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Store-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Store-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Update-Object-Light-Load-7/cost-estimation">
+    <energy-value>28.8238141025641</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.365384615384606</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.24212003846153843</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Update-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Update-Object-Light-Load-7/cost-estimation">
+    <energy-value>20.20380287654321</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>32.49941481481481</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.16971194416296298</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Update-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Store-Object-Light-Load-7/energy-consumption">
+    <value>3.764583333333333</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Store-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Store-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Update-Object-Light-Load-7/cost-estimation">
+    <energy-value>14.159867444444444</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.777266666666666</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.11894288653333333</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Update-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Store-Object-Light-Load-7/energy-consumption">
+    <value>1.9266503333333338</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Store-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Store-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Store-Object-Light-Load-7/cost-estimation">
+    <energy-value>4.7983522222222215</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.0665</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.04030615866666666</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Store-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Store-Object-Light-Load-7/energy-consumption">
+    <value>1.8360996666666667</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Store-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Store-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Store-Object-Light-Load-7/cost-estimation">
+    <energy-value>5.223944444444443</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>47.974999999999994</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.04388113333333333</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Store-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Store-Object-Light-Load-7/cost-estimation">
+    <energy-value>5.047</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.35</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.042394799999999996</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Store-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>66.46877795833333</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Store-Object-Light-Load-7/cost-estimation">
+    <energy-value>2.568928444444444</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.5922</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.02157899893333333</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Store-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Store-Object-Light-Load-7/cost-estimation">
+    <energy-value>2.4590159999999996</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.5828</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0206557344</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Store-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>88.58185020833334</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>135.99157965277777</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>98.15433211111107</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption">
+    <value>67.79506506944443</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-7/energy-consumption">
+    <value>2.117640138888889</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>66.84018039999997</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.20603999999999</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>2.68401751536</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-7/cost-estimation">
+    <energy-value>2.484860972222222</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>44.0665</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.020872832166666667</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-7/energy-consumption">
+    <value>2.3005000000000004</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>88.89669648275863</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>29.533786206896554</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>4.165292250455172</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-7/energy-consumption">
+    <value>2.232180555555556</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>136.52279513793079</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>45.35641034482751</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>4.565351479158618</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>98.54081328965513</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>32.73781172413792</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>4.246302831633103</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-7/energy-consumption">
+    <value>1.1144166666666668</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-7/energy-consumption">
+    <value>1.1144166666666668</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-7" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-7/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-7/cost-estimation">
+    <energy-value>2.7151250000000005</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>48.150000000000006</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.022807050000000002</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-1/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-1" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-1/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-1/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-1" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-1/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-7/cost-estimation">
+    <energy-value>2.6192638888888893</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>46.45</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.02200181666666667</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation">
+    <energy-value>68.17737808965518</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>22.650291724137936</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>3.9912499759531035</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/GROUP-Advanced-Editor-Medium-Image-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-1/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-1" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-1/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-7/cost-estimation">
+    <energy-value>1.3152708333333336</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.325000000000003</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.011048275000000003</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-1/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-1" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-1/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-1/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1764" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1764/events/Create-Object-Light-Load-1/cost-estimation" type="application/xml"></link>
+</cost>
+
+<energy-measurement xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-1/energy-consumption">
+    <value>0.0</value>
+    <description>Aggregated energy consumption in Wh for an event in a specific VM</description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-1" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-1/energy-consumption" type="application/xml"></link>
+</energy-measurement>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-7/cost-estimation">
+    <energy-value>1.3152708333333336</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>23.325000000000003</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.011048275000000003</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-7/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-1/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1765" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1765/events/Create-Object-Light-Load-1/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-1/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1766" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1766/events/Create-Object-Light-Load-1/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-1/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1767" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1767/events/Create-Object-Light-Load-1/cost-estimation" type="application/xml"></link>
+</cost>
+
+<cost xmlns="http://application_manager.ascetic.eu/doc/schemas/xml" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-1/cost-estimation">
+    <energy-value>0.0</energy-value>
+    <energy-description>Energy estimation in WATTHOURS</energy-description>
+    <power-value>0.0</power-value>
+    <power-description>Power estimation in WATTS</power-description>
+    <charges>0.0</charges>
+    <charges-description>Charges estimation in EUROS</charges-description>
+    <link rel="parent" href="/applications/newsAsset/deployments/490/vms/1768" type="application/xml"></link>
+    <link rel="self" href="/applications/newsAsset/deployments/490/vms/1768/events/Create-Object-Light-Load-1/cost-estimation" type="application/xml"></link>
+</cost>
+    </measurements>

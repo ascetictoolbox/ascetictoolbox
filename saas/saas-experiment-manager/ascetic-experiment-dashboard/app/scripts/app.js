@@ -6,31 +6,37 @@
 var asceticApp = angular.module('asceticApp', [
   'ngRoute',
   'ngResource',
-  'asceticControllers'
+  'asceticControllers',
+  'xml'
 ]);
+
+asceticApp
+  .config(function ($httpProvider) {
+    $httpProvider.interceptors.push('xmlHttpInterceptor');
+  });
 
 asceticApp.config(['$routeProvider',
   function($routeProvider) {
-      
+
     $routeProvider.
       when('/dashboard', {
-        templateUrl: 'partials/dashboard.html',
+        templateUrl: 'views/partials/dashboard.html',
         controller: 'DashboardCtrl'
       }).
       when('/metrics', {
-        templateUrl: 'partials/metrics.html',
+        templateUrl: 'views/partials/metrics.html',
         controller: 'MetricsCtrl'
       }).
       when('/kpis', {
-        templateUrl: 'partials/kpis.html',
+        templateUrl: 'views/partials/kpis.html',
         controller: 'KPIsCtrl'
       }).
       when('/generator', {
-        templateUrl: 'partials/generator.html',
+        templateUrl: 'views/partials/generator.html',
         controller: 'GeneratorCtrl'
       }).
       otherwise({
-        redirectTo: '/kpis'
+        redirectTo: '/dashboard'
       });
   }]);
 })();

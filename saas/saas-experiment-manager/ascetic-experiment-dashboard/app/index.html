@@ -10,46 +10,41 @@
     <meta name="author" content="">
 
     <title>ASCETiC Data Visualization</title>
-    
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
     <script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
     <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+    <script type="text/javascript" src="bower_components/x2js/xml2json.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular-xml/angular-xml.js"></script>
+
     <script type="text/javascript" src="js/queue.v1.min.js"></script>
+
     <!-- Bootstrap Core CSS -->
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <script type="text/javascript" src="bower_components/q/q.js"></script>
-    <script type="text/javascript" src="js/ascetic-app.js"></script>
-    <script type="text/javascript" src="js/services.js"></script>
-    <script type="text/javascript" src="js/controllers.js"></script>
-    <script type="text/javascript" src="js/MetricsController.js"></script>
-    <script type="text/javascript" src="js/GeneratorController.js"></script>
-	<script type="text/javascript" src="js/KPIsController.js"></script>
-    
+
     <!-- MetisMenu CSS -->
     <link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
 
     <!-- Timeline CSS -->
-    <link href="dist/css/timeline.css" rel="stylesheet">
+    <link href="styles/css/timeline.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="styles/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
     <link href="bower_components/morrisjs/morris.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="dist/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-   
+    <link href="styles/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
- 
 
-
-       <!-- jQuery -->
+    <!-- jQuery -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -59,17 +54,23 @@
     <script src="bower_components/metisMenu/dist/metisMenu.min.js"></script>
 
     <!-- Morris Charts JavaScript -->
-    <script src="bower_components/raphael/raphael-min.js"></script>
+    <script src="bower_components/raphael/raphael.min.js"></script>
     <script src="bower_components/morrisjs/morris.min.js"></script>
-    
-    
+
     <!-- CrossFilter JavaScript -->
     <script src="bower_components/d3/d3.js"></script>
     <script src="bower_components/crossfilter/crossfilter.min.js"></script>
-    
-    
+
     <!-- Custom Theme JavaScript -->
-    <script src="dist/js/sb-admin-2.js"></script>
+    <script type="text/javascript" src="scripts/utils.js"></script>
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="scripts/constants.js"></script>
+    <script type="text/javascript" src="scripts/services.js"></script>
+    <script type="text/javascript" src="scripts/controllers/controllers.js"></script>
+    <script type="text/javascript" src="scripts/controllers/MetricsController.js"></script>
+    <script type="text/javascript" src="scripts/controllers/GeneratorController.js"></script>
+	  <script type="text/javascript" src="scripts/controllers/KPIsController.js"></script>
+    <script src="js/sb-admin-2.js"></script>
     <style>
     #charts {
   padding: 10px 0;
@@ -78,7 +79,7 @@
 .circle{
     fill: steelblue;
 }
-    
+
 .chart {
   display: inline-block;
   height: 151px;
@@ -184,24 +185,24 @@ aside {
   width: 220px;
 }
 
-div.tooltip {	
-    position: absolute;			
-    text-align: left;			
-    width: 270px;					
-    height: 68px;					
-    padding: 10px;				
-    font: 10px sans-serif;		
-    background: lightsteelblue;	
-    border: 0px;		
-    border-radius: 8px;			
-    pointer-events: none;			
+div.tooltip {
+    position: absolute;
+    text-align: left;
+    width: 270px;
+    height: 68px;
+    padding: 10px;
+    font: 10px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
 }
-        
+
 .title {
     font-weight: bold;
     font-size: 14pt;
 }
-        
+
         .bs-wizard {margin-top: 40px;}
 
 /*Form Wizard*/
@@ -210,8 +211,8 @@ div.tooltip {
 .bs-wizard > .bs-wizard-step + .bs-wizard-step {}
 .bs-wizard > .bs-wizard-step .bs-wizard-stepnum {color: #595959; font-size: 16px; margin-bottom: 5px;}
 .bs-wizard > .bs-wizard-step .bs-wizard-info {color: #999; font-size: 14px;}
-.bs-wizard > .bs-wizard-step > .bs-wizard-dot {position: absolute; width: 30px; height: 30px; display: block; background: #fbe8aa; top: 45px; left: 50%; margin-top: -15px; margin-left: -15px; border-radius: 50%;} 
-.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {content: ' '; width: 14px; height: 14px; background: #fbbd19; border-radius: 50px; position: absolute; top: 8px; left: 8px; } 
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot {position: absolute; width: 30px; height: 30px; display: block; background: #fbe8aa; top: 45px; left: 50%; margin-top: -15px; margin-left: -15px; border-radius: 50%;}
+.bs-wizard > .bs-wizard-step > .bs-wizard-dot:after {content: ' '; width: 14px; height: 14px; background: #fbbd19; border-radius: 50px; position: absolute; top: 8px; left: 8px; }
 .bs-wizard > .bs-wizard-step > .progress {position: relative; border-radius: 0px; height: 8px; box-shadow: none; margin: 20px 0;}
 .bs-wizard > .bs-wizard-step > .progress > .progress-bar {width:0px; box-shadow: none; background: #fbe8aa;}
 .bs-wizard > .bs-wizard-step.complete > .progress > .progress-bar {width:100%;}
@@ -224,10 +225,10 @@ div.tooltip {
 .bs-wizard > .bs-wizard-step:last-child  > .progress {width: 50%;}
 .bs-wizard > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none; }
 /*END Form Wizard*/
-        
-        
-        
-        
+
+
+
+
 
 .box {
     border-radius: 3px;
@@ -286,17 +287,17 @@ div.tooltip {
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;">
             <div class="navbar-header">
-                
+
                 <a class="navbar-brand" href="index.html">ASCETiC Data Visualization</a>
-               
+
             </div>
-            
-               
-           
+
+
+
         </nav>
 
         <div style="background-color: white; padding: 20px;" ng-view>
-            
+
         </div>
         <!-- /#page-wrapper -->
 

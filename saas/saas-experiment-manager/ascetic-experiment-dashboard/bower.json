@@ -1,11 +1,7 @@
 {
-  "name": "startbootstrap-sb-admin-2",
-  "version": "1.0.7",
-  "homepage": "http://startbootstrap.com/template-overviews/sb-admin-2/",
-  "authors": [
-    "David Miller"
-  ],
-  "description": "A free, open source, Bootstrap admin theme created by Start Bootstrap",
+  "name": "ascetic-experiment-dashboard",
+  "version": "0.1.0",
+  "description": "Experiement Dashboard for Ascetic Project",
   "keywords": [
     "bootstrap",
     "theme"
@@ -22,10 +18,13 @@
     "/js"
   ],
   "main": [
-    "dist/css/sb-admin-2.css",
-    "dist/js/sb-admin-2.js"
+    "app/styles/css/sb-admin-2.css",
+    "app/js/sb-admin-2.js"
   ],
   "dependencies": {
+    "angular-resource":"1.5.5",
+    "d3": "3.5.17",
+    "crossfilter" : "1.3.12",
     "bootstrap": "~3.3.1",
     "datatables": "~1.10.4",
     "datatables-plugins": "~1.0.1",
@@ -40,7 +39,8 @@
     "angular": "~1.3.0",
     "angular-route": "~1.3.0",
     "Snap.svg": "~0.4.0",
-    "q": "1.0.1"
+    "q": "1.0.1",
+    "raphael" : "2.2.0"
   },
   "resolutions": {
     "angular": "1.4.8"

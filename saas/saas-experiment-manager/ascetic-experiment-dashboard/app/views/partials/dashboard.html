@@ -1,0 +1,24 @@
+<h2> Dashboard </h2>
+
+<div class="panel-body">
+    <div class="dataTable_wrapper">
+        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th>Experiment Name</th>
+                    <th>Last snapshot date</th>
+                    <th>Application Name</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="exp in experiments">
+                  <td>{{exp.name}}</td>
+                  <td>{{exp.lastSnapshotDate}}</td>
+                  <td>{{exp.appId}}</td>
+                  <td>details</td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
