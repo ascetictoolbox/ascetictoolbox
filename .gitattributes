@@ -3937,6 +3937,20 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/META-I
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/deployments.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/events.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/kpis.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/experiment-manager-plugin/META-INF/MANIFEST.MF -text
+saas/saas-experiment-manager/experiment-manager-plugin/build.properties -text
+saas/saas-experiment-manager/experiment-manager-plugin/icons/sample.gif -text
+saas/saas-experiment-manager/experiment-manager-plugin/plugin.xml -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/Activator.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/Constants.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ExperimentSourceLocator.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/RunExperimentDelegate.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/SaveExperimentDelegate.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/SourcePathComputer.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/LaunchConfigurationTabGroup.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/RunExperimentMainTab.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/SaveExperimentLaunchConfigurationTabGroup.java -text
+saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/SaveExperimentMainTab.java -text
 saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/deployments.xml -text
 saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/events.xml -text
 saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/kpis.xml -text

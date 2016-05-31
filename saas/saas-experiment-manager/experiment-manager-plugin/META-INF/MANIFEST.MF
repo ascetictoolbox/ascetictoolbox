@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ExperimentManager-eclipseplugin
+Bundle-SymbolicName: experiment-manager-plugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: eu.ascetic.experimentmanager.plugin.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.launching,
+ org.eclipse.debug.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ libs/ascetic-experiment-runner-0.0.1-SNAPSHOT-shaded.jar

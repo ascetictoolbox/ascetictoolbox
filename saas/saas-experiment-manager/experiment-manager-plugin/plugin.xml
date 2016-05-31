@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+  <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+         <launchConfigurationType
+            id="eu.ascetic.experimentmanager.plugin.SaveExperimentLaunchConfigurationType"
+            delegate="eu.ascetic.experimentmanager.plugin.launchers.SaveExperimentDelegate"
+            sourceLocatorId="eu.ascetic.experimentmanager.plugin.launchers.ExperimentSourceLocator"
+            sourcePathComputerId="eu.ascetic.experimentmanager.plugin.launchers.SourcePathComputer"
+            name="Experiment uploader"
+            modes="run,debug" public="true"/>
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup 
+      		id="eu.ascetic.experimentmanager.plugin.launchers.SaveExperimentConfigurationTabGroup"
+            type="eu.ascetic.experimentmanager.plugin.SaveExperimentLaunchConfigurationType"
+            class="eu.ascetic.experimentmanager.plugin.launchers.ui.SaveExperimentLaunchConfigurationTabGroup"/>
+   </extension>
+
+
+
+   <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+         <launchConfigurationType
+            id="eu.ascetic.experimentmanager.plugin.ExperimentLaunchConfigurationType"
+            delegate="eu.ascetic.experimentmanager.plugin.launchers.RunExperimentDelegate"
+            sourceLocatorId="eu.ascetic.experimentmanager.plugin.launchers.ExperimentSourceLocator"
+            sourcePathComputerId="eu.ascetic.experimentmanager.plugin.launchers.SourcePathComputer"
+            name="Experiment runner"
+            modes="run,debug" public="true"/>
+   </extension>
+   
+   
+    <extension point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            id="eu.ascetic.experimentmanager.plugin.launchers.ExperimentSourceLocator"
+            class="eu.ascetic.experimentmanager.plugin.launchers.ExperimentSourceLocator"
+            name="Source Locator"/>
+   </extension>
+   
+   <extension point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            id="eu.ascetic.experimentmanager.plugin.launchers.SourcePathComputer"
+            class="eu.ascetic.experimentmanager.plugin.launchers.SourcePathComputer"/>
+   </extension>
+   
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup 
+      		id="eu.ascetic.experimentmanager.plugin.launchers.LaunchConfigurationTabGroup"
+            type="eu.ascetic.experimentmanager.plugin.ExperimentLaunchConfigurationType"
+            class="eu.ascetic.experimentmanager.plugin.launchers.ui.LaunchConfigurationTabGroup"/>
+   </extension>
+
+</plugin>
