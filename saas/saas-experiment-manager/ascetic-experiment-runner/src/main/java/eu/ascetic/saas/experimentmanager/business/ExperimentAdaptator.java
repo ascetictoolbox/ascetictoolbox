@@ -1,18 +1,59 @@
 package eu.ascetic.saas.experimentmanager.business;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import eu.ascetic.saas.experimentmanager.models.Deployment;
+import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
+import eu.ascetic.saas.experimentmanager.models.KPI;
 import eu.ascetic.saas.experimentmanager.models.Metric;
 import eu.ascetic.saas.experimentmanager.models.PhysicalComponent;
 
 public class ExperimentAdaptator {
 	
 	public static eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment getExperiment(Experiment exp){
-		// TODO
-		return null;
+		eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment pexp = new eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment();
+		
+		pexp.setAppId(exp.getApplicationId());
+		pexp.setName(exp.getName());
+		
+		pexp.setEvents(getEvents(exp.getEvent()));
+		pexp.setKpis(getKPIs(exp.getKpis()));
+		
+		return pexp;
+	}
+	
+	public static List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event> getEvents(List<Event> events){
+		List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event> pevents = new ArrayList<>();
+		
+		for (Event e : events){
+			eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event pe = 
+					new eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event();
+		
+			pe.setName(e.getName());
+			pe.setDescription("Launched by : "+e.getLaunchCmd());
+			pevents.add(pe);
+		}
+		
+		return pevents;
+	}
+	
+	public static List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI> getKPIs(List<KPI> kpis){
+		List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI> pkpis=new ArrayList<>();
+		
+		for (KPI kpi:kpis){
+			eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI pkpi = new 
+					eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI();
+			pkpi.setName(kpi.getName());
+			List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Metric> metrics = new ArrayList<>();
+			metrics.add(getMetric(kpi.getMetric()));
+			pkpi.setMetrics(metrics);
+			pkpi.setDescription(kpi.getDescription());
+			pkpis.add(pkpi);
+		}
+		return pkpis;
 	}
 	
 	public static List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.VM> getVMs(Deployment depl){

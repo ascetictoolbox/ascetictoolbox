@@ -11,6 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import eu.ascetic.saas.experimentmanager.business.ExperimentHandler;
+import eu.ascetic.saas.experimentmanager.exception.AlreadyExistException;
 import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
 import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 import eu.ascetic.saas.experimentmanager.models.Deployment;
@@ -24,6 +25,9 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 
 public class API {
 	public static Snapshot run(Experiment exp, String deplId, String scopeDefinitionPath){
+		if ((!scopeDefinitionPath.startsWith("//")) && scopeDefinitionPath.startsWith("/")){
+			scopeDefinitionPath = "/"+ scopeDefinitionPath;
+		}
 		Logger.getLogger("Experiment Runner").info("begin snapshot computation...");
 		Map<String,List<Scope>> scopedefinition = getScope(scopeDefinitionPath);
 		
@@ -42,6 +46,9 @@ public class API {
 	}
 	
 	public static List<Event> getEvents(String filepath){
+		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
+			filepath = "/"+ filepath;
+		}
 		Logger.getLogger("Experiment Runner").info("Loading events from ..." + filepath);
 		ApplicationContext context = new FileSystemXmlApplicationContext(filepath);
 		return ((List<String>) context.getBean("Events")).stream()
@@ -49,6 +56,9 @@ public class API {
 	}
 	
 	public static List<KPI> getKPIs(String filepath){
+		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
+			filepath = "/"+ filepath;
+		}
 		Logger.getLogger("Experiment Runner").info("Loading kpis from ..." + filepath);
 		ApplicationContext context = new FileSystemXmlApplicationContext(filepath);
 		List<KPI> kpis = (List<KPI>) context.getBean("KPIs");
@@ -56,6 +66,9 @@ public class API {
 	}
 	
 	public static List<Deployment> getDeployment(String filepath){
+		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
+			filepath = "/"+ filepath;
+		}
 		Logger.getLogger("Experiment Runner").info("Loading deployments from ..." + filepath);
 		ApplicationContext context = new FileSystemXmlApplicationContext(filepath);
 		List<Deployment> depls = (List<Deployment>) context.getBean("Deployments");
@@ -63,6 +76,9 @@ public class API {
 	}
 	
 	public static Map<String,List<Scope>> getScope(String filepath){
+		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
+			filepath = "/"+ filepath;
+		}
 		Logger.getLogger("Experiment Runner").info("Loading scopes from ..." + filepath);
 		ApplicationContext context = new FileSystemXmlApplicationContext(filepath);
 		Map<String,List<Scope>> scopes = (Map<String,List<Scope>>) context.getBean("Scopes");
@@ -77,11 +93,33 @@ public class API {
 		return new Experiment(label,appId, appName, events,depls,kpis);
 	}
 	
+	public static Experiment loadExperiment(String experimentFile){
+		if ((!experimentFile.startsWith("//")) && experimentFile.startsWith("/")){
+			experimentFile = "/"+ experimentFile;
+		}
+		ApplicationContext context = new FileSystemXmlApplicationContext(experimentFile);
+		return (Experiment) context.getBean("Experiment");
+	}
 	
-	public static void persist(String persistServiceBaseUrl, eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment exp) throws ApiException{
+	private static boolean exists(DefaultApi api, String experimentName) throws ApiException{
+		List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment> exps = api.experimentsGet();
+		for (eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment exp:exps){
+			if(exp.getName().equals(experimentName)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static void persist(String persistServiceBaseUrl, eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment exp) throws ApiException, AlreadyExistException{
 		Logger.getLogger("Experiment Runner").info("Persisting experiment " + exp.getName() + "...");
 		DefaultApi api = new DefaultApi();
 		api.getApiClient().setBasePath(persistServiceBaseUrl);
+		
+		if(exists(api, exp.getName())){
+			throw new AlreadyExistException("experiment with name "+exp.getName()+" already exists in the saas knowledge base");
+		}
+		
 		api.experimentsPost(exp);
 	}
 	
