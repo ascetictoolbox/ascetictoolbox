@@ -3927,6 +3927,7 @@ saas/saas-experiment-manager/ascetic-experiment-dashboard/bower.json -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/less/mixins.less -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/less/sb-admin-2.less -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/less/variables.less -text
+saas/saas-experiment-manager/ascetic-experiment-dashboard/package.json -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/tests/svgtest.html -text
 saas/saas-experiment-manager/ascetic-experiment-runner/LICENSE -text
 saas/saas-experiment-manager/ascetic-experiment-runner/README.txt -text
