@@ -142,7 +142,7 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
         defaultPowerOverheadPerHost = config.getDouble("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
         config.setProperty("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", defaultPowerOverheadPerHost);
         if (defaultAssumedCpuUsage == -1) {
-            String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDataSourceAdaptor");
+            String dataSrcStr = config.getString("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDirectDbDataSourceAdaptor");
             config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", dataSrcStr);
             setDataSource(dataSrcStr);
         }
