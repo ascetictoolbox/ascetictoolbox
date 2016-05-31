@@ -46,9 +46,10 @@ public class MetricsListener implements MessageListener {
 	private String providerId;
 	private AmqpMessageReceiver receiver;
 	@Autowired
-	protected VMDAO vmDAO;
+	private VMDAO vmDAO;
 	
-	public MetricsListener(String amqpUrl, String topic, String providerId) {
+	public MetricsListener(String amqpUrl, String topic, String providerId, VMDAO vmDAO) {
+		this.vmDAO = vmDAO;
 		this.topic = topic;
 		this.providerId = providerId;
 		
@@ -59,6 +60,7 @@ public class MetricsListener implements MessageListener {
 			try {
 				// We setup the listener
 				// Topic has to have this format: vm.*.item.<metric_name>
+				logger.info("Connecting to: " + host + " user: " + user +  " password: " + password + " topic: " + topic);
 				receiver = new AmqpMessageReceiver(host, user, password,  topic, true);
 				receiver.setMessageConsumer(this);
 				
@@ -93,6 +95,7 @@ public class MetricsListener implements MessageListener {
         	
         	logger.debug("DESTINATION: " + destination);
         	String vmID = destination.split("\\.")[1];
+        	logger.debug("VMDAO: " + vmDAO + "  vmID " + vmID);
         	
         	eu.ascetic.paas.applicationmanager.model.VM vmFromDB = vmDAO.getVMWithProviderVMId(vmID, providerId);
         	

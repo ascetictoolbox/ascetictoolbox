@@ -43,7 +43,7 @@ public class SpreaderBeanTest {
 	
 
 	@Test
-	public void constructorTest() {
+	public void constructorTest() throws Exception {
 		Configuration.providerRegistryEndpoint = mBaseURL;
 		
 		String collection = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
@@ -74,6 +74,7 @@ public class SpreaderBeanTest {
 		mServer.addPath("/", collection);
 		
 		SpreaderBean spreaderBean = new SpreaderBean();
+		spreaderBean.afterPropertiesSet();
 		assertEquals(2, spreaderBean.listeners.keySet().size());
 	}
 }

@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.providerregistry.model.Provider;
 
@@ -33,12 +36,17 @@ import eu.ascetic.providerregistry.model.Provider;
  *
  */
 @Service("SpreaderBeanService")
-public class SpreaderBean {
+public class SpreaderBean implements InitializingBean {
 	private static Logger logger = Logger.getLogger(SpreaderBean.class);
 	private String topic = "vm.*.item.*";
 	protected Map<String, MetricsListener> listeners = new HashMap<String, MetricsListener>();
+	@Autowired
+	protected VMDAO vmDAO;
 	
-	public SpreaderBean() {
+	public SpreaderBean() {	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		logger.info("Initializing the Spreader IaaS Monitoring Bean");
 		
 		//Getting an initial list of providers
@@ -46,10 +54,9 @@ public class SpreaderBean {
 		List<Provider> providers = prClient.getProviders();
 		
 		for(Provider provider : providers) {
-			MetricsListener listener = new MetricsListener(provider.getAmqpUrl(), topic , "" + provider.getId());
-			logger.info("Creating listener for provider: "  + provider.getId());
+			MetricsListener listener = new MetricsListener(provider.getAmqpUrl(), topic , "" + provider.getId(), vmDAO);
+			logger.info("Creating listener for provider: "  + provider.getId() + " provider amqp: " + provider.getAmqpUrl());
 			listeners.put("" + provider.getId(), listener);
 		}
 	}
-	
 }
