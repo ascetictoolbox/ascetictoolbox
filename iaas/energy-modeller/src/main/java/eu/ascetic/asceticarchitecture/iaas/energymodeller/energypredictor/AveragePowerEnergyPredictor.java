@@ -74,6 +74,22 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
             Logger.getLogger(AveragePowerEnergyPredictor.class.getName()).log(Level.SEVERE, "The average power energy predictor failed to initialise", ex);
         }
     }
+    
+    /**
+     * This creates a new average power energy predictor. The predictor when
+     * running takes the last power reading and makes the assumption no change
+     * will occur. An observation time window is used for taking the measurement,
+     * which is set via a configuration file.
+     * @param config The config to use in order to create the abstract energy
+     * predictor.
+     */
+    public AveragePowerEnergyPredictor(PropertiesConfiguration config) {
+        powerObservationTimeMin = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", powerObservationTimeMin);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", powerObservationTimeMin);
+        powerObservationTimeSec = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", powerObservationTimeSec);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", powerObservationTimeSec);
+        observationTime = powerObservationTimeSec + (int) TimeUnit.MINUTES.toSeconds(powerObservationTimeMin);       
+    }    
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {

@@ -22,6 +22,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.usage.EnergyUsag
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This predictor automatically selects between a polynomial or linear
@@ -32,22 +33,40 @@ import java.util.HashMap;
  */
 public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
-    private final CpuOnlyEnergyPredictor linear = new CpuOnlyEnergyPredictor();
-    private final CpuOnlyPolynomialEnergyPredictor polynomial = new CpuOnlyPolynomialEnergyPredictor();
-    private final CpuOnlySplinePolynomialEnergyPredictor splinePolynomial = new CpuOnlySplinePolynomialEnergyPredictor();
-    private final ArrayList<EnergyPredictorInterface>predictors = new ArrayList<>();
+    private final CpuOnlyEnergyPredictor linear;
+    private final CpuOnlyPolynomialEnergyPredictor polynomial;
+    private final CpuOnlySplinePolynomialEnergyPredictor splinePolynomial;
+    private final ArrayList<EnergyPredictorInterface> predictors = new ArrayList<>();
     private final HashMap<Host, EnergyPredictorInterface> predictorMap = new HashMap<>();
-    
+
     /**
      * This creates a new CPU Only Best fit energy predictor
      */
     public CpuOnlyBestFitEnergyPredictor() {
         super();
+        linear = new CpuOnlyEnergyPredictor();
+        polynomial = new CpuOnlyPolynomialEnergyPredictor();
+        splinePolynomial = new CpuOnlySplinePolynomialEnergyPredictor();
         predictors.add(linear);
         predictors.add(polynomial);
         predictors.add(splinePolynomial);
     }
     
+    /**
+     * This creates a new CPU Only Best fit energy predictor
+     * @param config The config to use in order to create the abstract energy
+     * predictor.
+     */
+    public CpuOnlyBestFitEnergyPredictor(PropertiesConfiguration config) {
+        super(config);
+        linear = new CpuOnlyEnergyPredictor(config);
+        polynomial = new CpuOnlyPolynomialEnergyPredictor(config);
+        splinePolynomial = new CpuOnlySplinePolynomialEnergyPredictor(config);
+        predictors.add(linear);
+        predictors.add(polynomial);
+        predictors.add(splinePolynomial);
+    }    
+
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod timePeriod) {
         return getBestFit(host).getHostPredictedEnergy(host, virtualMachines, timePeriod);
@@ -55,9 +74,9 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public EnergyUsagePrediction getVMPredictedEnergy(VM vm, Collection<VM> virtualMachines, Host host, TimePeriod timePeriod) {
-            return getBestFit(host).getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
+        return getBestFit(host).getVMPredictedEnergy(vm, virtualMachines, host, timePeriod);
     }
-    
+
     @Override
     public double predictPowerUsed(Host host) {
         return getBestFit(host).predictPowerUsed(host);
@@ -74,8 +93,9 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
     }
 
     /**
-     * This takes the list of predictors and finds the best predictor for the given
-     * host.
+     * This takes the list of predictors and finds the best predictor for the
+     * given host.
+     *
      * @param host The host to get the best predictor for
      * @return The best predictor for the host specified.
      */
@@ -92,10 +112,11 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
     public double getRootMeanSquareError(Host host) {
         return getBestFit(host).getRootMeanSquareError(host);
     }
-    
+
     /**
      * This outputs information about how good a fit is provided by each of the
      * predictors in use.
+     *
      * @param host The host to check the fit for.
      */
     @Override
@@ -105,10 +126,10 @@ public class CpuOnlyBestFitEnergyPredictor extends AbstractEnergyPredictor {
         System.out.println("Polynomial - SSE: " + polynomial.getSumOfSquareError(host) + " RMSE: " + polynomial.getRootMeanSquareError(host));
         System.out.println("Polynomial Spline - SSE: " + splinePolynomial.getSumOfSquareError(host) + " RMSE: " + splinePolynomial.getRootMeanSquareError(host));
     }
-    
+
     @Override
     public String toString() {
         return "CPU only best fit energy predictor";
-    }    
+    }
 
 }

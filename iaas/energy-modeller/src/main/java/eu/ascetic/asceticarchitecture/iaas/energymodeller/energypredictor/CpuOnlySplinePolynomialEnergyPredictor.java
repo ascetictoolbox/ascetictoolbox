@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
@@ -68,6 +69,32 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     public CpuOnlySplinePolynomialEnergyPredictor() {
         super();
     }
+    
+    /**
+     * This creates a new CPU only energy predictor that uses a polynomial fit.
+     *
+     * It will create a energy-modeller-predictor properties file if it doesn't
+     * exist.
+     *
+     * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
+     * should be in the range 0..1 or -1. This indicates the predictor's default
+     * assumption on how much load is been induced. -1 measures the CPU's
+     * current load and uses that to forecast into the future.
+     *
+     * In the case of using -1 as a parameter to additional parameters are used:
+     * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec
+     * iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min
+     *
+     * These indicate the window of how long the CPU should be monitored for, to
+     * determine the current load.
+     * 
+     * @param config The config to use in order to create the abstract energy
+     * predictor.
+     * 
+     */
+    public CpuOnlySplinePolynomialEnergyPredictor(PropertiesConfiguration config) {
+        super(config);
+    }    
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
