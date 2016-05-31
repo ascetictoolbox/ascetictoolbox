@@ -3937,6 +3937,10 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/META-I
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/deployments.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/events.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/test/resources/kpis.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/experiment-manager-mojo/README.txt -text
+saas/saas-experiment-manager/experiment-manager-mojo/pom.xml -text
+saas/saas-experiment-manager/experiment-manager-mojo/src/main/java/eu/ascetic/saas/experimentmanager/experiment_manager_mojo/RunExperiment.java -text
+saas/saas-experiment-manager/experiment-manager-mojo/src/main/java/eu/ascetic/saas/experimentmanager/experiment_manager_mojo/SaveExperiment.java -text
 saas/saas-experiment-manager/experiment-manager-plugin/META-INF/MANIFEST.MF -text
 saas/saas-experiment-manager/experiment-manager-plugin/build.properties -text
 saas/saas-experiment-manager/experiment-manager-plugin/icons/sample.gif -text
