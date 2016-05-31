@@ -3955,10 +3955,6 @@ saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experiment
 saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/RunExperimentMainTab.java -text
 saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/SaveExperimentLaunchConfigurationTabGroup.java -text
 saas/saas-experiment-manager/experiment-manager-plugin/src/eu/ascetic/experimentmanager/plugin/launchers/ui/SaveExperimentMainTab.java -text
-saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/deployments.xml -text
-saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/events.xml -text
-saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/kpis.xml -text
-saas/saas-experiment-manager/experiment-manager-workspace/NewsAsset/experiment-manager/scopes.xml -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/README.md -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/build.gradle -text
 saas/saas-experiment-manager/saas-knowledgebase-rest-client/gradle.properties -text
