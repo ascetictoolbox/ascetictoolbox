@@ -1,3 +1,5 @@
+
+
 swagger-codegen generate -i ascetic-swagger.yaml \
   -l java \
   -o ../saas-knowledgebase-rest-client \

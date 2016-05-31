@@ -81,7 +81,7 @@ paths:
           name: expId
           in: query
           description: Experiment's ID
-          required: true
+          required: false
           type: string
       # Expected responses for this operation:
       produces:
@@ -122,6 +122,56 @@ paths:
             $ref: "#/definitions/Snapshot"
         "400":
           description: Invalid Snapshot
+  /experiment/{expid}:
+    get:
+      x-swagger-router-controller: Default
+      # Describe this verb here. Note: you can use markdown
+      operationId: experimentGet
+      description: |
+        Gets `Experiments` object.
+      # This is array of GET operation parameters:
+      parameters:
+        - name: expid
+          in: path
+          description: id of the experiment to retrieve
+          type: string
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+              $ref: "#/definitions/Experiment"
+  /snapshot/{snapid}:
+    get:
+      x-swagger-router-controller: Default
+      operationId: snapshotGet
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Get `Snapshot` object according.
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        - name: snapid
+          in: path
+          description: snapshotId
+          type: string
+      # Expected responses for this operation:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            $ref: "#/definitions/Snapshot"
 definitions:
   Experiment:
     type: object

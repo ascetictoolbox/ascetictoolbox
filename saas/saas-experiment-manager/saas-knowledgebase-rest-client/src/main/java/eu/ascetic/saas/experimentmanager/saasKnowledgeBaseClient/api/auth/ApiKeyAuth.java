@@ -5,7 +5,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.Pair;
 import java.util.Map;
 import java.util.List;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-20T17:52:06.825+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-25T15:22:24.802+02:00")
 public class ApiKeyAuth implements Authentication {
   private final String location;
   private final String paramName;

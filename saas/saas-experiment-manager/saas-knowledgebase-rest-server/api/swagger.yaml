@@ -4,6 +4,25 @@ info:
   version: "0.0.2"
   title: "ASCETIC SaaS Knowledge Base"
 paths:
+  /experiment/{expid}:
+    get:
+      description: "Gets `Experiments` object.\n"
+      operationId: "experimentGet"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "expid"
+        in: "path"
+        description: "id of the experiment to retrieve"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/Experiment"
+      x-swagger-router-controller: "Default"
   /experiments:
     get:
       description: "Gets `Experiments` objects.\n"
@@ -44,6 +63,25 @@ paths:
         400:
           description: "Invalid Experiment"
       x-swagger-router-controller: "Default"
+  /snapshot/{snapid}:
+    get:
+      description: "Get `Snapshot` object according.\n"
+      operationId: "snapshotGet"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "snapid"
+        in: "path"
+        description: "snapshotId"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            $ref: "#/definitions/Snapshot"
+      x-swagger-router-controller: "Default"
   /snapshots:
     get:
       description: "Gets `Snapshot` objects according to a specific experiments.\n"
@@ -55,7 +93,7 @@ paths:
       - name: "expId"
         in: "query"
         description: "Experiment's ID"
-        required: true
+        required: false
         type: "string"
       responses:
         200:

@@ -12,7 +12,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 
 import java.util.*;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-20T17:52:06.825+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-25T15:22:24.802+02:00")
 public class DefaultApi {
   private ApiClient apiClient;
 
@@ -32,6 +32,53 @@ public class DefaultApi {
     this.apiClient = apiClient;
   }
 
+  
+  /**
+   * 
+   * Gets `Experiments` object.
+   * @param expid id of the experiment to retrieve
+   * @return Experiment
+   */
+  public Experiment experimentGet(String expid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'expid' is set
+     if (expid == null) {
+        throw new ApiException(400, "Missing the required parameter 'expid' when calling experimentGet");
+     }
+     
+    // create path and map variables
+    String path = "/experiment/{expid}".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "expid" + "\\}", apiClient.escapeString(expid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<Experiment> returnType = new GenericType<Experiment>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
   
   /**
    * 
@@ -121,6 +168,53 @@ public class DefaultApi {
   
   /**
    * 
+   * Get `Snapshot` object according.
+   * @param snapid snapshotId
+   * @return Snapshot
+   */
+  public Snapshot snapshotGet(String snapid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'snapid' is set
+     if (snapid == null) {
+        throw new ApiException(400, "Missing the required parameter 'snapid' when calling snapshotGet");
+     }
+     
+    // create path and map variables
+    String path = "/snapshot/{snapid}".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "snapid" + "\\}", apiClient.escapeString(snapid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<Snapshot> returnType = new GenericType<Snapshot>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
    * Gets `Snapshot` objects according to a specific experiments.
    * @param expId Experiment&#39;s ID
    * @return List<Snapshot>
@@ -128,11 +222,6 @@ public class DefaultApi {
   public List<Snapshot> snapshotsGet(String expId) throws ApiException {
     Object postBody = null;
     
-     // verify the required parameter 'expId' is set
-     if (expId == null) {
-        throw new ApiException(400, "Missing the required parameter 'expId' when calling snapshotsGet");
-     }
-     
     // create path and map variables
     String path = "/snapshots".replaceAll("\\{format\\}","json");
 
