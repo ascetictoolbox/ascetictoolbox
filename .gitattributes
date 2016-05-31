@@ -3848,6 +3848,7 @@ saas/programming_model/doc/licenses/LICENSE -text
 saas/programming_model/files/paraver/cfgs/3dh_duration_task.cfg -text
 saas/programming_model/files/paraver/cfgs/tasks.cfg -text
 saas/programming_model/pom.xml -text svneol=unset#application/xml
+saas/saas-experiment-manager/ascetic-experiment-dashboard/Gruntfile.js -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/LICENSE -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/README.md -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/app/data/allthedata.xml -text
