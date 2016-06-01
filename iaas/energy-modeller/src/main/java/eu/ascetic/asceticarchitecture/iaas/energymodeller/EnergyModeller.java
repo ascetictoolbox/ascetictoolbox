@@ -671,6 +671,36 @@ public class EnergyModeller {
         }
         return predictor.getVMPredictedEnergy(vmImage, vMsOnHost, host, duration);
     }
+    
+    /**
+     * This provides an estimation for the total amount of energy used during
+     * transfer of a VM from one physical host to another.
+     * @param vm The VM to transfer
+     * @param destination The host to transfer the VM to
+     * @param duration The duration of the transfer
+     * @return The total energy for the VM during the specified time as consumed
+     * on both physical hosts.
+     */
+    public EnergyUsagePrediction getPredictedEnergyForVMTransfer(VmDeployed vm, Host destination, TimePeriod duration) {
+        Host currentHost = vm.getAllocatedTo();
+        ArrayList<VmDeployed> originVMs = getVMsOnHost(currentHost);
+        ArrayList<VmDeployed> destinationVMs = getVMsOnHost(destination);
+        ArrayList<VM> originVMList = new ArrayList<>();
+        ArrayList<VM> destinationVMList = new ArrayList<>();
+        originVMList.addAll(originVMs);
+        destinationVMList.addAll(destinationVMs);
+        VM movedVM = new VM(vm);
+        destinationVMList.add(movedVM);
+        EnergyUsagePrediction originPredict = getPredictedEnergyForVM(vm, originVMList, currentHost, duration);
+        EnergyUsagePrediction destinationPredict = getPredictedEnergyForVM(vm, destinationVMList, destination, duration);
+        Collection<EnergyUsageSource> energyUsers = new ArrayList<>();
+        energyUsers.addAll(originPredict.getEnergyUser());
+        energyUsers.addAll(destinationPredict.getEnergyUser());
+        double power = originPredict.getAvgPowerUsed() + destinationPredict.getAvgPowerUsed();
+        double energy = originPredict.getTotalEnergyUsed()+ destinationPredict.getTotalEnergyUsed();
+        EnergyUsagePrediction answer = new EnergyUsagePrediction(energyUsers, power, energy);
+        return answer;
+    }
 
     /**
      * This provides the amount of energy predicted to be used by a given host.
