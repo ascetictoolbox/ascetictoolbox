@@ -324,8 +324,8 @@ public class EnergyModeller {
     public HistoricUsageRecord getEnergyRecordForVM(VmDeployed vm, TimePeriod timePeriod) {
         if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", timePeriod.toString());
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", timePeriod.toString());
             return null;
         }
         HistoricUsageRecord answer = new HistoricUsageRecord(vm);
@@ -351,7 +351,15 @@ public class EnergyModeller {
         double totalEnergy = shareRule.getEnergyUsage(vm);
         answer.setTotalEnergyUsed(totalEnergy);
         answer.setAvgPowerUsed(totalEnergy / (((double) shareRule.getDuration()) / 3600));
-        answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
+        if (shareRule.getStart() != null && shareRule.getEnd() != null) {
+            answer.setDuration(new TimePeriod(shareRule.getStart(), shareRule.getEnd()));
+        } else {
+            /**
+             * In this case the share rule has no data so the time period is
+             * reported as null. This avoids a null pointer.
+             */
+            answer.setDuration(timePeriod);
+        }
         return answer;
     }
 
@@ -374,8 +382,8 @@ public class EnergyModeller {
     public HashSet<HistoricUsageRecord> getEnergyRecordForVM(Collection<VmDeployed> vms, TimePeriod timePeriod) {
         if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", timePeriod.toString());       
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", timePeriod.toString());
             return null;
         }
         HashSet<HistoricUsageRecord> answer = new HashSet<>();
@@ -404,8 +412,8 @@ public class EnergyModeller {
     public HashSet<HistoricUsageRecord> getEnergyRecordForDeployment(String deploymentId, TimePeriod timePeriod) {
         if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", timePeriod.toString());
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", timePeriod.toString());
             return null;
         }
         HashSet<HistoricUsageRecord> answer = new HashSet<>();
@@ -431,8 +439,8 @@ public class EnergyModeller {
     public HistoricUsageRecord getEnergyRecordForHost(Host host, TimePeriod timePeriod) {
         if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", timePeriod.toString());
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", timePeriod.toString());
             return null;
         }
         List<HostEnergyRecord> data = database.getHostHistoryData(host, timePeriod);
@@ -480,8 +488,8 @@ public class EnergyModeller {
         HashSet<HistoricUsageRecord> answer = new HashSet<>();
         if (timePeriod != null && !timePeriod.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", timePeriod.toString());
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", timePeriod.toString());
             return null;
         }
         for (Host host : hosts) {
@@ -568,11 +576,13 @@ public class EnergyModeller {
         CurrentUsageRecord answer = datasource.getCurrentEnergyUsage(host);
         return answer;
     }
-    
+
     /**
-     * This gets the current overhead caused by other physical hosts that provide
-     * utilities to the other physical hosts, such as Distributed file systems.
-     * @return 
+     * This gets the current overhead caused by other physical hosts that
+     * provide utilities to the other physical hosts, such as Distributed file
+     * systems.
+     *
+     * @return
      */
     public CurrentUsageRecord getCurrentGeneralPowerConsumerOverhead() {
         double power = dataGatherer.getGeneralPurposeHostsPowerConsumption();
@@ -646,10 +656,10 @@ public class EnergyModeller {
     public EnergyUsagePrediction getPredictedEnergyForVM(VM vmImage, Collection<VM> vMsOnHost, Host host, TimePeriod duration) {
         if (duration != null && !duration.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", duration.toString());
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", duration.toString());
             return null;
-        }       
+        }
         /**
          * There is an expectation that the vmImage that is expected to be be
          * deployed is in the collection of VMs that induce workload on the
@@ -686,10 +696,10 @@ public class EnergyModeller {
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
         if (duration != null && !duration.isValid()) {
             Logger.getLogger(EnergyModeller.class.getName()).log(Level.SEVERE,
-                    "The time period passed to the energy modeller was invalid. " +
-            " Please check the start and end times used. {0}", duration.toString());
+                    "The time period passed to the energy modeller was invalid. "
+                    + " Please check the start and end times used. {0}", duration.toString());
             return null;
-        }        
+        }
         return predictor.getHostPredictedEnergy(host, virtualMachines, duration);
     }
 
