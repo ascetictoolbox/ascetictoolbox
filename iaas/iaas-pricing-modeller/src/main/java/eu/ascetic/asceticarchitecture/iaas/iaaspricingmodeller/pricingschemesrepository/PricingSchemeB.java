@@ -81,7 +81,7 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 		updateVMEnergyCharges(VM, IaaSID);
 		updateVMResourceCharges(VM, price);
 		VM.setTotalCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
-		System.out.println("Pricing Scheme B: Total Charges are from Resources and Energy = " + VM.getTotalCharges());
+		//System.out.println("Pricing Scheme B: Total Charges are from Resources and Energy = " + VM.getTotalCharges());
 		return (VM.getTotalCharges());
 	}
 

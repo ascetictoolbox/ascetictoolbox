@@ -304,7 +304,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         return charges;
     }
 
-	
+	public void resizeVM(String VMid,int CPU, int RAM, double storage ){
+		
+	}
 	
     //////////////////////////NEW PREDICTION APP///////////////////////////////////////////////////////////////////////////////////
     public double getAppPredictedCharges(String appID, LinkedList<VMinfo> VMs, int schemeId, long duration) {

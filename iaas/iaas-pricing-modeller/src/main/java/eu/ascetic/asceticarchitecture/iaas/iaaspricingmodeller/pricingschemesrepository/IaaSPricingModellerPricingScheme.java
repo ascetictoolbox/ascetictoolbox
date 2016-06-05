@@ -102,7 +102,7 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 		+" and the diff is "+duration +" Total duration in sec is: "+totalDuration
 		+" The price of resources per hour is: "+price.getPriceOnly());*/
 		VM.setDuration(duration);
-		duration = 1800;
+		//duration = 1800;
 		//per second
 		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceSecOnly(price.getPriceOnly());
 	//	System.out.println(distribution.getDistribution(VM));
