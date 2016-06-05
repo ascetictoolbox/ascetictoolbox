@@ -39,9 +39,9 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 	StaticResourcePrice price;
 	
 	
-	public PricingSchemeA(int id) {
+	public PricingSchemeA(int id, int IaaSID) {
 		super(id);
-		price = new StaticResourcePrice();
+		price = new StaticResourcePrice(IaaSID, id);
 	}
 
 	public ResourceDistribution getDistribution(){
@@ -71,6 +71,7 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 		VM.setChangeTime();
 		updateVMResourceCharges(VM, price);
 		VM.setTotalCharges(VM.getResourcesCharges());
+		System.out.println("Pricing Scheme A: Total Charges are only from Resources = " + VM.getTotalCharges());
 		return (VM.getTotalCharges());
 		
 	}

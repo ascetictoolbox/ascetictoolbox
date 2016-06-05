@@ -43,9 +43,9 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 	ResourceDistribution distribution = new ResourceDistribution();
 
 	
-	public PricingSchemeB(int id) {
+	public PricingSchemeB(int id, int IaaSID) {
 		super(id);
-		price = new StaticResourcePrice(0.1);
+		price = new StaticResourcePrice(IaaSID, id);
 	}
 
 /////////////////////////PREDICT CHARGES ///////////////////////////////
@@ -61,10 +61,12 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 
 ///////////////////////////// UPDATE CHARGES BASED ON ENERGY CHANGES ////////////////
 	public void updateVMCharges(VMstate VM) {
+		System.out.println("Found "+ VM.getVMid());
 		VM.setChangeTime();
 		updateVMEnergyCharges(VM);
 		updateVMResourceCharges(VM, price);
 		VM.setTotalCharges(VM.getEnergyCharges()+VM.getResourcesCharges());
+		System.out.println("charges= " +VM.getTotalCharges());
 	}
 
 	
@@ -74,10 +76,10 @@ public class PricingSchemeB extends IaaSPricingModellerPricingScheme implements 
 	@Override
 	public double getTotalCharges(VMstate VM) {
 		VM.setChangeTime();
-		//System.out.println("Set change time to " +VM.getChangeTime().getTimeInMillis());
 		updateVMEnergyCharges(VM);
 		updateVMResourceCharges(VM, price);
 		VM.setTotalCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
+		System.out.println("Pricing Scheme B: Total Charges are from Resources and Energy = " + VM.getTotalCharges());
 		return (VM.getTotalCharges());
 	}
 

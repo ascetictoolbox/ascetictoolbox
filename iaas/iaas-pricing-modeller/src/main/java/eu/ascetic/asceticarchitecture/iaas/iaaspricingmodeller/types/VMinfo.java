@@ -22,6 +22,7 @@ public class VMinfo {
 	int CPU;
 	double storage;
 	String hostname;
+	int IaaSID;
 	
 	public VMinfo (int RAM, int CPU, double storage, String hostname){
 		this.RAM = RAM/1024;
@@ -30,6 +31,14 @@ public class VMinfo {
 		this.hostname = hostname;
 	}
 
+	public VMinfo (int RAM, int CPU, double storage, String hostname, int IaaSID){
+		this.RAM = RAM/1024;
+		this.CPU = CPU;
+		this.storage = storage/1000;
+		this.hostname = hostname;
+		this.IaaSID = IaaSID;
+		System.out.println("VMInfo: the IaaSID is= " + IaaSID);
+	}
 	
 	public int getRAM(){
 		return RAM;
@@ -50,5 +59,9 @@ public class VMinfo {
 	public String getVMCharacteristics(){
 		String toPrint = "RAM: " + RAM + "CPU: " + CPU + "Storage: " + storage;
 	    return toPrint;
+	}
+	
+	public int getIaaSID(){
+		return IaaSID;
 	}
 }

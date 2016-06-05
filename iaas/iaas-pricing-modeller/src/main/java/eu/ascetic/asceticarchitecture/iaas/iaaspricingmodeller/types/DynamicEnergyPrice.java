@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 public class DynamicEnergyPrice extends Price{
 	
-	double currentPrice=0;
+	double oldPrice=0;
 	
 	public DynamicEnergyPrice() {
 		Price = 0.005; //the average per Watt per hour
-		currentPrice = Price;
+		oldPrice = Price;
 	 }
 	
 	
@@ -36,19 +36,22 @@ public class DynamicEnergyPrice extends Price{
 	}
 	
 	public DynamicEnergyPrice changePrice(){
+		oldPrice=Price;
 		Price=0.005 + (Math.random()*(0.1-0.05));
 		Price = (double) Math.round(Price * 1000) / 1000;
 		lastPriceChange = Calendar.getInstance();
-		currentPrice=Price;
+		
 		return this;
 	}
 	
 	public DynamicEnergyPrice changePriceBinary(){
-		if (currentPrice == 0.005)
+		oldPrice=Price;
+		if (Price == 0.005)
 			Price = 0.009;
+
 		else
 			Price=0.005;
-		currentPrice = Price;
+		
 		lastPriceChange = Calendar.getInstance();
 		return this;
 	}
@@ -60,6 +63,10 @@ public class DynamicEnergyPrice extends Price{
 	
 	public double getPriceOnly(){
 		return this.Price;
+	}
+	
+	public double getOldPriceOnly(){
+		return this.oldPrice;
 	}
 	
 	public long getTimeOnly(){

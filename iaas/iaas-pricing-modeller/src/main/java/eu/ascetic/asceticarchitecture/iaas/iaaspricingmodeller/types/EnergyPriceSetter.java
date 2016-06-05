@@ -17,6 +17,7 @@ package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types;
 
 
 import java.util.TimerTask;
+
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
 
 
@@ -30,7 +31,16 @@ public class EnergyPriceSetter extends TimerTask{
 	@Override
 	public void run() {
 		price.changePriceBinary();
-		provider.updateDynamicEnergyPrice(price);
+		
+		try {
+
+			provider.updateDynamicEnergyPrice(price);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		
 		
 	}

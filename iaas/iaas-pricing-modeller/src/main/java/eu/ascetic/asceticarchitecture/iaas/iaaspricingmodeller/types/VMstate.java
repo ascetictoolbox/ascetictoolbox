@@ -21,15 +21,13 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.En
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.*;
 public class VMstate {
 	
-	
-	/* The characteristics of a VM*/
-	//VMinfo vm; 
-	
-	Stack<VMinfo> changesToCharacteristics = new Stack<VMinfo>();
-	
 	String VMid;
-	
+		
+	Stack<VMinfo> changesToCharacteristics = new Stack<VMinfo>();
+		
 	VMPredInfo predictedInformation = new VMPredInfo();
+	
+	EnergyProvider provider;
 	
 	/* The pricing scheme according to which this VM is charged*/
 	IaaSPricingModellerPricingScheme pricingScheme; 
@@ -41,8 +39,6 @@ public class VMstate {
 	Charges resourceCharges;
 	
 	Charges TotalCharges;
-
-	EnergyProvider provider;
 	
 	double energy;
 	
@@ -52,9 +48,27 @@ public class VMstate {
 	
 	double duration;
 
-	int chargingHours;
+	int chargingHours=0;
 	
 	int hoursChanged;
+	
+	////////////////////////////////////////////////////CONSTRUCTOR////////////////////////////////////////////////	
+	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme, String appID){
+		this.VMid = VMid;
+		this.provider = provider;
+		this.pricingScheme = scheme;
+		this.appID = appID;
+		
+		changesToCharacteristics.push(vm);
+			
+		time = new TimeParameters();
+		energyCharges = new Charges(time.getStartTime());
+		resourceCharges = new Charges(time.getStartTime());
+		TotalCharges = new Charges(time.getStartTime());
+		energy=0;
+		totalEnergy=0;
+		System.out.println("VMstate: The VM with VMid " + VMid + "has been registered at: " + getStartTime().getTimeInMillis()+" with RAM "+getVMinfo().getRAM()+" CPU "+getVMinfo().getCPU()+" storage "+getVMinfo().getStorage()+" AppID= "+appID + " IaaSID= "+getVMinfo().getIaaSID());
+	}
 	
 	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme){
 		changesToCharacteristics.push(vm);
@@ -68,24 +82,8 @@ public class VMstate {
 		chargingHours=1;
 		energy=0;
 		totalEnergy=0;
-
 	}
 	
-	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme,String appID){
-		changesToCharacteristics.push(vm);
-		this.VMid = VMid;
-		this.provider = provider;
-		this.pricingScheme = scheme;
-		time = new TimeParameters();
-		energyCharges = new Charges();
-		resourceCharges = new Charges();
-		TotalCharges = new Charges();
-		chargingHours=1;
-		energy=0;
-		totalEnergy=0;
-		this.appID = appID;
-
-	}
 	
 	public VMstate (VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme){
 		changesToCharacteristics.push(vm);
@@ -98,7 +96,6 @@ public class VMstate {
 		chargingHours=1;
 		energy=0;
 		totalEnergy=0;
-
 	}
 	
 
@@ -110,18 +107,24 @@ public class VMstate {
 		chargingHours=1;
 	}
 	
-	/*public void setStartTime(){
-		time.setStartTime();
-	}*/
-	
+	////////////////////////////////////////////////////SET METHODS////////////////////////////////////////////////
 	public void setEndTime(long endTime){
 		time.setEndTime(endTime);
 	}
 	
-	public String getVMid(){
-		return VMid;
+	public void setAppID(String id){
+		this.appID=id;
 	}
 	
+	public void setDuration(double dur){
+		duration=dur;
+	}
+	
+	
+////////////////////////////////////////////////////GET METHODS////////////////////////////////////////////////
+	public String getVMid(){ 
+		return VMid;
+	}
 	
 	public IaaSPricingModellerPricingScheme getPricingScheme(){
 		return pricingScheme;
@@ -131,24 +134,18 @@ public class VMstate {
 		return provider;
 	}
 	
-	public void setAppID(String id){
-		this.appID=id;
-	}
-	
 	public String getAppID(){
 		return appID;
 	}
 	
-	public void setDuration(double dur){
-		duration=dur;
-	}
-
 	public long getVMDuration(){
 		return getTotalDuration();
 	}
+
 	public double getDuration(){
 		return duration;
 	}
+	
 	//////////////////////PREDICTION //////////////////////////
 	public void setPrediction(long duration, EnergyPrediction energy, double power){
 		predictedInformation.setDuration(duration);
@@ -228,11 +225,7 @@ public class VMstate {
 	public void setEnergyConsumedLast(double energy){
 		 this.energy=energy;
 	}
-	
-	/*public void setEnergyChangeTime(Calendar time){
-		energyCharges.setTime(time);
-	}*/
-	
+		
 	public VMinfo getVMinfo(){
 		return changesToCharacteristics.peek();
 	}
@@ -242,21 +235,14 @@ public class VMstate {
 		
 	}
 	
-	/*public long getResourcesChangeTime(){
-		return resourceCharges.getTimeOnly();
-	}
-	
-	public void setResourcesChangeTime(Calendar time){
-		resourceCharges.setTime(time);
-	}*/
-	
 	public Calendar getChangeTime(){
 		return time.getEndTime();
 	}
 	
 	public void setChangeTime(){
 		time.setEndTime();
-		
+		System.out.println("VMstate: Time changed for VM = " + VMid +" to " + time.getEndTime().getTimeInMillis()); 
+	
 	}
 	
 	public void setEndTime(){
@@ -264,15 +250,6 @@ public class VMstate {
 		
 	}
 	
-	/*public void setChangeTime(Calendar time){
-		this.time.setLastChangeTime(time);
-		
-	}
-	
-	public void setChangeTime(long time){
-		this.time.setLastChangeTime(time);
-	}
-	*/
 	public Calendar getStartTime(){
 		return time.getStartTime();
 	}

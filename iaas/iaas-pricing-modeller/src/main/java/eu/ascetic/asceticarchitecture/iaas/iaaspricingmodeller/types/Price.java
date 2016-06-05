@@ -64,4 +64,13 @@ public abstract class Price {
 	public void changeTime(){
 		lastPriceChange = Calendar.getInstance();
 	}
+	
+	public double getPriceSecOnly(double price){
+		
+		if (price == 0.14){
+			return 0.00004;}
+		else{
+			return 0.00006;
+		}
+	}
 }

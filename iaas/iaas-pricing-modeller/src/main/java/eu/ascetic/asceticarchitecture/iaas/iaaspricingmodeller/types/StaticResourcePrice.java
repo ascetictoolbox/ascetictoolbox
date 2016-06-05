@@ -20,19 +20,35 @@ import java.util.Calendar;
 
 
 public class StaticResourcePrice extends Price{
-
 	
+	public StaticResourcePrice(int IaaSID, int scheme) {
+		int even= IaaSID%2;
+		if (scheme == 0){
+		if (even == 0){
+			Price = 0.14;}
+		else{
+			Price = 0.20;
+		}
+		}
+		else {
+			if (even == 0){
+				Price = 0.1;}
+			else{
+				Price = 0.1;
+			}
+		}
+	 }
 	
 	
 	public StaticResourcePrice() {
-		Price = 0.14; //per hour all included based on Amazon m3 large 2CPU 15GB memory 2*32 SSD
+		Price = 0.14; //per hour all included based on Amazon m3 large 2CPU 7.5GB memory 32 SSD
 
 	 }
 	
 	public StaticResourcePrice(double price) {
 		Price = price; //per hour all included based on Amazon m3 large 2CPU 15GB memory 2*32 SSD
-
 	 }
+	
 	
 	public void setPrice(double price){
 		Price=price;
@@ -46,6 +62,15 @@ public class StaticResourcePrice extends Price{
 	
 	public double getPriceOnly(){
 		return this.Price;
+	}
+	
+	public double getPriceSecOnly(double price){
+		
+		if (price == 0.14){
+			return 0.00004;}
+		else{
+			return 0.00006;
+		}
 	}
 	
 	

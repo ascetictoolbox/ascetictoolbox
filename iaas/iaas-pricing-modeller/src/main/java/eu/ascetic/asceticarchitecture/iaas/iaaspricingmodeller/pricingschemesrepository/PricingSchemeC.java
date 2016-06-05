@@ -41,9 +41,9 @@ public class PricingSchemeC extends IaaSPricingModellerPricingScheme implements 
 	ResourceDistribution distribution = new ResourceDistribution();
 
 	
-	public PricingSchemeC(int id) {
+	public PricingSchemeC(int id, int IaaSID) {
 		super(id);
-		price = new StaticResourcePrice();
+		price = new StaticResourcePrice(IaaSID);
 		
 	}
 

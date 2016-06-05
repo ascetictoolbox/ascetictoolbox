@@ -18,6 +18,7 @@
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider;
 
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.queue.GenericPricingMessage;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.*;
 
 import java.util.Timer;
@@ -35,20 +36,24 @@ public class EnergyProvider implements EnergyProviderInterface{
 	IaaSPricingModeller iaasprovider;
 	
 	Price dynamicEnergyPriceOld = new DynamicEnergyPrice();
-	
-	Price dynamicEnergyPriceNew = new DynamicEnergyPrice();
+
+	Boolean chargesUpdated = false;
+	Price dynamicEnergyPrice = new DynamicEnergyPrice();
 	
 	Price staticEnergyPrice = new StaticEnergyPrice();
 	
 	Timer timer;
 	
-	long delay = 3600;
+	long delay = 20;
+	
 	
 	public EnergyProvider(IaaSPricingModeller iaasprovider){
 		idEP=idEP+1;
 		this.iaasprovider = iaasprovider;
-		//timer = new Timer (true);
-		//timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.HOURS.toMillis(12));
+		timer = new Timer (true);
+		
+		//timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), TimeUnit.HOURS.toMillis(1));
+		//timer.scheduleAtFixedRate(new EnergyPriceSetter(this), TimeUnit.SECONDS.toMillis(delay), 40000);
 	}
 	
 	public EnergyProvider(){
@@ -65,12 +70,20 @@ public class EnergyProvider implements EnergyProviderInterface{
 		staticEnergyPrice.setPrice(price);
 	}
 	
+	public void setFlagForChargesUpdated(Boolean value){
+		chargesUpdated = value;
+	}
+	
+	public Boolean getFlagForChargesUpdated(){
+		return chargesUpdated;
+	}
+	
 	public StaticEnergyPrice getStaticEnergyPrice(){
 		return (StaticEnergyPrice) staticEnergyPrice;
 	}
 	
 	public DynamicEnergyPrice getNewDynamicEnergyPrice(){
-		return (DynamicEnergyPrice) dynamicEnergyPriceNew;
+		return (DynamicEnergyPrice) dynamicEnergyPrice;
 	}
 	
 	public DynamicEnergyPrice getOldDynamicEnergyPrice(){
@@ -80,12 +93,19 @@ public class EnergyProvider implements EnergyProviderInterface{
 		if (scheme==0 || scheme ==1)
 			return staticEnergyPrice;
 		else 
-			return dynamicEnergyPriceNew;
+			return dynamicEnergyPrice;
 		
 	}
 
-	public void updateDynamicEnergyPrice(DynamicEnergyPrice price){
-		dynamicEnergyPriceNew.setPrice(price);
+	public void updateDynamicEnergyPrice(DynamicEnergyPrice price) throws Exception{
+		System.out.println("Energy Provider: Energy Price has changed to "+price.getPriceOnly());
+		dynamicEnergyPrice.setPrice(price);
+		dynamicEnergyPriceOld.setPrice(price.getOldPriceOnly());
+		GenericPricingMessage msg = new GenericPricingMessage(iaasprovider.getIaaSProviderID(), price.getPriceOnly());
+		/*
+		iaasprovider.publishToQueue(msg);
+		*/
+		chargesUpdated = false;
 		iaasprovider.getBilling().updateVMCharges(dynamicEnergyPriceOld);
 	}
 	

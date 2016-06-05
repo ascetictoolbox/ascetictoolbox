@@ -16,6 +16,7 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller;
 
+import eu.ascetic.amqp.client.AmqpMessageProducer;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.EnergyModeller;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.TimePeriod;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
@@ -28,10 +29,15 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrep
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeA;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeB;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrepository.PricingSchemeC;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.queue.GenericPricingMessage;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPrediction;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.TimeParameters;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMinfo;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.VMstate;
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.queue.*;
+
+
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +47,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -65,37 +72,91 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 	 * The IaaS Pricing Modeller should be connected with the Energy Provider that is deployed
 	 * within this component as well as with the Energy Modeller. 
      */
+	//Initialize energy provider 
     EnergyProvider energyProvider = new EnergyProvider(this);
+    
+    //Energy modeller
     EnergyModeller energyModeller;
-    IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider);
-    //private static int idIaaSP=0;
-
+    
+    //Initialize billing sub-component 
+    IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider, idIaaSP);
+    
+    //The if of the provider
+    private static int idIaaSP=0;
+    
+    //The queue created from this provider
+  //  static  PricingModellerQueueServiceManager  producer;
+    
+    //Logging
     static Logger logger = null;
-
     DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
     Date today = Calendar.getInstance().getTime();
     String reportDate = df.format(today);
     String name = "logs/" + reportDate;
 
-	
-
+////////////////////////////////////////Constructors////////////////////////////////////////////////////////
     /**
      * Constructor
      * @param energyModeller
+     * @throws Exception 
      */
-    public IaaSPricingModeller(EnergyModeller energyModeller) {
+    //New version of the constructor to support multiple IaaS Providers
+    public IaaSPricingModeller(int IaaSID, EnergyModeller energyModeller) throws Exception {
         this.energyModeller = energyModeller;
-        //idIaaSP=idIaaSP+1;
+        idIaaSP = IaaSID;
+        
+        //Activemq
+        /*
+        AmqpMessageProducer pricingqueue = new AmqpMessageProducer("localhost:5672", "guest", "guest", "test.topic2",true);
+		producer = new PricingModellerQueueServiceManager (pricingqueue);
+		GenericPricingMessage msg = new GenericPricingMessage(idIaaSP, energyProvider.getNewDynamicEnergyPrice().getPriceOnly());
+		publishToQueue(msg);
+		*/
+        
+        System.setProperty("logfile.name", name);
+        logger = Logger.getLogger(IaaSPricingModeller.class);
+        System.out.println("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
+        logger.info("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
+    }
+    
+    
+    public IaaSPricingModeller(EnergyModeller energyModeller) throws Exception {
+        this.energyModeller = energyModeller;
         System.setProperty("logfile.name", name);
         logger = Logger.getLogger(IaaSPricingModeller.class);
         logger.info("IaaS Pricing Modeller initiallized");
-
+        /*
+        AmqpMessageProducer pricingqueue = new AmqpMessageProducer("localhost:5672", "guest", "guest", "test.topic2",true);
+		producer = new PricingModellerQueueServiceManager (pricingqueue);
+		GenericPricingMessage msg = new GenericPricingMessage(idIaaSP, energyProvider.getNewDynamicEnergyPrice().getPriceOnly());
+		publishToQueue(msg);
+		*/
     }
-
+    
+    public IaaSPricingModeller() throws Exception {
+        this.energyModeller = null;
+        System.setProperty("logfile.name", name);
+        logger = Logger.getLogger(IaaSPricingModeller.class);
+        logger.info("IaaS Pricing Modeller initiallized");
+    }
+      
+    public int getIaaSProviderID(){
+    	return idIaaSP;
+    }
+    
+///////////////////////////////QUEUE//////////////////////////////////////////////////////////////////////
+  /*  
+    public void publishToQueue(GenericPricingMessage msg) throws Exception{
+    	try{
+    		producer.sendToQueue("test", msg);
+    		}
+    		catch (NullPointerException ex){
+    			logger.info("Could not send the message to queue");
+    		}
+    }
 	
-	
-   
-///////////////////////////////////////////BILLING/////////////////////////////////////////////
+   */
+///////////////////////////////////////////BILLING///////////////////////////////////////////////////////
 
 
     /*
@@ -104,16 +165,11 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      * @param schemeId: the Pricing scheme of the VM
      */
     public void initializeVM(String VMid, int schemeId, String hostname, String appID) {
-
-    	/*should all be zero!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        int CPU = 1;
-        int RAM = 4;
-        double storage = 100000; 
-        */
     	
-    	int CPU = 1;
-        int RAM = 4096;
-        double storage = 50000; 
+    	//Default values for these parameters
+    	int CPU = 2;
+        int RAM = 7680;
+        double storage = 32000; 
         
         
         try {
@@ -125,26 +181,25 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
            
 
         } catch (NullPointerException ex) {
-            logger.error("The VM with VMid " + VMid + " has not been registered");
+            logger.error("The VM with VMid " + VMid + " has not been registered therefore a default VM has been initalized with CPU = 1, memory = 4096, storage = 50GB");
             
         }
 
-        VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
-
+        VMinfo newVM = new VMinfo(RAM, CPU, storage, hostname, this.idIaaSP);
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-        VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);
+        VMstate VM = new VMstate(VMid, newVM, energyProvider, scheme, appID);
 
         if (schemeId == 2) {
             EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
             VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
             VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
-
         }
+        
         scheme.setEnergyModeller(energyModeller);
-
-
         billing.registerVM(VM);
-        logger.info("The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
+        
+        System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
+        logger.info("IaaS Pricing Modeller: The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
     }
 
     /**
@@ -155,12 +210,12 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      * @param deleteVM: boolean true when the VM stops operating and deleted
      * else false
      * @return
+     * @throws Exception 
      */
-    public double getVMFinalCharges(String VMid, boolean deleteVM) {
-        try {
-        	
+    public double getVMFinalCharges(String VMid, boolean deleteVM) throws Exception {
+       	try{
             VMstate VM = billing.getVM(VMid);
-           
+           /*
             if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
 
                 try {
@@ -175,16 +230,13 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
                     
                 }
             }
-            //changes!!!!!!!!!!!
-         //   VM.setChangeTime();
-            
-           // System.out.println("Duration for VM " + VMid + " is: " + VM.getVMDuration());
-            if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
+            */
+           
+          /*  if (VM.getVMinfo().getRAM() == 0 || VM.getVMinfo().getStorage() == 0.0) {
                 logger.error("The VM with VMid " + VMid + "has taken zero values from the energy modeller for the CPU, RAM, storage");
-            }
+            }*/
 
-            
-             double charges = billing.getVMCharges(VMid);
+           double charges = billing.getVMCharges(VMid);
 
 
             logger.info("Billing scheme used for getting VM final charges was scheme ." + billing.getVM(VMid).getPricingScheme().getSchemeId());
@@ -224,7 +276,13 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
             }
             /*else
              billing.stopChargingVM(billing.getVM(VMid));*/
+            
+            /*
+            GenericPricingMessage msg = new GenericPricingMessage(idIaaSP,charges);
+            publishToQueue(msg);
+            */
             return charges;
+            
         } catch (NullPointerException ex) {
             logger.error("The VM with VMid " + VMid + " is no longer valid");
         }
@@ -247,7 +305,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
 	
 	
-    //////////////////////////NEW PREDICTION APP///////////////////////////////////////
+    //////////////////////////NEW PREDICTION APP///////////////////////////////////////////////////////////////////////////////////
     public double getAppPredictedCharges(String appID, LinkedList<VMinfo> VMs, int schemeId, long duration) {
         LinkedList<VMstate> AppVMs = new LinkedList<>();
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
@@ -371,54 +429,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         return col;
     }
 
-    /**
-     * In order to start billing a VM this function has to be called first.
-     *
-     * @param VMid: the ID of the VM, the same used with the Energy Modeller.
-     * @param schemeId: the Pricing scheme of the VM
-     *
-     */
-    /*
-     public void initializeVM(String VMid, int schemeId, String hostname) {
-     int CPU = 0;
-     int RAM = 0;
-     double storage = 0;
-
-     try {
-     VmDeployed vm = energyModeller.getVM(VMid);
-     CPU = vm.getCpus();
-     RAM = vm.getRamMb();
-     storage = vm.getDiskGb();
-     logger.info("The VM with VMid " + VMid + "has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", STORAGE: " + storage);
-
-     } catch (NullPointerException ex) {
-     logger.error("The VM with VMid " + VMid + "Has not been registered");
-     }
-
-
-     VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
-
-     IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
-     VMstate VM = new VMstate(VMid, vm, energyProvider, scheme);
-
-     if (schemeId == 2) {
-     EnergyPrediction energyVM = getEnergyPredicted(CPU, RAM, storage, hostname);
-     VM.getPredictedInformation().setPredictionOfEnergy(energyVM);
-     VM.setPredictedCharges(billing.predictVMCharges(VM).getPriceOnly());
-
-     }
-     scheme.setEnergyModeller(energyModeller);
-
-     billing.registerVM(VM);
-     }
-     */
+  
     
     ///////////////////////Basic functions///////////////////////////////
-    /**
-	public int getIaaSId(){
-		return idIaaSP;
-	}
-	**/
 	
     public EnergyProvider getEnergyProvider() {
         return this.energyProvider;
@@ -435,13 +448,13 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     public IaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
         IaaSPricingModellerPricingScheme scheme = null;
         if (schemeId == 0) {
-            scheme = new PricingSchemeA(schemeId);
+            scheme = new PricingSchemeA(schemeId, idIaaSP);
         }
         if (schemeId == 1) {
-            scheme = new PricingSchemeB(schemeId);
+            scheme = new PricingSchemeB(schemeId, idIaaSP);
         }
         if (schemeId == 2) {
-            scheme = new PricingSchemeC(schemeId);
+            scheme = new PricingSchemeC(schemeId, idIaaSP);
         }
         return scheme;
     }
@@ -508,13 +521,6 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 		
         billing.registerVM(VM);
     }
-
     
-    ///////////////////not used /////////////////////////////
-   /*****
-    public double getVMCurrentCharges(String VMid){
-		return billing.getVMCharges(VMid);
-		
-}
-	**/
+  
 }

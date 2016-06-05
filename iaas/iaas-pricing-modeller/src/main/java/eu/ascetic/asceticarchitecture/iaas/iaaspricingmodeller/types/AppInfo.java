@@ -39,6 +39,7 @@ public class AppInfo {
 	}
 	
 	public void addVM(VMstate VM){
+		System.out.println("AppInfo: The VM added to app= " + appID);
 		vms.add(VM);
 	}
 		

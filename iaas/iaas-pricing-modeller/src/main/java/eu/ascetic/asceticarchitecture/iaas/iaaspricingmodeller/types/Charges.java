@@ -22,8 +22,6 @@ import java.util.Calendar;
 public class Charges {
 	
 	double charges;
-
-	
 	Calendar lastChange;
 	
 	public Charges(Calendar time) {
@@ -31,12 +29,10 @@ public class Charges {
 		lastChange=time;
 	 }
 	
-	
 	public Charges() {
 		charges=0.0;
 		lastChange=Calendar.getInstance();
 	}
-
 
 	public void setCharges(Calendar time, double charges){
 		this.charges = (double) Math.round(charges * 1000) / 1000;
@@ -54,11 +50,7 @@ public class Charges {
 	public Calendar getTime(){
 		return lastChange;
 	}
-	
-	/*public void changeTime(){
-		time.setEndTime();
-	}*/
-	
+
 	public Charges addCharges(Calendar time, Charges one, Charges two){
 		charges = one.getChargesOnly()+two.getChargesOnly();
 		lastChange=time;

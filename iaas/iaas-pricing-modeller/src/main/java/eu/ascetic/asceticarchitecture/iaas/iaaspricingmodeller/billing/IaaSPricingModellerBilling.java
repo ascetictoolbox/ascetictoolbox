@@ -50,9 +50,11 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
 
     EnergyProvider energyProvider;
 
+    int IaaSID;
 	
-    public IaaSPricingModellerBilling(EnergyProvider provider) {
+    public IaaSPricingModellerBilling(EnergyProvider provider, int IaaSID) {
         this.energyProvider = provider;
+        this.IaaSID = IaaSID;
 
 		
     }
@@ -72,31 +74,34 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
     public void registerVM(VMstate vm) {
         if ((vm.getPricingScheme().getSchemeId() == 0) || (vm.getPricingScheme().getSchemeId() == 2)) {
             registeredStaticEnergyPricesVMs.put(vm.getVMid(), vm);
+            
             if (apps.containsKey(vm.getAppID())) {
+            	System.out.println("Billing: The VM belongs to app= " + vm.getAppID());
                 apps.get(vm.getAppID()).addVM(vm);
             } else {
+            	System.out.println("Billing: New app = " + vm.getAppID());
                 AppInfo app = new AppInfo(vm.getAppID());
                 app.addVM(vm);
                 apps.put(vm.getAppID(), app);
+                System.out.println("Billing: New app has been added. Now we have " + apps.size()+" number of apps");
             }
 
-			
-          //  vm.setStartTime();
-        } else {
+        } 
+        else {
             registeredDynamicEnergyPricesVMs.put(vm.getVMid(), vm);
 
             if (apps.containsKey(vm.getAppID())) {
+            	System.out.println("Billing: The VM belongs to app= " + vm.getAppID());
                 apps.get(vm.getAppID()).addVM(vm);
 
             } else {
                 AppInfo app = new AppInfo(vm.getAppID());
+                System.out.println("Billing: New app = " + vm.getAppID());
                 app.addVM(vm);
                 apps.put(vm.getAppID(), app);
-
+                System.out.println("Billing: New app has been added. Now we have " + apps.size()+" number of apps");
             }
-
         }
-      //  vm.setStartTime();
     }
 
 	
@@ -147,13 +152,14 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
     public void updateVMCharges(Price price) {
         updateAverageEnergyPrice();
         for (String key : registeredDynamicEnergyPricesVMs.keySet()) {
+        	System.out.println("I am searching for VMs to be updated");
             registeredDynamicEnergyPricesVMs.get(key).getPricingScheme().updateVMCharges(getVM(key));
         }
 
     }
 
     public void updateAverageEnergyPrice() {
-        IaaSPricingModellerPricingScheme scheme = new PricingSchemeB(1);
+        IaaSPricingModellerPricingScheme scheme = new PricingSchemeB(1, IaaSID);
         averageDynamicEnergyPrice.setPrice(scheme.updateAverageEnergyPrice(
                 energyProvider, averageDynamicEnergyPrice));
 
@@ -196,7 +202,9 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
         }
     }
 
-    public IaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
+    
+    /*
+    public IaaSPricingModellerPricingScheme initializedScheme(int schemeId) {
         IaaSPricingModellerPricingScheme scheme = null;
         if (schemeId == 0) {
             scheme = new PricingSchemeA(schemeId);
@@ -208,7 +216,7 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
             scheme = new PricingSchemeC(schemeId);
         }
         return scheme;
-    }
+    }*/
 
     public double getAppCharges(String appID, EnergyModeller energyModeller) {
 
