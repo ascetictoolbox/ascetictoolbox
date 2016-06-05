@@ -184,6 +184,7 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/resources/log4j.properties -text
 iaas/iaas-pricing-modeller/src/test/java/EnergyProviderTest.java -text
 iaas/iaas-pricing-modeller/src/test/java/IaaSPricingModellerTest.java -text
+iaas/iaas-pricing-modeller/src/test/java/IaaSTest.java -text
 iaas/iaas-pricing-modeller/src/test/java/PredictionTest.java -text
 iaas/iaas-pricing-modeller/src/test/java/TimerTest.java -text
 iaas/iaas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/IaaSPricingModellerTest.java -text
