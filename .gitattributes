@@ -161,6 +161,11 @@ iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaa
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeA.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeB.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/pricingschemesrepository/PricingSchemeC.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/queue/Client.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/queue/GenericPricingMessage.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/queue/MessageParserUtility.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/queue/PMSettings.java -text
+iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/queue/PricingModellerQueueServiceManager.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/AppInfo.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/Charges.java -text
 iaas/iaas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/iaas/iaaspricingmodeller/types/DynamicEnergyPrice.java -text
