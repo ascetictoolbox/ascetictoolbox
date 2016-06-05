@@ -81,7 +81,7 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
             logger.info((VM.getChangeTime() == null ? "The VM change time was null" : "The VM change time was ok"));
             logger.info((vm == null ? "The vm obtained from the EM was null" : "The vm obtained from the EM was ok"));
             logger.info((energyModeller == null ? "The EM was null" : "The EM was not null"));
-            double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
+            
 
             VM.setTotalEnergyConsumed(newEnergyValue);
             difference = newEnergyValue - VM.getEnergyConsumedLast();
