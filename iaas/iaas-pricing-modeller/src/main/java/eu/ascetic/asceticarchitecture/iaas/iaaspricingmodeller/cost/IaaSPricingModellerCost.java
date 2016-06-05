@@ -36,10 +36,6 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
 
     public IaaSPricingModellerCost(EnergyModeller energyModeller) {
         this.energyModeller = energyModeller;
-        if (energyModeller == null) {
-            this.energyModeller = EnergyModeller.getInstance();
-            logger.error("Fixed a null pointer issue by obtaining a copy of the energy modeller");
-        }
         logger = Logger.getLogger(IaaSPricingModellerCost.class);
     }
 
@@ -50,6 +46,7 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
         price = getEnergyPrice(VM.getProvider(), VM.getPricingScheme().getSchemeId());
         //the energy charges for the past period
         double energyCharges = updateEnergy(VM) * price.getPriceOnly();
+        System.out.println("I am updating energy with this price "+price.getPriceOnly());
         return energyCharges;
     }
 
@@ -58,37 +55,45 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
         if (scheme == 0) {
             return provider.getStaticEnergyPrice();
         } else {
-            return provider.getOldDynamicEnergyPrice();
+        	if (provider.getFlagForChargesUpdated())
+        		return provider.getNewDynamicEnergyPrice();
+        	else{
+        		provider.setFlagForChargesUpdated(true);
+            	return provider.getOldDynamicEnergyPrice();}
         }
     }
 
     public double updateEnergy(VMstate VM) {
         double difference;
+     //  double newEnergyValue = 100;
         try {
+        	
             VmDeployed vm = energyModeller.getVM(VM.getVMid());
-            TimePeriod timePeriod = new TimePeriod(VM.getStartTime(), VM.getChangeTime());
+            TimePeriod timePeriod = new TimePeriod(VM.getEnergyChargesAll().getTimeOnly(), VM.getChangeTime().getTimeInMillis());
             logger.info("The VM " + VM.getVMid() + "Energy calculation - Start time: "
                     + timePeriod.getStartTimeInSeconds() + " end time: " + timePeriod.getEndTimeInSeconds());
+
+          //  System.out.println("The VM " + VM.getVMid() + "Energy calculation - Start time: "
+            //        + timePeriod.getStartTimeInSeconds() + " end time: " + timePeriod.getEndTimeInSeconds());
+           double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
+            
             logger.info((VM.getStartTime() == null ? "The VM start time was null" : "The VM start time was ok"));
             logger.info((VM.getChangeTime() == null ? "The VM change time was null" : "The VM change time was ok"));
             logger.info((vm == null ? "The vm obtained from the EM was null" : "The vm obtained from the EM was ok"));
             logger.info((energyModeller == null ? "The EM was null" : "The EM was not null"));
             double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
+
             VM.setTotalEnergyConsumed(newEnergyValue);
             difference = newEnergyValue - VM.getEnergyConsumedLast();
             logger.info("The VM " + VM.getVMid() + "consumed since the last calculation "
                     + difference + " with a total energy consumed of: " + newEnergyValue);
             VM.setEnergyConsumedLast(newEnergyValue);
         } catch (NullPointerException ex) {
-            if (VM == null || VM.getVMid() == null) {
-                logger.error("The update to the energy value failed for VM: UNKNOWN");
-            } else {
-                logger.error("The update to the energy value failed for VM: " + VM.getVMid() + ". "
-                        + "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + VM.getChangeTime().getTimeInMillis(), ex);
-            }
-            difference = 0;
+            logger.error("The update to the energy value failed for VM: " + VM.getVMid() + ". " +
+                    "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + VM.getChangeTime().getTimeInMillis(), ex);
+            difference = 1000;
 
-        }
+        } 
         return difference;
 
     }
