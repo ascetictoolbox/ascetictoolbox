@@ -40,9 +40,9 @@ public class TimeParameters {
     
     public TimeParameters (){
     	startTime = Calendar.getInstance();
-    	System.out.println("start time " +startTime.getTimeInMillis());
+    	//System.out.println("TimeParameters: start time " +startTime.getTimeInMillis());
     	this.endTime = Calendar.getInstance();
-    	System.out.println("End time " +endTime.getTimeInMillis());
+    	//System.out.println("TimeParameters: End time " +endTime.getTimeInMillis());
     	//lastChange =  Calendar.getInstance();
     	//System.out.println("last time " +lastChange.getTimeInMillis());
     	logger = Logger.getLogger(TimeParameters.class);

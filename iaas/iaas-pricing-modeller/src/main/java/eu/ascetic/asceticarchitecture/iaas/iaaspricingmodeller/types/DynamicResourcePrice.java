@@ -25,7 +25,7 @@ public class DynamicResourcePrice extends Price{
 	
 
 	 
-	
+	/*
 	public DynamicResourcePrice() {
 		Price = 0.14; //the average per hour all included based on Amazon m3 large 2CPU 15GB memory 2*32 SSD
 		timeOfPriceRequest = Calendar.getInstance();
@@ -53,6 +53,6 @@ public class DynamicResourcePrice extends Price{
 	public double getPriceOnly(){
 		return this.Price;
 	}
-	
+	*/
 	
 }

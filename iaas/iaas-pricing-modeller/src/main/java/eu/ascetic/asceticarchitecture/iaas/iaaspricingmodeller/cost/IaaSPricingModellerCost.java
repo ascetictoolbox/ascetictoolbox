@@ -42,10 +42,10 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
 	
     /////////////////////////////UPDATE OF COSTS ////////////////////////////////
 	
-    public double updateEnergyCharges(VMstate VM) {
+    public double updateEnergyCharges(VMstate VM, int IaaSID) {
         price = getEnergyPrice(VM.getProvider(), VM.getPricingScheme().getSchemeId());
         //the energy charges for the past period
-        double energyCharges = updateEnergy(VM) * price.getPriceOnly();
+        double energyCharges = (updateEnergy(VM)/1000) * price.getPriceOnly();
         System.out.println("I am updating energy with this price "+price.getPriceOnly());
         return energyCharges;
     }
@@ -65,7 +65,6 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
 
     public double updateEnergy(VMstate VM) {
         double difference;
-     //  double newEnergyValue = 100;
         try {
         	
             VmDeployed vm = energyModeller.getVM(VM.getVMid());
@@ -91,7 +90,8 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
         } catch (NullPointerException ex) {
             logger.error("The update to the energy value failed for VM: " + VM.getVMid() + ". " +
                     "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + VM.getChangeTime().getTimeInMillis(), ex);
-            difference = 1000;
+            //for testing
+            difference = 100;
 
         } 
         return difference;

@@ -70,7 +70,7 @@ public class Client {
 		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
 		this.monitoringQueueTopic = monitoringQueueTopic.replaceAll("\\.", "");
 		String topicName = monitoringQueueTopic;
-		System.out.println("Connection url "+connectionURL);
+	//	System.out.println("Connection url "+connectionURL);
 		// Set the properties ...
 		Properties properties = new Properties();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
@@ -78,8 +78,8 @@ public class Client {
 
 		properties.put("topic"+"."+monitoringQueueTopic+"."+monitoringTopic , monitoringTopic);
 		properties.put("topic"+"."+monitoringQueueTopic+"."+predictionTopic , predictionTopic);
-		System.out.println("Connection param "+"topic"+"."+monitoringQueueTopic+"."+monitoringTopic);
-		System.out.println("Connection param"+topicName);
+	//	System.out.println("Connection param "+"topic"+"."+monitoringQueueTopic+"."+monitoringTopic);
+	//	System.out.println("Connection param"+topicName);
 		
 		javax.naming.Context context = new InitialContext(properties);
 		
@@ -88,7 +88,7 @@ public class Client {
      connection.setExceptionListener(new MyExceptionListener());
      connection.start();
      session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-     System.out.println("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
+ //    System.out.println("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
 		
 		// Create a Session for each queue
      destinationPrediction = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.predictionTopic);
@@ -97,7 +97,7 @@ public class Client {
 		producerPrediction = session.createProducer(destinationPrediction);
 		producerMeasurement = session.createProducer(destinationMeasurement);
 
-		System.out.println("Connection started");
+//		System.out.println("Connection started");
 		
 	}
 	
@@ -121,7 +121,7 @@ public class Client {
 		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
 		String connectionJNDIName = UUID.randomUUID().toString();
 		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
-		System.out.println("Connection url "+connectionURL);
+	//	System.out.println("Connection url "+connectionURL);
 		Properties properties = new Properties();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
 		properties.put("connectionfactory."+connectionJNDIName , connectionURL);
@@ -133,9 +133,9 @@ public class Client {
      connection.setExceptionListener(new MyExceptionListener());
      connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		System.out.println("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
+	//	System.out.println("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
 
-		System.out.println("Connection started without topics registration");		
+	//	System.out.println("Connection started without topics registration");		
 		
 	}
 	

@@ -115,7 +115,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         
         System.setProperty("logfile.name", name);
         logger = Logger.getLogger(IaaSPricingModeller.class);
-        System.out.println("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
+     //   System.out.println("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
         logger.info("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
     }
     
@@ -198,7 +198,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         scheme.setEnergyModeller(energyModeller);
         billing.registerVM(VM);
         
-        System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
+       // System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
         logger.info("IaaS Pricing Modeller: The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
     }
 
@@ -272,7 +272,8 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
             if (deleteVM) {
                 logger.info("VM: " + VMid + " was unregistered from the pricing modeller.");
-                billing.unregisterVM(billing.getVM(VMid));
+               // billing.unregisterVM(billing.getVM(VMid));
+                billing.stopChargingVM(billing.getVM(VMid));
             }
             /*else
              billing.stopChargingVM(billing.getVM(VMid));*/

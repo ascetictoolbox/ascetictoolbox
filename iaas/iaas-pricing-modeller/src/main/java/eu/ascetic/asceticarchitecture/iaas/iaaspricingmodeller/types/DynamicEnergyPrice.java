@@ -25,8 +25,8 @@ public class DynamicEnergyPrice extends Price{
 	double oldPrice=0;
 	
 	public DynamicEnergyPrice() {
-		Price = 0.005; //the average per Watt per hour
-		oldPrice = Price;
+		Price = 0.08; //the average per kWatt per hour
+		oldPrice = Price;  
 	 }
 	
 	
@@ -37,7 +37,7 @@ public class DynamicEnergyPrice extends Price{
 	
 	public DynamicEnergyPrice changePrice(){
 		oldPrice=Price;
-		Price=0.005 + (Math.random()*(0.1-0.05));
+		Price=0.08 + (Math.random()*(0.1-0.05));
 		Price = (double) Math.round(Price * 1000) / 1000;
 		lastPriceChange = Calendar.getInstance();
 		
@@ -46,11 +46,11 @@ public class DynamicEnergyPrice extends Price{
 	
 	public DynamicEnergyPrice changePriceBinary(){
 		oldPrice=Price;
-		if (Price == 0.005)
-			Price = 0.009;
+		if (Price == 0.08)
+			Price = 0.18;
 
 		else
-			Price=0.005;
+			Price=0.08;
 		
 		lastPriceChange = Calendar.getInstance();
 		return this;

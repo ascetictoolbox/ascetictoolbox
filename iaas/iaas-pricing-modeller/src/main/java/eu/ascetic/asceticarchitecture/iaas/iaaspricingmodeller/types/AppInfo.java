@@ -15,6 +15,7 @@
 
 package eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 
@@ -23,6 +24,10 @@ public class AppInfo {
 	String appID;
 	
 	LinkedList<VMstate> vms;
+	
+	Charges appCharges;
+	
+	HashMap<String, Charges> VMCharges = new HashMap<String, Charges>();
 	
 	public AppInfo(String appID){
 		this.appID=appID;
@@ -39,8 +44,29 @@ public class AppInfo {
 	}
 	
 	public void addVM(VMstate VM){
-		System.out.println("AppInfo: The VM added to app= " + appID);
+	//	System.out.println("AppInfo: The VM added to app= " + appID);
 		vms.add(VM);
 	}
+	
+	public double getVMTotalCharges(VMstate VM){
+		for (int i=0; i<=vms.size();i++){
+			VMstate vm = vms.get(i);
+			if (vm.getVMid()==VM.getVMid()){
+				return vm.getTotalCharges();
+			}
+		}
+		return 0.0;
+	}
+	
+	public double getAppCharges(){
+		double appCharges=0;
+		for (int i=0; i<=vms.size();i++){
+			VMstate vm = vms.get(i);
+			appCharges = appCharges+vm.getTotalCharges();
+		}
+		return appCharges;
+	}
+	
+	
 		
 }

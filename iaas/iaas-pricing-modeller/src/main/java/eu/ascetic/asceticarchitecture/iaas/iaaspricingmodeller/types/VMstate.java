@@ -22,6 +22,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrep
 public class VMstate {
 	
 	String VMid;
+	boolean active =true;
 		
 	Stack<VMinfo> changesToCharacteristics = new Stack<VMinfo>();
 		
@@ -67,7 +68,7 @@ public class VMstate {
 		TotalCharges = new Charges(time.getStartTime());
 		energy=0;
 		totalEnergy=0;
-		System.out.println("VMstate: The VM with VMid " + VMid + "has been registered at: " + getStartTime().getTimeInMillis()+" with RAM "+getVMinfo().getRAM()+" CPU "+getVMinfo().getCPU()+" storage "+getVMinfo().getStorage()+" AppID= "+appID + " IaaSID= "+getVMinfo().getIaaSID());
+	//	System.out.println("VMstate: The VM with VMid " + VMid + "has been registered at: " + getStartTime().getTimeInMillis()+" with RAM "+getVMinfo().getRAM()+" CPU "+getVMinfo().getCPU()+" storage "+getVMinfo().getStorage()+" AppID= "+appID + " IaaSID= "+getVMinfo().getIaaSID());
 	}
 	
 	public VMstate (String VMid, VMinfo vm, EnergyProvider provider, IaaSPricingModellerPricingScheme scheme){
@@ -172,12 +173,14 @@ public class VMstate {
 	/////////////////////// UPDATE CHARGES /////////////////////////////
 	
 	public void updateEnergyCharges(double energyCharges){
+		if (active)
 		this.energyCharges.updateCharges(time.getEndTime(), energyCharges);
 		
 	}
 	
 	
 	public void updateResourcesCharges(double resourcesCharges){
+		if (active)
 		this.resourceCharges.updateCharges(time.getEndTime(),resourcesCharges);
 		
 	}
@@ -206,7 +209,8 @@ public class VMstate {
 	}
 	
 	public void setTotalCharges(double charges){
-		TotalCharges.setCharges(time.getEndTime(), charges);
+		if (active)
+			TotalCharges.setCharges(time.getEndTime(), charges);
 		
 	}
 	
@@ -241,7 +245,7 @@ public class VMstate {
 	
 	public void setChangeTime(){
 		time.setEndTime();
-		System.out.println("VMstate: Time changed for VM = " + VMid +" to " + time.getEndTime().getTimeInMillis()); 
+	//	System.out.println("VMstate: Time changed for VM = " + VMid +" to " + time.getEndTime().getTimeInMillis()); 
 	
 	}
 	
@@ -288,4 +292,11 @@ public class VMstate {
 		return hoursChanged;
 	}
 	
+	public void stopped(){
+		active = false;
+	}
+	
+	public boolean isActive(){
+		return active;
+	}
 }

@@ -37,7 +37,7 @@ public class VMinfo {
 		this.storage = storage/1000;
 		this.hostname = hostname;
 		this.IaaSID = IaaSID;
-		System.out.println("VMInfo: the IaaSID is= " + IaaSID);
+	//	System.out.println("VMInfo: the IaaSID is= " + IaaSID);
 	}
 	
 	public int getRAM(){

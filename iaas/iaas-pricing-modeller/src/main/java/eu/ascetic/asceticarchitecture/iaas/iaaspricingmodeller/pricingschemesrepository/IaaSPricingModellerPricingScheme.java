@@ -87,7 +87,7 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 		double b =Math.exp(-a*(dur/3600));
 		double price = ((1-b)*oldAverage.getPriceOnly())+b*provider.getNewDynamicEnergyPrice().getPriceOnly();
 		**/
-		double price =0.007;
+		double price =0.13;
 		return price;
 		
 	}
@@ -96,16 +96,16 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	public void updateVMResourceCharges(VMstate VM, Price price){
 		long duration = VM.getDuration(VM.getResourcesChargesAll().getTime(), VM.getChangeTime());
 		long totalDuration = VM.getDuration(VM.getStartTime(),VM.getChangeTime());
-		System.out.println("Pricing Scheme: For VM "+VM.getVMid()+" Last change time is: "
+	/*	System.out.println("Pricing Scheme: For VM "+VM.getVMid()+" Last change time is: "
 		+ VM.getResourcesChargesAll().getTime().getTimeInMillis()
 		+" Now is: "+VM.getChangeTime().getTimeInMillis()
 		+" and the diff is "+duration +" Total duration in sec is: "+totalDuration
-		+" The price of resources per hour is: "+price.getPriceOnly());
+		+" The price of resources per hour is: "+price.getPriceOnly());*/
 		VM.setDuration(duration);
 		duration = 1800;
 		//per second
 		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceSecOnly(price.getPriceOnly());
-		System.out.println(distribution.getDistribution(VM));
+	//	System.out.println(distribution.getDistribution(VM));
 		double count = Resourcecharges*(duration);
 		VM.updateResourcesCharges(count);
 
@@ -117,12 +117,12 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 		   VM.setHours((int) Math.ceil(totalDuration/3600)+1); 
 	    }*/ 
 		
-	    System.out.println("Resource charges= " + VM.getResourcesCharges());
+	//    System.out.println("Resource charges= " + VM.getResourcesCharges());
 	}
 	
-	public void updateVMEnergyCharges(VMstate VM){		
+	public void updateVMEnergyCharges(VMstate VM, int IaaSID){		
 		//double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
-		double energycharges = cost.updateEnergyCharges(VM);
+		double energycharges = cost.updateEnergyCharges(VM, IaaSID);
 		System.out.println("Pricing Scheme: Updating energy charges to " + energycharges);
 		VM.updateEnergyCharges(energycharges);
 		

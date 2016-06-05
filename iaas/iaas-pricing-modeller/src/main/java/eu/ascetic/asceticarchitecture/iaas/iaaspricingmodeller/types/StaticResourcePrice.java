@@ -24,11 +24,11 @@ public class StaticResourcePrice extends Price{
 	public StaticResourcePrice(int IaaSID, int scheme) {
 		int even= IaaSID%2;
 		if (scheme == 0){
-		if (even == 0){
-			Price = 0.14;}
-		else{
-			Price = 0.20;
-		}
+			if (even == 0){
+				Price = 0.14;}
+			else{
+				Price = 0.20;
+			}
 		}
 		else {
 			if (even == 0){

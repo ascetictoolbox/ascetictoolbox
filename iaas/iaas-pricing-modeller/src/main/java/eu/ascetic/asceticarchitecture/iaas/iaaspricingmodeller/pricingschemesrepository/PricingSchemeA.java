@@ -71,7 +71,7 @@ public class PricingSchemeA extends IaaSPricingModellerPricingScheme implements 
 		VM.setChangeTime();
 		updateVMResourceCharges(VM, price);
 		VM.setTotalCharges(VM.getResourcesCharges());
-		System.out.println("Pricing Scheme A: Total Charges are only from Resources = " + VM.getTotalCharges());
+		//System.out.println("Pricing Scheme A: Total Charges are only from Resources = " + VM.getTotalCharges());
 		return (VM.getTotalCharges());
 		
 	}
