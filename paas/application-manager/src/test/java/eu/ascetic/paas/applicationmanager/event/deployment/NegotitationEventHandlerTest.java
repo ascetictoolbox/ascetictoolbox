@@ -7,6 +7,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -20,6 +23,8 @@ import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
+import eu.ascetic.providerregistry.model.Provider;
 
 /**
  * 
@@ -71,6 +76,12 @@ public class NegotitationEventHandlerTest extends AbstractTest {
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
 		receiver.setMessageConsumer(listener);
+		PRClient prClient = mock(PRClient.class);
+		Provider provider = new Provider();
+		provider.setId(3);
+		List<Provider> providers = new ArrayList<>();
+		providers.add(provider);
+		when(prClient.getProviders()).thenReturn(providers);
 		
 		Configuration.enableSLAM = "false";
 		
@@ -79,6 +90,7 @@ public class NegotitationEventHandlerTest extends AbstractTest {
 		
 		NegotiationEventHandler negotiationEvent = new NegotiationEventHandler();
 		negotiationEvent.deploymentDAO = deploymentDAO;
+		negotiationEvent.prClient = prClient;
 		negotiationEvent.deploymentEventService = deploymentEventService;
 		
 		DeploymentEvent deploymentEvent = new DeploymentEvent();
@@ -101,6 +113,7 @@ public class NegotitationEventHandlerTest extends AbstractTest {
 		assertEquals(22, argument.getValue().getDeploymentId());
 		assertEquals(Dictionary.APPLICATION_STATUS_NEGOTIATIED, argument.getValue().getDeploymentStatus());
 		assertEquals("applicationName", argument.getValue().getApplicationName());
+		assertEquals(3, argument.getValue().getProviderId());
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(1000l);

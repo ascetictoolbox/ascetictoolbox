@@ -148,6 +148,7 @@ public class DeployEventHandler {
 						int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
 						int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
 						String isoPath = OVFUtils.getIsoPathFromVm(virtualSystem.getVirtualHardwareSection(), ovfDocument);
+						logger.info("ISO patth: " + isoPath);
 						int capacity = OVFUtils.getCapacity(ovfDocument, diskId);
 
 						// We force to refresh the image from the DB... 
@@ -155,7 +156,7 @@ public class DeployEventHandler {
 
 						for(int j = 0; j < minNumberVMs; j++) {
 
-							logger.debug(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath + " PUBLIC IP: " + publicIP);
+							logger.info(" OVF-ID: " + ovfVirtualSystemID + " #VMs: " + minNumberVMs + " Name: " + vmName + " CPU: " + cpus + " RAM: " + ramMb + " Disk capacity: " + capacity + " ISO Path: " + isoPath + " PUBLIC IP: " + publicIP);
 
 							int suffixInt = j + 1;
 							String suffix = "_" + suffixInt;
@@ -197,6 +198,7 @@ public class DeployEventHandler {
 								vmToDB.setSwapMax(0);
 								vmToDB.setSwapActual(0);
 								vmToDB.setSwapMin(0);
+								vmToDB.setProviderId("" + deploymentEvent.getProviderId());
 								vmDAO.save(vmToDB);
 
 								vmToDB.addImage(image);

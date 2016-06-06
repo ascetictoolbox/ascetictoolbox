@@ -82,6 +82,24 @@ public class VmManagerClientBSSC implements VmManagerClient {
 
 	public List<String> deployVMs(List<Vm> vms) {
 		logger.info("Deploying a group of VMS. Connecting to URL for VMM: " + url);
+//		for(Vm vm : vms) {
+//			logger.info("PRINTING VM: ");
+//			logger.info("  Application Id  - " + vm.getApplicationId());
+//			logger.info("  CPUs - " + vm.getCpus());
+//			logger.info("  Disk GB -  " + vm.getDiskGb());
+//			logger.info("  Disk Type -  " + vm.getDiskType());
+//			logger.info("  Image -  " + vm.getImage());
+//			logger.info("  Init Script -  " + vm.getInitScript());
+//			logger.info("  Name -  " + vm.getName());
+//			logger.info("  OVF ID -  " + vm.getOvfId());
+//			logger.info("  Prefered Host -  " + vm.getPreferredHost());
+//			logger.info("  Processor ARchitecture -  " + vm.getProcessorArchitecture());
+//			logger.info("  Processor Brand -  " + vm.getProcessorBrand());
+//			logger.info("  Processor Model -  " + vm.getProcessorModel());
+//			logger.info("  RAM MB -  " + vm.getRamMb());
+//			logger.info("  SLA ID -  " + vm.getSlaId());
+//			logger.info("  SWAP MB -  " + vm.getSwapMb());
+//		}
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
 		return vmm.deployVms(vms);
 	}

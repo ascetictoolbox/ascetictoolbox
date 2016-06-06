@@ -16,10 +16,12 @@ import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
 import eu.ascetic.paas.applicationmanager.slam.SLATemplateCreator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
+import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
@@ -54,6 +56,7 @@ public class NegotiationEventHandler {
 	protected DeploymentDAO deploymentDAO;
 	@Autowired
 	protected DeploymentEventService deploymentEventService;
+	protected PRClient prClient = new PRClient();
 	
 	// TODO this method it is not multiprovider... 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
@@ -133,6 +136,9 @@ public class NegotiationEventHandler {
 				
 				// New Y2 - We store all the templates in the database
 				storeTemplatesInDB(slats, negId, deployment);
+			} else {
+				// We always select the first provider if there is no negotiation... 
+				deploymentEvent.setProviderId(prClient.getProviders().get(0).getId());
 			}
 			
 
