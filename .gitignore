@@ -42,6 +42,7 @@ saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/jvmmonitor-core.jar
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/lib/*.jar
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/lib/jvmmonitor-agent.jar
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/jvmmonitor-ui.jar
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/*.jar
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
 saas/programming_model/compss/programming_model/annotations/target
