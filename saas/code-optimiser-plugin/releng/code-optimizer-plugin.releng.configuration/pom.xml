@@ -16,6 +16,32 @@
       <url>${mars-repo.url}</url>
       <layout>p2</layout>
     </repository>
+    <!-- Override (disable) central repo -->
+    <repository>
+      <id>central</id>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <name>Central Repository</name>
+      <url>http://repo.maven.apache.org/maven2</url>
+    </repository>
+    <!-- ASCETiC's private repo -->
+    <repository>
+      <id>ascetic-repository</id>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <name>repo</name>
+      <url>https://ascetic-artifactory.cit.tu-berlin.de/artifactory/repo</url>
+    </repository>
   </repositories>
   <build>
     <plugins>

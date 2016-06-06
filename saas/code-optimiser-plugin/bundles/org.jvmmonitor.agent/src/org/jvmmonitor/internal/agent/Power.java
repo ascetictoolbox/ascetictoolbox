@@ -17,7 +17,7 @@ public class Power implements PowerMXBean {
     /** The MXBean name. */
     public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
     private OperatingSystemMXBean operatingSystemMXBean;
-    private String predictorName = "CpuOnlyBestFitEnergyPredictor";
+    //private String predictorName = "CpuOnlyBestFitEnergyPredictor";
     private EnergyPredictorInterface predictor = null;  //getPredictor(predictorName);
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";    
     private ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
