@@ -63,7 +63,7 @@ public class CloplaConversorTest {
         assertNull(cloplaVm.getHost());
     }
 
-    @Test
+    /*@Test
     public void getCloplaHosts() {
         List<Host> hosts = new ArrayList<>();
         hosts.add(new HostFake("host1", 1, 1024, 1, 0, 0, 0));
@@ -74,6 +74,6 @@ public class CloplaConversorTest {
         assertEquals(1, cloplaHost.getNcpus());
         assertEquals(1024.0, cloplaHost.getRamMb());
         assertEquals(1.0, cloplaHost.getDiskGb());
-    }
+    }*/
 
 }

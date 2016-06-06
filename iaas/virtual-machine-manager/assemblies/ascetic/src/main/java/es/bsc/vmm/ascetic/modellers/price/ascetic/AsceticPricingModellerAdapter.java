@@ -60,14 +60,12 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
 	private Logger log = LogManager.getLogger(AsceticPricingModellerAdapter.class);
 
     public AsceticPricingModellerAdapter(AsceticEnergyModellerAdapter energyModeller) {
-        pricingModeller = new IaaSPricingModeller(energyModeller.getEnergyModeller());
+        try {
+            pricingModeller = new IaaSPricingModeller(energyModeller.getEnergyModeller());
+        } catch (Exception ex) {
+           log.error( "Cannot build AsceticPricingModellerAdapter!" + ex.getLocalizedMessage() );
+        }
     }
-
-	/*
-    public double getVmCost(int cpus, int ramMb, int diskGb, String hostname) {
-
-    }*/
-
 
     // For now, return always 1. This will be changed once we get this information from the PaaS level.
     private int getSchemeIdForVm() {
@@ -102,7 +100,13 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
 
 	@Override
 	public double getVMFinalCharges(String VMid, boolean deleteVM) {
-		return pricingModeller.getVMFinalCharges(VMid, deleteVM);
+        try {
+            return pricingModeller.getVMFinalCharges(VMid, deleteVM);
+        } catch (Exception ex) {
+            log.error("Cannot get final charges! " + ex.getLocalizedMessage());
+        }
+        
+        return 0;
 	}
 
 	@Override
