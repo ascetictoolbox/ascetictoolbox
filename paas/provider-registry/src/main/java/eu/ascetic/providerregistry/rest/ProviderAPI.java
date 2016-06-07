@@ -52,7 +52,7 @@ import eu.ascetic.providerregistry.xml.Converter;
 @Path("/")
 @Component
 @Scope("request")
-public class ProviderAPI {
+public class ProviderAPI extends RestAbstract {
 	private static Logger logger = Logger.getLogger(ProviderAPI.class);
 	@Autowired
 	protected ProviderDAO providerDAO;
@@ -91,6 +91,15 @@ public class ProviderAPI {
 		return prepareProviderResponse(id, false);
 	}
 	
+	@GET
+	@Path("/{id}")
+	@Produces(CONTENT_TYPE_JSON + ";qs=.5")
+	public Response getProviderJSON(@PathParam("id") int id) {
+		logger.info("GET /" + id + " [JSON]");
+		
+		return prepareProviderResponse(id, true);
+	}
+	
 	private Response prepareProviderResponse(int id, boolean json) {
 		Provider provider = providerDAO.getById(id);
 		if( provider != null) {
@@ -110,15 +119,6 @@ public class ProviderAPI {
 			logger.debug("RESPONSE: 404");
 			return buildResponse(Status.NOT_FOUND, "No provider by that id found in the databae.");
 		}
-	}
-	
-	@GET
-	@Path("/{id}")
-	@Produces(CONTENT_TYPE_JSON + ";qs=.5")
-	public Response getProviderJSON(@PathParam("id") int id) {
-		logger.info("GET /" + id + " [JSON]");
-		
-		return prepareProviderResponse(id, true);
 	}
 	
 	@POST
@@ -203,11 +203,5 @@ public class ProviderAPI {
 		linkParent.setRel("parent");
 		linkParent.setHref("/");
 		provider.addLink(linkParent);
-	}
-	
-	private Response buildResponse(Response.Status status, String payload) {
-		ResponseBuilder builder = Response.status(status);
-		builder.entity(payload);
-		return builder.build();
 	}
 }
