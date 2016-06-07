@@ -127,8 +127,9 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     }
 
     /**
-     * This takes the settings and reads them into memory and sets defaults
-     * as needed.
+     * This takes the settings and reads them into memory and sets defaults as
+     * needed.
+     *
      * @param config The settings to read.
      */
     private void readSettings(PropertiesConfiguration config) {
@@ -442,8 +443,15 @@ public abstract class AbstractEnergyPredictor implements EnergyPredictorInterfac
     public static EnergyPredictorInterface getBestPredictor(Host host, Collection<EnergyPredictorInterface> predictors) {
         EnergyPredictorInterface answer = null;
         for (EnergyPredictorInterface predictor : predictors) {
-            if (answer == null || predictor.getRootMeanSquareError(host) < answer.getRootMeanSquareError(host)) {
-                answer = predictor;
+            try {
+                if (answer == null || predictor.getRootMeanSquareError(host) < answer.getRootMeanSquareError(host)) {
+                    answer = predictor;
+                }
+            } catch (Exception e) {
+                /**
+                 * Catch any errors from due to the inability to calibrate, such
+                 * as not enough data points etc.
+                 */
             }
         }
         return answer;

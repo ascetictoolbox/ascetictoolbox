@@ -30,6 +30,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
 
 /**
  * This implements the CPU only polynomial energy predictor for the ASCETiC
@@ -48,8 +49,8 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
     /**
      * This creates a new CPU only energy predictor that uses a polynomial fit.
      *
-     * It will create a energy-modeller-predictor properties file if it
-     * doesn't exist.
+     * It will create a energy-modeller-predictor properties file if it doesn't
+     * exist.
      *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
      * should be in the range 0..1 or -1. This indicates the predictor's default
@@ -66,12 +67,12 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
     public CpuOnlyPolynomialEnergyPredictor() {
         super();
     }
-    
+
     /**
      * This creates a new CPU only energy predictor that uses a polynomial fit.
      *
-     * It will create a energy-modeller-predictor properties file if it
-     * doesn't exist.
+     * It will create a energy-modeller-predictor properties file if it doesn't
+     * exist.
      *
      * The main property: iaas.energy.modeller.cpu.energy.predictor.default_load
      * should be in the range 0..1 or -1. This indicates the predictor's default
@@ -84,13 +85,13 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      *
      * These indicate the window of how long the CPU should be monitored for, to
      * determine the current load.
-     * 
+     *
      * @param config The config to use in order to create the abstract energy
      * predictor.
      */
     public CpuOnlyPolynomialEnergyPredictor(PropertiesConfiguration config) {
         super(config);
-    }    
+    }
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
@@ -126,7 +127,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
                 / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         EnergyUsagePrediction generalHostsAnswer = getGeneralHostPredictedEnergy(timePeriod);
         double generalPower = generalHostsAnswer.getAvgPowerUsed() / (double) virtualMachines.size();
-        double generalEnergy = generalHostsAnswer.getTotalEnergyUsed() / (double) virtualMachines.size();        
+        double generalEnergy = generalHostsAnswer.getTotalEnergyUsed() / (double) virtualMachines.size();
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
         answer.setDuration(hostAnswer.getDuration());
         //Find the fraction to be associated with the VM
@@ -136,8 +137,8 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
         double vmsPowerFraction = division.getEnergyUsage(hostAnswer.getAvgPowerUsed(), vm);
         answer.setAvgPowerUsed(vmsPowerFraction + generalPower);
         return answer;
-    }    
-    
+    }
+
     /**
      * This predicts the total amount of energy used by a host.
      *
@@ -247,24 +248,32 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
 
     @Override
     public double getSumOfSquareError(Host host) {
-        return retrieveModel(host).getSumOfSquareError();
+        try {
+            return retrieveModel(host).getSumOfSquareError();
+        } catch (NumberIsTooSmallException ex) {
+            return Double.MAX_VALUE;
+        }
     }
 
     @Override
     public double getRootMeanSquareError(Host host) {
-        return retrieveModel(host).getRootMeanSquareError();
+        try {
+            return retrieveModel(host).getRootMeanSquareError();
+        } catch (NumberIsTooSmallException ex) {
+            return Double.MAX_VALUE;
+        }
     }
-    
+
     @Override
     public void printFitInformation(Host host) {
-        System.out.println(this.toString() + " - SSE: " + 
-                this.retrieveModel(host).getSumOfSquareError() + 
-                " RMSE: " + this.retrieveModel(host).getRootMeanSquareError());
-    }    
-    
+        System.out.println(this.toString() + " - SSE: "
+                + this.retrieveModel(host).getSumOfSquareError()
+                + " RMSE: " + this.retrieveModel(host).getRootMeanSquareError());
+    }
+
     @Override
     public String toString() {
         return "CPU only polynomial energy predictor";
-    }    
+    }
 
 }

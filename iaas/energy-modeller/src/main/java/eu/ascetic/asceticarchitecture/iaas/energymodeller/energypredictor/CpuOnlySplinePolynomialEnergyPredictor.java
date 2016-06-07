@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
 
 /**
  * This implements the CPU only spline polynomial energy predictor for the
@@ -69,7 +70,7 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     public CpuOnlySplinePolynomialEnergyPredictor() {
         super();
     }
-    
+
     /**
      * This creates a new CPU only energy predictor that uses a polynomial fit.
      *
@@ -87,14 +88,14 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
      *
      * These indicate the window of how long the CPU should be monitored for, to
      * determine the current load.
-     * 
+     *
      * @param config The config to use in order to create the abstract energy
      * predictor.
-     * 
+     *
      */
     public CpuOnlySplinePolynomialEnergyPredictor(PropertiesConfiguration config) {
         super(config);
-    }    
+    }
 
     @Override
     public EnergyUsagePrediction getHostPredictedEnergy(Host host, Collection<VM> virtualMachines, TimePeriod duration) {
@@ -130,7 +131,7 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
                 / ((double) TimeUnit.SECONDS.toHours(timePeriod.getDuration())));
         EnergyUsagePrediction generalHostsAnswer = getGeneralHostPredictedEnergy(timePeriod);
         double generalPower = generalHostsAnswer.getAvgPowerUsed() / (double) virtualMachines.size();
-        double generalEnergy = generalHostsAnswer.getTotalEnergyUsed() / (double) virtualMachines.size();        
+        double generalEnergy = generalHostsAnswer.getTotalEnergyUsed() / (double) virtualMachines.size();
         EnergyUsagePrediction answer = new EnergyUsagePrediction(vm);
         answer.setDuration(hostAnswer.getDuration());
         //Find the fraction to be associated with the VM
@@ -222,10 +223,11 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
         modelCache.put(host, answer);
         return answer;
     }
-    
+
     /**
-     * This ensures the CPU usage provided to the model is in the acceptable 
+     * This ensures the CPU usage provided to the model is in the acceptable
      * range.
+     *
      * @param model The model to get the cpu usage for
      * @param usageCPU The amount of CPU load placed on the host
      * @return The cpu usage that is within the acceptable range.
@@ -233,15 +235,15 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
     private double getCpuUsageValue(PolynomialSplineFunction model, double usageCPU) {
         /**
          * Interpolation is the process of fitting a line of best fit directly
-         * to the datapoints gathered. The lowest value possible value to predict 
-         * from is therefore not likely to be 0.
+         * to the datapoints gathered. The lowest value possible value to
+         * predict from is therefore not likely to be 0.
          */
         if (usageCPU < model.getKnots()[0]) {
             return model.getKnots()[0];
         }
         if (usageCPU > model.getKnots()[model.getKnots().length - 1]) {
             return model.getKnots()[model.getKnots().length - 1];
-        }        
+        }
         return usageCPU;
     }
 
@@ -306,13 +308,21 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
 
     @Override
     public double getSumOfSquareError(Host host) {
-        return retrieveModel(host).getSumOfSquareError();
+        try {
+            return retrieveModel(host).getSumOfSquareError();
+        } catch (NumberIsTooSmallException ex) {
+            return Double.MAX_VALUE;
+        }
     }
 
     @Override
     public double getRootMeanSquareError(Host host) {
-        return retrieveModel(host).getRootMeanSquareError();
-    } 
+        try {
+            return retrieveModel(host).getRootMeanSquareError();
+        } catch (NumberIsTooSmallException ex) {
+            return Double.MAX_VALUE;
+        }
+    }
 
     @Override
     public String toString() {
@@ -321,9 +331,9 @@ public class CpuOnlySplinePolynomialEnergyPredictor extends AbstractEnergyPredic
 
     @Override
     public void printFitInformation(Host host) {
-        System.out.println(this.toString() + " - SSE: " + 
-                this.retrieveModel(host).getSumOfSquareError() + 
-                " RMSE: " + this.retrieveModel(host).getRootMeanSquareError());
-    }       
-    
+        System.out.println(this.toString() + " - SSE: "
+                + this.retrieveModel(host).getSumOfSquareError()
+                + " RMSE: " + this.retrieveModel(host).getRootMeanSquareError());
+    }
+
 }
