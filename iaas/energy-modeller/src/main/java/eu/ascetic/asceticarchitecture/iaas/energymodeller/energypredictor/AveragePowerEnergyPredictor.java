@@ -84,6 +84,7 @@ public class AveragePowerEnergyPredictor extends AbstractEnergyPredictor {
      * predictor.
      */
     public AveragePowerEnergyPredictor(PropertiesConfiguration config) {
+        super(config);
         powerObservationTimeMin = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", powerObservationTimeMin);
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", powerObservationTimeMin);
         powerObservationTimeSec = config.getInt("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", powerObservationTimeSec);

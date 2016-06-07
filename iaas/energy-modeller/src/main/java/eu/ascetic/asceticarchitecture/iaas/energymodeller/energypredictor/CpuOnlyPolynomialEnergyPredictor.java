@@ -89,7 +89,7 @@ public class CpuOnlyPolynomialEnergyPredictor extends AbstractEnergyPredictor {
      * predictor.
      */
     public CpuOnlyPolynomialEnergyPredictor(PropertiesConfiguration config) {
-        super();
+        super(config);
     }    
 
     @Override
