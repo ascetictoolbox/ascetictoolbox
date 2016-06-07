@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -80,12 +81,18 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.slasoi.gslam.core.control.Policy;
 import org.slasoi.gslam.pac.ProvisioningAndAdjustment;
+import org.slasoi.slamodel.primitives.STND;
+import org.slasoi.slamodel.sla.AgreementTerm;
+import org.slasoi.slamodel.sla.Guaranteed;
+import org.slasoi.slamodel.sla.SLA;
 
 import eu.ascetic.paas.slam.pac.PaasViolationChecker;
 import eu.ascetic.paas.slam.pac.amqp.AmqpMessageReceiver;
 import eu.ascetic.paas.slam.pac.applicationmanager.ModelConverter;
 import eu.ascetic.paas.slam.pac.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.slam.pac.applicationmanager.model.Deployment;
+import eu.ascetic.paas.slam.pac.impl.provider.reporting.GetSLAClient;
+import eu.ascetic.paas.slam.pac.impl.provider.translation.MeasurableAgreementTerm;
 
 
 /**
@@ -104,6 +111,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	private static String ACTIVEMQ_CHANNEL = "activemq_channel";
 	private static String DEPLOYED_APPS_QUEUE = "deployed_apps_queue";
 	private static String APPMANAGER_URL = "appmanager_url";
+	private static String BUSINESS_REPORTING_URL = "business_reporting_url";
+	private static String MONITORABLE_TERMS = "monitorable_terms";
 
 	//    private static String configurationFileImpl = null;
 
@@ -162,7 +171,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		}
 
 		logger.debug("Properties file loaded...");
-		
+
 		//recover old monitorings...
 		logger.debug("Recovering old monitorings...");
 		String monitoringPath = confPath + sepr	+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
@@ -175,7 +184,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 			{
 				String lineFromFile = scanner.nextLine();
 				String[] parameters = lineFromFile.split("%%%");
-				
+
 				logger.info("PaaS Violation Checker - recovering an active monitoring with this parameters: topicId "+parameters[0]+", appId "+parameters[1]+", deploymentId "+parameters[2]+", slaId "+parameters[3]);
 				new Thread(new PaasViolationChecker(properties, parameters[0], parameters[1], parameters[2], parameters[3], true)).start();
 			}
@@ -193,37 +202,37 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 */
 	private void retrieveApplicationEvents() {
 		try{
-			
-			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.16:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
-			
-			
 
-//			// Getting JMS connection from the server
-//			logger.info("Reading application events from ACTIVEMQ: "+properties.getProperty(ACTIVEMQ_URL));
-//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
-//			Connection connection = connectionFactory.createConnection();
-//
-//			// need to setClientID value, any string value you wish
-//			connection.setClientID("PaaS SLAM Application Event Listener");
-//
-//			logger.info("Starting connection...");
-//
-//			connection.start();
-//
-//			logger.info("Creating session...");
-//
-//			Session session = connection.createSession(false,
-//					Session.AUTO_ACKNOWLEDGE);
-//
-//			logger.info("Registering to the topic: "+properties.getProperty(DEPLOYED_APPS_QUEUE));
-//
-//			Topic topic = session.createTopic(properties.getProperty(DEPLOYED_APPS_QUEUE));
-//
-//			logger.info("Creating subscriber on the channel: "+properties.getProperty(ACTIVEMQ_CHANNEL));
-//			//need to use createDurableSubscriber() method instead of createConsumer() for topic
-//			// MessageConsumer consumer = session.createConsumer(topic);
-//			MessageConsumer consumer = session.createDurableSubscriber(topic,
-//					properties.getProperty(ACTIVEMQ_CHANNEL));
+			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.16:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
+
+
+
+			//			// Getting JMS connection from the server
+			//			logger.info("Reading application events from ACTIVEMQ: "+properties.getProperty(ACTIVEMQ_URL));
+			//			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+			//			Connection connection = connectionFactory.createConnection();
+			//
+			//			// need to setClientID value, any string value you wish
+			//			connection.setClientID("PaaS SLAM Application Event Listener");
+			//
+			//			logger.info("Starting connection...");
+			//
+			//			connection.start();
+			//
+			//			logger.info("Creating session...");
+			//
+			//			Session session = connection.createSession(false,
+			//					Session.AUTO_ACKNOWLEDGE);
+			//
+			//			logger.info("Registering to the topic: "+properties.getProperty(DEPLOYED_APPS_QUEUE));
+			//
+			//			Topic topic = session.createTopic(properties.getProperty(DEPLOYED_APPS_QUEUE));
+			//
+			//			logger.info("Creating subscriber on the channel: "+properties.getProperty(ACTIVEMQ_CHANNEL));
+			//			//need to use createDurableSubscriber() method instead of createConsumer() for topic
+			//			// MessageConsumer consumer = session.createConsumer(topic);
+			//			MessageConsumer consumer = session.createDurableSubscriber(topic,
+			//					properties.getProperty(ACTIVEMQ_CHANNEL));
 
 			MessageListener listener = new MessageListener() {
 				public void onMessage(Message message) {
@@ -252,7 +261,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 			};
 
 			receiver.setMessageConsumer(listener);
-//			consumer.setMessageListener(listener);
+			//			consumer.setMessageListener(listener);
 			//connection.close();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -281,7 +290,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 			HttpEntity entity = response.getEntity();
 			String responseString = EntityUtils.toString(entity, "UTF-8");
-						logger.debug("Response string from the ApplicationManager: "+responseString);
+			logger.debug("Response string from the ApplicationManager: "+responseString);
 
 			Deployment deployment = ModelConverter.xmlDeploymentToObject(responseString);
 			logger.debug("Deployment Id: "+deployment.getId());
@@ -306,7 +315,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	private String initiateMonitoring(String appId, String deploymentId, String slaId) {
 		try {
 			Context context;
-//			ConnectionFactory connectionFActory;
+			//			ConnectionFactory connectionFActory;
 			TopicSession session;
 			MessageProducer messageProducer;
 
@@ -316,7 +325,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 			System.out.println("Initiating " + appId);
 			Properties p = new Properties();
-			
+
 			String sepr = System.getProperty("file.separator");
 			String confPath = System.getenv("SLASOI_HOME");
 			p.load(new FileInputStream(confPath + sepr
@@ -346,16 +355,69 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 			messageProducer = 
 					session.createProducer(sendQueue);
 
+			String termsString = "";
+			String period = "";
+
+			String[] monitorableTerms = properties.getProperty(MONITORABLE_TERMS).split(",");
+
+			SLA sla = null;
+			GetSLAClient gsc = new GetSLAClient(properties.getProperty(BUSINESS_REPORTING_URL),slaId);
+			try {
+				sla = gsc.getSLA();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+
+
+			if (sla!=null) {
+				List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla);
+
+				for (MeasurableAgreementTerm m:terms) {
+
+					for (String monitorableTerm:monitorableTerms) {
+						if (m.getName().equalsIgnoreCase(monitorableTerm)) {
+							//gestione particolare termine parametrico
+							if (m.getName().equalsIgnoreCase("aggregated_event_metric_over_period")) {
+
+								for (AgreementTerm at:sla.getAgreementTerms()) {
+
+									for (Guaranteed g:at.getGuarantees()) {
+
+										if (g.toString().indexOf("aggregated_event_metric_over_period")>-1) {
+											String[] parameters = g.toString().split("\"");
+
+											switch (parameters[7]) {
+											case "percentile": if (!termsString.equals("")) termsString+=", ";termsString+="\\\"percentile("+parameters[1]+"_"+parameters[3]+","+parameters[9]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
+											case "max": if (!termsString.equals("")) termsString+=", ";termsString+="\\\"max("+parameters[1]+"_"+parameters[3]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
+											case "last": if (!termsString.equals("")) termsString+=", ";termsString+="\\\"last("+parameters[1]+"_"+parameters[3]+")\\\"";break;
+											}
+										}
+									}
+								}
+							}
+							else {
+								if (!termsString.equals("")) termsString+=", ";
+								termsString+="\\\""+monitorableTerm+"\\\"";
+							}
+						}
+					}
+				}
+			}
+
+			logger.debug("Terms to be monitored: "+termsString);
+
 			TextMessage message = session.createTextMessage("{\n" +
 					"\t\"Command\" : \"initiateMonitoring\",\n" +
 					"\t\"ApplicationId\" : \""+ appId + "\",\n" +
 					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
 					"\t\"SlaId\" : \""+ slaId + "\",\n" +
-					"\t\"Terms\" : [\"power_usage_per_app\", \"energy_usage_per_app\" ],\n" +
+					(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+					"\t\"Terms\" : ["+termsString+" ],\n" +
 					"\t\"Frequency\" : 10000\n" +
 					"}");
 			messageProducer.send(message);
-			
+
 			logger.debug("Message sent: "+message);
 
 			System.out.println("Message sent");
@@ -475,39 +537,59 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		logger.info("Getting policies");
 		return null;
 	}
-	
-	
+
+
 	public static void main(String[] args) {
-		String appId = "davidgpTestApp";
-		String deploymentId = "752";
-		String slaId = "UNKNOWN";
+		String termsString = "";
+		String period = "";
+		String[] monitorableTerms = "power_usage_per_app,energy_usage_per_app,aggregated_event_metric_over_period".split(",");
 
-			try {
-				HttpClient client = new DefaultHttpClient();
-				String appManagerUrl = "http://192.168.3.16/application-manager";
-				HttpGet request = new HttpGet(appManagerUrl+"/applications/"+appId+"/deployments/"+deploymentId);
-				HttpResponse response = client.execute(request);
+		SLA sla = null;
+		GetSLAClient gsc = new GetSLAClient("http://192.168.3.16:8080/services/BusinessManager_Reporting?wsdl","cb0acd63-3537-4617-afa3-d0102d90e1e0");
+		try {
+			sla = gsc.getSLA();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 
-				//			System.out.println("status: " + response.getStatusLine());
-				//			System.out.println("headers: " + response.getAllHeaders());
-				//			System.out.println("body:" + response.getEntity());
 
-				HttpEntity entity = response.getEntity();
-				String responseString = EntityUtils.toString(entity, "UTF-8");
-				System.out.println("Response string from the ApplicationManager: "+responseString);
+		if (sla!=null) {
+			List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla);
 
-				Deployment deployment = ModelConverter.xmlDeploymentToObject(responseString);
-				System.out.println("Deployment Id: "+deployment.getId());
-				System.out.println("SLA Agreement: "+deployment.getSlaAgreement());
+			for (MeasurableAgreementTerm m:terms) {
 
-				slaId = deployment.getSlaAgreement();
+				for (String monitorableTerm:monitorableTerms) {
+					if (m.getName().equalsIgnoreCase(monitorableTerm)) {
+						//gestione particolare termine parametrico
+						if (m.getName().equalsIgnoreCase("aggregated_event_metric_over_period")) {
+							System.out.println(m);
+							for (AgreementTerm at:sla.getAgreementTerms()) {
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				slaId = "UNKNOWN";
+								for (Guaranteed g:at.getGuarantees()) {
+
+									if (g.toString().indexOf("aggregated_event_metric_over_period")>-1) {
+										String[] parameters = g.toString().split("\"");
+
+										switch (parameters[7]) {
+										case "percentile": termsString+="\\\"percentile("+parameters[1]+"_"+parameters[3]+","+parameters[9]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
+										case "max": termsString+="\\\"max("+parameters[1]+"_"+parameters[3]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
+										case "last": termsString+="\\\"last("+parameters[1]+"_"+parameters[3]+")\\\"";break;
+										}
+									}
+								}
+							}
+						}
+						else {
+							if (!termsString.equals("")) termsString+=", ";
+							termsString+="\\\""+monitorableTerm+"\\\"";
+						}
+					}
+				}
 			}
-
-			System.out.println(slaId);
 		}
-	
+		System.out.println(termsString);
+		System.out.println(period);
+	}
+
 }

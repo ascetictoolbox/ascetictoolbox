@@ -44,6 +44,8 @@ import javax.jms.Topic;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
+import org.slasoi.slamodel.sla.AgreementTerm;
+import org.slasoi.slamodel.sla.Guaranteed;
 import org.slasoi.slamodel.sla.SLA;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -349,6 +351,7 @@ public class PaasViolationChecker implements Runnable {
 								String fieldName = fieldNames.next();
 								String fieldValue = termsJson.get(fieldName).asText();
 								logger.debug("Measurement --> "+fieldName+" : "+fieldValue);
+								
 								measuredTerms.put(fieldName, fieldValue);
 							}
 
@@ -382,6 +385,27 @@ public class PaasViolationChecker implements Runnable {
 									
 									for (String monitorableTerm:monitorableTerms) {
 										if (m.getName().equalsIgnoreCase(monitorableTerm)) {
+											
+											//gestione particolare termine parametrico
+											if (m.getName().equalsIgnoreCase("aggregated_event_metric_over_period")) {
+
+												for (AgreementTerm at:sla.getAgreementTerms()) {
+
+													for (Guaranteed g:at.getGuarantees()) {
+
+														if (g.toString().indexOf("aggregated_event_metric_over_period")>-1) {
+															String[] parameters = g.toString().split("\"");
+
+															switch (parameters[7]) {
+															case "percentile": monitorableTerm="percentile_"+parameters[1]+"_"+parameters[3]+"_"+parameters[9];break;
+															case "max": monitorableTerm="max_"+parameters[1]+"_"+parameters[3];break;
+															case "last": monitorableTerm="last_"+parameters[1]+"_"+parameters[3];break;
+															}
+														}
+													}
+												}
+											}
+											
 											if (measuredTerms.containsKey(monitorableTerm)) {
 												if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
 													if (!m.getValue().equals(new Double(measuredTerms.get(monitorableTerm)))) {
