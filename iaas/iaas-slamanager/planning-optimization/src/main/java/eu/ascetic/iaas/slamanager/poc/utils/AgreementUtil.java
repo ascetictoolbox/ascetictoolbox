@@ -80,6 +80,8 @@ public class AgreementUtil {
 			return AsceticAgreementTerm.power_usage_per_event;
 		if (metric.equals("energy_usage_per_event"))
 			return AsceticAgreementTerm.energy_usage_per_event;
+		if (metric.equals("percentile_event_over_period"))
+			return AsceticAgreementTerm.percentile_event_over_period;
 		return null;
 	}
 
@@ -142,6 +144,9 @@ public class AgreementUtil {
 			break;
 		case energy_usage_per_event:
 			metric = "energy_usage_per_event";
+			break;
+		case percentile_event_over_period:
+			metric = "percentile_event_over_period";
 			break;
 		default:
 			break;
@@ -213,6 +218,9 @@ public class AgreementUtil {
 			//TODO: Gestire
 			resource = new STND("http://www.slaatsoi.org/resources#energy_usage_per_event");
 			break;
+		case percentile_event_over_period:
+			resource = new STND("http://www.slaatsoi.org/resources#percentile_event_over_period");
+			break;
 		default:
 			break;
 		}
@@ -259,6 +267,7 @@ public class AgreementUtil {
 		genericTerms.add("energy_usage_per_app");
 		genericTerms.add("power_usage_per_event");
 		genericTerms.add("energy_usage_per_event");
+		genericTerms.add("percentile_event_over_period");
 	}
 
 	public static String getStringTerm(Guaranteed.State gs) {

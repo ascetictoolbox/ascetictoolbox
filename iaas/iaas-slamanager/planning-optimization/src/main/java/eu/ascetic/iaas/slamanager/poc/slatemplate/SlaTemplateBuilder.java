@@ -258,6 +258,7 @@ public class SlaTemplateBuilder {
 		ArrayList<InterfaceDeclr> intDeclList = new ArrayList<InterfaceDeclr>();
 		String ovfApp = null;
 		for (InterfaceDeclr i : intDecl) {
+//			System.out.println("Interfaccia "+i.toString());
 			for (AsceticRequest cr : asceticSlaTemplate.getAsceticRequests()) {
 				String ovfId = cr.getOvfId();
 				org.slasoi.slamodel.sla.Endpoint[] e = i.getEndpoints();

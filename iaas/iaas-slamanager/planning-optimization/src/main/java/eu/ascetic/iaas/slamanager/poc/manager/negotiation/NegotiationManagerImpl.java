@@ -112,6 +112,15 @@ public class NegotiationManagerImpl implements NegotiationManager {
 
 		AsceticSlaTemplate asceticSlaTemplate = asceticSlaTemplateParser.getAsceticSlat(templateInitial);
 
+		SLATemplate slaReturn = templateInitial;
+		
+		/*
+		 * TODO
+		 * Chiamare il VMM solo se esistono termini da negoziare lato IaaS
+		 * ANCHE NEL CREATE AGREEMENT!!!
+		 */
+		if (true) {
+		
 		VMManagerEstimatesRequestObject.Builder builder = new VMManagerEstimatesRequestObject.Builder();
 		builder.setAsceticSlatemplate(asceticSlaTemplate);
 		VMManagerEstimatesRequestObject vmEstimatesRequestObject = builder.build();
@@ -158,8 +167,11 @@ public class NegotiationManagerImpl implements NegotiationManager {
 		}
 		SlaTemplateBuilder slaTemplateBuilder = new SlaTemplateBuilder();
 		slaTemplateBuilder.setAsceticSlatemplate(asceticSlaTemplate);
-		SLATemplate slaReturn = slaTemplateBuilder.build();
+		slaReturn = slaTemplateBuilder.build();
 
+		}
+		
+		
 		logger.debug("SLA to return:");
 		logger.debug(slaReturn);
 
@@ -309,7 +321,21 @@ public class NegotiationManagerImpl implements NegotiationManager {
 		if (terms!=null) {
 			for (int i = 0; i < terms.length; i++) {
 				logger.debug("Term "+i+": "+terms[i]);
-				if (terms[i].toString().contains("power_usage_per_app") || terms[i].toString().contains("energy_usage_per_app")) {
+				
+				//termini da nascondere (no translation)
+				if (terms[i].toString().contains("power_usage_per_event")
+				|| terms[i].toString().contains("energy_usage_per_event")
+				|| terms[i].toString().contains("aggregated_event_metric_over_period")) 
+				{
+					logger.debug("Found a PaaS layer term. Hiding...");
+					paaSAgreementTerms.add(terms[i]);
+					continue;
+				}
+					
+				//termini da tradurre
+				if (terms[i].toString().contains("power_usage_per_app")
+				|| terms[i].toString().contains("energy_usage_per_app")) 
+				{
 					if (isNegotiation) {
 						logger.debug("Found a PaaS layer term. Translating it into an IaaS layer term...");
 						paaSAgreementTerms.add(terms[i]);

@@ -355,11 +355,14 @@ public class AsceticSlaTemplateParser {
 	}
 
 	private void initOvfResourceParser(InterfaceDeclr[] ids) {
+		logger.debug("ids length "+ids.length);
 		for (int i = 0; i < ids.length; i++) {
 			InterfaceDeclr iD = ids[i];
 			STND[] propKey = iD.getPropertyKeys();
+			logger.debug("propkey length "+propKey.length);
 			if (propKey != null && propKey.length != 0) {
 				for (int l = 0; l < propKey.length; l++) {
+					logger.debug("propkey found: "+propKey[l]);
 					if (propKey[l].equals("OVF_URL")) {
 						String ovfURL = iD.getPropertyValue(propKey[l]);
 						ovfRetriever.retrieveOvf(ovfURL);
@@ -369,6 +372,7 @@ public class AsceticSlaTemplateParser {
 				}
 			}
 		}
+		logger.debug("ovfile: "+ovfFile);
 		ovfParser = new OvfResourceParser(ovfFile);
 	}
 
