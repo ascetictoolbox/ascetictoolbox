@@ -4432,6 +4432,9 @@ utils/application-manager-database/db/changelog/db.changelog-4.1.xml -text
 utils/application-manager-database/db/changelog/db.changelog-4.2.xml -text
 utils/application-manager-database/db/changelog/db.changelog-4.3.xml -text
 utils/application-manager-database/db/changelog/db.changelog-4.4.xml -text
+utils/application-manager-database/db/changelog/db.changelog-4.5.xml -text
+utils/application-manager-database/db/changelog/db.changelog-4.6.xml -text
+utils/application-manager-database/db/changelog/db.changelog-5.0.xml -text
 utils/application-manager-database/db/changelog/db.changelog-master.xml -text
 utils/application-manager-database/liquibase/LICENSE.txt -text
 utils/application-manager-database/liquibase/lib/README.txt -text
