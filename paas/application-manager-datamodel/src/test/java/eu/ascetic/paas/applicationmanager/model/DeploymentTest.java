@@ -37,6 +37,7 @@ public class DeploymentTest {
 		Deployment deployment = new Deployment();
 		deployment.setId(11);
 		deployment.setHref("href");
+		deployment.setDeploymentName("name");
 		deployment.setPrice("provider-id");
 		deployment.setStatus("STATUS");
 		deployment.setStartDate("aaa");
@@ -54,6 +55,7 @@ public class DeploymentTest {
 		assertEquals(vms, deployment.getVms());
 		assertEquals("aaa", deployment.getStartDate());
 		assertEquals("bbb", deployment.getEndDate());
+		assertEquals("name", deployment.getDeploymentName());
 		
 		// We test the default value first and then we set it to something different
 		assertEquals(1, deployment.getSchema());
