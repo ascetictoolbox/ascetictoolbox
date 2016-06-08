@@ -199,7 +199,7 @@ public class Response implements Comparable<Response> {
      * @return the performed
      */
     public boolean isComplete() {
-        return performed || possibleToAdapt;
+        return performed || !possibleToAdapt;
     }
 
     /**
