@@ -81,16 +81,21 @@ public class IaaSTest
       
         IaaSPricingModeller prModeller = new IaaSPricingModeller(2, null);
      
-        prModeller.initializeVM("VMID1", 0, "Host1", "APPID1");
+        prModeller.initializeVM("VMID1", 1, "Host1", "APPID1");
 
         
-        Thread.sleep(5000);
+        Thread.sleep(20000);
 
+        prModeller.getVMFinalCharges("VMID1", false);
+        
+        Thread.sleep(20000);
+        prModeller.resizeVM("VMID1", 16, 56688, 256000);
+        
+        Thread.sleep(20000);
+        prModeller.getVMFinalCharges("VMID1", false);
+        
+        Thread.sleep(20000);
         prModeller.getVMFinalCharges("VMID1", true);
-
-        
-        Thread.sleep(5000);
-        prModeller.getAppFinalCharges("APPID1", true);
         
     }
 	

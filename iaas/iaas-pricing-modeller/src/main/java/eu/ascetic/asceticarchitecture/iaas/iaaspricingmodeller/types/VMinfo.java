@@ -24,6 +24,8 @@ public class VMinfo {
 	String hostname;
 	int IaaSID;
 	
+	Charges totalChargesForThisVMCharacteristics;
+	
 	public VMinfo (int RAM, int CPU, double storage, String hostname){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
@@ -44,10 +46,11 @@ public class VMinfo {
 		return RAM;
 	}
 	
+		
 	public String gethostname(){
 		return hostname;
 	}
-	
+			
 	public int getCPU(){
 		return CPU;
 	}
@@ -63,5 +66,17 @@ public class VMinfo {
 	
 	public int getIaaSID(){
 		return IaaSID;
+	}
+	
+	public void setIaaSID(int IaaSID){
+		this.IaaSID= IaaSID;
+	}
+	
+	public void setTotalCharges(Charges totalCharges){
+		totalChargesForThisVMCharacteristics = totalCharges;
+	/*	System.out.println("VMinfo: The charges until the change were: " 
+		+ totalChargesForThisVMCharacteristics.getChargesOnly()+" and the change time was " +totalChargesForThisVMCharacteristics.getTimeOnly());
+		*/
+		
 	}
 }

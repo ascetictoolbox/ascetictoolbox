@@ -46,7 +46,7 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
         price = getEnergyPrice(VM.getProvider(), VM.getPricingScheme().getSchemeId());
         //the energy charges for the past period
         double energyCharges = (updateEnergy(VM)/1000) * price.getPriceOnly();
-        System.out.println("I am updating energy with this price "+price.getPriceOnly());
+    //    System.out.println("I am updating energy with this price "+price.getPriceOnly());
         return energyCharges;
     }
 

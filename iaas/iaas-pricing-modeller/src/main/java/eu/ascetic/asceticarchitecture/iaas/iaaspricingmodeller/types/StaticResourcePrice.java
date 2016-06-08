@@ -34,7 +34,7 @@ public class StaticResourcePrice extends Price{
 			if (even == 0){
 				Price = 0.1;}
 			else{
-				Price = 0.1;
+				Price = 0.07;
 			}
 		}
 	 }
@@ -65,13 +65,15 @@ public class StaticResourcePrice extends Price{
 	}
 	
 	public double getPriceSecOnly(double price){
-		
-		if (price == 0.14){
-			return 0.00004;}
-		else{
+
+		if (price == 0.14)
+			return 0.00004;
+		if (price == 0.20)
 			return 0.00006;
-		}
+		if (price == 0.01)
+			return 0.00003;
+		if (price == 0.07)
+			return 0.00002;
+		return 0.00004;
 	}
-	
-	
 }

@@ -39,6 +39,12 @@ public class Charges {
 		lastChange=time;
 	}	
 	
+	public Charges(Calendar time, double charges){
+		this.charges = (double) Math.round(charges * 1000) / 1000;
+		lastChange=time;
+	}	
+	
+	
 	public double getChargesOnly(){
 		return this.charges;
 	}

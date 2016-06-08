@@ -105,8 +105,11 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 		//duration = 1800;
 		//per second
 		double Resourcecharges = distribution.getDistribution(VM)*price.getPriceSecOnly(price.getPriceOnly());
-	//	System.out.println(distribution.getDistribution(VM));
+	//	System.out.println("PricingModeller: The distribution is: " + distribution.getDistribution(VM));
+	//	System.out.println("PricingModeller: The resource charges are: " + Resourcecharges);
+	//	System.out.println("PricingModeller: The duration is: " + duration);
 		double count = Resourcecharges*(duration);
+	//	System.out.println("PricingModeller: The count is: " + count);
 		VM.updateResourcesCharges(count);
 
 		
@@ -121,9 +124,9 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	}
 	
 	public void updateVMEnergyCharges(VMstate VM, int IaaSID){		
-		//double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
+	//	double energycharges = (double) Math.round(cost.updateEnergyCharges(VM) * 1000) / 1000;
 		double energycharges = cost.updateEnergyCharges(VM, IaaSID);
-		System.out.println("Pricing Scheme: Updating energy charges to " + energycharges);
+	//	System.out.println("Pricing Scheme: Updating energy charges to " + energycharges);
 		VM.updateEnergyCharges(energycharges);
 		
 	}

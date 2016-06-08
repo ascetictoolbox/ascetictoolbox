@@ -75,17 +75,17 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 	//Initialize energy provider 
     EnergyProvider energyProvider = new EnergyProvider(this);
     
+    //The id of the provider. Default is 1.
+    private int idIaaSP=1;
+    
     //Energy modeller
     EnergyModeller energyModeller;
     
     //Initialize billing sub-component 
     IaaSPricingModellerBilling billing = new IaaSPricingModellerBilling(energyProvider, idIaaSP);
-    
-    //The if of the provider
-    private static int idIaaSP=0;
-    
+        
     //The queue created from this provider
-  //  static  PricingModellerQueueServiceManager  producer;
+    //  static  PricingModellerQueueServiceManager  producer;
     
     //Logging
     static Logger logger = null;
@@ -184,8 +184,11 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
             logger.error("The VM with VMid " + VMid + " has not been registered therefore a default VM has been initalized with CPU = 1, memory = 4096, storage = 50GB");
             
         }
-
-        VMinfo newVM = new VMinfo(RAM, CPU, storage, hostname, this.idIaaSP);
+        
+        VMinfo newVM = new VMinfo(RAM, CPU, storage, hostname);
+        newVM.setIaaSID(idIaaSP);
+        
+               
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
         VMstate VM = new VMstate(VMid, newVM, energyProvider, scheme, appID);
 
@@ -198,7 +201,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         scheme.setEnergyModeller(energyModeller);
         billing.registerVM(VM);
         
-       // System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
+    //   System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
         logger.info("IaaS Pricing Modeller: The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
     }
 
@@ -304,7 +307,8 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         return charges;
     }
 
-	public void resizeVM(String VMid,int CPU, int RAM, double storage ){
+	public void resizeVM(String VMid,int CPU, int RAM, double storage){
+		 billing.resizeVM(VMid,CPU, RAM, storage);
 		
 	}
 	
@@ -372,7 +376,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      * @param hostname: String
      */
     public double getVMChargesPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
+    	
         VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+        vm.setIaaSID(idIaaSP); 		
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
         VMstate Vm = new VMstate(vm, energyProvider, scheme);
         scheme.setEnergyModeller(energyModeller);
@@ -405,6 +411,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
      */
     public double getVMPricePerHourPrediction(int CPU, int RAM, double storage, int schemeId, long duration, String hostname) {
         VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+        vm.setIaaSID(idIaaSP);
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
         VMstate Vm = new VMstate(vm, energyProvider, scheme);
         scheme.setEnergyModeller(energyModeller);
@@ -509,6 +516,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
 
     	
         VMinfo vm = new VMinfo(RAM, CPU, storage, hostname);
+        vm.setIaaSID(idIaaSP);
 
         IaaSPricingModellerPricingScheme scheme = initializeScheme(schemeId);
         VMstate VM = new VMstate(VMid, vm, energyProvider, scheme, appID);

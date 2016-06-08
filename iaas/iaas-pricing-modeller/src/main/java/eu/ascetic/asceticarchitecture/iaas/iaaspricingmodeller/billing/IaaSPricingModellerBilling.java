@@ -269,6 +269,17 @@ public class IaaSPricingModellerBilling implements IaaSPricingModellerBillingInt
         apps.remove(appID);
     }
 
+	public void resizeVM(String vMid, int CPU, int RAM, double storage) {
+		VMstate VM = getVM(vMid);
+		double charges = getVMCharges(vMid);
+	//	System.out.println("Billing: Resize VM. the charges until now are: " + charges);
+		Charges tempCharges = new Charges (VM.getChangeTime(), charges);
+		VM.getVMinfo().setTotalCharges(tempCharges);
+		VMinfo vm = new VMinfo(RAM, CPU, storage, VM.getVMinfo().gethostname(), VM.getVMinfo().getIaaSID());
+		VM.setNewVMinfo(vm);
+		
+	}
+
 
 	
     ////////////////////////////////////////not used//////////////////////////////////////////////
