@@ -136,6 +136,12 @@ public abstract class AbstractRest {
 		String startDate = DateUtil.getDateStringLogStandardFormat(new Date());
 		deployment.setStartDate(startDate);
 		
+		// We check if the deployment has a deploymentName
+		String deploymentName = OVFUtils.getDeploymentName(ovf);
+		if(ovf != null) {
+			deployment.setDeploymentName(deploymentName);
+		}
+		
 		return deployment;
 	}
 	

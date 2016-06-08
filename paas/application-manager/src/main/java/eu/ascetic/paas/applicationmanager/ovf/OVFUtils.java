@@ -69,6 +69,24 @@ public class OVFUtils {
 		}
 	}
 	
+	/**
+	 * Extracts the field deploymentName from Product section of VirtualSystemCollection to differenciate between applications.
+	 *
+	 * @param ovf String representing the OVF definition of an Application
+	 * @return the application name
+	 */
+	public static String getDeploymentName(String ovf) {
+		try {
+			OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+			return ovfDocument.getVirtualSystemCollection().getProductSectionAtIndex(0).getDeploymentName();
+		} catch(OvfRuntimeException ex) {
+			logger.info("Error parsing OVF file: " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+		} catch(NullPointerException ex) {
+			return null;
+		}
+	}
 	
 	/**
 	 * Gets the ovf definition object.

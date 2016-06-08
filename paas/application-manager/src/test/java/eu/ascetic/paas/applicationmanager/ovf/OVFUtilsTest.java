@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.ovf;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -78,6 +79,15 @@ public class OVFUtilsTest {
 	}
 	
 	@Test
+	public void getDeploymentName() throws IOException, URISyntaxException {
+		File file = new File(this.getClass().getResource( "/saas.ovf" ).toURI());
+		String ovf = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		
+		assertEquals("SuperDeploymentName", OVFUtils.getDeploymentName(ovf));
+		assertNull(OVFUtils.getDeploymentName(threeTierWebAppDEMOOvfString));
+	}
+	
+	@Test
 	public void determineIfAVirtualSystemHasACacheImage() {
 		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
 		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
@@ -103,6 +113,8 @@ public class OVFUtilsTest {
 		System.out.println("OVF: " + ovfDocument);
 		
 		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+		ProductSection productSection = vsc.getProductSectionAtIndex(0);
+		assertEquals("SuperDeploymentName", productSection.getDeploymentName());
 		
 		for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
 			VirtualSystem virtSystem = vsc.getVirtualSystemAtIndex(i);

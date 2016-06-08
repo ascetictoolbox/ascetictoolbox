@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -93,6 +94,8 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 public class DeploymentRestTest extends AbstractTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
+	private String ovfFile = "saas.ovf";
+	private String ovfFileString;
 	
 	/**
 	 * We just read an ovf example... 
@@ -103,6 +106,18 @@ public class DeploymentRestTest extends AbstractTest {
 	public void setup() throws IOException, URISyntaxException {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		file = new File(this.getClass().getResource( "/" + ovfFile ).toURI());		
+		ovfFileString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+	}
+	@Test
+	public void deploymentWithDeploymentName() {
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		Deployment deployment = deploymentRest.createDeploymentToApplication(ovfFileString);
+		assertEquals("SuperDeploymentName", deployment.getDeploymentName());
+		
+		deployment = deploymentRest.createDeploymentToApplication(threeTierWebAppOvfString);
+		assertNull(deployment.getDeploymentName());
 	}
 
 	@Test
