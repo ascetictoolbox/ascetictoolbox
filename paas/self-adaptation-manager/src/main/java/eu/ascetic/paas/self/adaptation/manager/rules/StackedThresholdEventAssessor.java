@@ -84,6 +84,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             rulesFile.add("Agreement Term");
             rulesFile.append("Direction");
             rulesFile.append("Response Type");
+            rulesFile.append("Event Type (Violation or Warning)");
             rulesFile.append("lower bound");
             rulesFile.append("upper bound");
             rulesFile.add("energy_usage_per_app");
@@ -120,10 +121,13 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             ArrayList<String> current = rulesFile.getRow(i);
             FiringCriteria rule = new FiringCriteria(current.get(0), current.get(1), current.get(2));
             if (current.size() > 3) {
-                rule.setMinMagnitude(Double.parseDouble(current.get(3)));
-            }
+                rule.setType(EventData.Type.valueOf(current.get(3)));
+            }            
             if (current.size() > 4) {
                 rule.setMinMagnitude(Double.parseDouble(current.get(4)));
+            }
+            if (current.size() > 5) {
+                rule.setMaxMagnitude(Double.parseDouble(current.get(5)));
             }
             rules.add(rule);
         }

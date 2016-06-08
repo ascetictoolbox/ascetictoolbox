@@ -26,6 +26,7 @@ public class FiringCriteria {
 
     private String agreementTerm;
     private EventData.Operator operator;
+    private EventData.Type type;
     private Response.AdaptationType responseType;
     private Double minMagnitude = null;
     private Double maxMagnitude = null;
@@ -71,6 +72,9 @@ public class FiringCriteria {
             return false;
         }
         if (maxMagnitude != null && event.getDeviationBetweenRawAndGuarantee() > maxMagnitude) {
+            return false;
+        }
+        if (type != null && !event.getType().equals(type)) {
             return false;
         }
         return (agreementTerm.equals(event.getAgreementTerm())
@@ -133,6 +137,26 @@ public class FiringCriteria {
     public void setOperator(EventData.Operator operator) {
         this.operator = operator;
     }
+    
+    /**
+     * This gets the optional parameter of the Event type, i.e. if the rule
+     * should fire only because of warnings or because of actual violation 
+     * notifications.
+     * @return The event violation type. either SLA_BREACH or WARNING
+     */
+    public EventData.Type getType() {
+        return type;
+    }
+
+    /**
+      * This sets the optional parameter of the Event type, i.e. if the rule
+     * should fire only because of warnings or because of actual violation 
+     * notifications.
+     * @param type The event violation type to set, either SLA_BREACH or WARNING
+     */
+    public void setType(EventData.Type type) {
+        this.type = type;
+    }    
 
     /**
      * This indicates the minimum magnitude for the rule to fire, for the
