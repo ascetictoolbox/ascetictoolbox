@@ -109,6 +109,7 @@ public class DeploymentRestTest extends AbstractTest {
 		file = new File(this.getClass().getResource( "/" + ovfFile ).toURI());		
 		ovfFileString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
+	
 	@Test
 	public void deploymentWithDeploymentName() {
 		DeploymentRest deploymentRest = new DeploymentRest();
