@@ -52,7 +52,7 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
     private ViolationMessageTranslator converter = new ViolationMessageTranslator();
 
     /**
-     *
+     * This creates a new event history listener
      * @throws JMSException
      * @throws NamingException
      */
@@ -61,11 +61,27 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
         queue = getMessageQueue(QUEUE_NAME);
         consumer = session.createConsumer(queue);
     }
+    
+    /**
+     * This creates a new event history listener that listens for changes at
+     * the IaaS level.
+     * @param user The username
+     * @param password The password to use
+     * @param url
+     * @throws NamingException
+     * @throws JMSException
+     */
+    public EventHistoryListener(String user, String password, String url) throws JMSException, NamingException {
+        super(user, password, url);
+        queue = getMessageQueue(QUEUE_NAME);
+        consumer = session.createConsumer(queue);    
+    }
 
     /**
-     *
-     * @param user
-     * @param password
+     * This creates a new event history listener that listens for changes at
+     * the IaaS level.
+     * @param user The username
+     * @param password The password to use
      * @throws NamingException
      * @throws JMSException
      */

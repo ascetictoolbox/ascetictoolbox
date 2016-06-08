@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager;
 
+import eu.ascetic.paas.self.adaptation.manager.activemq.listener.EventHistoryListener;
 import eu.ascetic.paas.self.adaptation.manager.activemq.listener.SlaManagerListener;
 import eu.ascetic.paas.self.adaptation.manager.rest.ActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.rules.AbstractEventAssessor;
@@ -65,10 +66,12 @@ public class SelfAdaptationManager {
             config.setProperty("paas.self.adaptation.manager.event.assessor", eventAssessorName);
         } catch (ConfigurationException ex) {
             Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
-        }        
+        }
         setEventAssessor(eventAssessorName);
         EventListener listener = new SlaManagerListener();
+        EventListener iaasListener = new EventHistoryListener();
         listeners.add(listener);
+        listeners.add(iaasListener);
         actuator = new ActionRequester();
         eventAssessor.setActuator(actuator);
         eventAssessor.setListeners(listeners);
@@ -104,10 +107,11 @@ public class SelfAdaptationManager {
             System.exit(-1);
         }
     }
-    
+
     /**
      * This creates a new self-adaptation manager and is the main entry point
      * for the program.
+     *
      * @param args The args are not used.
      */
     public static void main(String[] args) {

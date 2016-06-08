@@ -54,10 +54,12 @@ public abstract class ActiveMQBase {
     protected Session session;
     protected boolean useURL = true;
     /**
-     * Example urls: Y2: Stable: 192.168.3.222:5673 Y2: Testing:
-     * 192.168.3.16:5673 Y1: 10.4.0.16:5672
+     * Example urls: 
+     * Y2: Stable: 192.168.3.222:5673 
+     * Y2: Testing: 192.168.3.16:5673 
+     * Y1: 10.4.0.16:5672
      */
-    protected String url = "192.168.3.16:5673";
+    protected String url = "192.168.3.222:5673";
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
 
     /**
