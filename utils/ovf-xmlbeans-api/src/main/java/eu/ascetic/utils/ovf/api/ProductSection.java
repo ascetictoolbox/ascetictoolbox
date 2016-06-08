@@ -215,6 +215,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
 
     /**
+     * The static KEY used to get and set the deployment name of a {@link VirtualSystemCollection}
+     */
+    private static final String ASCETIC_DEPLOYMENT_NAME = "asceticDeploymentName";
+    
+    /**
      * Default constructor.
      * 
      * @param base
@@ -2050,6 +2055,32 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         return getIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
     }
 
+    /**
+     * Gets deployment name for a {@link VirtualSystemCollection}.
+     * 
+     * @return The deployment name
+     */
+    public String getDeploymentName() {
+        return getPropertyByKey(ASCETIC_DEPLOYMENT_NAME).getValue();
+    }
+
+    /**
+     * Sets the deployment name for a {@link VirtualSystemCollection}.
+     * 
+     * @param deploymentName
+     *            The deployment name to set
+     */
+    public void setDeploymentName(String deploymentName) {
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_DEPLOYMENT_NAME);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_DEPLOYMENT_NAME, ProductPropertyType.STRING,
+                    deploymentName);
+        } else {
+            productProperty.setValue(deploymentName);
+        }
+    }
+    
     /**
      * This gets from the XML the number of items that are held in an array like
      * structure.
