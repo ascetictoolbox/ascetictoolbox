@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Vm;
 
 /**
@@ -30,11 +31,11 @@ import es.bsc.vmmclient.models.Vm;
  */
 
 public class VMMIT {
+	
+	private String url = "http://localhost:34372/api/v1";
 
-	@Test
+	//@Test
 	public void deployVM() {
-		
-		String url = "http://localhost:34372/api/v1";
 		
 		Vm vm = new Vm("MySQL_1", "c88a4442-6f80-4f6e-8269-d4cefc862c07", 1, 1024, 20, 0, "/mnt/cephfs/ascetic/vmc/repository/davidgpTestApp/mysqlA.iso_1", "davidgpTestApp", "mysqlA", "");
 		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
@@ -45,6 +46,16 @@ public class VMMIT {
 		
 		for(String id : vmsString) {
 			System.out.println("ID " + id);
+		}
+	}
+	
+	@Test
+	public void getProviderInfoTest() {
+		es.bsc.vmmclient.vmm.VmManagerClient vmm = new es.bsc.vmmclient.vmm.VmManagerClient(url);
+		List<Node> nodes = vmm.getNodes();
+		
+		for(Node node : nodes) {
+			System.out.println(node.toString());
 		}
 	}
 	

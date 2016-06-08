@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -225,6 +226,35 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 		
 		List<Deployment> deploymentsXXX = deploymentDAO.getDeploymentsForApplicationWithStatus(application, "XXX");
 		assertEquals(0, deploymentsXXX.size());
+	}
+	
+	@Test
+	public void getDeplomentByDeploymentName() {
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setDeploymentName("aaaa");
+		deployment1.setPrice("expensive");
+				
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("DELETED");
+		deployment2.setDeploymentName("bbb");
+		deployment2.setPrice("expensive");
+		
+		Deployment deployment3 = new Deployment();
+		deployment3.setStatus("RUNNING");
+		deployment3.setPrice("expensive");
+		
+		deploymentDAO.save(deployment1);
+		deploymentDAO.save(deployment2);
+		deploymentDAO.save(deployment3);
+		
+		Deployment deploymentFromDB = deploymentDAO.getDeployment("aaaa");
+		assertEquals("RUNNING", deploymentFromDB.getStatus());
+		deploymentFromDB = deploymentDAO.getDeployment("bbb");
+		assertEquals("DELETED", deploymentFromDB.getStatus());
+		deploymentFromDB = deploymentDAO.getDeployment("ccc");
+		assertNull(deploymentFromDB);
 	}
 }
 

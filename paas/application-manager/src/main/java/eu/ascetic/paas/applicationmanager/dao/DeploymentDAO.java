@@ -75,4 +75,11 @@ public interface DeploymentDAO extends DAO<Deployment> {
 	 * @return the list of deployments
 	 */
 	public List<Deployment> getDeploymentsForApplicationWithStatus(Application application, String status);
+	
+	/**
+	 * Returns a deployment in the database with an specific deploymentName (that it is unique)
+	 * @param deploymentName
+	 * @return the deployment, if does not exists, it returns null
+	 */
+	public Deployment getDeployment(String deploymentName);
 }

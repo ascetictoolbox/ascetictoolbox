@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -104,6 +105,18 @@ public class DeploymentDAOJpa implements DeploymentDAO {
 		List<Deployment> deployments = query.getResultList();
 		
 		return deployments;
+	}
+
+	@Override
+	public Deployment getDeployment(String deploymentName) {
+		Query query = entityManager.createQuery("SELECT d FROM Deployment d WHERE d.deploymentName = :deploymentName");
+		query.setParameter("deploymentName", deploymentName);
+		
+		try {
+			return (Deployment) query.getSingleResult();
+		} catch(NoResultException ex) {
+			return null;
+		}
 	}
 }
 
