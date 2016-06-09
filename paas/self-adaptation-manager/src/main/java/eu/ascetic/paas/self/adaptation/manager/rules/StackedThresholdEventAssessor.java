@@ -20,7 +20,6 @@ import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.EventData;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.FiringCriteria;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.ProductSection;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,9 +119,16 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         for (int i = 1; i < rulesFile.size(); i++) {
             ArrayList<String> current = rulesFile.getRow(i);
             FiringCriteria rule = new FiringCriteria(current.get(0), current.get(1), current.get(2));
-            if (current.size() > 3) {
-                rule.setType(EventData.Type.valueOf(current.get(3)));
-            }            
+            try {
+                if (current.size() > 3 && !current.get(3).isEmpty()) {
+                    rule.setType(EventData.Type.valueOf(current.get(3)));
+                }
+            } catch (IllegalArgumentException ex) {
+                /**
+                 * If the event type was not recognised then ignore it.
+                 * This therefore leaves this to be an optional value.
+                 */
+            }
             if (current.size() > 4) {
                 rule.setMinMagnitude(Double.parseDouble(current.get(4)));
             }
@@ -173,33 +179,15 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
 
     /**
      * This examines the OVF for rules associated with the application. If any
-     * exist then they will be added to the list of rules used fro this event
+     * exist then they will be added to the list of rules used for this event
      * assessor.
      *
      * @param event The event to look for firing rules for
      * @return The firing criteria that are from the application.
      */
     private ArrayList<FiringCriteria> getFiringCriteriaFromOVF(EventData event) {
-        ArrayList<FiringCriteria> answer = new ArrayList<>();
         OvfDefinition ovf = event.getOvf();
-        for (ProductSection section : ovf.getVirtualSystemCollection().getProductSectionArray()) {
-            int maxValue = section.getAdaptationRuleNumber();
-            for (int i = 0; i < maxValue; i++) {
-                FiringCriteria criteria = new FiringCriteria(
-                        section.getAdaptationRuleAgreementTerm(i),
-                        section.getAdaptationRuleDirection(i),
-                        section.getAdaptationRuleResponseType(i));
-                if (section.getAdaptationRuleLowerBound(i) != null) {
-                    criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(i)));
-                }
-                if (section.getAdaptationRuleUpperBound(i) != null) {
-                    criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(i)));
-                }
-
-                answer.add(criteria);
-            }
-        }
-        return answer;
+        return FiringCriteria.getFiringCriteriaFromOVF(ovf);
     }
 
     /**
