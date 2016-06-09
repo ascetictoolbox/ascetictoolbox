@@ -16,16 +16,7 @@
 package eu.ascetic.asceticarchitecture.paas.type;
 
 import java.util.Calendar;
-
-
-
-
-
-
-
-
-
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Charges;
+import eu.ascetic.asceticarchitecture.paas.type.Charges;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeA;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeB;

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.cost.IaaSPricingModellerCost;
+
 
 /**
  * This represents a duration of time/a time period, it is to be used as part of
