@@ -243,7 +243,7 @@ public class FiringCriteria {
                     criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(i)));
                 }
                 if (section.getAdaptationRuleNotificationType(i) != null) {
-                    criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleUpperBound(i)));
+                    criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(i)));
                 }                
                 answer.add(criteria);
             }
