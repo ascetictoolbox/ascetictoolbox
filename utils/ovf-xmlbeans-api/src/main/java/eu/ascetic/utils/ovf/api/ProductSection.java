@@ -2068,7 +2068,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            {@link ProductSection#getEndPointIndexById(String)})
      * @return The notification type of the adaptation rule i.e. SLA_BREACH, WARNING
      */
-    public String getNotificationType(int index) {
+    public String getAdaptationRuleNotificationType(int index) {
         return getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
                 .getValue();
     }
@@ -2083,7 +2083,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @param notificationType
      *            The notification type of the adaptation rule i.e. SLA_BREACH, WARNING
      */
-    public void setNotifcationType(int index, String notificationType) {
+    public void setAdaptationRuleNotifcationType(int index, String notificationType) {
         getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
                 .setValue(notificationType);
     }    
