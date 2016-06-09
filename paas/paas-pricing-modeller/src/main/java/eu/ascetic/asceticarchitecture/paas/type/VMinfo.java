@@ -15,78 +15,100 @@
 
 package eu.ascetic.asceticarchitecture.paas.type;
 
+import java.util.Calendar;
 
-public class VMinfo {
-	/*I will ask for the characteristics of the VMs or I will take it as a reference*/
-	double RAM;
-	double CPU;
-	double storage;
-	
-	double energyPredicted;
-	
-	double currentEnergy;
-	
-	int numberOfEvents;
-	
-	int schemeID; 
-	
-	long predictedDuration;
-	
-	long actualDuration;
+
+
+
+
+
+
+
+
+import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.Charges;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeA;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeB;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeC;
+
+
+public class VMinfo extends VMBasic{
+
 	
 	public VMinfo (double RAM, double CPU, double storage, long duration){
+		
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage/1000;
 		this.actualDuration=duration;
+		time = new TimeParameters();
+		this.scheme = initializeScheme(0);
+		energyInfo.setCurrentTotalConsumption(0.0);
 	}
 
+	/*
 	public VMinfo (double RAM, double CPU, double storage, long duration, int scheme){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage/1000;
 		this.actualDuration=duration;
 		this.schemeID = scheme;
+		time = new TimeParameters();
+		this.scheme = initializeScheme(schemeID);
+		energyInfo.setCurrentTotalConsumption(0.0);
 	}
 	
-	public double getRAM(){
-		return RAM;
+	*/
+	
+	///For prediction
+	public VMinfo (int VMid, double RAM, double CPU, double storage, long duration, int scheme, int IaaSProviderID){
+		this.VMid= VMid; 
+		this.RAM = RAM/1024;
+		this.CPU = CPU;
+		this.storage = storage/1000;
+		this.actualDuration=duration;
+		this.schemeID = scheme;
+		time = new TimeParameters();
+		this.scheme = initializeScheme(schemeID);
+		energyCharges = new Charges();
+		resourceCharges = new Charges();
+		TotalCharges = new Charges();
+		energyInfo.setCurrentTotalConsumption(0.0);
+		IaaSProvider Prov = new IaaSProvider(IaaSProviderID);
+		IaaSProviders.put(IaaSProviderID, Prov);
+		setIaaSProvider(IaaSProviders.get(IaaSProviderID));
 	}
 	
-	public double getEnergyPredicted(){
-		return energyPredicted;
+	
+	//For deployment
+	public VMinfo (int VMid, double RAM, double CPU, double storage, int scheme, int IaaSProviderID){
+		this.VMid= VMid; 
+		this.RAM = RAM/1024;
+		this.CPU = CPU;
+		this.storage = storage/1000;
+		this.schemeID = scheme;
+		time = new TimeParameters();
+		this.scheme = initializeScheme(schemeID);
+		energyInfo.setCurrentTotalConsumption(0.0);
+		IaaSProvider Prov = new IaaSProvider(IaaSProviderID);
+		IaaSProviders.put(IaaSProviderID, Prov);
+		setIaaSProvider(IaaSProviders.get(IaaSProviderID));
+		energyCharges = new Charges();
+		resourceCharges = new Charges();
+		TotalCharges = new Charges();
 	}
 	
-	public void setNumberOfEvents(int number){
-		numberOfEvents=number;
+	public void updateEnergyConsumption(double energy){
+		 energyInfo.setCurrentTotalConsumption(energy);
 	}
 	
+	public double getEnergyConsumptionofLastPeriod(){
+		 return energyInfo.getEnergyConsumedAfterUpdate();
+	}
+		
 	public void setEnergyPredicted(double energy){
-		energyPredicted = energy;
+		energyInfo.setEnergyPredicted(energy);
 	}
 	
-	public int getNumberOfEvents(){
-		return numberOfEvents;
-	}
 	
-	public double getCPU(){
-		return CPU;
-	}
-	
-	public int getSchemeID(){
-		return schemeID;
-	}
-	
-	public double getStorage(){
-		return storage;
-	}
-	
-	public String getVMCharacteristics(){
-		String toPrint = "RAM: " + RAM + "CPU: " + CPU + "Storage: " + storage;
-	    return toPrint;
-	}
-	
-	public long getActualDuration(){
-		return actualDuration;
-	}
 }

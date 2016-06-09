@@ -35,7 +35,7 @@ public class DeploymentInfo {
 	
 	DeploymPredInfo predictedInfo=new DeploymPredInfo();
 	
-	int schemeId;
+	int schemeId = 100;
 	
 	Time startTime;
 
@@ -64,20 +64,22 @@ public class DeploymentInfo {
 	}
 	
 	public DeploymentInfo(int deploymentId) {
+	//	System.out.println("DeloymentInfo: new deployment with ID: " + deploymentId);
 		this.deploymentId=deploymentId;
 		
 
 	}
 
 
-	public void setVMs(LinkedList<VMinfo>VMs){
-		ListIterator<VMinfo> iterator = VMs.listIterator();
-		while (iterator.hasNext()){
-			this.VMs.add(iterator.next());
+	public void setVMs(LinkedList<VMinfo> listofVMs){
+		for (int i=0; i<listofVMs.size();i++){
+			VMs.add(listofVMs.get(i));
+		//	System.out.println("DeloymentInfo: I added this VM "+ VMs.get(i).getVMid());
 		}
 	}
 	
 	public void addVM(VMinfo vm){
+	//	System.out.println("DeloymentInfo: I added this VM "+ vm.getVMid());
 		VMs.add(vm);
 	}
 	
@@ -88,17 +90,27 @@ public class DeploymentInfo {
 	public double getEnergy(){
 		return totalEnergy;
 	}
-	
+
 	public VMinfo getVM(){
 		return VMs.getFirst();
+	}
+	
+	public VMinfo getVMbyID(int VMid){
+		for  (int i=1; i<=VMs.size();i++){
+			if (VMs.get(i).getVMid() == VMid)
+			//	System.out.println("DeloymentInfo:VMid to find " + VMid + " found the " + VMs.get(i).getVMid());
+				return VMs.get(i);
+		}
+		return null;
 	}
 	
 	public int getId(){
 		return deploymentId;
 	}
 	
-	public void setIaaSProvider(int IaaSID){
-		IaaS = new IaaSProvider(IaaSID);
+	public void setIaaSProvider(IaaSProvider prov){
+		//System.out.println("DeloymentInfo: deployment with ID: " + deploymentId +" deployed to provider with ID " + prov.getID());
+		IaaS = prov;
 	}
 	
 	public IaaSProvider getIaaSProvider(){
@@ -156,6 +168,11 @@ public class DeploymentInfo {
 
 	public double getPredictedCharges() {
 		return predictedInfo.getPredictedCharges();
+	}
+
+	public void setIaaSProvider(int i) {
+		this.IaaS = new IaaSProvider(i);
+		
 	}
 
 	

@@ -20,6 +20,8 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes;
 
 import eu.ascetic.asceticarchitecture.paas.type.Charges;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
+import eu.ascetic.asceticarchitecture.paas.type.ResourceDistribution;
+import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
 /**
@@ -34,48 +36,54 @@ public class PricingSchemeB extends PaaSPricingModellerPricingScheme {
 		super(id);
 	}
 
-	/*
+	
 /////////////////////////PREDICT CHARGES ///////////////////////////////
 	@Override
-	public double predictCharges(AppState app){
-		double average = app.getProvider().getAverageEnergyPrice();
-		Charges a = predictEnergyCharges(app, average);
-		System.out.println("B: The energy charges are " + a);
-		Charges b = predictResourcesCharges(app);
-		System.out.println("B: The resource charges are " + b); 
-		return (b.getChargesOnly());
-	}
-	
-	public Charges predictEnergyCharges(AppState app, double average){
-			Charges charges = new Charges();
-			charges.setCharges(app.getPredictedInformation().getPredictedEnergy()*average);
-			return charges;
-	}
-	
-	
-	public Charges predictResourcesCharges(AppState app) {
-		Charges b = new Charges();
-		double price = app.getProvider().getPrice();
-		DeploymentInfo deploym = app.getDeployment();
-		for (int i=1; i<=deploym.getNumberOfVMs();i++){
-			b.updateCharges(app.getProvider().getDistribution().getDistribution(deploym.getVM(i))*price*app.getPredictedInformation().getPredictedDuration());
-		}
-		return b;
-	}
+public double predictTotalCharges(VMinfo vm){
+	Charges a = predictEnergyCharges(vm, vm.getIaaSProvider().getAverageEnergyPrice());
+	Charges b = predictResourcesCharges(vm, getResourcePrice(vm));
+	double temp = (double) Math.round((a.getChargesOnly()+b.getChargesOnly()) * 1000) / 1000;
+	return temp;
+}
 
-	@Override
-	public void updateAppCharges(AppState app) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public double getTotalCharges(AppState app, double iaascharges) {
-		double newCharges= iaascharges+0.2*iaascharges;
-		app.setTotalCharges(newCharges);
-		return newCharges;
-	}
 
-	*/
+
+///////////////////////////// UPDATE CHARGES BASED ON ENERGY CHANGES ////////////////
+public void updateVMCharges(VMinfo VM) {
+	System.out.println("Found "+ VM.getVMid());
+	VM.setChangeTime();
+	updateVMEnergyCharges(VM);
+	updateVMResourceCharges(VM, getResourcePrice(VM), getDistribution(VM));
+	VM.setTotalCharges(VM.getEnergyCharges()+VM.getResourcesCharges());
+	System.out.println("charges= " +VM.getTotalCharges());
+}
+
+
+
+
+/////////////////////////// GET CHARGES /////////////////////////
+@Override
+public double getTotalCharges(VMinfo VM) {
+	VM.setChangeTime();
+	updateVMResourceCharges(VM, getResourcePrice(VM), getDistribution(VM));
+	//System.out.println("Set change time to " +VM.getChangeTime().getTimeInMillis());
+	updateVMEnergyCharges(VM);
+	
+	VM.setTotalCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
+	System.out.println("Total charges for VM = " +VM.getTotalCharges());
+	return (VM.getTotalCharges());
+}
+
+private double getResourcePrice(VMinfo VM){
+	return VM.getIaaSProvider().getResoucePrice();
+}
+
+
+private ResourceDistribution getDistribution(VMinfo VM){
+	return VM.getIaaSProvider().getDistribution();
+}
+
+
 
 }

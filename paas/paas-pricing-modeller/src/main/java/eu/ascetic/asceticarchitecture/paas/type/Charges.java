@@ -15,55 +15,96 @@
 
 package eu.ascetic.asceticarchitecture.paas.type;
 
-
+import java.util.Calendar;
 
 public class Charges {
+double charges;
+
 	
-	double charges;
+	Calendar lastChange;
 	
-	//Price price;
+	public Charges(Calendar time) {
+		charges=0.0;
+		lastChange=time;
+	 }
 	
-	Time lastChargeTime;
 	
 	public Charges() {
 		charges=0.0;
-	 }
+		lastChange=Calendar.getInstance();
+	}
+
+
+	public void setCharges(Calendar time, double charges){
+		this.charges = (double) Math.round(charges * 1000) / 1000;
+		lastChange=time;
+	}	
+	
+	public double getChargesOnly(){
+		return this.charges;
+	}
+	
+	public long getTimeOnly(){
+		return lastChange.getTimeInMillis();
+	}
+	
+	public Calendar getTime(){
+		return lastChange;
+	}
+	
+	/*public void changeTime(){
+		time.setEndTime();
+	}*/
+	
+	public Charges addCharges(Calendar time, Charges one, Charges two){
+		charges = one.getChargesOnly()+two.getChargesOnly();
+		lastChange=time;
+		return this;
+	}
+	
+	public void updateCharges(Calendar time, double charges){
+		this.charges =this.charges + charges;
+		lastChange=time;
+		
+	}
+	
+	public void setTime(){
+		lastChange=Calendar.getInstance();
+	}
+	
+
+	
 	
 	
 	public void setCharges(double charges){
 		this.charges = charges;
-		lastChargeTime = new Time();
+		lastChange = Calendar.getInstance();
 	}
+
+		
+	
 	
 	public Charges getCharges(){
 		return this;
 	}
 	
 	
-	public double getChargesOnly(){
-		return this.charges;
-	}
 	
-	public Time getTimeOnly(){
-		return this.lastChargeTime;
-	}
-	
-	public void changeTime(){
-		lastChargeTime = new Time();
-	}
 	
 	public Charges addCharges(Charges one, Charges two){
 		charges = one.getChargesOnly()+two.getChargesOnly();
-		lastChargeTime = new Time();
+		lastChange =Calendar.getInstance();
 		return this;
 	}
 	
+	
+	
 	public void updateCharges(double charges){
 		this.charges = this.charges + charges;
-		lastChargeTime = new Time();
+		lastChange =Calendar.getInstance();
 	}
 	
-	public void setTime(Time time){
-		lastChargeTime = time;
-	}
+	
+	
+	
 }

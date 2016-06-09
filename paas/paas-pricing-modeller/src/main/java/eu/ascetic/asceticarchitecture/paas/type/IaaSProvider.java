@@ -30,6 +30,9 @@ public class IaaSProvider {
 	
 	double averageEnergyPrice;
 	
+	double EnergyPrice;
+	double oldEnergyPrice = 0.007;
+	
 	public IaaSProvider(int id) {
 		
 		IaaSID = id;
@@ -37,6 +40,7 @@ public class IaaSProvider {
 		staticResourcePrice = 0.14;
 		resourcePrice = 0.1;
 		averageEnergyPrice = 0.007;
+		EnergyPrice = 0.007;
 	}
 	
 	public double getResoucePrice(){
@@ -55,7 +59,13 @@ public class IaaSProvider {
 		return distribution;
 	}
 	
+	public double getCurrentEnergyPrice(){
+		return EnergyPrice;
+	}
 	
+	public int getID(){
+		return IaaSID;
+	}
 	
 	public double predictResourcesCharges(VMinfo vm, long duration, double price) {
 		Charges b = new Charges();
@@ -68,5 +78,14 @@ public class IaaSProvider {
 		Charges charges = new Charges();
 		charges.setCharges(energy*average);
 		return charges.getChargesOnly();
+	}
+	
+	public double getEnergyPriceForBilling(){
+		return oldEnergyPrice;
+	}
+	
+	public void setEnergyPrice(double price){
+		oldEnergyPrice = EnergyPrice;
+		this.EnergyPrice=price;
 	}
 }

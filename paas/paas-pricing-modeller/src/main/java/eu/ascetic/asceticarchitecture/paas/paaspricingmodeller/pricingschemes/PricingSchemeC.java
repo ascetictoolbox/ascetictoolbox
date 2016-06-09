@@ -17,11 +17,9 @@
 
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes;
 
-import eu.ascetic.asceticarchitecture.paas.type.Charges;
-import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
-import eu.ascetic.asceticarchitecture.paas.type.Price;
+import java.util.Calendar;
+
 import eu.ascetic.asceticarchitecture.paas.type.ResourceDistribution;
-import eu.ascetic.asceticarchitecture.paas.type.Time;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
@@ -34,30 +32,36 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
 
-public class PricingSchemeA extends PaaSPricingModellerPricingScheme {
+public class PricingSchemeC extends PaaSPricingModellerPricingScheme  {
 	
-Price price;
-ResourceDistribution distribution = new ResourceDistribution();
+	double price;
 	
-	
-	public PricingSchemeA(int id) {
-		super(id);
+	ResourceDistribution distribution = new ResourceDistribution();
 
+	
+	public PricingSchemeC(int id) {
+		super(id);
+		
+		
+	}
+	private double getResourcePrice(VMinfo VM){
+		return VM.getIaaSProvider().getResoucePrice();
 	}
 
-	public Price getPrice(){
-		return price;
+
+	private ResourceDistribution getDistribution(VMinfo VM){
+		return VM.getIaaSProvider().getDistribution();
 	}
 	
 	/////////////////////////PREDICTION/////////////////////////
-	@Override 
-	public double predictTotalCharges(VMinfo vm) {
-		Charges b = predictResourcesCharges(vm, getResourcePrice(vm));
-		//double temp = (double) Math.round(b.getChargesOnly()*1000)/1000; 
-		double temp = b.getChargesOnly();
+	/*
+	@Override
+	public double predictCharges(VMstate vm, Price average) {
+		Charges b = predictResourcesCharges(vm, price);
+		double temp = (double) Math.round(b.getChargesOnly()*1000)/1000;
 		return temp;
 	}
-	
+*/	
 
 
 ////////////////////////////////// BILLING //////////////////////////
@@ -67,17 +71,30 @@ ResourceDistribution distribution = new ResourceDistribution();
 	public double getTotalCharges(VMinfo VM) {
 		VM.setChangeTime();
 		updateVMResourceCharges(VM, getResourcePrice(VM), getDistribution(VM));
-		VM.setTotalCharges(VM.getResourcesCharges());
+		double reduction = 0;
+		double difference = 0;
+		/*
+		double predEner = VM.getPredictedInformation().getPredictedPowerPerHour();
+		
+		long duration = VM.getTotalDuration();
+		
+		double realEner = cost.updateEnergy(VM);
+		
+		double predictedTotalEnergy = duration*predEner;
+
+		if (predictedTotalEnergy>realEner){
+				 difference = (predictedTotalEnergy - realEner);
+				 
+			}
+		reduction = (difference*100)/predictedTotalEnergy;
+		
+		double newCharges = VM.getResourcesCharges()-VM.getResourcesCharges()*reduction/100;
+		
+		VM.setTotalCharges(newCharges);
+		*/
 		return (VM.getTotalCharges());
 		
 	}
 	
-	private double getResourcePrice(VMinfo VM){
-		return VM.getIaaSProvider().getStaticResoucePrice();
-	}
-	
-	private ResourceDistribution getDistribution(VMinfo VM){
-		return VM.getIaaSProvider().getDistribution();
-	}
 	
 }
