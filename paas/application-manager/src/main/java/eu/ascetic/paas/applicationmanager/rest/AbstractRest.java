@@ -1,6 +1,9 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.core.Response;
@@ -10,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
@@ -23,6 +27,7 @@ import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventServic
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.rest.util.ApplicationContextHolder;
@@ -227,6 +232,32 @@ public abstract class AbstractRest {
 		} else {
 			return buildResponse(Status.CREATED, XMLBuilder.getApplicationJSON(applicationToBeShown));
 		}
+	}
+	
+	protected double getEnergyOrPowerMeasurement(String providerId, String applicationName, String deploymentId, List<String> vmIds, String eventId, Unit unit, long startTime, long endTime) {
+		// Make sure we have the right configuration
+		energyModeller = getEnergyModeller();
+
+		double energyConsumed = 0.0;
+
+		logger.debug("Connecting to Energy Modeller");
+
+		if(startTime == 0) {
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId , vmIds, eventId, unit, null, null); 
+
+		} else if(endTime == 0) {
+			Timestamp startStamp = new Timestamp(startTime);
+			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
+
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
+		} else {
+			Timestamp startStamp = new Timestamp(startTime);
+			Timestamp endStamp = new Timestamp(endTime);
+
+			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
+		}
+
+		return energyConsumed;
 	}
 	
 	/**

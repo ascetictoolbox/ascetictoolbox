@@ -449,7 +449,7 @@ public class VMRest extends AbstractRest {
 
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		
-		double energyConsumed = getEnergyOrPowerMeasurement(null, applicationName, deploymentId, vmId, eventId, Unit.ENERGY, startTime, endTime);
+		double energyConsumed = getEnergyOrPowerMeasurement(applicationName, deploymentId, vmId, eventId, Unit.ENERGY, startTime, endTime);
 		
 		energyMeasurement.setValue(energyConsumed);
 		
@@ -480,7 +480,7 @@ public class VMRest extends AbstractRest {
 
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		
-		double energyConsumed = getEnergyOrPowerMeasurement(null, applicationName, deploymentId, vmId, eventId, Unit.POWER, startTime, endTime);
+		double energyConsumed = getEnergyOrPowerMeasurement(applicationName, deploymentId, vmId, eventId, Unit.POWER, startTime, endTime);
 		
 		powerMeasurement.setValue(energyConsumed);
 		
@@ -490,41 +490,14 @@ public class VMRest extends AbstractRest {
 		return buildResponse(Status.OK, xml);
 	}
 	
-	private double getEnergyOrPowerMeasurement(String providerId, 
-											   String applicationName, 
-											   String deploymentId, 
-											   String vmId, 
-											   String eventId, 
-											   Unit unit,
-											   long startTime,
-											   long endTime) {
-		// Make sure we have the right configuration
-		energyModeller = getEnergyModeller();
-		
-		double energyConsumed = 0.0;
-		
+	private double getEnergyOrPowerMeasurement(String applicationName, String deploymentId, String vmId, String eventId, Unit unit, long startTime, long endTime) {
 		VM vm = vmDAO.getById(Integer.parseInt(vmId));
 		List<String> ids = new ArrayList<String>();
 		ids.add("" + vm.getId());
 		
-		logger.debug("Connecting to Energy Modeller");
-		
-		if(startTime == 0) {
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId , ids, eventId, unit, null, null); 
+		String providerId = vm.getProviderId();
 			
-		} else if(endTime == 0) {
-			Timestamp startStamp = new Timestamp(startTime);
-			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
-			
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, unit, startStamp, endStamp); 
-		} else {
-			Timestamp startStamp = new Timestamp(startTime);
-			Timestamp endStamp = new Timestamp(endTime);
-			
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, unit, startStamp, endStamp); 
-		}
-		
-		return energyConsumed;
+		return getEnergyOrPowerMeasurement(providerId, applicationName, deploymentId, ids, eventId, unit, startTime, endTime);
 	}
 	
 	@GET

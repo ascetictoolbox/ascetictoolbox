@@ -49,14 +49,18 @@ public class SpreaderBean implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		logger.info("Initializing the Spreader IaaS Monitoring Bean");
 		
-		//Getting an initial list of providers
-		PRClient prClient = new PRClient();
-		List<Provider> providers = prClient.getProviders();
+		try {
+			//Getting an initial list of providers
+			PRClient prClient = new PRClient();
+			List<Provider> providers = prClient.getProviders();	
 		
-		for(Provider provider : providers) {
-			MetricsListener listener = new MetricsListener(provider.getAmqpUrl(), topic , "" + provider.getId(), vmDAO);
-			logger.info("Creating listener for provider: "  + provider.getId() + " provider amqp: " + provider.getAmqpUrl());
-			listeners.put("" + provider.getId(), listener);
+			for(Provider provider : providers) {
+				MetricsListener listener = new MetricsListener(provider.getAmqpUrl(), topic , "" + provider.getId(), vmDAO);
+				logger.info("Creating listener for provider: "  + provider.getId() + " provider amqp: " + provider.getAmqpUrl());
+				listeners.put("" + provider.getId(), listener);
+			}
+		} catch(Exception ex) {
+			System.out.println("Error creating spreading bean...");
 		}
 	}
 }
