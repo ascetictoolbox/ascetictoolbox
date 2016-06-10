@@ -233,8 +233,8 @@ public class FiringCriteria {
             int maxValue = section.getAdaptationRuleNumber();
             for (int i = 0; i < maxValue; i++) {
                 FiringCriteria criteria = new FiringCriteria(
-                        section.getAdaptationRuleAgreementTerm(i),
-                        section.getAdaptationRuleDirection(i),
+                        section.getAdaptationRuleSLATerm(i),
+                        section.getAdaptationRuleComparisonOperator(i),
                         section.getAdaptationRuleResponseType(i));
                 if (section.getAdaptationRuleLowerBound(i) != null) {
                     criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(i)));
