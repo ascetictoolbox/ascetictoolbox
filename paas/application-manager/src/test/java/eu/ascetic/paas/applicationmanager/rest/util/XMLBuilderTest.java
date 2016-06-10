@@ -1005,6 +1005,18 @@ public class XMLBuilderTest {
 		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
 		assertEquals("self", energyMeasurement.getLinks().get(1).getRel());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
+		
+		energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		energyMeasurement = XMLBuilder.addEnergyConsumptionForAnEventInAVMXMLInfo(energyMeasurement, "111", "333", "444", null);
+		
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+		assertEquals("self", energyMeasurement.getLinks().get(1).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
 
 	}
 	
@@ -1022,6 +1034,19 @@ public class XMLBuilderTest {
 		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
 		assertEquals("self", powerMeasurement.getLinks().get(1).getRel());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/power-consumption", powerMeasurement.getLinks().get(1).getHref());
+
+		powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(22.0);
+
+		powerMeasurement = XMLBuilder.addPowerConsumptionForAnEventInAVMXMLInfo(powerMeasurement, "111", "333", "444", null);
+
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
+		assertEquals("self", powerMeasurement.getLinks().get(1).getRel());
+		assertEquals("/applications/111/deployments/333/vms/444/power-consumption", powerMeasurement.getLinks().get(1).getHref());
 
 	}
 	

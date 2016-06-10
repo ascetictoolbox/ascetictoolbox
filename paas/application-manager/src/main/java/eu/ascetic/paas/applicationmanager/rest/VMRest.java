@@ -431,7 +431,7 @@ public class VMRest extends AbstractRest {
 	@GET
 	@Path("{vm_id}/events/{event_id}/energy-consumption")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, 
+	public Response getEventEnergyConsumption(@PathParam("application_name") String applicationName, 
 			                             @PathParam("deployment_id") String deploymentId,
 			                             @PathParam("vm_id") String vmId,
 			                             @PathParam("event_id") String eventId,
@@ -462,7 +462,7 @@ public class VMRest extends AbstractRest {
 	@GET
 	@Path("{vm_id}/events/{event_id}/power-consumption")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getPowerConsumption(@PathParam("application_name") String applicationName, 
+	public Response getEventPowerConsumption(@PathParam("application_name") String applicationName, 
 			                             @PathParam("deployment_id") String deploymentId,
 			                             @PathParam("vm_id") String vmId,
 			                             @PathParam("event_id") String eventId,
@@ -480,14 +480,38 @@ public class VMRest extends AbstractRest {
 
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		
-		double energyConsumed = getEnergyOrPowerMeasurement(applicationName, deploymentId, vmId, eventId, Unit.POWER, startTime, endTime);
+		double powerConsumed = getEnergyOrPowerMeasurement(applicationName, deploymentId, vmId, eventId, Unit.POWER, startTime, endTime);
 		
-		powerMeasurement.setValue(energyConsumed);
+		powerMeasurement.setValue(powerConsumed);
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getPowerConsumptionForAnEventInAVMXMLInfo(powerMeasurement, applicationName, deploymentId, vmId, eventId);
 				
 		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{vm_id}/energy-consumption")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, 
+										@PathParam("deployment_id") String deploymentId,
+										@PathParam("vm_id") String vmId,
+										@DefaultValue("0") @QueryParam("startTime") long startTime,
+										@DefaultValue("0") @QueryParam("endTime") long endTime) {
+		//TODO
+		return null;
+	}
+	
+	@GET
+	@Path("{vm_id}/power-consumption")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getPowerConsumption(@PathParam("application_name") String applicationName, 
+										@PathParam("deployment_id") String deploymentId,
+										@PathParam("vm_id") String vmId,
+										@DefaultValue("0") @QueryParam("startTime") long startTime,
+										@DefaultValue("0") @QueryParam("endTime") long endTime) {
+		//TODO
+		return null;
 	}
 	
 	private double getEnergyOrPowerMeasurement(String applicationName, String deploymentId, String vmId, String eventId, Unit unit, long startTime, long endTime) {

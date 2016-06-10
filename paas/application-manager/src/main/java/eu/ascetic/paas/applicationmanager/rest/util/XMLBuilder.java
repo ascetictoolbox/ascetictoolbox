@@ -494,10 +494,17 @@ public class XMLBuilder {
 													String eventId,
 													String endURL) {
 		energyMeasurement.setDescription("Aggregated energy " + endURL + " in Wh for an event in a specific VM");
-		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/energy-" + endURL);
 		
 		Link linkParent = new Link();
-		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId);
+		
+		if(eventId != null) {
+			energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/energy-" + endURL);
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId);
+		} else {
+			energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/energy-" + endURL);
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId);
+		}
+		
 		linkParent.setRel("parent");
 		linkParent.setType(MediaType.APPLICATION_XML);
 		energyMeasurement.addLink(linkParent);
@@ -822,10 +829,16 @@ public class XMLBuilder {
 																						   String eventId,
 																						   String endURL) {
 		powerMeasurement.setDescription("Aggregated power " + endURL + " in Wh for an event in a specific VM");
-		powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/power-" + endURL);
-
+		
 		Link linkParent = new Link();
-		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId);
+		if(eventId != null) {
+			powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId + "/power-" + endURL);
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/events/" + eventId);
+		} else {
+			powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId + "/power-" + endURL);
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/vms/" + vmId);
+		}
+
 		linkParent.setRel("parent");
 		linkParent.setType(MediaType.APPLICATION_XML);
 		powerMeasurement.addLink(linkParent);
