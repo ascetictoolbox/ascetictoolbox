@@ -241,18 +241,18 @@ public abstract class AbstractRest {
 		logger.debug("Connecting to Energy Modeller");
 
 		if(startTime == 0) {
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId , vmIds, eventId, unit, null, null); 
+			energyConsumed = energyModeller.measure(providerId,  applicationName, deploymentId , vmIds, eventId, unit, null, null); 
 
 		} else if(endTime == 0) {
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(System.currentTimeMillis());
 
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
+			energyConsumed = energyModeller.measure(providerId,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
 		} else {
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(endTime);
 
-			energyConsumed = energyModeller.measure(null,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
+			energyConsumed = energyModeller.measure(providerId,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
 		}
 
 		return energyConsumed;

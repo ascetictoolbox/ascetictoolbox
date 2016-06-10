@@ -447,6 +447,11 @@ public class VMRest extends AbstractRest {
 				                            + "&endTime=" + endTime);
 
 
+		
+		return getEnergyConsumptionInGeneral(applicationName, deploymentId, vmId, eventId, startTime, endTime); 
+	}
+	
+	private Response getEnergyConsumptionInGeneral(String applicationName, String deploymentId, String vmId, String eventId, long startTime, long endTime) {
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		
 		double energyConsumed = getEnergyOrPowerMeasurement(applicationName, deploymentId, vmId, eventId, Unit.ENERGY, startTime, endTime);
@@ -473,11 +478,16 @@ public class VMRest extends AbstractRest {
 				                            + "/deployments/" + deploymentId 
 				                            + "/vms/" + vmId 
 				                            + "/events/" + eventId 
-				                            + "/energy-consumption?"
+				                            + "/power-consumption?"
 				                            + "startTime=" + startTime
 				                            + "&endTime=" + endTime);
 
 
+		return getPowerComsumptionForVM(applicationName, deploymentId, vmId, eventId, startTime, endTime);
+	}
+	
+	private Response getPowerComsumptionForVM(String applicationName, String deploymentId, String vmId, String eventId, long startTime, long endTime) {
+		
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		
 		double powerConsumed = getEnergyOrPowerMeasurement(applicationName, deploymentId, vmId, eventId, Unit.POWER, startTime, endTime);
@@ -498,8 +508,15 @@ public class VMRest extends AbstractRest {
 										@PathParam("vm_id") String vmId,
 										@DefaultValue("0") @QueryParam("startTime") long startTime,
 										@DefaultValue("0") @QueryParam("endTime") long endTime) {
-		//TODO
-		return null;
+		
+		logger.info("GET request to path: /applications/" + applicationName 
+                	 + "/deployments/" + deploymentId 
+                	 + "/vms/" + vmId 
+                	 + "/energy-consumption?"
+                	 + "startTime=" + startTime
+                	 + "&endTime=" + endTime);
+		
+		return getEnergyConsumptionInGeneral(applicationName, deploymentId, vmId, null, startTime, endTime); 
 	}
 	
 	@GET
@@ -510,8 +527,15 @@ public class VMRest extends AbstractRest {
 										@PathParam("vm_id") String vmId,
 										@DefaultValue("0") @QueryParam("startTime") long startTime,
 										@DefaultValue("0") @QueryParam("endTime") long endTime) {
-		//TODO
-		return null;
+		
+		logger.info("GET request to path: /applications/" + applicationName 
+                + "/deployments/" + deploymentId 
+                + "/vms/" + vmId 
+                + "/energy-consumption?"
+                + "startTime=" + startTime
+                + "&endTime=" + endTime);
+		
+		return getPowerComsumptionForVM(applicationName, deploymentId, vmId, null, startTime, endTime);
 	}
 	
 	private double getEnergyOrPowerMeasurement(String applicationName, String deploymentId, String vmId, String eventId, Unit unit, long startTime, long endTime) {

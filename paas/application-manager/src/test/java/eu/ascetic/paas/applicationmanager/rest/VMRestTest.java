@@ -565,6 +565,88 @@ public class VMRestTest extends AbstractTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetEnergyConsumptionForAVM() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(3);
+		vm.setProviderVmId("abab");
+		vm.setProviderId("22");
+		
+		when(vmDAO.getById(444)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("3");
+		when(energyModeller.measure("22", "111", "333", ids, null,  Unit.ENERGY, null, null)).thenReturn(22.0);
+		
+		Response response = vmRest.getEnergyConsumption("111", "333", "444", 0, 0);
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/vms/444/energy-consumption", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy consumption in Wh for an event in a specific VM", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/vms/444", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/vms/444/energy-consumption", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetPowerConsumptionForAVM() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(3);
+		vm.setProviderVmId("abab");
+		vm.setProviderId("xx1");
+		
+		when(vmDAO.getById(444)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("3");
+		when(energyModeller.measure("xx1", "111", "333", ids, null,  Unit.POWER, null, null)).thenReturn(22.0);
+		
+		Response response = vmRest.getPowerConsumption("111", "333", "444", 0, 0);
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		PowerMeasurement powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/vms/444/power-consumption", powerMeasurement.getHref());
+		assertEquals(22.0, powerMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power consumption in Wh for an event in a specific VM", powerMeasurement.getDescription());
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/vms/444", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/vms/444/power-consumption", powerMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
 	@SuppressWarnings(value = { "static-access"}) 
 	public void testGetEnergyConsumptionForAVMAndEventStarTimeUntilNow() throws Exception {
 		VMRest vmRest = new VMRest();
