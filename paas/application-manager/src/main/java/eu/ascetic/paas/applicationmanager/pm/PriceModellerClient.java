@@ -32,10 +32,18 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 public class PriceModellerClient {
 	private static Logger logger = Logger.getLogger(PriceModellerClient.class);
 	private static PriceModellerClient instance = null;
-	protected PaaSPricingModeller priceModeller =  new PaaSPricingModeller();
+	protected PaaSPricingModeller priceModeller;
 	
 	private PriceModellerClient() {
 		logger.info("PriceModeller has been created for the first time...");
+		
+		try {
+			priceModeller = new PaaSPricingModeller();
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+		}
 	}
 	
 	public static PriceModellerClient getInstance() {
@@ -50,15 +58,36 @@ public class PriceModellerClient {
 	}
 	
 	public double getAppPredictedCharges(int deploymentId, int schemeID, double iaaSCharges) {
-		return priceModeller.getAppPredictedCharges(deploymentId, schemeID, iaaSCharges);
+		try {
+			return priceModeller.getAppPredictedCharges(deploymentId, schemeID, iaaSCharges);
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
 	}
 	
 	public double getAppPredictedPrice(int deploymentId, int schemeID, double iaaSCharges, long duration) {
-		return priceModeller.getAppPredictedPrice(deploymentId, schemeID, iaaSCharges, duration);
+		try {
+			return priceModeller.getAppPredictedPrice(deploymentId, schemeID, iaaSCharges, duration);
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
 	}
 	
 	public double getAppTotalCharges(int deploymentId, int schemeID, double iaaSCharges) {
-		return priceModeller.getAppTotalCharges(deploymentId, schemeID, iaaSCharges);
+		try {
+			return priceModeller.getAppTotalCharges(deploymentId, schemeID, iaaSCharges);
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
 	}
 	
 	public double getEventPredictedCharges(int deploymentId, 
@@ -69,10 +98,24 @@ public class PriceModellerClient {
 			                               int schemeId, 
 			                               long duration, 
 			                               int numberOfevents) {
-		return priceModeller.getEventPredictedCharges(deploymentId, cpu, ram, storage, energy, schemeId, duration, numberOfevents);
+		try {
+			return priceModeller.getEventPredictedCharges(deploymentId, cpu, ram, storage, energy, schemeId, duration, numberOfevents);
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
 	}
 	
 	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId) {
-		return priceModeller.getEventPredictedChargesOfApp(deplID, VMs, energy, schemeId);
+		try {
+			return priceModeller.getEventPredictedChargesOfApp(deplID, VMs, energy, schemeId);
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
 	}
 }

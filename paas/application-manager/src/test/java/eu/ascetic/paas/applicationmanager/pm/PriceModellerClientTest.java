@@ -62,7 +62,7 @@ public class PriceModellerClientTest {
 	}
 	
 	@Test
-	public void getAppPredictedChargesTest() {
+	public void getAppPredictedChargesTest() throws Exception {
 		when(ppm.getAppPredictedCharges(111, 2, 3.1)).thenReturn(3.1);
 		
 		double charges = pmc.getAppPredictedCharges(111, 2, 3.1);
@@ -70,7 +70,7 @@ public class PriceModellerClientTest {
 	}
 	
 	@Test
-	public void getAppPredictedPriceTest() {
+	public void getAppPredictedPriceTest() throws Exception {
 		when(ppm.getAppPredictedPrice(111, 2, 4.2, 12l)).thenReturn(6.1);
 		
 		double charges = pmc.getAppPredictedPrice(111, 2, 4.2, 12l);
@@ -78,7 +78,7 @@ public class PriceModellerClientTest {
 	}
 	
 	@Test
-	public void getAppTotalCharges() {
+	public void getAppTotalCharges() throws Exception {
 		when(ppm.getAppTotalCharges(111, 4, 3.4)).thenReturn(6.2);
 		
 		double charges = pmc.getAppTotalCharges(111, 4, 3.4);
@@ -86,7 +86,7 @@ public class PriceModellerClientTest {
 	}
 	
 	@Test
-	public void getEventPredictedChargesTest() {
+	public void getEventPredictedChargesTest() throws Exception {
 		when(ppm.getEventPredictedCharges(111, 22, 33, 3.0, 1.2, 2, 3, 3)).thenReturn(3.2);
 		
 		double charges = pmc.getEventPredictedCharges(111, 22, 33, 3.0, 1.2, 2, 3, 3);
@@ -94,7 +94,7 @@ public class PriceModellerClientTest {
 	}
 	
 	@Test
-	public void getEventPredictedChargesOfAppTest() {
+	public void getEventPredictedChargesOfAppTest() throws Exception {
 		LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
 		
 		when(ppm.getEventPredictedChargesOfApp(111, vmInfos, 33, 3)).thenReturn(3.2);
