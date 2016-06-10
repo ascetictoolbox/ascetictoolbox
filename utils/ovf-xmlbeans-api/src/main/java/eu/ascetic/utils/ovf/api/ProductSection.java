@@ -208,8 +208,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystem}.
      */
     private static final String ASCETIC_ADAPTATION_RULE_NUMBER = "asceticAdaptationRuleNumber";
-    private static final String ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY = "asceticAdaptationRuleAgreementTerm_";
-    private static final String ASCETIC_ADAPTATION_RULE_DIRECTION_KEY = "asceticAdaptationRuleDirection_";
+    private static final String ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY = "asceticAdaptationRuleAgreementTerm_";
+    private static final String ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY = "asceticAdaptationRuleDirection_";
     private static final String ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY = "asceticAdaptationRuleResponseType_";
     private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
     private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
@@ -1803,11 +1803,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         // Find the next adaptation rule index
         int i = getNextFreeIndexKeyValue(
-                ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY);
+                ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY);
 
-        addNewProperty(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + i,
+        addNewProperty(ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + i,
                 ProductPropertyType.STRING, agreementTerm);
-        addNewProperty(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + i,
+        addNewProperty(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + i,
                 ProductPropertyType.STRING, direction);
         addNewProperty(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + i,
                 ProductPropertyType.STRING, responseType);
@@ -1904,71 +1904,71 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public void setAdaptationRule(int index, String agreementTerm,
             String direction, String responseType) {
-        setAdaptationRuleAgreementTerm(index, agreementTerm);
-        setAdaptationRuleDirection(index, direction);
+        setAdaptationRuleSLATerm(index, agreementTerm);
+        setAdaptationRuleComparisonOperator(index, direction);
         setAdaptationRuleResponseType(index, responseType);
     }
 
     /**
-     * Gets the agreement term of an adaptation rule set at a specific index.
+     * Gets the sla term of an adaptation rule set at a specific index.
      * 
      * @param index
      *            The index of the adaptation rule (not to be confused with the
      *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The agreement term of the rule (e.g. (
+     * @return The sla term of the rule (e.g. (
      *         "energy_usage_per_app or power_usage_per_app etc")
      */
-    public String getAdaptationRuleAgreementTerm(int index) {
+    public String getAdaptationRuleSLATerm(int index) {
         return getPropertyByKey(
-                ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index).getValue();
+                ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + index).getValue();
     }
 
     /**
-     * Sets the agreement term of an adaptation rule set at a specific index.
+     * Sets the sla term of an adaptation rule set at a specific index.
      * 
      * @param index
      *            The index of the adaptation rule (not to be confused with the
      *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
      * @param agreementTerm
-     *            The agreement term of the rule (e.g. (
+     *            The sla term of the rule (e.g. (
      *            "energy_usage_per_app or power_usage_per_app etc")
      */
-    public void setAdaptationRuleAgreementTerm(int index,
+    public void setAdaptationRuleSLATerm(int index,
             String agreementTerm) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index)
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + index)
                 .setValue(agreementTerm);
     }
 
     /**
-     * Gets the direction of an adaptation rule set at a specific index.
+     * Gets the comparison operator of an adaptation rule set at a specific index.
      * 
      * @param index
      *            The index of the adaptation rule (not to be confused with the
      *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     * @return The comparison operator the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
      */
-    public String getAdaptationRuleDirection(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index)
+    public String getAdaptationRuleComparisonOperator(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + index)
                 .getValue();
     }
 
     /**
-     * Sets the direction of an adaptation rule set at a specific index.
+     * Sets the comparison operator of an adaptation rule set at a specific index.
      * 
      * @param index
      *            The index of the adaptation rule (not to be confused with the
      *            index of a {@link ProductProperty}, see
      *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param direction
-     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
+     * @param comparator
+     *            The comparison operator the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
      *            )
      */
-    public void setAdaptationRuleDirection(int index, String direction) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index)
-                .setValue(direction);
+    public void setAdaptationRuleComparisonOperator(int index, String comparator) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + index)
+                .setValue(comparator);
     }
 
     /**
@@ -2097,8 +2097,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            {@link ProductSection#getEndPointIndexById(String)})
      */
     public void removeAdaptationRule(int index) {
-        removePropertyByKey(ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY + index);
-        removePropertyByKey(ASCETIC_ADAPTATION_RULE_DIRECTION_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index);
