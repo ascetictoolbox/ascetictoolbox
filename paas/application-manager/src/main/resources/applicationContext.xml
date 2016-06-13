@@ -27,7 +27,6 @@
 		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
 		<property name="persistenceXmlLocations">
 			<list>
-			    <!-- <value>classpath*:META-INF/persistence.mysql.xml</value> --> 
 			   <value>file:/etc/ascetic/paas/application-manager/persistence.mysql.xml</value> 
 			</list>
 		</property>
