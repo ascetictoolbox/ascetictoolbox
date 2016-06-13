@@ -214,6 +214,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
     private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
     private static final String ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY = "asceticAdaptationRuleNotificationType_";
+    private static final String ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY = "asceticAdaptationRuleParameters_";
     
     /**
      * The static KEY used to get and set the deployment name of a {@link VirtualSystemCollection}
@@ -2083,10 +2084,43 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @param notificationType
      *            The notification type of the adaptation rule i.e. SLA_BREACH, WARNING
      */
-    public void setAdaptationRuleNotifcationType(int index, String notificationType) {
+    public void setAdaptationRuleNotificationType(int index, String notificationType) {
         getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
                 .setValue(notificationType);
+    }       
+     
+    /**
+     * Gets the parameters of the response given the firing of the adaptation 
+     * rule set at a specific index. These parameters indicate how respond to
+     * to the firing of the SLA rule.
+     * 
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @return The parameters of the adaptation rule
+     */
+    public String getAdaptationRuleParameters(int index) {
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
+                .getValue();
     }    
+    
+    /**
+     * Sets the parameters of the response given the firing of the adaptation 
+     * rule set at a specific index. These parameters indicate how respond to
+     * to the firing of the SLA rule.
+     * 
+     * @param index
+     *            The index of the adaptation rule (not to be confused with the
+     *            index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param parameters
+     *            The parameters of the adaptation rule
+     */
+    public void setAdaptationRuleParameters(int index, String parameters) {
+        getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
+                .setValue(parameters);
+    } 
     
     /**
      * Remove a set of adaptation rule properties at a specific index.
