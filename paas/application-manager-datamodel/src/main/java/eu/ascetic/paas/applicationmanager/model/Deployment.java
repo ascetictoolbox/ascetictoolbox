@@ -78,6 +78,8 @@ public class Deployment {
 	private String ovf;
 	@XmlElement(name = "schema", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private int schema=1;
+	@XmlElement(name = "provider_id", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String providerId;
 	@XmlElement(name = "sla_agreement", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String slaUUID;
 	@XmlElementWrapper(name = "vms", namespace = APPLICATION_MANAGER_NAMESPACE)
@@ -106,6 +108,14 @@ public class Deployment {
 	}
 	public void setDeploymentName(String deploymentName) {
 		this.deploymentName = deploymentName;
+	}
+	
+	@Column(name = "provider_id", nullable = true, unique = true)
+	public String getProviderId() {
+		return providerId;
+	}
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
 	}
 	
 	@Column(name = "status", nullable = false)

@@ -342,6 +342,7 @@ public class ModelConverterTest {
 		deployment1.setHref("/applications/101/deployments/1");
 		deployment1.setPrice("222");
 		deployment1.setStatus("DELETED");
+		deployment1.setProviderId("provId");
 		Link linkSelf = new Link();
 		linkSelf.setRel("self");
 		linkSelf.setType("application/xml");
