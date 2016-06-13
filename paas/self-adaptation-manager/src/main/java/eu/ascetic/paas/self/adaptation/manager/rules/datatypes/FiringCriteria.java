@@ -246,6 +246,9 @@ public class FiringCriteria {
                 if (section.getAdaptationRuleNotificationType(i) != null) {
                     criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(i)));
                 }
+                if (section.getAdaptationRuleParameters(i) != null) {
+                    criteria.setParameters(section.getAdaptationRuleParameters(i));
+                }                
                 answer.add(criteria);
             }
         }
