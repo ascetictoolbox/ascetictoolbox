@@ -168,6 +168,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                      * attempted already and failed. (Some responses on further
                      * examination may be inappropriate and fail.
                      */
+                    answer.setAdaptationDetails(rule.getParameters());
                     return answer;
                 } else {
                     return answer; //return as something has recently been actioned.

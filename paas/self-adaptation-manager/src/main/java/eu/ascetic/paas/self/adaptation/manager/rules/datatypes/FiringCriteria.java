@@ -34,6 +34,7 @@ public class FiringCriteria {
     private Response.AdaptationType responseType;
     private Double minMagnitude = null;
     private Double maxMagnitude = null;
+    private String parameters = "";
 
     public FiringCriteria() {
     }
@@ -221,8 +222,8 @@ public class FiringCriteria {
     }
 
     /**
-     * This examines the OVF for rules associated with the application. It extracts
-     * the rules and returns them.
+     * This examines the OVF for rules associated with the application. It
+     * extracts the rules and returns them.
      *
      * @param ovf The OVF to extract the firing criteria from
      * @return The firing criteria that are from the application.
@@ -244,11 +245,51 @@ public class FiringCriteria {
                 }
                 if (section.getAdaptationRuleNotificationType(i) != null) {
                     criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(i)));
-                }                
+                }
                 answer.add(criteria);
             }
         }
         return answer;
+    }
+
+    /**
+     * Actuation rules sometimes need additional information in order to fire
+     * correctly, such as how many VMs are needed, the type of VM to scale etc.
+     * This provides a means in the rule sets to provide this extra parameter
+     * information.
+     *
+     * @return the parameters
+     */
+    public String getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Given the key value of the parameter this returns its value.
+     * @param key The key name for the actuation parameter
+     * @return The value of the parameter else null.
+     */
+    public String getParameter(String key) {
+        String[] args = parameters.split(";");
+        for (String arg : args) {
+            if (arg.split("=")[0].equals(key)) {
+                return arg.split("=")[1].trim();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Actuation rules sometimes need additional information in order to fire
+     * correctly, such as how many VMs are needed, the type of VM to scale etc.
+     * This provides a means in the rule sets to provide this extra parameter
+     * information.
+     *
+     * @param parameters the parameters to set as a semi-colon delimeter based
+ list of key value pairs. i.e. argument=value;argument2=three
+     */
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
     }
 
 }

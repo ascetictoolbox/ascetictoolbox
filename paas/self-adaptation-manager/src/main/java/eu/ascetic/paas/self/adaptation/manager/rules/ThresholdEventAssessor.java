@@ -135,6 +135,7 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
             int previousActionCount = ResponseHistoryAggregator.filterResponseHistory(recentAdaptation, event.getSlaUuid(), event.getAgreementTerm()).size();
             if (rule != null && previousActionCount == 0) {
                 answer = new Response(getActuator(), event, rule.getResponseType());
+                answer.setAdaptationDetails(rule.getParameters());
             }
             return answer;
         }

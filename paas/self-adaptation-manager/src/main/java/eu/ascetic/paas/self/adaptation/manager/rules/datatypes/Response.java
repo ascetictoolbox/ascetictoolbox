@@ -49,6 +49,7 @@ public class Response implements Comparable<Response> {
         ADAPTATION_TYPE_MAPPING.put("SHUTDOWN_APP", Response.AdaptationType.SHUTDOWN_APP);
         ADAPTATION_TYPE_MAPPING.put("HARD_SHUTDOWN_APP", Response.AdaptationType.HARD_SHUTDOWN_APP);
         ADAPTATION_TYPE_MAPPING.put("REQUEST_VM_CONSOLIDATION", Response.AdaptationType.REQUEST_VM_CONSOLIDATION);
+        ADAPTATION_TYPE_MAPPING.put("SCALE_TO_N_VMS", Response.AdaptationType.SCALE_TO_N_VMS);
         ADAPTATION_TYPE_MAPPING.put(null, null);
         ADAPTATION_TYPE_MAPPING.put("", null);
     }
@@ -59,7 +60,12 @@ public class Response implements Comparable<Response> {
     public enum AdaptationType {
 
         ADD_VM, REMOVE_VM, SCALE_UP_VM, SCALE_DOWN_VM, ADD_CPU, REMOVE_CPU,
-        ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP, HARD_SHUTDOWN_APP, REQUEST_VM_CONSOLIDATION
+        ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP, 
+        HARD_SHUTDOWN_APP, REQUEST_VM_CONSOLIDATION, SCALE_TO_N_VMS
+    }
+    
+    private enum AdaptationDetailKeys {
+        VM_TYPE, VM_COUNT
     }
 
     /**
@@ -142,6 +148,21 @@ public class Response implements Comparable<Response> {
     public String getAdaptationDetails() {
         return adaptationDetails;
     }
+    
+    /**
+     * Given the key value of the adaption detail this returns its value.
+     * @param key The key name for the actuation parameter
+     * @return The value of the adaptation detail else null.
+     */
+    public String getAdaptationDetail(String key) {
+        String[] args = adaptationDetails.split(";");
+        for (String arg : args) {
+            if (arg.split("=")[0].equals(key)) {
+                return arg.split("=")[1].trim();
+            }
+        }
+        return null;
+    }       
 
     /**
      * This sets additional information about the adaptation, that might be
@@ -151,7 +172,7 @@ public class Response implements Comparable<Response> {
      */
     public void setAdaptationDetails(String adaptationDetails) {
         this.adaptationDetails = adaptationDetails;
-    }
+    } 
 
     /**
      * This indicates if on deciding to adapt if a possible solution was found.
