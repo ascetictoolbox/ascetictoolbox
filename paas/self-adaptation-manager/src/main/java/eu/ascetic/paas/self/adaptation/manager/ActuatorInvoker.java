@@ -102,6 +102,15 @@ public interface ActuatorInvoker {
     public void hardShutdown(String applicationId, String deploymentId);    
 
     /**
+     * This scales a VM type to a set amount of VMs
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @param response The response to actuator for
+     */
+    public void horizontallyScaleToNVms(String applicationId, String deploymentId, Response response);
+    
+    /**
      * This scales up a named VM. VM types are expected to be in a co-ordinated
      * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
      *

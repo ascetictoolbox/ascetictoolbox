@@ -15,7 +15,10 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
+import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
+import eu.ascetic.utils.ovf.api.ProductSection;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +40,12 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
             response = addVM(response);
         } else if (response.getActionType().equals(Response.AdaptationType.REMOVE_VM)) {
             response = deleteVM(response);
+        } else if (response.getActionType().equals(Response.AdaptationType.SCALE_UP_VM)) {
+            response = scaleUp(response);
+        } else if (response.getActionType().equals(Response.AdaptationType.SCALE_DOWN_VM)) {
+            response = scaleDown(response);
+        } else if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
+            response = scaleToNVms(response);
         }
         return response;
     }
@@ -59,7 +68,7 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
             response.setVmId(vmIds.get(0) + "");
             return response;
         } else {
-            response.setAdaptationDetails("Could not find a VM to delete");            
+            response.setAdaptationDetails("Could not find a VM to delete");
             response.setPossibleToAdapt(false);
         }
         return response;
@@ -76,7 +85,7 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
             response.setAdaptationDetails("Unable to find actuator.");
             response.setPossibleToAdapt(false);
             return response;
-        }        
+        }
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
         if (!vmOvfTypes.isEmpty()) {
             Collections.shuffle(vmOvfTypes);
@@ -87,6 +96,98 @@ public class RandomDecisionEngine extends AbstractDecisionEngine {
             response.setPossibleToAdapt(false);
             return response;
         }
+    }
+
+    /**
+     * The decision logic for scaling down.
+     *
+     * @param response The response to finalise details for.
+     * @return The finalised response object
+     */
+    public Response scaleDown(Response response) {
+        if (getActuator() == null) {
+            response.setAdaptationDetails("Unable to find actuator.");
+            response.setPossibleToAdapt(false);
+            return response;
+        }
+        //TODO complete logic here
+        //Decide on which VM to scale down in size.
+        return response;
+    }
+
+    /**
+     * The decision logic for scaling up.
+     *
+     * @param response The response to finalise details for.
+     * @return The finalised response object
+     */
+    public Response scaleUp(Response response) {
+        if (getActuator() == null) {
+            response.setAdaptationDetails("Unable to find actuator.");
+            response.setPossibleToAdapt(false);
+            return response;
+        }
+        //TODO complete logic here
+        //Decide on which VM to scale up in size.
+        return response;
+    }
+
+    /**
+     * The decision logic for horizontal scaling to a given target value.
+     *
+     * @param response The response to finalise details for.
+     * @return The finalised response object
+     */
+    public Response scaleToNVms(Response response) {
+        if (getActuator() == null) {
+            response.setAdaptationDetails("Unable to find actuator.");
+            response.setPossibleToAdapt(false);
+            return response;
+        }
+        String appId = response.getApplicationId();
+        String deploymentId = response.getDeploymentId();
+        String vmType = response.getAdaptationDetail("VM_TYPE");
+        int currentVmCount = getActuator().getVmCountOfGivenType(appId, deploymentId, vmType);
+        int targetCount = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
+        int difference = targetCount - currentVmCount;
+        OvfDefinition ovf = response.getCause().getOvf();
+        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf, appId);
+        if (difference == 0) {
+            response.setPerformed(true);
+            response.setPossibleToAdapt(false);
+            return response;
+        }
+        if (targetCount < details.getLowerBound() || targetCount > details.getUpperBound()) {
+            response.setPerformed(true);
+            response.setPossibleToAdapt(false);
+            response.setAdaptationDetails("Unable to adapt, the target was out of acceptable bounds");
+            return response;
+        }
+        if (difference > 0) { //add VMs
+            response.setAdaptationDetails("VM_TYPE" + vmType + ";VM_COUNT=" + difference);
+        } else { //less that zero so remove VMs
+            List<Integer> vmsPossibleToRemove = getActuator().getVmIdsAvailableToRemove(appId, deploymentId);
+            response.setAdaptationDetails("VM_TYPE" + vmType + ";VMs_TO_REMOVE=" + getVmsToRemove(vmsPossibleToRemove, difference));
+        }
+        return response;
+    }
+
+    /**
+     * This generates the list of VMs to remove
+     *
+     * @param vmsPossibleToRemove The list of VMs that could be removed
+     * @param count The amount of VMs needing to go
+     * @return The string for the command to remove the VMs
+     */
+    private String getVmsToRemove(List<Integer> vmsPossibleToRemove, int count) {
+        String answer = "";
+        Collections.shuffle(vmsPossibleToRemove);
+        for (int i = 0; i < count; i++) {
+            Integer vmid = vmsPossibleToRemove.get(0);
+            answer = answer + "," + vmid;
+            vmsPossibleToRemove.remove(i);
+        }
+        return answer;
     }
 
 }

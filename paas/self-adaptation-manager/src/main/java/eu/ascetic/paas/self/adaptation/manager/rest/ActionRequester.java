@@ -157,15 +157,13 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     public int getVmCountOfGivenType(String applicationId, String deploymentId, String type) {
         return getVmCountOfGivenType(getVMs(applicationId, deploymentId), type);
     }
-    
-    
 
     /**
      * This counts how many VMs have a given deployment type in a set of VMs
      *
      * @param vms The vms to look count
      * @param type The ovf Id of the type of VMs to look for
-     * @return 
+     * @return
      */
     public int getVmCountOfGivenType(List<VM> vms, String type) {
         int answer = 0;
@@ -289,10 +287,11 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         RestVMClient client = new RestVMClient(application, deployment);
         client.deleteVM(vmID);
     }
-    
+
     /**
      * This scales up a named VM. VM types are expected to be in a co-ordinated
-     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     * series, thus allowing a +1 or -1 notion of direction and scaling to be
+     * used.
      *
      * @param application The application the VM is part of
      * @param deployment The id of the deployment instance of the VM
@@ -304,10 +303,11 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         //TODO Adjust code here.
         //client.deleteVM(vmID);
     }
-    
+
     /**
-     * This scales down a named VM. VM types are expected to be in a co-ordinated
-     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     * This scales down a named VM. VM types are expected to be in a
+     * co-ordinated series, thus allowing a +1 or -1 notion of direction and
+     * scaling to be used.
      *
      * @param application The application the VM is part of
      * @param deployment The id of the deployment instance of the VM
@@ -318,7 +318,30 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         RestVMClient client = new RestVMClient(application, deployment);
         //TODO Adjust code here.
         //client.deleteVM(vmID);
-    }    
+    }
+
+    /**
+     * This scales a VM type to a set amount of VMs
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @param response The response to actuator for
+     */
+    @Override
+    public void horizontallyScaleToNVms(String applicationId, String deploymentId, Response response) {
+        String vmType = response.getAdaptationDetail("VM_TYPE");
+        String vmsToRemove = response.getAdaptationDetail("VMs_TO_REMOVE");
+        if (vmsToRemove == null) { //Add VMs
+            int count = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
+            for (int i = 0; i < count; i++) {
+                addVM(applicationId, deploymentId, vmType);
+            }
+        } else { //Remove VMs
+            for (String vmId : vmsToRemove.split(",")) {
+                deleteVM(applicationId, deploymentId, vmId.trim());
+            }
+        }
+    }
 
     /**
      * This deletes all VMs of an application
@@ -408,6 +431,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                 break;
             case SCALE_UP_VM:
                 scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
+                break;
+            case SCALE_TO_N_VMS:
+                horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
                 break;
         }
         response.setPerformed(true);

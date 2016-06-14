@@ -273,6 +273,29 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
             vm.delete();
         }
     }
+    
+    /**
+     * This scales a VM type to a set amount of VMs
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @param response The response to actuator for
+     */
+    @Override
+    public void horizontallyScaleToNVms(String applicationId, String deploymentId, Response response) {
+        String vmType = response.getAdaptationDetail("VM_TYPE");
+        String vmsToRemove = response.getAdaptationDetail("VMs_TO_REMOVE");
+        if (vmsToRemove == null) { //Add VMs
+            int count = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
+            for (int i = 0; i < count; i++) {
+                addVM(applicationId, deploymentId, vmType);
+            }
+        } else { //Remove VMs
+            for (String vmId : vmsToRemove.split(",")) {
+                deleteVM(applicationId, deploymentId, vmId.trim());
+            }
+        }
+    }    
 
     @Override
     public void scaleUpVM(String application, String deployment, String vmID) {
