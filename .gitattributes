@@ -1726,6 +1726,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/EventHistoryListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/SlaManagerListener.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/actuator/OpenNebulaActionRequester.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/ovf/OVFUtils.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/ActionRequester.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestDeploymentClient.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestVMClient.java -text
