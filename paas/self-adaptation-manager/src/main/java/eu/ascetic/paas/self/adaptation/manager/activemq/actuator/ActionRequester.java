@@ -183,8 +183,12 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         }
         return answer;
     }
-
+    
     @Override
+    public int getVmCountOfGivenType(String applicationId, String deploymentId, String type) {
+        return getVmCountOfGivenType(getVMs(applicationId, deploymentId), type);
+    }
+
     public int getVmCountOfGivenType(List<VM> vms, String type) {
         int answer = 0;
         for (VM vm : vms) {

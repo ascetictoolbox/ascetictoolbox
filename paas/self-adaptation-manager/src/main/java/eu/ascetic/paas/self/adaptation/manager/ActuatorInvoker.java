@@ -15,7 +15,6 @@
  */
 package eu.ascetic.paas.self.adaptation.manager;
 
-import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
 
@@ -69,11 +68,12 @@ public interface ActuatorInvoker {
     /**
      * This counts how many VMs have a given deployment type in a set of VMs
      *
-     * @param vms The vms to look count
+     * @param applicationId
+     * @param deploymentId
      * @param type The ovf Id of the type of VMs to look for
      * @return The amount of VMs which have a given OVF id
      */
-    public int getVmCountOfGivenType(List<VM> vms, String type);
+    public int getVmCountOfGivenType(String applicationId, String deploymentId, String type);
     
     /**
      * This adds a vm of a given ovf type to named deployment.

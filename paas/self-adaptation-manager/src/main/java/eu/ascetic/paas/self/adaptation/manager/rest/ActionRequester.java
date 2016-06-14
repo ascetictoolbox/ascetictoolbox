@@ -153,15 +153,21 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         return answer;
     }
 
+    @Override
+    public int getVmCountOfGivenType(String applicationId, String deploymentId, String type) {
+        return getVmCountOfGivenType(getVMs(applicationId, deploymentId), type);
+    }
+    
+    
+
     /**
      * This counts how many VMs have a given deployment type in a set of VMs
      *
      * @param vms The vms to look count
      * @param type The ovf Id of the type of VMs to look for
+     * @return 
      */
-    @Override
-    public int getVmCountOfGivenType(List<VM> vms, String type
-    ) {
+    public int getVmCountOfGivenType(List<VM> vms, String type) {
         int answer = 0;
         for (VM vm : vms) {
             if (vm.getOvfId().equals(type)
@@ -213,7 +219,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         if (vm == null) {
             return;
         }
-        //TOD Remove temporary debug code here
+        //TODO Remove temporary debug code here
         System.out.println("Application ID: " + applicationId);
         System.out.println("Deployment ID: " + deploymentId);
         System.out.println("OVF ID: " + ovfId);

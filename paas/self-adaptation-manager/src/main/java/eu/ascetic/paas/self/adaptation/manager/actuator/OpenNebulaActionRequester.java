@@ -153,11 +153,26 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
         return names;
     }
 
-    @Override
+    /**
+     * This gets the count of VMs that are been monitored by this hypervisor.
+     * @param vms The list of VMs to count
+     * @param type The type of VM to count
+     * @return 
+     */
     public int getVmCountOfGivenType(List<VM> vms, String type) {
         return getVmCountOfGivenType(type);
     }
+    
+    @Override
+    public int getVmCountOfGivenType(String applicationId, String deploymentId, String type) {
+        return getVmCountOfGivenType(type);
+    }    
 
+    /**
+     * This gets the count of VMs that are been monitored by this hypervisor.
+     * @param type The type of VM to count
+     * @return The count of VMs
+     */
     public int getVmCountOfGivenType(String type) {
         int answer = 0;
         VirtualMachinePool pool = getVMPool();
