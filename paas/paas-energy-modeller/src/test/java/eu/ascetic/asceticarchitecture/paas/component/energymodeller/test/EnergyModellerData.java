@@ -31,38 +31,78 @@ public class EnergyModellerData {
 
 	// M. Fontanella - 05 Feb 2016 - begin
 	private static EnergyModellerService serviceEM;
-	private static String HOST = "2208";
-	//  private static String HOST1 = "1765";
-	//	private static String HOST2 = "1766";
-	//	private static String HOST3 = "1767";
 	
-	
-	//	private static String HOST4 = "1768";
-	//	private static String DEP = "584";
-	//	private static String APP = "davidgpTestApp";
-	//	private static String EVENT = "Create-Object-Light-Load";
-	
-
-	//	private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
+	/* Test 1 
+	private static String HOST = "5699";
 	private static String PROVIDER = "00000";
-	private static String EVENT = "core0impl1";
-	//	private static String EVENT = "core0impl1";
-	//	private static String APP = "newsAsset";
+	private static String EVENT = "1";	
+	private static String APP = "maximTestApp";
+	private static String DEP = "938";
+	*/
 	
-	//	private static String DEP = "490";
-	long beginlong = 1443705639474L;
-	long endlong = 1443705931826L;
+	/* Test 2
+	private static String HOST = "6000";
+	private static String PROVIDER = "00000";
+	private static String EVENT = "1";	
+	private static String APP = "maximTestApp";
+	private static String DEP = "600";
+	*/
+	
+	/* Test 3 
+	private static String HOST = "2430";
+	private static String PROVIDER = "00000";
+	private static String EVENT = "1";	
+	private static String APP = "davidgpTestApp";
+	private static String DEP = "877";
+	*/
+	
+	/* Test 4
+	private static String HOST = "2444";
+	private static String PROVIDER = "1";
+	private static String EVENT = "event_dstest";	
+	private static String APP = "davidgpTestApp";
+	private static String DEP = "939";
+	// long beginlong = 1444147613055L;
+	// long endlong   = 1444147925771L;
+	long beginlong = 1444147613000L;
+	long endlong   = 1444147925000L;
+	*/
+	
+	/* Test 5 */
+	private static String HOST = "2456";
+	private static String PROVIDER = "1";
+	private static String EVENT = "ciao";	
+	private static String APP = "JEPlus";
+	private static String DEP = "942";
+	/**/
+	
+	// long beginlong = 1410449721L;
+	// long endlong = 1443705931826L;
 	
 	//	private static String HOST = "1869";
 	//	private static String HOST1 = "1870";
 	
 	//	private static String HOST = "1843";
 	//	private static String HOST1 = "1844";
-    private static String APP = "davidgpTestApp";
+
+	//  private static String HOST1 = "1765";
+	//	private static String HOST2 = "1766";
+	//	private static String HOST3 = "1767";
+	//	private static String HOST3 = "b52da74d-585c-404d-8f29-4de0d93cfe5e";
+	//	private static String HOST4 = "1768";
+	
+	//	private static String DEP = "584";
+	//	private static String APP = "davidgpTestApp";
+	//	private static String EVENT = "Create-Object-Light-Load";
+		
+	//	private static String DEP = "490";
+	//	private static String EVENT = "core0impl1";
+	//	private static String APP = "newsAsset";
 	
 	//	private static String DEP = "540";
-	private static String DEP = "752";
+
 	// private static String TEST= "11";
+	
 	// M. Fontanella - 05 Feb 2016 - end
 	
 	@BeforeClass
@@ -72,30 +112,42 @@ public class EnergyModellerData {
 		// M. Fontanella - 05 Feb 2016 - end
 	}
 
+// M. Fontanella - 09 Jun 2016 - begin
+	@Test
+	public void eventPowerInterface() {
+		List<String> vmids = new Vector<String>();
+		vmids.add(HOST);		
+		EVENT=null;
+		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
+		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));
+		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,3600);
+		System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
+	}
+// M. Fontanella - 09 Jun 2016 - end	
 	
 // M. Fontanella - 05 Feb 2016 - begin
 //	@Test
 //	public void eventPowerInterface() {
 //		List<String> vmids = new Vector<String>();
-//		vmids.add(TEST);		
-//		PROVIDER=null;
+//		vmids.add(HOST);		
 //		EVENT=null;
-//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,3600);
-//		System.out.println("################################ TEST "+TEST+"Average Power "+EVENT+" estimated is:  "+result);
+//		System.out.println("MAXIMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+//		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,60);
+//		System.out.println("################################ HOST "+HOST+"Average Power "+EVENT+" estimated is:  "+result);
 //	}
 // M. Fontanella - 05 Feb 2016 - end	
 
 
 // M. Fontanella - 05 Feb 2016 - begin
-	@Test
-	public void eventPowerInterface() {
-		List<String> vmids = new Vector<String>();
-		vmids.add(HOST);		
+//	@Test
+//	public void eventPowerInterface() {
+//		List<String> vmids = new Vector<String>();
+//		vmids.add(HOST);		
 		// PROVIDER=null;
-		EVENT=null;
-		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,null,null);
-		System.out.println("################################ HOST "+HOST+"Average Power "+EVENT+" estimated is:  "+result);
-	}
+//		EVENT=null;
+//		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,null,null);
+//		System.out.println("################################ HOST "+HOST+"Average Power "+EVENT+" estimated is:  "+result);
+//	}
 // M. Fontanella - 05 Feb 2016 - end	
 	
 	

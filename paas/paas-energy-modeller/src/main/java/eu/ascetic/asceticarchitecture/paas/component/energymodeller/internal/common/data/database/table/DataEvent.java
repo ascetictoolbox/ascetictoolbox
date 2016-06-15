@@ -34,6 +34,9 @@ public class DataEvent {
 	private long begintime;
 	private long endtime;
 	private double energy;
+	// M. Fontanella - 18 May 2016 - begin
+	private double weight;
+	// M. Fontanella - 18 May 2016 - end
 	
 	// M. Fontanella - 11 Jan 2016 - begin
 	public String getProviderid() {
@@ -93,6 +96,14 @@ public class DataEvent {
 		this.endtime = endtime;
 	} 
 	
+	// M. Fontanella - 18 May 2016 - begin
+	public double getWeight() {
+		return weight;
+	}
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+	// M. Fontanella - 18 May 2016 - end
 }
 
 

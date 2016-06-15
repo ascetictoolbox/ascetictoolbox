@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS EMONITORING (monitoringid int NOT NULL AUTO_INCREMENT
 /* CREATE TABLE IF NOT EXISTS DATAEVENT (applicationid varchar(50),deploymentid varchar(50),vmid varchar(50), eventid varchar(50), data varchar(100), starttime bigint,endtime bigint, energy double);*/
 CREATE TABLE IF NOT EXISTS DATACONSUMPTION (providerid varchar(50),applicationid varchar(50),deploymentid varchar(50),vmid varchar(50), eventid varchar(50), metrictype varchar(50), time bigint, vmenergy double, vmpower double,vmcpu double,vmmemory double);
 /* M. Fontanella - 10 Feb 2016 - begin */
-CREATE TABLE IF NOT EXISTS APPLICATION_REGISTRY (providerid varchar(50) NOT NULL, appplicationid varchar(50) NOT NULL, deploymentid varchar(50) NOT NULL, vmid varchar(50) NOT NULL, iaasid varchar(50), start BIGINT, stop BIGINT, energy double, power double, profileid INT,   modelid INT,   PRIMARY KEY (providerid,applicationid,deploymentid,vmid));
+CREATE TABLE IF NOT EXISTS APPLICATION_REGISTRY (providerid varchar(50) NOT NULL, applicationid varchar(50) NOT NULL, deploymentid varchar(50) NOT NULL, vmid varchar(50) NOT NULL, iaasid varchar(50), start BIGINT, stop BIGINT, energy double, power double, profileid INT,   modelid INT,   PRIMARY KEY (providerid,applicationid,deploymentid,vmid));
 /* M. Fontanella - 10 Feb 2016 - end */
 /* M. Fontanella - 20 Jan 2016 - end */

@@ -46,7 +46,9 @@ public class EnergyDataAggregatorServiceQueue {
 	}
 
 	// M. Fontanella - 11 Jan 2016 - begin
-	public double getEnergyFromVM(String providerid, String applicationid, String deployment, String vmid, String event) {
+	// M. Fontanella - 26 Apr 2016 - begin
+	public double getEnergyFromVM(String providerid, String applicationid, String deployment, String vmid, String event, boolean enablePowerFromIaas) {
+	// M. Fontanella - 26 Apr 2016 - end
 		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
@@ -54,11 +56,15 @@ public class EnergyDataAggregatorServiceQueue {
 			return 0;
 		}
 		logger.info("Start computing for"+deployment+" "+ vmid);
-		return integrateSamples(deployment, vmid, -1,-1);
+		// M. Fontanella - 26 Apr 2016 - begin
+		return integrateSamples(deployment, vmid, -1,-1, enablePowerFromIaas);
+		// M. Fontanella - 26 Apr 2016 - end
 	}
 
 	// M. Fontanella - 11 Jan 2016 - begin
-	public double getMeasureInIntervalFromVM(Unit unit, String providerid, String applictionid, String deployment, String vmid, long start, long end) {
+	// M. Fontanella - 26 Apr 2016 - begin
+	public double getMeasureInIntervalFromVM(Unit unit, String providerid, String applictionid, String deployment, String vmid, long start, long end, boolean enablePowerFromIaas) {
+	// M. Fontanella - 26 Apr 2016 - end
 		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		
@@ -68,13 +74,30 @@ public class EnergyDataAggregatorServiceQueue {
 		}
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-		int samples = dataConsumptionMapper.getSamplesBetweenTime( deployment, vmid, start/MILLISEC, end/MILLISEC);
+		// M. Fontanella - 26 Apr 2016 - begin
+		int samples = 0;
+		if (enablePowerFromIaas)
+			samples = dataConsumptionMapper.getSamplesBetweenTime( deployment, vmid, start/MILLISEC, end/MILLISEC);
+		else
+			samples = dataConsumptionMapper.getSamplesBetweenTimeVirtualPower( deployment, vmid, start/MILLISEC, end/MILLISEC);
+		// M. Fontanella - 26 Apr 2016 - end
 		logger.info("Samples used for calculating "+vmid+" on this "+deployment + " value: "+samples+ " between "+start +" and "+end);
 		if (samples == 0){
 			logger.info("No samples available for the given interval "+start+ " to "+end+" estimating consumption from closest samples");
-			long previoussampletime = dataConsumptionMapper.getSampleTimeBefore(deployment, vmid, start/MILLISEC);
 			
-			long aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end/MILLISEC);
+			// M. Fontanella - 26 Apr 2016 - begin
+			long previoussampletime = 0L;
+			long aftersampletime = 0L;
+			if (enablePowerFromIaas) {
+				previoussampletime = dataConsumptionMapper.getSampleTimeBefore(deployment, vmid, start/MILLISEC);
+				aftersampletime = dataConsumptionMapper.getSampleTimeAfter(deployment, vmid, end/MILLISEC);
+			}
+			else {
+				previoussampletime = dataConsumptionMapper.getSampleTimeBeforeVirtualPower(deployment, vmid, start/MILLISEC);
+				aftersampletime = dataConsumptionMapper.getSampleTimeAfterVirtualPower(deployment, vmid, end/MILLISEC);
+			}
+			// M. Fontanella - 26 Apr 2016 - end
+			
 			if (previoussampletime == 0){
 				logger.info("Not enough samples - before the event interval" +start/MILLISEC);
 				session.close();
@@ -87,8 +110,18 @@ public class EnergyDataAggregatorServiceQueue {
 			}
 			logger.info(previoussampletime);
 			logger.info(aftersampletime);
-			DataConsumption esfirst = dataConsumptionMapper.getSampleAtTime(deployment,vmid,previoussampletime);
-			DataConsumption eslast = dataConsumptionMapper.getSampleAtTime(deployment, vmid, aftersampletime);
+			// M. Fontanella - 26 Apr 2016 - begin
+			DataConsumption esfirst;
+			DataConsumption eslast;
+			if (enablePowerFromIaas) {
+				esfirst = dataConsumptionMapper.getSampleAtTime(deployment,vmid,previoussampletime);
+				eslast = dataConsumptionMapper.getSampleAtTime(deployment, vmid, aftersampletime);
+			}
+			else {
+				esfirst = dataConsumptionMapper.getSampleAtTimeVirtualPower(deployment,vmid,previoussampletime);
+				eslast = dataConsumptionMapper.getSampleAtTimeVirtualPower(deployment, vmid, aftersampletime);
+			}
+			// M. Fontanella - 26 Apr 2016 - end
 			
 			logger.info("The lower bound at "+esfirst.getTime()+" value "+esfirst.getVmpower());
 			logger.info("The upper bound at "+eslast.getTime()+" value "+eslast.getVmpower());
@@ -110,7 +143,13 @@ public class EnergyDataAggregatorServiceQueue {
 			logger.info("Samples available for the given interval " + samples);
 			if (samples ==1){
 				logger.info("Only one sample available for the given interval "+start+ " to "+end+" estimating consumption from available samples");
-				double avgpower = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC,  end/MILLISEC);
+				// M. Fontanella - 26 Apr 2016 - begin
+				double avgpower = 0.0;
+				if (enablePowerFromIaas)
+					avgpower = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC,  end/MILLISEC);
+				else
+					avgpower = dataConsumptionMapper.getVirtualPowerInIntervalForVM(deployment, vmid, start/MILLISEC,  end/MILLISEC);
+				// M. Fontanella - 26 Apr 2016 - end
 				logger.info("Power  "+avgpower);
 				if (unit == Unit.ENERGY){
 					double energy = avgpower * ((end-start))/3600000;
@@ -125,9 +164,15 @@ public class EnergyDataAggregatorServiceQueue {
 		}
 		if (unit == Unit.ENERGY){
 			session.close();
-			return integrateSamples(deployment, vmid, start, end);
+			// M. Fontanella - 26 Apr 2016 - begin
+			return integrateSamples(deployment, vmid, start, end, enablePowerFromIaas);
+			// M. Fontanella - 26 Apr 2016 - end
 		} else {
-			double result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			double result = 0.0;
+			if (enablePowerFromIaas)
+				result = dataConsumptionMapper.getPowerInIntervalForVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			else
+				result = dataConsumptionMapper.getVirtualPowerInIntervalForVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
 			logger.info("######### Avg power is "+result);
 			session.close();
 			return result;
@@ -136,8 +181,11 @@ public class EnergyDataAggregatorServiceQueue {
 	}
 	
 	// M. Fontanella - 11 Jan 2016 - begin
-	public DataConsumption getLastPowerSampleFromVM(String providerid, String applicationid, String deployment, String vmid) {
+	// M. Fontanella - 26 Apr 2016 - begin
+	public DataConsumption getLastPowerSampleFromVM(String providerid, String applicationid, String deployment, String vmid, boolean enablePowerFromIaas) {
+	// M. Fontanella - 26 Apr 2016 - end	
 		// M. Fontanella - 11 Jan 2016 - end
+	
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
@@ -146,27 +194,46 @@ public class EnergyDataAggregatorServiceQueue {
 		logger.info("Start computing Wh over a period of time");
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-		DataConsumption dc = dataConsumptionMapper.getLastSample(deployment,vmid);
+		// M. Fontanella - 26 Apr 2016 - begin
+		DataConsumption dc;
+		if (enablePowerFromIaas)
+			dc = dataConsumptionMapper.getLastSample(deployment,vmid);
+		else
+			dc = dataConsumptionMapper.getLastSampleVirtualPower(deployment,vmid);
+		// M. Fontanella - 26 Apr 2016 - end
 		session.close();
 		return dc;
 		
 		
 	}
 	
-	private double integrateSamples(String deployment, String vmid, long start, long end){
+	// M. Fontanella - 26 Apr 2016 - begin
+	private double integrateSamples(String deployment, String vmid, long start, long end, boolean enablePowerFromIaas){
+	// M. Fontanella - 26 Apr 2016 - end
+
 		List<DataConsumption> consumptionList;
 		if (start>0){
 			logger.info("Start computing Wh over a period of time");
 			SqlSession session = dataConsumptionHandler.getSession();
 			DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-			consumptionList = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			// M. Fontanella - 26 Apr 2016 - begin
+			if (enablePowerFromIaas)
+				consumptionList = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			else
+				consumptionList = dataConsumptionMapper.getDataSamplesVMVirtualPower(deployment, vmid, start/MILLISEC, end/MILLISEC);
+			// M. Fontanella - 26 Apr 2016 - end
 			session.close();
 			
 		}else {
 			logger.info("Start computing Wh overall samples");
 			SqlSession session = dataConsumptionHandler.getSession();
 			DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-			consumptionList = dataConsumptionMapper.selectByVm(deployment, vmid);
+			// M. Fontanella - 26 Apr 2016 - begin
+			if (enablePowerFromIaas)
+				consumptionList = dataConsumptionMapper.selectByVm(deployment, vmid);
+			else
+				consumptionList = dataConsumptionMapper.selectByVmVirtualPower(deployment, vmid);
+			// M. Fontanella - 26 Apr 2016 - end
 			session.close();
 		}
 		DataConsumption previousSample=null;
@@ -223,7 +290,9 @@ public class EnergyDataAggregatorServiceQueue {
 	}	
 	
 	// M. Fontanella - 11 Jan 2016 - begin
-	public List<DataConsumption> samplePower(String providerid, String applicationid, String deployment, String vmid){
+	// M. Fontanella - 26 Apr 2016 - begin
+	public List<DataConsumption> samplePower(String providerid, String applicationid, String deployment, String vmid, boolean enablePowerFromIaas){
+	// M. Fontanella - 26 Apr 2016 - end
 		// M. Fontanella - 11 Jan 2016 - end
 		
 		vmid = translatePaaSFromIaasID(deployment,vmid);
@@ -233,14 +302,22 @@ public class EnergyDataAggregatorServiceQueue {
 		}
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-		List<DataConsumption> dc = dataConsumptionMapper.getPower(deployment, vmid);
+		// M. Fontanella - 26 Apr 2016 - begin
+		List<DataConsumption> dc;
+		if (enablePowerFromIaas)
+			dc = dataConsumptionMapper.getPower(deployment, vmid);
+		else
+			dc = dataConsumptionMapper.getVirtualPower(deployment, vmid);
+		// M. Fontanella - 26 Apr 2016 - end
 		session.close();
 		return  dc;
 		
 	}	
 	
 	// M. Fontanella - 11 Jan 2016 - begin
-	public List<DataConsumption> sampleMeasurements(String providerid, String applicationid, String deployment, String vmid, long start,long end,long interval){
+	// M. Fontanella - 26 Apr 2016 - begin
+	public List<DataConsumption> sampleMeasurements(String providerid, String applicationid, String deployment, String vmid, long start,long end,long interval,boolean enablePowerFromIaas){
+	// M. Fontanella - 26 Apr 2016 - end
 		// M. Fontanella - 11 Jan 2016 - end
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
@@ -249,7 +326,13 @@ public class EnergyDataAggregatorServiceQueue {
 		}
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-		List<DataConsumption>  result = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start, end);
+		// M. Fontanella - 26 Apr 2016 - begin
+		List<DataConsumption>  result;
+		if (enablePowerFromIaas)
+			result = dataConsumptionMapper.getDataSamplesVM(deployment, vmid, start, end);
+		else
+			result = dataConsumptionMapper.getDataSamplesVMVirtualPower(deployment, vmid, start, end);
+		// M. Fontanella - 26 Apr 2016 - end
 		session.close();
 		List<DataConsumption> resampledresult = new Vector<DataConsumption>(); 
 		if (result==null)return resampledresult;
@@ -304,7 +387,10 @@ public class EnergyDataAggregatorServiceQueue {
 	}
 	
 	
-	public double getPowerPerVM(String deployment, String vmid){
+	// M. Fontanella - 26 Apr 2016 - begin
+	public double getPowerPerVM(String deployment, String vmid, boolean enablePowerFromIaas){
+		// M. Fontanella - 26 Apr 2016 - end
+
 		vmid = translatePaaSFromIaasID(deployment,vmid);
 		if (vmid == null ){
 			logger.info("No PaaS ID found from IaaS ID");
@@ -313,7 +399,13 @@ public class EnergyDataAggregatorServiceQueue {
 		logger.info("Start computing Wh over a period of time");
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
-		double power = dataConsumptionMapper.getAvgPowerForVM(deployment, vmid);
+		// M. Fontanella - 26 Apr 2016 - begin
+		double power = 0.0;
+		if (enablePowerFromIaas)
+			power = dataConsumptionMapper.getAvgPowerForVM(deployment, vmid);
+		else
+			power = dataConsumptionMapper.getAvgVirtualPowerForVM(deployment, vmid);
+		// M. Fontanella - 26 Apr 2016 - end
 		session.close();
 		return power;
 	}

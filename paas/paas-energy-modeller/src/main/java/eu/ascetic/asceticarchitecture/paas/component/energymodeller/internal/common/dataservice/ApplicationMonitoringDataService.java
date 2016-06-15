@@ -96,19 +96,23 @@ public class ApplicationMonitoringDataService  {
 			logger.info("Now getting events for dep " + deploymentid);
 			logger.info("Now getting events for vm " + vmid);
 			String requestEntity;
-			// M. Fontanella - 08 Feb 2016 - begin
-	    	// TODO Add provId id in wvents table 
+			// M. Fontanella - 18 May 2016 - begin
+	    	// Assumption: an application can not run simultaneously on different provider id
+			// otherwise this change will be required: 
 			// requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
-			// M. Fontanella - 08 Feb 2016 - end
+			// M. Fontanella - 18 May 2016 - end
 			// TODO this is the original query replaced 
 			//requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
-			requestEntity = "FROM events MATCH appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
+			// M. Fontanella - 14 Jun 2016 - begin
+			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND nodeId=\""+vmid+"\"";
+			// M. Fontanella - 14 Jun 2016 - end
 			if (eventid==null){
 				logger.warn("No event id supplied. I will load all events for the application");
-				// M. Fontanella - 08 Feb 2016 - begin
-		    	// TODO Add provId id in wvents table 
+				// M. Fontanella - 18 May 2016 - begin
+		    	// Assumption: an application can not run simultaneously on different provider id
+				// otherwise this change will be required:  
 				//requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\"";
-				// M. Fontanella - 08 Feb 2016 - end
+				// M. Fontanella - 18 May 2016 - end
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
 			}
 
@@ -120,31 +124,39 @@ public class ApplicationMonitoringDataService  {
 			    if ((entries==null)){
 			    }else if (entries.size()==0) {
 			    	logger.info("specifi events for only this VM not found, looking global events");
-					// M. Fontanella - 08 Feb 2016 - begin
-			    	// TODO Add provId id in wvents table 
+			    	// M. Fontanella - 18 May 2016 - begin
+			    	// Assumption: an application can not run simultaneously on different provider id
+					// otherwise this change will be required: 
 			    	// requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
-			    	// M. Fontanella - 08 Feb 2016 - end
+			    	// M. Fontanella - 18 May 2016 - end
 			    	requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
+			    	// requestEntity = "FROM events MATCH appId=\""+applicationid+"\""; //MAXIM
 			    	entries = checkEvents(requestEntity);
 			    	
 			    }
 			    
 			    List<DataEvent> resultSet = new Vector<DataEvent>();
-			    for (JsonElement el : entries){
+			    for (JsonElement el : entries){			    	
 			    	JsonObject jo = (JsonObject) el;
 			    	logger.debug("id" + jo.getAsJsonObject("_id"));
-			    	// M. Fontanella - 20 Jan 2016 - begin
-			    	logger.debug("provId" + jo.getAsJsonPrimitive("provId"));
-			    	// M. Fontanella - 20 Jan 2016 - end
+			    	// M. Fontanella - 18 May 2016 - begin
+			    	// Assumption: an application can not run simultaneously on different provider id
+					// otherwise this change will be required:
+			    	// logger.debug("provId" + jo.getAsJsonPrimitive("provId"));
+			    	// M. Fontanella - 18 May 2016 - end
 			    	logger.debug("appId" + jo.getAsJsonPrimitive("appId"));
 			    	logger.debug("nodeId" + jo.getAsJsonPrimitive("nodeId"));
 			    	logger.debug("data" + jo.getAsJsonObject("data"));
 			    	logger.debug("timestamp" + jo.getAsJsonPrimitive("timestamp"));
 			    	logger.debug("endtime" + jo.getAsJsonPrimitive("endtime"));
+			    	
 			    	DataEvent data = new DataEvent();
 			    	
 			    	boolean valid_data = true;
 			    	
+			    	// M. Fontanella - 18 May 2016 - begin
+			    	data.setProviderid(providerid);
+			    	// M. Fontanella - 18 May 2016 - end
 			    	data.setApplicationid(applicationid);
 			    	data.setDeploymentid(deploymentid);
 			    	if (jo.getAsJsonPrimitive("eventType")!=null){
@@ -165,12 +177,32 @@ public class ApplicationMonitoringDataService  {
 			    			}
 			    		}
 			    	}
-			    	// M. Fontanella - 20 Jan 2016 - begin
-			    	if (jo.getAsJsonPrimitive("provId")==null) 	{
-			    		valid_data = false;
-			    		logger.warn("prov id is null"+jo.getAsJsonObject("_id"));
+			    	// M. Fontanella - 18 May 2016 - begin
+			    	double weight = 1.0;
+			    	if (jo.getAsJsonPrimitive("eventWeight")!=null){
+			    		weight=jo.getAsJsonPrimitive("eventWeight").getAsDouble();			    		
+			    	} else {
+			    		if (jo.getAsJsonObject("data")!=null){
+			    			if (jo.getAsJsonObject("data").getAsJsonPrimitive("eventWeight")==null){
+			    				logger.warn("event weight in legacy location is null"+jo.getAsJsonObject("_id"));
+			    			} else {
+			    				weight=jo.getAsJsonObject("data").getAsJsonPrimitive("eventWeight").getAsDouble();	
+			    			}
+			    		} else {
+			    			logger.warn("event weight (and legacy location) is null"+jo.getAsJsonObject("_id"));
+			    		}
 			    	}
-			    	// M. Fontanella - 20 Jan 2016 - end
+			    	data.setWeight(weight);
+			    	// M. Fontanella - 18 May 2016 - end
+			    	
+			    	// M. Fontanella - 18 May 2016 - begin
+			    	// Assumption: an application can not run simultaneously on different provider id
+					// otherwise this change will be required:
+			    	// if (jo.getAsJsonPrimitive("provId")==null) 	{
+			    	// 	valid_data = false;
+			    	//	logger.warn("prov id is null"+jo.getAsJsonObject("_id"));
+			    	// }
+			    	// M. Fontanella - 18 May 2016 - end
 			    	
 			    	if (jo.getAsJsonPrimitive("appId")==null) 	{
 			    		valid_data = false;
@@ -201,6 +233,7 @@ public class ApplicationMonitoringDataService  {
 			    			valid_data = false;
 			    		}
 			    	}
+			    				    	
 			    	if (valid_data){
 			    		if (jo.getAsJsonPrimitive("nodeId")!=null){
 			    			data.setVmid(jo.getAsJsonPrimitive("nodeId").getAsString());
@@ -222,9 +255,11 @@ public class ApplicationMonitoringDataService  {
 			    		} else {
 			    			   // TODO in future could be worth checking if the event is already in the databse
 				    			if (valid_data)resultSet.add(data);
+				    			// M. Fontanella - 18 May 2016 - begin
 								// M. Fontanella - 11 Jan 2016 - begin
-								if (valid_data)logger.info("saving "+data.getEventid()+data.getProviderid()+data.getApplicationid()+data.getBegintime()+data.getEndtime());
+								if (valid_data)logger.info("saving event="+data.getEventid()+", providerid="+data.getProviderid()+", applicationid="+data.getApplicationid()+", nodeid="+data.getVmid()+", begin="+data.getBegintime()+", end="+data.getEndtime()+", weight="+data.getWeight());
 								// M. Fontanella - 11 Jan 2016 - end
+								// M. Fontanella - 18 May 2016 - end
 				    		}
 			    		}
 			    }

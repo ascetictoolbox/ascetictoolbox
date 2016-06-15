@@ -15,6 +15,9 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,7 +43,7 @@ public class EMQueuePEM {
 	public static void setup() {
 		paasQm = new AmqpClient();
 		iaasQm =  new AmqpClient();
-		try {
+		try {			
 			
 			// M. Fontanella - 05 Feb 2016 - begin
 			// dev enb
@@ -56,7 +59,16 @@ public class EMQueuePEM {
 			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
 			// M. Fontanella - 05 Feb 2016 - end
 			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler);
-			queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.*");
+			
+			// M. Fontanella - 26 Apr 2016 - begin
+			boolean enablePowerFromIaas = true; // Power values from IaaS
+			// boolean enablePowerFromIaas = false; // Power values from PaaS
+			String defaultProviderId = "00000";
+			// M. Fontanella - 06 Jun 2016 - begin
+			// queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.*", defaultProviderId, enablePowerFromIaas);
+			queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*",defaultProviderId, enablePowerFromIaas);
+			// M. Fontanella - 06 Jun 2016 - end
+			// M. Fontanella - 26 Apr 2016 - end
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

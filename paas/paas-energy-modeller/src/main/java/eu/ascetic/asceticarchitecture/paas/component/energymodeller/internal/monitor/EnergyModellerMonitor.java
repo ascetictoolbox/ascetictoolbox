@@ -35,6 +35,9 @@ public class EnergyModellerMonitor implements Runnable {
 	private EnergyDataAggregatorServiceQueue energyService;
 	private ApplicationRegistry appRegistry;
 	private MonitoringRegistry monitoringRegistry;
+	// M. Fontanella - 26 Apr 2016 - begin
+	private boolean enablePowerFromIaas = true;
+	// M. Fontanella - 26 Apr 2016 - end
 	
 	// SLA MESSAGES
 	private static String VM_CONSUMPTION_POWER="power_usage_per_vm";
@@ -77,7 +80,17 @@ public class EnergyModellerMonitor implements Runnable {
 	public EnergyDataAggregatorServiceQueue getEnergyService() {
 		return energyService;
 	}
-	
+
+	// M. Fontanella - 26 Apr 2016 - begin
+	public boolean getEnablePowerFromIaas() {
+		return enablePowerFromIaas;
+	}
+
+	public void setEnablePowerFromIaas(boolean enablePowerFromIaas) {
+		this.enablePowerFromIaas = enablePowerFromIaas;
+	}
+	// M. Fontanella - 26 Apr 2016 - end
+		
 	public boolean subscribeMonitoring(String providerid, String applicationid,	String deploymentid) {
 		SqlSession session = monitoringRegistry.getSession();
 		MonitoringMapper monitoringMapper = session.getMapper(MonitoringMapper.class);
@@ -142,10 +155,14 @@ public class EnergyModellerMonitor implements Runnable {
 				// active so contribute to consumption and to power
 				logger.info("monitoring this active vm "+vmid);
 				// M. Fontanella - 11 Jan 2016 - begin
-				double partial_energy = energyService.getEnergyFromVM(provid, appid, deployment, vmid, null);
+				// M. Fontanella - 26 Apr 2016 - begin
+				double partial_energy = energyService.getEnergyFromVM(provid, appid, deployment, vmid, null, enablePowerFromIaas);
+				// M. Fontanella - 26 Apr 2016 - end
 				// M. Fontanella - 11 Jan 2016 - end
 				logger.info("monitoring energy "+partial_energy);
-				double partial_power = energyService.getPowerPerVM(deployment, vmid);
+				// M. Fontanella - 26 Apr 2016 - begin
+				double partial_power = energyService.getPowerPerVM(deployment, vmid, enablePowerFromIaas);
+				// M. Fontanella - 26 Apr 2016 - end
 				logger.info("monitoring power "+partial_power);
 				// M. Fontanella - 20 Jan 2016 - begin
 				if (partial_energy>0)sentToApplicationManager(buildJSONDATA(provid,appid,vmid,VM_CONSUMPTION_ENERGY, partial_energy));
@@ -159,7 +176,9 @@ public class EnergyModellerMonitor implements Runnable {
 				// terminated so contribute to consumption but not avg power
 				logger.info("monitoring this terminated  vm "+vmid);
 				// M. Fontanella - 11 Jan 2016 - begin
-				double partial_energy = energyService.getEnergyFromVM(provid, appid, deployment, vmid, null);
+				// M. Fontanella - 26 Apr 2016 - begin
+				double partial_energy = energyService.getEnergyFromVM(provid, appid, deployment, vmid, null, enablePowerFromIaas);
+				// M. Fontanella - 26 Apr 2016 - end
 				// M. Fontanella - 11 Jan 2016 - end
 				logger.info("monitoring energy "+partial_energy);
 				// M. Fontanella - 20 Jan 2016 - begin

@@ -103,13 +103,27 @@ public class DataConsumptionData {
 		mapper.createMeasurement(dc);		
 		
 		// M. Fontanella - 05 Feb 2016 - begin
+		// M. Fontanella - 26 Apr 2016 - begin
+		// if (in EMSettings) enablePowerFromIass="true" use "getTotalEnergyForVM"
+		// else use "getLastConsumptionForVMVirtualPower"
 		System.out.println(mapper.getLastConsumptionForVM("2", "iaas2"));
+		// System.out.println(mapper.getLastConsumptionForVMVirtualPower("2", "iaas2"));
+		// M. Fontanella - 26 Apr 2016 - end
 		
+		// M. Fontanella - 26 Apr 2016 - begin
+		// if (in EMSettings) enablePowerFromIass="true" use "getTotalEnergyForVM"
+		// else use "getTotalEnergyForVMVirtualPower"
 		System.out.println(mapper.getTotalEnergyForVM("2", "iaas2"));
+		// System.out.println(mapper.getTotalEnergyForVMVirtualPower("2", "iaas2"));
+		// M. Fontanella - 26 Apr 2016 - end
 		
 		//	System.out.println(mapper.getPowerInIntervalForVM("2", "iaas2", init, end));
 		
+		// M. Fontanella - 26 Apr 2016 - begin
+		// if (in EMSettings) enablePowerFromIass="true" use "getSampleTimeAfter"
+		// else use "getSampleTimeAfterVirtualPower"
 		System.out.println(mapper.getSampleTimeAfter("2", "iaas2", init));
+		// System.out.println(mapper.getSampleTimeAfterVirtualPower("2", "iaas2", init));
 		
 		//	System.out.println(mapper.getSampleTimeBefore("2", "iaas2",end));
 		
@@ -121,9 +135,20 @@ public class DataConsumptionData {
 		
 		System.out.println(mapper.selectByDeploy("2"));
 		
+		// M. Fontanella - 26 Apr 2016 - begin
+		// if (in EMSettings) enablePowerFromIass="true" use "selectByVm"
+		// else use "selectByVmVirtualPower"
 		System.out.println(mapper.selectByVm("2", "iaas2"));
-		
+		// System.out.println(mapper.selectByVmVirtualPower("2", "iaas2"));
+		// M. Fontanella - 26 Apr 2016 - end
+				
+		// M. Fontanella - 26 Apr 2016 - begin
+		// if (in EMSettings) enablePowerFromIass="true" use "getSampleAtTime"
+		// else use "getSampleAtTimeVirtualPower"
 		System.out.println(mapper.getSampleAtTime("2", "iaas2", init));
+		// System.out.println(mapper.getSampleAtTimeVirtualPower("2", "iaas2", init));
+		// M. Fontanella - 26 Apr 2016 - end
+
 		// M. Fontanella - 05 Feb 2016 - end
 	}
 	

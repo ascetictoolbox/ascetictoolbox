@@ -47,12 +47,12 @@
 		<paasem.ibatis>3.3.0</paasem.ibatis>
 		<paasem.pool>2.3</paasem.pool>
 	</properties>
-<!-- 	 <repositories> -->
-<!-- 	    <repository> -->
-<!-- 	      <id>neuroph.sourceforge.net</id> -->
-<!-- 	      <url>http://neuroph.sourceforge.net/maven2/</url> -->
-<!-- 	    </repository> -->
-<!-- 	 </repositories> -->
+	 <repositories>
+ 	    <repository>
+ 	      <id>neuroph.sourceforge.net</id>
+ 	      <url>http://neuroph.sourceforge.net/maven2/</url>
+ 	    </repository>
+ 	 </repositories>
 	<dependencies>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -133,7 +133,12 @@
 			<artifactId>activemq-amqp</artifactId>
 			<version>${paasem.activemq}</version>
 		</dependency>
-		
+		<dependency>
+		<groupId>org.neuroph</groupId>
+		<artifactId>neuroph-core</artifactId>
+		<version>2.9</version>
+		</dependency>
+  		
 	</dependencies>
 
 	<build>

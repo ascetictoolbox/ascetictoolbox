@@ -40,7 +40,10 @@ public class EMSettings {
 	// AM topics I subscribe
 	private String amanagertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.*";
 	// PaaS energy measurement I subscribe
-	private String powertopic="vm.*.item.*";
+	// M. Fontanella - 06 Jun 2016 - begin
+	// private String powertopic="vm.*.item.*";
+	private String powertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*";
+	// M. Fontanella - 06 Jun 2016 - end
 	
 	// 	temporarly for IaaS connection
 	private String enableIaasQueue="false";
@@ -58,6 +61,11 @@ public class EMSettings {
 	// PaaS params
 	private String providerIdDefault="00000";
 	// M. Fontanella - 11 Jan 2016 - end
+	
+	// M. Fontanella - 26 Apr 2016 - begin
+	// IaaS power data
+	private String enablePowerFromIaas="true";
+	// M. Fontanella - 26 Apr 2016 - end
 	
 	
 	
@@ -90,6 +98,9 @@ public class EMSettings {
 		// M. Fontanella - 11 Jan 2016 -  begin
 		this.setProviderIdDefault(props.getProperty("providerIdDefault"));
 		// M. Fontanella - 11 Jan 2016 -  end
+		// M. Fontanella - 26 Apr 2016 - begin
+		this.setEnablePowerFromIaas(props.getProperty("enablePowerFromIaas"));
+		// M. Fontanella - 26 Apr 2016 - end
 	}
 
 
@@ -266,11 +277,19 @@ public class EMSettings {
 		return providerIdDefault;
 	}
 
-
 	public void setProviderIdDefault(String providerIdDefault) {
 		this.providerIdDefault = providerIdDefault;
 	}
-
-
+	
 	// M. Fontanella - 11 Jan 2016 -  end
+	
+	// M. Fontanella - 26 Apr 2016 - begin
+	public String getEnablePowerFromIaas() {
+		return enablePowerFromIaas;
+	}
+
+	public void setEnablePowerFromIaas(String enablePowerFromIaas) {
+		this.enablePowerFromIaas = enablePowerFromIaas;
+	}
+	// M. Fontanella - 26 Apr 2016 - end
 }

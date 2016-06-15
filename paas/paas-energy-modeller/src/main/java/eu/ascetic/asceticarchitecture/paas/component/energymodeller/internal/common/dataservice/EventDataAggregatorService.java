@@ -79,6 +79,15 @@ public class EventDataAggregatorService {
 	}
 	
 	
+	// M. Fontanella - 18 May 2016 - begin
+	public List<Double> getAllProductsDurationWeight(String provider, String app, String vmid, String event, long start,long end) {
+		
+		return eventDataManager.getAllProductsDurationWeight(provider, app, vmid, event, start, end);
+			
+	}
+	// M. Fontanella - 18 May 2016 - end
+	
+	
 	public void setupApplicationMonitor(String url){
 		// crea
 		logger.info("# initializing the event collector component");

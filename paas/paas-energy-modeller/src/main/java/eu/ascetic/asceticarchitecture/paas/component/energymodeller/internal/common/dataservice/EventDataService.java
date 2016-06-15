@@ -114,8 +114,11 @@ public class EventDataService {
 		if (vmid==null) return resultSet;
 		for (DataEvent de : eventData){
 			
+			// logger.info("PROV="+de.getProviderid()+", APP="+de.getApplicationid()+", VM="+de.getVmid()+", EVENT="+de.getEventid()+", DEP="+de.getDeploymentid());//MAXIM
 			// M. Fontanella - 11 Jan 2016 - begin
-			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid)) && (de.getEventid().equals(eventid)) && (de.getDeploymentid().equals(deploymentid)) && (de.getEventid().equals(eventid))){
+			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid)) && (de.getEventid().equals(eventid)) && (de.getDeploymentid().equals(deploymentid))){
+				
+				// logger.info("***** ADD ***** PROV="+de.getProviderid()+", APP="+de.getApplicationid()+", VM="+de.getVmid()+", EVENT="+de.getEventid()+", DEP="+de.getDeploymentid());//MAXIM
 					// M. Fontanella - 11 Jan 2016 - end
 					resultSet.add(de);
 			}
@@ -231,4 +234,53 @@ public class EventDataService {
 		
 		return results;
 	}
+	
+	// M. Fontanella - 18 May 2016 - begin
+	public List<Double> getAllProductsDurationWeight(String providerid, String applicationid, String vmid, String eventid, long tstart, long tend) {
+		// TODO Auto-generated method stub
+		Vector<Double> results= new Vector<Double>();
+		
+		logger.info("$$$ Analysis of coefficients");
+		logger.info("$$$ Event start "+tstart);
+		logger.info("$$$ Event end "+tend);
+		logger.info("$$$ Event duration "+(tend-tstart));
+		
+		for (DataEvent de : eventData){
+			
+			if (  (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))){
+			
+				logger.info("$$$ This Event on the same machine "+de.getEndtime()+"-"+de.getBegintime());
+				logger.info("$$$ This Event duration "+(de.getEndtime()-de.getBegintime()));
+				logger.info("$$$ This Event weight "+de.getWeight());
+				
+				// ok events referred to the right prov/app/vm/dep
+				Double product=new Double(1.0);
+				long lowerbtime=0;
+				long upperbtime=0;
+				if ( (de.getBegintime()<tend) && (de.getEndtime()>tstart)){
+					if ( (de.getBegintime()<tstart) ){
+						logger.info("$$$ Event start before ");
+						lowerbtime = tstart;
+					} else {
+						logger.info("$$$ Event start after the reference event ");
+						lowerbtime = de.getBegintime();
+					}
+					if ( (de.getEndtime()>tend) ){
+						logger.info("$$$ Event end after ");
+						upperbtime = tend;
+					} else {
+						logger.info("$$$ Event end before the reference event ");
+						upperbtime = de.getEndtime();
+					}
+					product = (double) (upperbtime - lowerbtime) * de.getWeight();
+					logger.info("$$$ Event duration x weight "+product);
+					results.add(product);
+				}
+				
+			}
+		}
+
+		return results;
+	}
+	// M. Fontanella - 18 May 2016 - end
 }
