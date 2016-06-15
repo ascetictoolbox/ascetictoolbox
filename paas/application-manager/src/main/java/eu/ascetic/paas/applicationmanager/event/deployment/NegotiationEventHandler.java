@@ -143,6 +143,7 @@ public class NegotiationEventHandler {
 			
 
 			deployment.setStatus(Dictionary.APPLICATION_STATUS_NEGOTIATIED);
+			deployment.setProviderId("" + deploymentEvent.getProviderId());
 
 			deploymentEvent.setDeploymentStatus(deployment.getStatus());
 			

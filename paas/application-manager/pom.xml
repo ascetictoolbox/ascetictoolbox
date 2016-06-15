@@ -219,7 +219,7 @@
 		<dependency>
 			<groupId>eu.ascetic.paas</groupId>
 			<artifactId>application-manager-datamodel</artifactId>
-			<version>0.28-SNAPSHOT</version>
+			<version>0.29-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- ASCETiC Provider Registry Datamodel -->

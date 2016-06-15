@@ -53,8 +53,7 @@ public class DeploymentNameRest extends AbstractRest {
 	 * @return the stored deployment information 
 	 */
 	@GET
-	@Path("{deployment_id}")
-	@Produces(MediaType.APPLICATION_JSON + ";qs=0.5")
+	@Produces(MediaType.APPLICATION_XML + ";qs=1")
 	public Response getDeploymentXML(@PathParam("application_name") String applicationName, @PathParam("deployment_name") String deploymentName) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deploymentname/" + deploymentName + " [in JSON]");
 		
@@ -72,7 +71,6 @@ public class DeploymentNameRest extends AbstractRest {
 	 * @return the stored deployment information 
 	 */
 	@GET
-	@Path("{deployment_id}")
 	@Produces(MediaType.APPLICATION_JSON + ";qs=0.5")
 	public Response getDeploymentJSON(@PathParam("application_name") String applicationName, @PathParam("deployment_name") String deploymentName) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deploymentname/" + deploymentName + " [in JSON]");

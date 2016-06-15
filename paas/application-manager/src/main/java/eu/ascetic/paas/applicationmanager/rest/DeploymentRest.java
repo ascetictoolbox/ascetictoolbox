@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.rest;
 
 import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -360,6 +361,7 @@ public class DeploymentRest extends AbstractRest {
 	private double getPowerOrEnergy(String applicationName, Deployment deployment, Unit unit) {
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
+		
 
 		List<String> ids = getVmsIds(deployment);
 
@@ -483,7 +485,6 @@ public class DeploymentRest extends AbstractRest {
 		List<String> ids = new ArrayList<String>();
 		
 		for(VM vm : deployment.getVms()) {
-			//ids.add(vm.getProviderVmId());
 			ids.add("" + vm.getId());
 		}
 		
@@ -546,10 +547,14 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Path("{deployment_id}/events/{event_id}/energy-consumption")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getEnergyMeasurementForEvent(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, @PathParam("event_id") String eventId) {
+	public Response getEnergyMeasurementForEvent(@PathParam("application_name") String applicationName, 
+												 @PathParam("deployment_id") String deploymentId, 
+												 @PathParam("event_id") String eventId,
+												 @QueryParam("startTime") String startTime,
+					                             @QueryParam("endTime") String endTime) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-estimation");
 
-		double energyConsumed = getPowerOrEnergyMeasurementPerEvent(applicationName, deploymentId, eventId, Unit.ENERGY, null, null);
+		double energyConsumed = getPowerOrEnergyMeasurementPerEvent(applicationName, deploymentId, eventId, Unit.ENERGY, startTime, endTime);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -564,19 +569,35 @@ public class DeploymentRest extends AbstractRest {
 		energyModeller = getEnergyModeller();
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		String providerId = deployment.getProviderId();
 		List<String> ids = getVmsIds(deployment);
 		
+		Timestamp startTimestamp = null;
+		Timestamp endTimestamp = null;
+		
+		if(startTime != null) {
+			startTimestamp = new Timestamp(Long.parseLong(startTime));
+		}
+		
+		if(endTime != null) {
+			endTimestamp = new Timestamp(Long.parseLong(endTime));
+		}
+		
 		logger.debug("Connecting to Energy Modeller");
-		return energyModeller.measure(null,  applicationName, deploymentId, ids, eventId, unit, null, null);
+		return energyModeller.measure(providerId,  applicationName, deploymentId, ids, eventId, unit, startTimestamp, endTimestamp);
 	}
 	
 	@GET
 	@Path("{deployment_id}/events/{event_id}/power-consumption")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getPowerConsumptionForEvent(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, @PathParam("event_id") String eventId) {
+	public Response getPowerConsumptionForEvent(@PathParam("application_name") String applicationName, 
+												@PathParam("deployment_id") String deploymentId, 
+												@PathParam("event_id") String eventId,
+					                            @QueryParam("startTime") String startTime,
+					                            @QueryParam("endTime") String endTime) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/events/" + eventId + "/power-estimation");
 
-		double powerConsumed = getPowerOrEnergyMeasurementPerEvent(applicationName, deploymentId, eventId, Unit.POWER, null, null);
+		double powerConsumed = getPowerOrEnergyMeasurementPerEvent(applicationName, deploymentId, eventId, Unit.POWER, startTime, endTime);
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		powerMeasurement.setValue(powerConsumed);
 		

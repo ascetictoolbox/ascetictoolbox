@@ -1075,6 +1075,7 @@ public class DeploymentRestTest extends AbstractTest {
 	public void getEnergyConsumptionForEventTest() throws JAXBException {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
+		deployment.setProviderId("pro-id");
 		
 		VM vm1 = new VM();
 		vm1.setId(1);
@@ -1095,7 +1096,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 				
-		when(energyModeller.measure(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+		when(energyModeller.measure(eq("pro-id"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
 			 
 			@Override
 			public boolean matches(Object arg0) {
@@ -1119,12 +1120,45 @@ public class DeploymentRestTest extends AbstractTest {
 		}), eq("eventX"), eq(Unit.ENERGY), isNull(Timestamp.class), isNull(Timestamp.class))).thenReturn(22.0);
 		
 		
-		Response response = deploymentRest.getEnergyMeasurementForEvent("111", "1", "eventX");
+		Response response = deploymentRest.getEnergyMeasurementForEvent("111", "1", "eventX", null, null);
 		
 		String xml = (String) response.getEntity();
 		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated energy consumption for this aplication deployment and specific event", energyMeasurement.getDescription());
+		
+		when(energyModeller.measure(eq("pro-id"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), eq("eventX"), eq(Unit.ENERGY),  eq(new Timestamp(22222l)), eq(new Timestamp(111111l)))).thenReturn(22.0);
+		
+		response = deploymentRest.getEnergyMeasurementForEvent("111", "1", "eventX", "22222", "111111");
+		
+		xml = (String) response.getEntity();
+		jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
 		assertEquals("Aggregated energy consumption for this aplication deployment and specific event", energyMeasurement.getDescription());
@@ -1135,6 +1169,7 @@ public class DeploymentRestTest extends AbstractTest {
 	public void getPowerMeasurementForEventTest() throws JAXBException {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
+		deployment.setProviderId("prov");
 		
 		VM vm1 = new VM();
 		vm1.setId(1);
@@ -1155,7 +1190,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 				
-		when(energyModeller.measure(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+		when(energyModeller.measure(eq("prov"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
 			 
 			@Override
 			public boolean matches(Object arg0) {
@@ -1179,12 +1214,46 @@ public class DeploymentRestTest extends AbstractTest {
 		}), eq("eventX"), eq(Unit.POWER), isNull(Timestamp.class), isNull(Timestamp.class))).thenReturn(22.0);
 		
 		
-		Response response = deploymentRest.getPowerConsumptionForEvent("111", "1", "eventX");
+		Response response = deploymentRest.getPowerConsumptionForEvent("111", "1", "eventX", null, null);
 		
 		String xml = (String) response.getEntity();
 		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		PowerMeasurement powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, powerMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated power consumption for this aplication deployment and specific event", powerMeasurement.getDescription());
+		
+		when(energyModeller.measure(eq("prov"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), eq("eventX"), eq(Unit.POWER), eq(new Timestamp(111l)), eq(new Timestamp(222l)))).thenReturn(22.0);
+		
+		
+		response = deploymentRest.getPowerConsumptionForEvent("111", "1", "eventX", "111", "222");
+		
+		xml = (String) response.getEntity();
+		jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
 		
 		assertEquals(22.0, powerMeasurement.getValue(), 0.000001);
 		assertEquals("Aggregated power consumption for this aplication deployment and specific event", powerMeasurement.getDescription());
@@ -1283,7 +1352,7 @@ public class DeploymentRestTest extends AbstractTest {
 	}
 	
 	@Test
-	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	@SuppressWarnings(value = { "static-access" }) 
 	public void getCostTest() throws JAXBException {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
