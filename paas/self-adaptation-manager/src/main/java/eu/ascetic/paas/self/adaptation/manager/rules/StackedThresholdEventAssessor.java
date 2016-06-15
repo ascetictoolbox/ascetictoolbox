@@ -81,11 +81,12 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         }
         if (!new File(workingDir + RULES_FILE).exists()) {
             rulesFile.add("Agreement Term");
-            rulesFile.append("Direction");
+            rulesFile.append("Comparator");
             rulesFile.append("Response Type");
             rulesFile.append("Event Type (Violation or Warning)");
-            rulesFile.append("lower bound");
-            rulesFile.append("upper bound");
+            rulesFile.append("Lower bound");
+            rulesFile.append("Upper bound");
+            rulesFile.append("Parameters");
             rulesFile.add("energy_usage_per_app");
             rulesFile.append("GT");
             rulesFile.append("REMOVE_VM");
@@ -120,7 +121,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             ArrayList<String> current = rulesFile.getRow(i);
             FiringCriteria rule = new FiringCriteria(current.get(0), current.get(1), current.get(2));
             try {
-                if (current.size() > 3 && !current.get(3).isEmpty()) {
+                if (current.size() >= 4 && !current.get(3).isEmpty()) {
                     rule.setType(EventData.Type.valueOf(current.get(3)));
                 }
             } catch (IllegalArgumentException ex) {
@@ -129,12 +130,15 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                  * This therefore leaves this to be an optional value.
                  */
             }
-            if (current.size() > 4) {
+            if (current.size() >= 5) {
                 rule.setMinMagnitude(Double.parseDouble(current.get(4)));
             }
-            if (current.size() > 5) {
+            if (current.size() >= 6) {
                 rule.setMaxMagnitude(Double.parseDouble(current.get(5)));
             }
+            if (current.size() >= 7) {
+                rule.setParameters(current.get(6));
+            }            
             rules.add(rule);
         }
     }
