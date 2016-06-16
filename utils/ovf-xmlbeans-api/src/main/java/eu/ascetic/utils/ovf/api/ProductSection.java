@@ -208,11 +208,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystem}.
      */
     private static final String ASCETIC_ADAPTATION_RULE_NUMBER = "asceticAdaptationRuleNumber";
-    private static final String ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY = "asceticAdaptationRuleAgreementTerm_";
-    private static final String ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY = "asceticAdaptationRuleDirection_";
+    private static final String ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY = "asceticAdaptationRuleSlaTerm_";
+    private static final String ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY = "asceticAdaptationRuleComparator_";
     private static final String ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY = "asceticAdaptationRuleResponseType_";
-    private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
-    private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleResponseType_";
+    private static final String ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY = "asceticAdaptationRuleLowerBound_";
+    private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleUpperBound_";
     private static final String ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY = "asceticAdaptationRuleNotificationType_";
     private static final String ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY = "asceticAdaptationRuleParameters_";
     
@@ -2135,7 +2135,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      */
     public void setAdaptationRuleParameters(int index, String parameters) {
         if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index) == null) {
-            addNewProperty(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index,
+            addNewProperty(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index,
                     ProductPropertyType.STRING, parameters);
         } else {
             getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index)
