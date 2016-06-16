@@ -214,6 +214,47 @@ public class VMRestTest extends AbstractTest {
 		assertEquals("0.0.0.0", vmFromRest.getIp());
 		assertEquals("ACTIVE", vmFromRest.getStatus());
 	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetEnergyEstimationForAVM() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(2);
+		vm.setProviderVmId("abab");
+		
+		when(vmDAO.getById(444)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("2");
+		when(energyModeller.estimate(null,  "111", "333", ids, null, Unit.ENERGY, 2l)).thenReturn(22.0);
+		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
+		
+		Response response = vmRest.getEnergyEstimation("111", "333", "444", 2l);
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/vms/444/energy-estimation", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy estimation in Wh for an event in a specific VM", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/vms/444", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/vms/444/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
 
 	@Test
 	@SuppressWarnings(value = { "static-access" }) 
@@ -232,10 +273,10 @@ public class VMRestTest extends AbstractTest {
 		
 		List<String> ids = new ArrayList<String>();
 		ids.add("2");
-		when(energyModeller.estimate(null,  "111", "333", ids, "eventX", Unit.ENERGY, 0l)).thenReturn(22.0);
+		when(energyModeller.estimate(null,  "111", "333", ids, "eventX", Unit.ENERGY, 3l)).thenReturn(22.0);
 		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
 		
-		Response response = vmRest.getEnergyEstimation("111", "333", "444", "eventX");
+		Response response = vmRest.getEnergyEstimationForAnEvent("111", "333", "444", "eventX", 3l);
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -276,7 +317,7 @@ public class VMRestTest extends AbstractTest {
 		when(energyModeller.estimate(null,  "111", "333", ids, "eventX", Unit.POWER, 0l)).thenReturn(22.0);
 		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
 		
-		Response response = vmRest.getPowerEstimation("111", "333", "444", "eventX");
+		Response response = vmRest.getPowerEstimationForAnEvent("111", "333", "444", "eventX");
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -293,6 +334,47 @@ public class VMRestTest extends AbstractTest {
 		assertEquals("parent", powereasurement.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, powereasurement.getLinks().get(0).getType());
 		assertEquals("/applications/111/deployments/333/vms/444/events/eventX/power-estimation", powereasurement.getLinks().get(1).getHref());
+		assertEquals("self",powereasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powereasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void testGetPowerEstimationForAVM() throws Exception {
+		VMRest vmRest = new VMRest();
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		vmRest.energyModeller = energyModeller;
+		VMDAO vmDAO = mock(VMDAO.class);
+		vmRest.vmDAO = vmDAO;
+		
+		VM vm = new VM();
+		vm.setId(2);
+		vm.setProviderVmId("abab");
+		
+		when(vmDAO.getById(444)).thenReturn(vm);
+		
+		List<String> ids = new ArrayList<String>();
+		ids.add("2");
+		when(energyModeller.estimate(null,  "111", "333", ids, null, Unit.POWER, 0l)).thenReturn(22.0);
+		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
+		
+		Response response = vmRest.getPowerEstimation("111", "333", "444");
+		assertEquals(200, response.getStatus());
+		
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		PowerMeasurement powereasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals("/applications/111/deployments/333/vms/444/power-estimation", powereasurement.getHref());
+		assertEquals(22.0, powereasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power estimation in Wh for an event in a specific VM", powereasurement.getDescription());
+		assertEquals(2, powereasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333/vms/444", powereasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powereasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powereasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/vms/444/power-estimation", powereasurement.getLinks().get(1).getHref());
 		assertEquals("self",powereasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, powereasurement.getLinks().get(1).getType());
 	}

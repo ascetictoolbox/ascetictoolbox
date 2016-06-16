@@ -300,7 +300,7 @@ public class DeploymentRest extends AbstractRest {
 		
 		if(Configuration.emCalculateEnergyWhenDeletion != null && Configuration.emCalculateEnergyWhenDeletion.equals("yes")) {
 			// TODO put this inside a try-catch
-			EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment);
+			EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment, null, null);
 			EnergyCosumed energyConsumed = new EnergyCosumed();
 			energyConsumed.setAppId(applicationName);
 			energyConsumed.setInstanceId(deploymentId);
@@ -349,8 +349,8 @@ public class DeploymentRest extends AbstractRest {
 		return buildResponse(Status.NO_CONTENT, "");
 	}
 	
-	private EnergyMeasurement getEnergyConsumptionFromEM(String applicationName, Deployment deployment) {
-		double energyConsumed = getPowerOrEnergy(applicationName, deployment, Unit.ENERGY);
+	private EnergyMeasurement getEnergyConsumptionFromEM(String applicationName, Deployment deployment, String startTime, String endTime) {
+		double energyConsumed = getPowerOrEnergy(applicationName, deployment, Unit.ENERGY, startTime, endTime);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -358,18 +358,28 @@ public class DeploymentRest extends AbstractRest {
 		return energyMeasurement;
 	}
 	
-	private double getPowerOrEnergy(String applicationName, Deployment deployment, Unit unit) {
+	private double getPowerOrEnergy(String applicationName, Deployment deployment, Unit unit,  String startTime, String endTime) {
 		// Make sure we have the right configuration
 		energyModeller = getEnergyModeller();
 		
-
 		List<String> ids = getVmsIds(deployment);
 
 		double energyOrPowerConsumed = 0.0;
+		
+		Timestamp startTimestamp = null;
+		Timestamp endTimestamp = null;
+		
+		if(startTime != null) {
+			startTimestamp = new Timestamp(Long.parseLong(startTime));
+		}
+		
+		if(endTime != null) {
+			endTimestamp = new Timestamp(Long.parseLong(endTime));
+		}
 
 		try {
 			logger.debug("Connecting to Energy Modeller");
-			energyOrPowerConsumed = energyModeller.measure(null,  applicationName, "" + deployment.getId(), ids, null, unit, null, null);
+			energyOrPowerConsumed = energyModeller.measure(deployment.getProviderId(),  applicationName, "" + deployment.getId(), ids, null, unit, startTimestamp, endTimestamp);
 		}
 		catch(Exception e) {
 			energyOrPowerConsumed = -1.0;
@@ -378,8 +388,8 @@ public class DeploymentRest extends AbstractRest {
 		return energyOrPowerConsumed;
 	}
 	
-	private PowerMeasurement getPowerConsumptionFromEM(String applicationName, Deployment deployment) {
-		double powerConsumed = getPowerOrEnergy(applicationName, deployment, Unit.POWER);
+	private PowerMeasurement getPowerConsumptionFromEM(String applicationName, Deployment deployment, String startTime, String endTime) {
+		double powerConsumed = getPowerOrEnergy(applicationName, deployment, Unit.POWER, startTime, endTime);
 		
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		powerMeasurement.setValue(powerConsumed);
@@ -452,12 +462,15 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Path("{deployment_id}/energy-consumption")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, 
+										 @PathParam("deployment_id") String deploymentId,
+										 @QueryParam("startTime") String startTime,
+			                             @QueryParam("endTime") String endTime) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
 		
-		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment);
+		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment, startTime, endTime);
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId);
@@ -468,12 +481,15 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Path("{deployment_id}/power-consumption")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getPowerConsumption(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+	public Response getPowerConsumption(@PathParam("application_name") String applicationName, 
+										@PathParam("deployment_id") String deploymentId,
+										@QueryParam("startTime") String startTime,
+			                            @QueryParam("endTime") String endTime) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
 		
-		PowerMeasurement energyMeasurement = getPowerConsumptionFromEM(applicationName, deployment);
+		PowerMeasurement energyMeasurement = getPowerConsumptionFromEM(applicationName, deployment, startTime, endTime);
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getPowerMeasurementForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId);
@@ -504,7 +520,9 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Path("{deployment_id}/events/{event_id}/energy-estimation")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getEnergyEstimationForEvent(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, @PathParam("event_id") String eventId) {
+	public Response getEnergyEstimationForEvent(@PathParam("application_name") String applicationName, 
+												@PathParam("deployment_id") String deploymentId, 
+												@PathParam("event_id") String eventId) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-estimation");
 
 		double energyConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, eventId, Unit.ENERGY, 0l);
