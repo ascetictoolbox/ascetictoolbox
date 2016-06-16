@@ -1869,6 +1869,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @param upperBound
      *            The upper bound for the magnitude, i.e. different between
      *            guaranteed value and actual value.
+     * @param notificationType If its information a warning or a violation event
      * @return The index of the new adaptation rule (not to be confused with the
      *         index of a {@link ProductProperty})
      */
@@ -2027,8 +2028,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The lower bound of the adaptation rule
      */
     public void setAdaptationRuleLowerBound(int index, String lowerBound) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
-                .setValue(lowerBound);
+        if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index) == null) {
+            addNewProperty(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index,
+                    ProductPropertyType.STRING, lowerBound);
+        } else {
+            getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
+                    .setValue(lowerBound);
+        }
     }
 
     /**
@@ -2041,7 +2047,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The upper bound of the adaptation rule
      */
     public String getAdaptationRuleUpperBound(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index)
                 .getValue();
     }
 
@@ -2056,8 +2062,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The upper bound of the adaptation rule
      */
     public void setAdaptationRuleUpperBound(int index, String upperBound) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
-                .setValue(upperBound);
+        if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index) == null) {
+            addNewProperty(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index,
+                    ProductPropertyType.STRING, upperBound);
+        } else {
+            getPropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index)
+                    .setValue(upperBound);
+        }
     }
 
     /**
@@ -2085,8 +2096,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The notification type of the adaptation rule i.e. SLA_BREACH, WARNING
      */
     public void setAdaptationRuleNotificationType(int index, String notificationType) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
-                .setValue(notificationType);
+        if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index) == null) {
+            addNewProperty(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index,
+                    ProductPropertyType.STRING, notificationType);
+        } else {
+            getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
+                    .setValue(notificationType);
+        }
     }       
      
     /**
@@ -2101,7 +2117,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The parameters of the adaptation rule
      */
     public String getAdaptationRuleParameters(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
+        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index)
                 .getValue();
     }    
     
@@ -2118,8 +2134,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      *            The parameters of the adaptation rule
      */
     public void setAdaptationRuleParameters(int index, String parameters) {
-        getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
-                .setValue(parameters);
+        if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index) == null) {
+            addNewProperty(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index,
+                    ProductPropertyType.STRING, parameters);
+        } else {
+            getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index)
+                    .setValue(parameters);
+        }
     } 
     
     /**
@@ -2137,6 +2158,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index);
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index);
+        removePropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index);
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets

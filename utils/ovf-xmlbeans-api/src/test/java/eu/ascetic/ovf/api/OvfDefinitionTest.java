@@ -375,6 +375,8 @@ public class OvfDefinitionTest extends TestCase {
         productSection.setVersion("1.0");
         productSection.addNewProperty("key", ProductPropertyType.STRING,
                 "value");
+        productSection.addAdaptationRule("energy_usage_per_app", "GT", "REMOVE_VM", "0", "100", "Violation");
+        productSection.setAdaptationRuleParameters(0, "Parameters");        
         virtualSystemCollection.addProductSection(productSection);
 
         // Virtual System
