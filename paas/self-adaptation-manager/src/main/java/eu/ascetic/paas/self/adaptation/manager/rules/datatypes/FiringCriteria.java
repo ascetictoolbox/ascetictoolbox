@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager.rules.datatypes;
 
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
 import java.util.ArrayList;
 
 /**
@@ -230,27 +231,46 @@ public class FiringCriteria {
      */
     public static ArrayList<FiringCriteria> getFiringCriteriaFromOVF(OvfDefinition ovf) {
         ArrayList<FiringCriteria> answer = new ArrayList<>();
+        //This ensures rules that are gloabal are collected correctly
         for (ProductSection section : ovf.getVirtualSystemCollection().getProductSectionArray()) {
-            int maxValue = section.getAdaptationRuleNumber();
-            for (int i = 0; i < maxValue; i++) {
-                FiringCriteria criteria = new FiringCriteria(
-                        section.getAdaptationRuleSLATerm(i),
-                        section.getAdaptationRuleComparisonOperator(i),
-                        section.getAdaptationRuleResponseType(i));
-                if (section.getAdaptationRuleLowerBound(i) != null) {
-                    criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(i)));
-                }
-                if (section.getAdaptationRuleUpperBound(i) != null) {
-                    criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(i)));
-                }
-                if (section.getAdaptationRuleNotificationType(i) != null) {
-                    criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(i)));
-                }
-                if (section.getAdaptationRuleParameters(i) != null) {
-                    criteria.setParameters(section.getAdaptationRuleParameters(i));
-                }                
-                answer.add(criteria);
+            answer.addAll(parseProductSection(section));
+        }
+        //This ensures rules that are attached to individual VMs are collected correctly
+        for (VirtualSystem vm : ovf.getVirtualSystemCollection().getVirtualSystemArray()) {
+            for (ProductSection section : vm.getProductSectionArray()) {
+                answer.addAll(parseProductSection(section));
             }
+        }
+        return answer;
+    }
+
+    /**
+     * This parses a product section either for a VM System Collection or for
+     * an individual VM.
+     * @param section The product section to read Self-adaptation rules from
+     * @return The list of self-adaptation rules that have been extracted.
+     */
+    private static ArrayList<FiringCriteria> parseProductSection(ProductSection section) {
+        ArrayList<FiringCriteria> answer = new ArrayList<>();
+        int maxValue = section.getAdaptationRuleNumber();
+        for (int ruleNumber = 0; ruleNumber < maxValue; ruleNumber++) {
+            FiringCriteria criteria = new FiringCriteria(
+                    section.getAdaptationRuleSLATerm(ruleNumber),
+                    section.getAdaptationRuleComparisonOperator(ruleNumber),
+                    section.getAdaptationRuleResponseType(ruleNumber));
+            if (section.getAdaptationRuleLowerBound(ruleNumber) != null) {
+                criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(ruleNumber)));
+            }
+            if (section.getAdaptationRuleUpperBound(ruleNumber) != null) {
+                criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(ruleNumber)));
+            }
+            if (section.getAdaptationRuleNotificationType(ruleNumber) != null) {
+                criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(ruleNumber)));
+            }
+            if (section.getAdaptationRuleParameters(ruleNumber) != null) {
+                criteria.setParameters(section.getAdaptationRuleParameters(ruleNumber));
+            }
+            answer.add(criteria);
         }
         return answer;
     }
@@ -269,6 +289,7 @@ public class FiringCriteria {
 
     /**
      * Given the key value of the parameter this returns its value.
+     *
      * @param key The key name for the actuation parameter
      * @return The value of the parameter else null.
      */
@@ -289,7 +310,7 @@ public class FiringCriteria {
      * information.
      *
      * @param parameters the parameters to set as a semi-colon delimeter based
- list of key value pairs. i.e. argument=value;argument2=three
+     * list of key value pairs. i.e. argument=value;argument2=three
      */
     public void setParameters(String parameters) {
         this.parameters = parameters;
