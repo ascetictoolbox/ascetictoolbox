@@ -75,8 +75,10 @@ public class EventDataConverter {
         answer.setTime(event.getTime().getTimeInMillis() / 1000);
         if (event.getAlert().getType().equals("violation")) {
             answer.setType(EventData.Type.SLA_BREACH);
-        } else {
+        } else if (event.getAlert().getType().equals("warning")) {
             answer.setType(EventData.Type.WARNING);
+        } else {
+            answer.setType(EventData.Type.OTHER);
         }
         answer.setRawValue(Double.parseDouble(event.getValue().getTextValue()));
         answer.setGuranteedValue(event.getAlert().getSlaGuaranteedState().getGuaranteedValue());

@@ -15,9 +15,9 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.datatypes;
 
+import eu.ascetic.utils.ovf.api.OvfDefinition;
 import java.util.HashMap;
 import java.util.Map;
-import eu.ascetic.utils.ovf.api.OvfDefinition;
 
 /**
  * This class represents an event that arrives at self-adaptation manager for
@@ -30,7 +30,7 @@ public class EventData implements Comparable<EventData> {
     private long time; //the time of the event
     private double rawValue; //the metric raw value
     private double guranteedValue; //the guranteed value
-    private EventData.Type type; //breach vs warning
+    private EventData.Type type; //breach, warning or other (i.e. informative)
     private EventData.Operator guranteeOperator; // threshold direction
     private String slaUuid; //sla id
     private String applicationId;
@@ -59,7 +59,7 @@ public class EventData implements Comparable<EventData> {
      */
     public enum Type {
 
-        SLA_BREACH, WARNING
+        SLA_BREACH, WARNING, OTHER
     }
 
     /**
