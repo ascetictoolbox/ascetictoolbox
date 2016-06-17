@@ -87,7 +87,10 @@ public class EMSettings {
 		this.setMonitoringQueueTopic(props.getProperty("monitoringQueueTopic"));
 		this.setEnableQueue(props.getProperty("enableQueue"));
 		this.setAmanagertopic(props.getProperty("amanagertopic"));
-		this.setPowertopic(props.getProperty("energytopic"));
+		// M. Fontanella - 16 Jun 2016 - begin
+		//this.setPowertopic(props.getProperty("energytopic"));
+		this.setPowertopic(props.getProperty("powertopic"));
+		// M. Fontanella - 16 Jun 2016 - end
 		this.setEnableIaasQueue(props.getProperty("enableIaasQueue"));
 		this.setIaasAmqpUser(props.getProperty("iaasAmqpUser"));
 		this.setIaasAmqpPassword(props.getProperty("iaasAmqpPassword"));

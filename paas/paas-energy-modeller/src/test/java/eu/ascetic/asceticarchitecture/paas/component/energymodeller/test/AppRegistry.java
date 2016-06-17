@@ -91,7 +91,9 @@ public class AppRegistry {
 		System.out.println(machines.size());
 		
 		// M. Fontanella - 05 Feb 2016 - begin
-		machines = mapper.selectByDeploy("app1","1");
+		// M. Fontanella - 16 Jun 2016 - begin
+		machines = mapper.selectByDeploy("11111","app1","1");
+		// M. Fontanella - 16 Jun 2016 - ebd
 		// M. Fontanella - 05 Feb 2016 - end
 		
 		System.out.println(machines.size());

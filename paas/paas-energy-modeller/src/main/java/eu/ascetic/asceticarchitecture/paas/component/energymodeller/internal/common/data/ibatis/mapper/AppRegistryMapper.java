@@ -42,8 +42,10 @@ public interface AppRegistryMapper {
 	  @Select("SELECT applicationid FROM APPLICATION_REGISTRY WHERE deploymentid = #{deploymentid} GROUP BY applicationid")
 	  String selectAppByDeploy(@Param("deploymentid") String deploymentid);
 
-	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE applicationid = #{applicationid} and deploymentid = #{deploymentid}")
-	  List<VirtualMachine> selectByDeploy(@Param("applicationid") String applicationid,@Param("deploymentid") String deploymentid);
+	  // M. Fontanella - 16 Jun 2016 - begin
+	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid}")
+	  List<VirtualMachine> selectByDeploy(@Param("providerid") String providerid,@Param("applicationid") String applicationid,@Param("deploymentid") String deploymentid);
+	  // M. Fontanella - 16 Jun 2016 - end
 	  
 	  // M. Fontanella - 20 Jan 2016 - begin
 	  @Select("SELECT * FROM APPLICATION_REGISTRY WHERE providerid = #{providerid} and applicationid = #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
@@ -75,8 +77,10 @@ public interface AppRegistryMapper {
 	  @Select("SELECT COUNT(*) FROM APPLICATION_REGISTRY WHERE iaasid = #{iaasid} ")
 	  int checkIaaSVM(@Param("iaasid") String iaasid);
 	
-	  @Select("SELECT iaasid FROM APPLICATION_REGISTRY WHERE deploymentid = #{deploymentid} and vmid = #{vmid} ")
-	  String selectFromIaaSID(@Param("deploymentid") String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 16 Jun 2016 - begin
+	  @Select("SELECT iaasid FROM APPLICATION_REGISTRY WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
+	  String selectFromIaaSID(@Param("providerid") String providerid,@Param("deploymentid") String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 16 Jun 2016 - end
 	  
 	  // M. Fontanella - 20 Jan 2016 - begin
 	  //@Update("UPDATE APPLICATION_REGISTRY set energy=#{energy} WHERE #{applicationid} and deploymentid = #{deploymentid} and vmid = #{vmid} ")
@@ -88,7 +92,7 @@ public interface AppRegistryMapper {
 	  void updatePower(@Param("providerid") String providerid, @Param("applicationid") String applicationid, @Param("deploymentid") String deploymentid,@Param("vmid") String vmid,@Param("energy") double power);
 	  // M. Fontanella - 20 Jan 2016 - end
 	  
-		  @Select("SELECT deploymentid FROM APPLICATION_REGISTRY where stop = 0 GROUP BY deploymentid")
+	  @Select("SELECT deploymentid FROM APPLICATION_REGISTRY where stop = 0 GROUP BY deploymentid")
 	  List<String> selectDeployments();
 	  
 	  @Select("SELECT vmid FROM APPLICATION_REGISTRY where stop = 0 and deploymentid = #{deploymentid} GROUP BY deploymentid,vmid")

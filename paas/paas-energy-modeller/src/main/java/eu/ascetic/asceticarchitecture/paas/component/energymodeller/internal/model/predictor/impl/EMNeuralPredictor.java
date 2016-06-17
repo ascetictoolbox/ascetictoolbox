@@ -143,7 +143,10 @@ public class EMNeuralPredictor implements PredictorInterface{
 				
 		maxIterations = valuesRow.length;
 		LOGGER.info("Samples of analysis for model will be " + valuesRow.length);
-		if (valuesRow.length == 0){
+		// M. Fontanella - 16 Jun 2016 - begin
+		// if (valuesRow.length == 0){
+		if (valuesRow.length <= 1){
+		// M. Fontanella - 16 Jun 2016 - end
 			LOGGER.warn("Not enought samples " + valuesRow.length);
 			LOGGER.info("############ Forecasting not performed on Provider "+providerid + " Application "+applicationid + " VM "+vm+ "############");
 			return 0;
@@ -305,14 +308,14 @@ public class EMNeuralPredictor implements PredictorInterface{
 			
 		}
 		else
-			LOGGER.debug("Samples for mem "+memSample.size());
+			LOGGER.info("Samples for mem "+memSample.size());
 		
 		if (cpuSample == null) {
 			isnull = true;
 			LOGGER.debug("Samples for cpu 0");			
 		}
 		else
-			LOGGER.debug("Samples for cpu "+cpuSample.size());			
+			LOGGER.info("Samples for cpu "+cpuSample.size());		
 				
 		if (powerSample == null) {
 			isnull = true;
@@ -320,13 +323,13 @@ public class EMNeuralPredictor implements PredictorInterface{
 			
 		}
 		else
-			LOGGER.debug("Samples for power "+powerSample.size());	
+			LOGGER.info("Samples for power "+powerSample.size());
 		
 		if (isnull == true) {
 			double [][] valuesRow = new double[0][4];
 			return(valuesRow);
 		}		
-				
+		
 		// CPU
 		HashMap<Long, Double> hmapCPU = new HashMap<Long, Double>();
 				
@@ -573,14 +576,22 @@ public class EMNeuralPredictor implements PredictorInterface{
 		
 		
 		LOGGER.debug("Number of aggregated rows: " + counterALL);
-		if (counterALL > 0) {
+		
+		if (counterALL > 0) {		
+			
 			this.lastSampleTimestamp = (long )valuesRow[counterALL-1][0];
+			// M. Fontanella - 16 Jun 2016 - begin
 			//this.sampleIntervalAverage = this.lastSampleTimestamp - (long )valuesRow[counterALL-2][0];
-			this.sampleIntervalAverage = (this.lastSampleTimestamp - (long )valuesRow[0][0])/(counterALL-1);			
+			if (counterALL > 1)
+				this.sampleIntervalAverage = (this.lastSampleTimestamp - (long )valuesRow[0][0])/(counterALL-1);
+			else
+				this.sampleIntervalAverage = 0;
+			// M. Fontanella - 16 Jun 2016 - end
 		
 			LOGGER.info("Last Sample Timestamp / Average Interval: " + this.lastSampleTimestamp + " / " + this.sampleIntervalAverage);
+
 		}
-		
+				
         return(valuesRow);
 
 	}

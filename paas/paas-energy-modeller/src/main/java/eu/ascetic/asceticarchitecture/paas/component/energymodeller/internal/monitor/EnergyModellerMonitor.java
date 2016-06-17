@@ -161,7 +161,9 @@ public class EnergyModellerMonitor implements Runnable {
 				// M. Fontanella - 11 Jan 2016 - end
 				logger.info("monitoring energy "+partial_energy);
 				// M. Fontanella - 26 Apr 2016 - begin
-				double partial_power = energyService.getPowerPerVM(deployment, vmid, enablePowerFromIaas);
+				// M. Fontanella - 16 Jun 2016 - begin
+				double partial_power = energyService.getPowerPerVM(provid, deployment, vmid, enablePowerFromIaas);
+				// M. Fontanella - 16 Jun 2016 - end
 				// M. Fontanella - 26 Apr 2016 - end
 				logger.info("monitoring power "+partial_power);
 				// M. Fontanella - 20 Jan 2016 - begin

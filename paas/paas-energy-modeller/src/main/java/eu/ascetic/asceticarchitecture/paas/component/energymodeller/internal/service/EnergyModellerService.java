@@ -399,7 +399,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		for (String vm : vmids) {
 			LOGGER.info("############ Measuring event average instant power (W) for vm "+vm); 
 			// TODO workaround 
-			String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+			// M. Fontanella - 16 Jun 2016 - begin
+			// String translated = energyService.translatePaaSFromIaasID(providerid,deploymentid, vm);
+			String translated = vm;
+			// M. Fontanella - 16 Jun 2016 - end
 			// M. Fontanella - 11 Jan 2016 - begin
 			List<DataEvent> events = eventService.getEvents(providerid, applicationid, deploymentid, translated, eventid,null,null);
 			// M. Fontanella - 11 Jan 2016 - end
@@ -459,7 +462,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 					LOGGER.info("Measuring event average instant power (W) for vm "+vm); 
 					// TODO workaround because samples are registered with IaaS id, the Paas layer translates the ID registered during application deployment and
 					// translates it to the IaaS ID
-					String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+					// M. Fontanella - 16 Jun 2016 - begin
+					// String translated = energyService.translatePaaSFromIaasID(providerid, deploymentid, vm);
+					String translated = vm;
+					// M. Fontanella - 16 Jun 2016 - end
 					if (translated==null){
 						LOGGER.warn("Error cannot match this PaaS ID with the IaaS ID not found");
 					} 
@@ -583,7 +589,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			}else{
 				for (String vm : vmids) {
 					// TODO workaround
-					String translated = energyService.translatePaaSFromIaasID(deploymentid, vm);
+					// M. Fontanella - 16 Jun 2016 - begin
+					// String translated = energyService.translatePaaSFromIaasID(providerid,deploymentid, vm);
+					String translated = vm;
+					// M. Fontanella - 16 Jun 2016 - end
 					// M. Fontanella - 11 Jan 2016 - begin
 					List<DataEvent> events = eventService.getEvents( providerid, applicationid, deploymentid, translated, eventid,start,end);
 					// M. Fontanella - 11 Jan 2016 - end
@@ -674,7 +683,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
             // M. Fontanella - 20 Jan 2016 - end
             int eventcount =0;
             double energyAverage = 0;
-            String translated = energyService.translatePaaSFromIaasID(deploymentid, vmid);
+            // M. Fontanella - 16 Jun 2016 - begin
+            // String translated = energyService.translatePaaSFromIaasID(providerid,deploymentid, vmid);
+            String translated = vmid;
+            // M. Fontanella - 16 Jun 2016 - end
             // M. Fontanella - 11 Jan 2016 - begin
             List<DataEvent> events = eventService.getEvents( providerid, applicationid, deploymentid , translated, eventid,start,end);
             // M. Fontanella - 11 Jan 2016 - end
@@ -749,7 +761,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		List<EventSample> eSamples = new Vector<EventSample>();
 		
 		EventSample es = new EventSample();
-		String translated = energyService.translatePaaSFromIaasID(deploymentid, vmid);
+		// M. Fontanella - 16 Jun 2016 - begin
+		// String translated = energyService.translatePaaSFromIaasID(providerid,deploymentid, vmid);
+		String translated = vmid;
+		// M. Fontanella - 16 Jun 2016 - end
 		// M. Fontanella - 11 Jan 2016 - begin
 		List<DataEvent> events = eventService.getEvents(providerid, applicationid, deploymentid, translated, eventid,start,endtime);
 		// M. Fontanella - 11 Jan 2016 - end

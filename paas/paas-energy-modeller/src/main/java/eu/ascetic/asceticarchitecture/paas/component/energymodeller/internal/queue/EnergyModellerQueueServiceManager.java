@@ -487,6 +487,10 @@ public class EnergyModellerQueueServiceManager {
 			                    DataConsumption dc= new DataConsumption();		                    
 			                    dc.setApplicationid(topic[1]);
 			                    dc.setDeploymentid(topic[3]);
+			                    // M. Fontanella - 16 Jun 2016 - begin
+			                    String paasvmid = topic[5];
+			                    dc.setVmid(paasvmid);
+			                    // M. Fontanella - 16 Jun 2016 - begin
 			                    
 			                    if (measureType.equals("net-power"))
 			                    	dc.setMetrictype("power");
@@ -507,6 +511,8 @@ public class EnergyModellerQueueServiceManager {
 			                    
 			                    dc.setProviderid(providerid);
 			                    
+			                    // M. Fontanella - 16 Jun 2016 - begin
+			                    /*
 		                    	LOGGER.info("Received METRIC message for iaas id"+ jsontext.findValue("iaasVmId"));
 			        
 		                    	if (jsontext.findValue("iaasVmId")==null){
@@ -527,6 +533,17 @@ public class EnergyModellerQueueServiceManager {
 		                    	}
 			                    
 		                    	dc.setVmid(iaasvmid);
+		                    	*/
+		                    	
+			                    SqlSession appsession = appRegistry.getSession();
+		                    	AppRegistryMapper appmapper = appsession.getMapper(AppRegistryMapper.class); 
+		                    	int count = appmapper.checkVM(dc.getProviderid(), dc.getApplicationid(), dc.getDeploymentid(), paasvmid);
+		                    	appsession.close();
+		                    	if (count==0){
+		                    		LOGGER.debug("Received  valid measure for a provider/application/deployment/vm not in the registry");
+		                    		return;
+		                    	}
+		                    	// M. Fontanella - 16 Jun 2016 - end
 		                    	
 		                    	if (jsontext.findValue("timestamp")==null){
 		                    		LOGGER.info("Unable to parse AMQP deployment message, missing timestamp");
@@ -571,13 +588,17 @@ public class EnergyModellerQueueServiceManager {
 		                        
 		                    	// M. Fontanella - 14 Jun 2016 - begin
 		                    	int samples = 0;
-		                		samples = datamapper.getSamplesAtTime( topic[3], iaasvmid, dc.getMetrictype(), timestamp);
+		                    	// M. Fontanella - 16 Jun 2016 - begin
+		                    	// LOGGER.info("***** CERCO: prov="+providerid+", deployment="+topic[3]+", VM="+paasvmid+", Metric="+dc.getMetrictype()+", Time="+timestamp ); //MAXIM
+		                    	samples = datamapper.getSamplesAtTime( providerid, topic[3], paasvmid, dc.getMetrictype(), timestamp);
+		                		// M. Fontanella - 16 Jun 2016 - end
 		                    	
 		                		if (samples == 0){		                    	
 		                    	
-		                    		datamapper.createMeasurement(dc);
-		                    		LOGGER.info("Write "+measureType+" "+value+" for provider "+providerid+", vm "+iaasvmid+"time "+timestamp);
-		                        
+		                    		datamapper.createMeasurement(dc);		                    		
+		                    		// M. Fontanella - 16 Jun 2016 - begin
+		                    		LOGGER.info("Write "+measureType+" "+value+" for provider "+providerid+", vm "+paasvmid+"time "+timestamp);		                    	
+		                    		
 		                    		if (!enablePowerFromIaas) { 
 		                            		
 		                    			double valueCPU = 0.0;
@@ -589,40 +610,50 @@ public class EnergyModellerQueueServiceManager {
 		                    				if (measureType == "cpu") {
 		                            			
 		                    					valueCPU = value;
-		                    					// valueMemory = datamapper.getMemorySampleAtTime(providerid, topic[3], iaasvmid, timestamp);
-		                    					valueMemory = datamapper.getMemorySampleAtTime(topic[3], iaasvmid, timestamp);
+		                    					// M. Fontanella - 16 Jun 2016 - begin		                    					
+		                    					valueMemory = datamapper.getMemorySampleAtTime(providerid, topic[3], paasvmid, timestamp);		                    					
+		                    					// M. Fontanella - 16 Jun 2016 - end
 		                    					// valueMemory=-1 : if row was not found in DATACONSUMPTION table
 		                    				} else {
 		                            				
 		                    					valueMemory = value;
-		                    					// valueCPU = datamapper.getCPUSampleAtTime(providerid, topic[3], iaasvmid, timestamp);
-		                    					valueCPU = datamapper.getCPUSampleAtTime(topic[3], iaasvmid, timestamp);
+		                    					// M. Fontanella - 16 Jun 2016 - begin		                    					
+		                    					valueCPU = datamapper.getCPUSampleAtTime(providerid, topic[3], paasvmid, timestamp);		                    					
+		                    					// M. Fontanella - 16 Jun 2016 - end
 		                    					// valueCPU=-1 : if row was not found in DATACONSUMPTION table
 		                    				}	                            			
 		                    				if (valueCPU != -1 && valueMemory != -1) {
 		                                    	
-		                    					DataConsumption dcVirtualPower= new DataConsumption();
-		                                    		
-		                    					value = calculatePaasPower(iaasvmid, valueCPU, valueMemory);
+		                    					DataConsumption dcVirtualPower= new DataConsumption();		                                    	
+		                    					
+		                    					// M. Fontanella - 16 Jun 2016 - begin
+		                    					value = calculatePaasPower(paasvmid, valueCPU, valueMemory);
+		                    					// M. Fontanella - 16 Jun 2016 - end		                    					
 		                                    		                        		
 		                    					dcVirtualPower.setProviderid(providerid);
 		                    					dcVirtualPower.setApplicationid(topic[1]);
 		                    					dcVirtualPower.setDeploymentid(topic[3]);
-		                    					dcVirtualPower.setVmid(iaasvmid);
+		                    					// M. Fontanella - 16 Jun 2016 - begin
+		                    					dcVirtualPower.setVmid(paasvmid);
+		                    					// M. Fontanella - 16 Jun 2016 - end
 		                    					dcVirtualPower.setVmpower(value);
 		                    					dcVirtualPower.setTime(timestamp);	
 		                    					dcVirtualPower.setMetrictype("virtualpower");
 		                                                                        	
 		                    					datamapper.createMeasurement(dcVirtualPower);
 
-		                    					LOGGER.info("Write virtualpower "+value+" for provider "+providerid+", vm "+iaasvmid+"time "+timestamp+" (cpu="+valueCPU+" - memory="+valueMemory+")");                    				
+		                    					// M. Fontanella - 16 Jun 2016 - begin
+		                    					LOGGER.info("Write virtualpower "+value+" for provider "+providerid+", vm "+paasvmid+"time "+timestamp+" (cpu="+valueCPU+" - memory="+valueMemory+")");
+		                    					// M. Fontanella - 16 Jun 2016 - end
 		                    				}
 		                    			}
 		                    		}
 		                    		
 		                    		LOGGER.info("Received METRIC message");
 		                    	} else {
-		                    		LOGGER.info("Received an existing METRIC message (ignored)");
+		                    		// M. Fontanella - 16 Jun 2016 - begin
+		                    		LOGGER.info("Received an existing METRIC message for timestamp="+timestamp+" (ignored)");
+		                    		// M. Fontanella - 16 Jun 2016 - end
 		                    	}
 		                    	
 		                    	datasession.close();		                    		                    	
@@ -637,8 +668,10 @@ public class EnergyModellerQueueServiceManager {
 		        }
 	        
 	
-	        	public double calculatePaasPower(String iaasvmid, double valueCPU, double valueMemory) {
-	        	
+	        	// M. Fontanella - 16 Jun 2016 - begin
+	        	public double calculatePaasPower(String paasvmid, double valueCPU, double valueMemory) {
+	        	// M. Fontanella - 16 Jun 2016 - end
+	        		
 	        		// TODO: Manage PaaS VirtualPower
 	        		double valuePower = 5.0;
 	        			

@@ -56,7 +56,7 @@ public class EnergyModellerData {
 	private static String DEP = "877";
 	*/
 	
-	/* Test 4
+	/* Test 4 */
 	private static String HOST = "2444";
 	private static String PROVIDER = "1";
 	private static String EVENT = "event_dstest";	
@@ -66,15 +66,15 @@ public class EnergyModellerData {
 	// long endlong   = 1444147925771L;
 	long beginlong = 1444147613000L;
 	long endlong   = 1444147925000L;
-	*/
+	/**/
 	
-	/* Test 5 */
+	/* Test 5
 	private static String HOST = "2456";
 	private static String PROVIDER = "1";
 	private static String EVENT = "ciao";	
 	private static String APP = "JEPlus";
 	private static String DEP = "942";
-	/**/
+	*/
 	
 	// long beginlong = 1410449721L;
 	// long endlong = 1443705931826L;
