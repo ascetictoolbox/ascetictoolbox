@@ -170,6 +170,44 @@
         </slam:Interface>
     </slam:InterfaceDeclr>
     <slam:AgreementTerm>
+		<slam:Text/>
+        <slam:Properties/>
+        <slam:ID>App Guarantees</slam:ID>
+        <slam:Guaranteed>
+        	<slam:Text/>
+            <slam:Properties/>
+            <slam:State>
+            	<slam:ID>Power_Usage_per_app</slam:ID>
+                <slam:Priority xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                <slam:Constraint>
+                	<slam:TypeConstraintExpr>
+                    	<slam:Value>
+                        	<slam:FuncExpr>
+                        		<slam:Text/>
+                        		<slam:Properties/>
+                        		<slam:Operator>http://www.slaatsoi.org/resources#power_usage_per_app
+                        		</slam:Operator>
+                            </slam:FuncExpr>
+                    	</slam:Value>
+                        <slam:Domain>
+                             <slam:SimpleDomainExpr>
+                                  <slam:ComparisonOp>http://www.slaatsoi.org/coremodel#less_than_or_equals
+                                  </slam:ComparisonOp>
+                                  <slam:Value>
+                                  	<slam:CONST>
+                                    	<slam:Value>21</slam:Value>
+                                        <slam:Datatype>http://www.w3.org/2001/XMLSchema#watt
+                                        </slam:Datatype>
+                                     </slam:CONST>
+                                  </slam:Value>
+                              </slam:SimpleDomainExpr>
+                        </slam:Domain>
+                	</slam:TypeConstraintExpr>
+          		</slam:Constraint>
+      		</slam:State>
+    	</slam:Guaranteed>
+    </slam:AgreementTerm>
+    <slam:AgreementTerm>
         <slam:Text/>
         <slam:Properties/>
         <slam:ID>jmeter_Guarantees</slam:ID>
