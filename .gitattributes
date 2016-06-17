@@ -1382,6 +1382,7 @@ paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/log4j.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
 paas/application-manager/src/test/resources/saas.ovf -text
+paas/application-manager/src/test/resources/sla-agreement-2.xml -text
 paas/application-manager/src/test/resources/sla-agreement.xml -text
 paas/application-manager/src/test/resources/slat-y2.xml -text
 paas/application-manager/src/test/resources/test-sla.pretty.xml -text

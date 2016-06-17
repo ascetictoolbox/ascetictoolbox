@@ -963,7 +963,7 @@ public class VMRestTest extends AbstractTest {
 		
 		// Malformed XML
 		String notValidXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><vm1></vm1>";
-		Response response = vmRest.postVM("", "", notValidXML);
+		Response response = vmRest.postVM("", "", true, notValidXML);
 		assertEquals(400, response.getStatus());
 		assertEquals("Malformed XML request!!!", (String) response.getEntity());
 		
@@ -978,7 +978,7 @@ public class VMRestTest extends AbstractTest {
 	 				+ "<link rel=\"deployment\" href=\"/applications/101/deployments/22\" type=\"application/xml\" />"
 	 				+ "<link rel=\"self\" href=\"/applications/101/deployments/22/vms/33\" type=\"application/xml\" />"
 	 			+ "</vm>";
-		response = vmRest.postVM("", "", notValidXML);
+		response = vmRest.postVM("", "", true,  notValidXML);
 		assertEquals(400, response.getStatus());
 		assertEquals("Missing ovf-id!!!", (String) response.getEntity());
 	}
@@ -1003,7 +1003,7 @@ public class VMRestTest extends AbstractTest {
 		VMRest vmRest = new VMRest();
 		vmRest.deploymentDAO = deploymentDAO;
 		
-		Response response = vmRest.postVM("", "11", vmRequest);
+		Response response = vmRest.postVM("", "11", true, vmRequest);
 		assertEquals(400, response.getStatus());
 		assertEquals("No Active deployment!!!", (String) response.getEntity());
 	}
@@ -1191,7 +1191,7 @@ public class VMRestTest extends AbstractTest {
 		VMRest vmRest = new VMRest();
 		vmRest.deploymentDAO = deploymentDAO;
 		
-		Response response = vmRest.postVM("", "11", vmRequest);
+		Response response = vmRest.postVM("", "11", true, vmRequest);
 		assertEquals(400, response.getStatus());
 		assertEquals("No VM avaiblabe by that ovf-id for this deployment!!!", (String) response.getEntity());
 	}
@@ -1211,12 +1211,12 @@ public class VMRestTest extends AbstractTest {
 		VMRest vmRest = new VMRest();
 		vmRest.deploymentDAO = deploymentDAO;
 		
-		Response response = vmRest.postVM("", "aa", vmRequest);
+		Response response = vmRest.postVM("", "aa", true, vmRequest);
 		assertEquals(400, response.getStatus());
 		assertEquals("Invalid deploymentID number!!!", (String) response.getEntity());
 		
 		// Test 2
-		response = vmRest.postVM("", "11", vmRequest);
+		response = vmRest.postVM("", "11", true, vmRequest);
 		assertEquals(400, response.getStatus());
 		assertEquals("No deployment by that ID in the DB!!!", (String) response.getEntity());
 	}
@@ -1253,7 +1253,7 @@ public class VMRestTest extends AbstractTest {
 		vmRest.deploymentDAO = deploymentDAO;
 		vmRest.vmDAO = vmDAO;
 		
-		Response response = vmRest.postVM("", "11", vmRequest);
+		Response response = vmRest.postVM("", "11", true, vmRequest);
 		assertEquals(400, response.getStatus());
 		assertEquals("haproxy number of VMs already at its maximum!!!", (String) response.getEntity());
 	}
@@ -1319,7 +1319,7 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmManagerClient = vmMaClient;
 		vmRest.imageDAO = imageDAO;
 		
-		Response response = vmRest.postVM("threeTierWebApp", "11", vmRequest);
+		Response response = vmRest.postVM("threeTierWebApp", "11", true, vmRequest);
 		assertEquals(200, response.getStatus());
 		assertTrue(!(null == response.getEntity()));
 		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
@@ -1424,7 +1424,7 @@ public class VMRestTest extends AbstractTest {
 		vmRest.imageDAO = imageDAO;
 		vmRest.applicationDAO = applicationDAO;
 		
-		Response response = vmRest.postVM("threeTierWebApp", "11", vmRequest);
+		Response response = vmRest.postVM("threeTierWebApp", "11", true, vmRequest);
 		assertEquals(200, response.getStatus());
 		assertTrue(!(null == response.getEntity()));
 		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
