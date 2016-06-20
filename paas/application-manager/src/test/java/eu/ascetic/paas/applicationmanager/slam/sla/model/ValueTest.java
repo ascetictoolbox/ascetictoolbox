@@ -32,7 +32,10 @@ public class ValueTest {
 		Value value = new Value();
 		FuncExpr funcExpr = new FuncExpr();
 		value.setFuncExpr(funcExpr);
+		CONST constVariable = new CONST();
+		value.setConstVariable(constVariable);
 		
 		assertEquals(funcExpr, value.getFuncExpr());
+		assertEquals(constVariable, value.getConstVariable());
 	}
 }

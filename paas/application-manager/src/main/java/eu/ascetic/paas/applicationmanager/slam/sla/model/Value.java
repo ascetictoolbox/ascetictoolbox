@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Value {
 	@XmlElement(name = "FuncExpr", namespace = SLA_XMLNS)
 	private FuncExpr funcExpr;
+	@XmlElement(name = "CONST", namespace = SLA_XMLNS)
+	private CONST constVariable;
 
 	public FuncExpr getFuncExpr() {
 		return funcExpr;
@@ -42,5 +44,13 @@ public class Value {
 
 	public void setFuncExpr(FuncExpr funcExpr) {
 		this.funcExpr = funcExpr;
+	}
+
+	public CONST getConstVariable() {
+		return constVariable;
+	}
+
+	public void setConstVariable(CONST constVariable) {
+		this.constVariable = constVariable;
 	}
 }

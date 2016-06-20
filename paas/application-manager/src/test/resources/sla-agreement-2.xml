@@ -305,7 +305,7 @@
                             <slam:ComparisonOp>http://www.slaatsoi.org/coremodel#less_than_or_equals</slam:ComparisonOp>
                             <slam:Value>
                                 <slam:CONST>
-                                    <slam:Value>10</slam:Value>
+                                    <slam:Value>12.3</slam:Value>
                                     <slam:Datatype>http://www.slaatsoi.org/coremodel/units#W</slam:Datatype>
                                 </slam:CONST>
                             </slam:Value>

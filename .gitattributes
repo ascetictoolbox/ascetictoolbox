@@ -1256,6 +1256,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/N
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/NegotiationWsClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/SLAMClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/SLATemplateCreator.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/SLAAgreementHelper.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Action.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/AgreementTerm.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/CONST.java -text
@@ -1351,8 +1352,10 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/N
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/PlayingTestIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/SLAMClientTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/SLATemplateCreatorTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/SLAAgreementHelperTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ActionTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/AgreementTermTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/CONSTTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ComponentProdOfferingPriceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ConstraintTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/DomainTest.java -text

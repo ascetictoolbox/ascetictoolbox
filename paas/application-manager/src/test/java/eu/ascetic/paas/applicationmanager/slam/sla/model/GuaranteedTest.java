@@ -33,7 +33,10 @@ public class GuaranteedTest {
 		Guaranteed guaranteed = new Guaranteed();
 		Action action = new Action();
 		guaranteed.setAction(action);
+		State state = new State();
+		guaranteed.setState(state);
 		
 		assertEquals(action, guaranteed.getAction());
+		assertEquals(state, guaranteed.getState());
 	}
 }
