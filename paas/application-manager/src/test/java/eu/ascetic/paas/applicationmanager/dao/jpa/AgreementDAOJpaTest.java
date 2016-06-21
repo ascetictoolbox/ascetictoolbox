@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -14,7 +15,9 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
+import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 
 /**
  * 
@@ -40,6 +43,8 @@ import eu.ascetic.paas.applicationmanager.model.Agreement;
 public class AgreementDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests {
 	@Autowired
 	protected AgreementDAO agreementDAO;
+	@Autowired
+	protected DeploymentDAO deploymentDAO;
 	
 	@Test
 	public void notNull() {
@@ -145,5 +150,83 @@ public class AgreementDAOJpaTest extends AbstractTransactionalJUnit4SpringContex
 		
 		agreementFromDatabase = agreementDAO.getById(id);
 		assertEquals("sla-agre", agreementFromDatabase.getSlaAgreementId());
+	}
+	
+	@Test
+	public void getAcceptedAgreement() {
+		// Normal case we have a deployment with a series of agreements, one accepted
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("XXXX1");
+		
+		Agreement agreement1 = new Agreement();
+		agreement1.setPrice("111");
+		agreement1.setProviderId("provider-id");
+		agreement1.setSlaAgreement("sla-agreement");
+		agreement1.setSlaAgreementId("sla-agreement-id");
+		agreement1.setDeployment(deployment1);
+		agreement1.setAccepted(false);
+		deployment1.addAgreement(agreement1);
+		
+		Agreement agreement2 = new Agreement();
+		agreement2.setPrice("121");
+		agreement2.setProviderId("provider-id2");
+		agreement2.setSlaAgreement("sla-agreement2");
+		agreement2.setSlaAgreementId("sla-agreement-id2");
+		agreement2.setDeployment(deployment1);
+		agreement2.setAccepted(true);
+		deployment1.addAgreement(agreement2);
+		
+		Agreement agreement3 = new Agreement();
+		agreement3.setPrice("131");
+		agreement3.setProviderId("provider-id3");
+		agreement3.setSlaAgreement("sla-agreement3");
+		agreement3.setSlaAgreementId("sla-agreement-id3");
+		agreement3.setDeployment(deployment1);
+		agreement3.setAccepted(false);
+		deployment1.addAgreement(agreement3);
+		
+		Agreement agreement4 = new Agreement();
+		agreement4.setPrice("431");
+		agreement4.setProviderId("provider-id4");
+		agreement4.setSlaAgreement("sla-agreement4");
+		agreement4.setSlaAgreementId("sla-agreement-id4");
+		agreement4.setAccepted(false);
+		
+		deploymentDAO.save(deployment1);
+		agreementDAO.save(agreement1);
+		agreementDAO.save(agreement2);
+		agreementDAO.save(agreement3);
+		agreementDAO.save(agreement4);
+		
+		Agreement agreementFromDB = agreementDAO.getAcceptedAgreement(deployment1);
+		assertEquals(agreementFromDB, agreement2);
+		
+		// We check in the case the deployment has no agreements that we get null
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("STATUS2");
+		
+		deploymentDAO.save(deployment2);
+		
+		agreementFromDB = agreementDAO.getAcceptedAgreement(deployment2);
+		assertNull(agreementFromDB);
+		
+		Agreement agreement5 = new Agreement();
+		agreement5.setPrice("531");
+		agreement5.setProviderId("provider-id5");
+		agreement5.setSlaAgreement("sla-agreement5");
+		agreement5.setSlaAgreementId("sla-agreement-id5");
+		agreement5.setAccepted(false);
+		agreement5.setDeployment(deployment2);
+		deployment2.addAgreement(agreement5);
+		
+		deployment2.addAgreement(agreement4);
+		agreement4.setDeployment(deployment2);
+		
+		deploymentDAO.update(deployment2);
+		agreementDAO.update(agreement4);
+		agreementDAO.save(agreement5);
+		
+		agreementFromDB = agreementDAO.getAcceptedAgreement(deployment2);
+		assertNull(agreementFromDB);
 	}
 }

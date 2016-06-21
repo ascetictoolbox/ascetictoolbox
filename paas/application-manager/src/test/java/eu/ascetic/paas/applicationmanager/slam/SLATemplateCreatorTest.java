@@ -2,7 +2,6 @@ package eu.ascetic.paas.applicationmanager.slam;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -11,10 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
@@ -24,9 +19,6 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
-import eu.ascetic.providerregistry.model.Collection;
-import eu.ascetic.providerregistry.model.Items;
-import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.slaatsoi.slamodel.SLATemplateDocument;
 
@@ -52,7 +44,6 @@ import eu.slaatsoi.slamodel.SLATemplateDocument;
  */
 
 public class SLATemplateCreatorTest {
-	private static Logger logger = Logger.getLogger(SLATemplateCreatorTest.class);
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	private MockWebServer mServer;

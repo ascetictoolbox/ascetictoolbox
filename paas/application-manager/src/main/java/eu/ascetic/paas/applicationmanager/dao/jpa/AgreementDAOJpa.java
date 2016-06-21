@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
+import eu.ascetic.paas.applicationmanager.model.Deployment;
 
 /**
  * 
@@ -95,5 +96,25 @@ public class AgreementDAOJpa implements AgreementDAO {
 			logger.debug(e);
 			return false;
 		} 
+	}
+
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	@SuppressWarnings("unchecked")
+	public Agreement getAcceptedAgreement(Deployment deployment) {
+		Query query = entityManager.createQuery("SELECT a FROM Agreement a " +
+												 		"WHERE a.accepted = :accepted " + 
+														"AND a.deployment = :deployment ");
+
+		query.setParameter("accepted", true);
+		query.setParameter("deployment", deployment);
+
+		List<Agreement> agreements = (List<Agreement>) query.getResultList();
+		
+		if(agreements.size() > 0) {
+			return agreements.get(0);
+		}
+		
+		return null;
 	}
 }

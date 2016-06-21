@@ -2,7 +2,8 @@ package eu.ascetic.paas.applicationmanager.dao;
 
 import java.util.List;
 
-import eu.ascetic.paas.applicationmanager.model.Agreement;;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
+import eu.ascetic.paas.applicationmanager.model.Deployment;;
 
 
 /**
@@ -70,4 +71,11 @@ public interface AgreementDAO extends DAO<Agreement> {
 	 * @return <code>true</code> if the Agreement was deleted correctly
 	 */
 	public boolean delete(Agreement agreement);
+	
+	/**
+	 * Returns the accepted agreement for a deployment
+	 * @param deployment Deployment to search for agreements
+	 * @return the accepted agreement or null if none.
+	 */
+	public Agreement getAcceptedAgreement(Deployment deployment);
 }
