@@ -66,14 +66,14 @@ angular.module('asceticApp')
 			$scope.selectDepl = function () {
 				for (let d of $scope.currentDeplIds) {
 					if (!vmsCache.hasOwnProperty(d)) {
-						$http.get(AppManagerHost+ "/applications/" + $scope.currentAppId + "/deployments/" + d + "/vms/").success(function (data) {
+						/*$http.get(AppManagerHost+ "/applications/" + $scope.currentAppId + "/deployments/" + d + "/vms/").success(function (data) {
 							// At the time of writing this code, this call does only return XML, unlike the others.
 							// Let's just handle this on our side and parse it ourselves.
 							var vmIds = $($.parseXML(data)).find("vm > id");
 							vmsCache[d] = $.grep(vmIds, e => (e.localName == "id")).map(e => parseInt(e.innerHTML));
-						});
+						});*/
 
-						// vmsCache[490] = [1764,1765,1766,1768];
+						 vmsCache[490] = [1764,1765,1766,1768];
 					}
 				}
 				$("#selectbar").attr("style", "display: none;");
@@ -220,9 +220,9 @@ angular.module('asceticApp')
 
 								for (let vm of vmsCache[490]) {
                                     console.log('load vm : '+vm);
-									var uribase = AppManagerHost +"/applications/" + $scope.currentAppId + "/deployments/" + deplId + "/vms/" + vm + "/events/" + event['_id'];
-									// var uribase = "http://localhost:8000/dashboard"
-									//var uribase = "/applications/"+$scope.currentAppId+"/deployments/"+deplId+"/vms/"+vm+"/events/"+event['_id'] ;
+									//var uribase = AppManagerHost +"/applications/" + $scope.currentAppId + "/deployments/" + deplId + "/vms/" + vm + "/events/" + event['_id'];
+									//var uribase = "http://localhost:8000/dashboard"
+									var uribase = "/applications/"+$scope.currentAppId+"/deployments/"+deplId+"/vms/"+vm+"/events/"+event['_id'] ;
 									allVmsPromises.push(getEnergyConsumption(uribase + "/energy-consumption").then(function (e) {
 											totalEventEnergy[event['_id']] += e;
 

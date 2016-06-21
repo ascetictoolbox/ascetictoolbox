@@ -1,5 +1,5 @@
 
-asceticControllers.controller('GeneratorCtrl', ['$scope', '$http',
+angular.module('asceticApp').controller('GeneratorCtrl', ['$scope', '$http',
   function ($scope, $http) {
       $scope.app = "";
       $scope.instance = "";

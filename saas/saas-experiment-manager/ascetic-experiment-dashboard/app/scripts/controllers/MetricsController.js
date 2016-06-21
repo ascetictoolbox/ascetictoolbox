@@ -1,4 +1,4 @@
-asceticControllers.controller('MetricsCtrl', ['$scope', '$http',
+angular.module('asceticApp').controller('MetricsCtrl', ['$scope', '$http',
   function ($scope, $http) {
       $scope.selectedApp = "";
       $scope.selectedNode = "";

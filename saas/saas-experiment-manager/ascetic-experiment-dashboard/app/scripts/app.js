@@ -6,12 +6,10 @@
 var asceticApp = angular.module('asceticApp', [
   'ngRoute',
   'ngResource',
-  'asceticControllers',
   'xml'
 ]);
 
-asceticApp
-  .config(function ($httpProvider) {
+asceticApp.config(function ($httpProvider) {
     $httpProvider.interceptors.push('xmlHttpInterceptor');
   });
 
@@ -36,7 +34,7 @@ asceticApp.config(['$routeProvider',
         controller: 'GeneratorCtrl'
       }).
       otherwise({
-        redirectTo: '/dashboard'
+        redirectTo: '/kpis'
       });
   }]);
 })();
