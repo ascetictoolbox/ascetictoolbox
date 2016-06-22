@@ -17,14 +17,11 @@ import org.apache.log4j.Logger;
 import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.slamodel.sla.SLATemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
-import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
-import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
@@ -65,12 +62,8 @@ import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsg
 @Scope("request")
 public class AgreementRest extends AbstractRest {
 	private static Logger logger = Logger.getLogger(AgreementRest.class);
-	@Autowired
-	protected AgreementDAO agreementDAO;
 	protected SLASOIRenderer rendeder = new SLASOIRenderer();
 	protected NegotiationWsClient client = new NegotiationWsClient();
-	@Autowired
-	protected DeploymentEventService deploymentEventService;
 
 	/**
 	 * Returns the different agreements for a deployment

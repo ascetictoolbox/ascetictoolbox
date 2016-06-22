@@ -34,6 +34,7 @@ import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
@@ -154,6 +155,12 @@ public class VMRest extends AbstractRest {
 		if(force == true) {
 			return createVM(ovf, vm, vms, applicationName, vmLimits, deployment);
 		} else {
+			// If there is no agreement in the database we continue as usual... 
+			Agreement agreement = agreementDAO.getAcceptedAgreement(deployment);
+
+			if(agreement == null) {
+				return createVM(ovf, vm, vms, applicationName, vmLimits, deployment);
+			}
 			
 			return null;
 		}

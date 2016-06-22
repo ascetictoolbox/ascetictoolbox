@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
+import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
@@ -62,6 +63,8 @@ public abstract class AbstractRest {
 	protected DeploymentDAO deploymentDAO;
 	@Autowired
 	protected VMDAO vmDAO;
+	@Autowired
+	protected AgreementDAO agreementDAO;
 	@Autowired
 	protected DeploymentEventService deploymentEventService;
 	//@Autowired

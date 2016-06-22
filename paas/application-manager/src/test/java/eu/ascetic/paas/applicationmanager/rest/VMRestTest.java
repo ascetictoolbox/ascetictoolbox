@@ -42,6 +42,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.P
 import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpListListener;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
@@ -1261,7 +1262,7 @@ public class VMRestTest extends AbstractTest {
 	@Test
 	public void postVMWithoutAgreement() throws Exception {
 		// We set a listener to get the sent message from the MessageQueue
-		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", false);
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
 		receiver.setMessageConsumer(listener);
 		
@@ -1275,6 +1276,9 @@ public class VMRestTest extends AbstractTest {
 		deployment.setProviderId("prod-id");
 		
 		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(null);
 		
 		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
 						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
@@ -1319,8 +1323,9 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		vmRest.vmManagerClient = vmMaClient;
 		vmRest.imageDAO = imageDAO;
+		vmRest.agreementDAO = agreementDAO;
 		
-		Response response = vmRest.postVM("threeTierWebApp", "11", true, vmRequest);
+		Response response = vmRest.postVM("threeTierWebApp", "11", false, vmRequest);
 		assertEquals(200, response.getStatus());
 		assertTrue(!(null == response.getEntity()));
 		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
