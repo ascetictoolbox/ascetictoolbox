@@ -18,3 +18,6 @@ CREATE TABLE IF NOT EXISTS DATACONSUMPTION (providerid varchar(50),applicationid
 CREATE TABLE IF NOT EXISTS APPLICATION_REGISTRY (providerid varchar(50) NOT NULL, applicationid varchar(50) NOT NULL, deploymentid varchar(50) NOT NULL, vmid varchar(50) NOT NULL, iaasid varchar(50), start BIGINT, stop BIGINT, energy double, power double, profileid INT,   modelid INT,   PRIMARY KEY (providerid,applicationid,deploymentid,vmid));
 /* M. Fontanella - 10 Feb 2016 - end */
 /* M. Fontanella - 20 Jan 2016 - end */
+/* M. Fontanella - 20 Jun 2016 - begin */
+CREATE TABLE IF NOT EXISTS CPUFEATURES (model varchar(50), core int,tdp double,minpower double,maxpower double, PRIMARY KEY (model));
+/* M. Fontanella - 20 Jun 2016 - end */

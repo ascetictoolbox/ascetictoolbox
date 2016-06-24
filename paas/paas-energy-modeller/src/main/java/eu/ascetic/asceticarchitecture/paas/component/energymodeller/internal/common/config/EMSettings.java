@@ -44,6 +44,9 @@ public class EMSettings {
 	// private String powertopic="vm.*.item.*";
 	private String powertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*";
 	// M. Fontanella - 06 Jun 2016 - end
+	// M. Fontanella - 20 Jun 2016 - begin
+	private String powerfromvmtopic="PROVIDER.*.APPLICATION.*.DEPLOYMENT.*.VM.*.FROMVM";
+	// M. Fontanella - 20 Jun 2016 - end
 	
 	// 	temporarly for IaaS connection
 	private String enableIaasQueue="false";
@@ -91,6 +94,9 @@ public class EMSettings {
 		//this.setPowertopic(props.getProperty("energytopic"));
 		this.setPowertopic(props.getProperty("powertopic"));
 		// M. Fontanella - 16 Jun 2016 - end
+		// M. Fontanella - 20 Jun 2016 - begin
+		this.setPowertopic(props.getProperty("powerfromvmtopic"));
+		// M. Fontanella - 20 Jun 2016 - end
 		this.setEnableIaasQueue(props.getProperty("enableIaasQueue"));
 		this.setIaasAmqpUser(props.getProperty("iaasAmqpUser"));
 		this.setIaasAmqpPassword(props.getProperty("iaasAmqpPassword"));
@@ -223,6 +229,18 @@ public class EMSettings {
 	}
 
 
+	// M. Fontanella - 20 Jun 2016 - begin
+	public String getPowerFromVMtopic() {
+		return powerfromvmtopic;
+	}
+
+
+	public void setPowerFromVMtopic(String powerfromvmtopic) {
+		this.powerfromvmtopic = powerfromvmtopic;
+	}
+	// M. Fontanella - 20 Jun 2016 - end
+	
+	
 	public String getEnableIaasQueue() {
 		return enableIaasQueue;
 	}

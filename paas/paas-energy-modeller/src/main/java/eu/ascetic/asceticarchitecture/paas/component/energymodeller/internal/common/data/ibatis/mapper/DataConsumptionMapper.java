@@ -150,11 +150,21 @@ public interface DataConsumptionMapper {
 	  List<DataConsumption> getCPUs(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
 	  // M. Fontanella - 16 Jun 2016 - end
 	 
+	  // M. Fontanella - 20 Jun 2016 - begin
+	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'virtualcpu' ")
+	  List<DataConsumption> getVirtualCPUs(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 20 Jun 2016 - end
+	  
 	  // M. Fontanella - 16 Jun 2016 - begin
 	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'memory' ")
 	  List<DataConsumption> getMemory(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
 	  // M. Fontanella - 16 Jun 2016 - end
 	  
+	  // M. Fontanella - 20 Jun 2016 - begin
+	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'virtualmemory' ")
+	  List<DataConsumption> getVirtualMemory(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 20 Jun 2016 - end
+
 	  // M. Fontanella - 16 Jun 2016 - begin
 	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'power' ")
 	  List<DataConsumption> getPower(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);

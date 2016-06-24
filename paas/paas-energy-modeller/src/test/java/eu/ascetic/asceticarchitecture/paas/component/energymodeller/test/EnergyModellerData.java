@@ -18,6 +18,12 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
+//M. Fontanella - 23 Jun 2016 - begin
+import java.util.Date;
+import java.util.TimeZone;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+//M. Fontanella - 23 Jun 2016 - end
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,10 +124,33 @@ public class EnergyModellerData {
 		List<String> vmids = new Vector<String>();
 		vmids.add(HOST);		
 		EVENT=null;
-		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
+		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
 		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));
-		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,3600);
+		// double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,3600);
 		System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
+		
+		// M. Fontanella - 23 Jun 2016 - begin	
+		// dataTest();
+		// M. Fontanella - 23 Jun 2016 - end
+	}
+	
+	public void dataTest() {
+		Date current = new Date();
+		long end = current.getTime();
+		Date data = new Date(end);		
+		System.out.println("ORA0="+data+" long="+end);
+		
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");	    
+	    df.setTimeZone(tz);
+	    
+	    String nowAsISO = df.format(new Date());
+		System.out.println("ORA1="+nowAsISO);
+		
+		// Date current = new Date();
+		end = current.getTime()+3600000;
+		String fmm = df.format(new java.util.Date(end));
+		System.out.println("ORA2="+fmm);
 	}
 // M. Fontanella - 09 Jun 2016 - end	
 	

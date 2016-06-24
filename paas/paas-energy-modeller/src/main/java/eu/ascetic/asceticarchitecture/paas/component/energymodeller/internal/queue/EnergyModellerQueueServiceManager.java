@@ -15,9 +15,12 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -32,11 +35,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.messages.GenericEnergyMessage;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.CpuFeatures;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.VirtualMachine;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.CpuFeaturesHandler;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.CpuFeaturesMapper;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.queue.MessageParserUtility;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.queue.client.AmqpClient;
 
@@ -48,6 +60,9 @@ public class EnergyModellerQueueServiceManager {
 	
 	private ApplicationRegistry registry;
 	private DataConsumptionHandler dataConsumptionHandler;
+	/* M. Fontanella - 20 Jun 2016 - begin */
+	private CpuFeaturesHandler cpuFeaturesHandler;
+	/* M. Fontanella - 20 Jun 2016 - end */
 	
 	
 	private final static Logger LOGGER = Logger.getLogger(EnergyModellerQueueServiceManager.class.getName());
@@ -57,13 +72,18 @@ public class EnergyModellerQueueServiceManager {
 	 * allows to store data into db about application, data consumption handler that handle consumption information
 	 * 
 	 */
-	public EnergyModellerQueueServiceManager(AmqpClient paasQueuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler) {
+	/* M. Fontanella - 20 Jun 2016 - begin */	
+	public EnergyModellerQueueServiceManager(AmqpClient paasQueuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler,CpuFeaturesHandler cpuFeaturesHandler) {
+	/* M. Fontanella - 20 Jun 2016 - end */
 		
 		this.paasQueuePublisher = paasQueuePublisher;
 		// M. Fontanella - 06 Jun 2016 - begin
 		this.dataConsumptionHandler = dataConsumptionHandler;
 		// M. Fontanella - 06 Jun 2016 - end
 		this.registry = registry;
+		/* M. Fontanella - 20 Jun 2016 - begin */
+		this.cpuFeaturesHandler = cpuFeaturesHandler;
+		/* M. Fontanella - 20 Jun 2016 - end */
 		LOGGER.info("EM queue manager set");
 	
 	}
@@ -72,12 +92,17 @@ public class EnergyModellerQueueServiceManager {
 	 * 
 	 * another version of the builder class that handler two client for sending and receiving messages from IaaS and PaaS queue
 	 */
-	public EnergyModellerQueueServiceManager(AmqpClient iaasQueuePublisher, AmqpClient paasQueuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler) {
-			
+	/* M. Fontanella - 20 Jun 2016 - begin */
+	public EnergyModellerQueueServiceManager(AmqpClient iaasQueuePublisher, AmqpClient paasQueuePublisher, ApplicationRegistry registry,DataConsumptionHandler dataConsumptionHandler,CpuFeaturesHandler cpuFeaturesHandler) {
+	/* M. Fontanella - 20 Jun 2016 - end */
+		
 		this.paasQueuePublisher = paasQueuePublisher;
 		this.iaasQueuePublisher = iaasQueuePublisher;
-		this.dataConsumptionHandler = dataConsumptionHandler;
+		this.dataConsumptionHandler = dataConsumptionHandler;		
 		this.registry = registry;
+		/* M. Fontanella - 20 Jun 2016 - begin */
+		this.cpuFeaturesHandler = cpuFeaturesHandler;
+		/* M. Fontanella - 20 Jun 2016 - end */
 		LOGGER.info("EM queue manager set");
 	
 	}
@@ -87,21 +112,43 @@ public class EnergyModellerQueueServiceManager {
 	 * method that sends a message to a queue, the message is a metric and has a specific structure that is built by te MessageParserUtility by
 	 * parsing an object like GenericEnergyMessage and it generated the correstpondign JSON string
 	 */
-	public void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+	// M. Fontanella - 23 Jun 2016 - begin
+	// public void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+	public void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, long referenceTime,double value){
+	// M. Fontanella - 23 Jun 2016 - end
 		GenericEnergyMessage message= new GenericEnergyMessage();
 		message.setProvider(providerid);
 		message.setApplicationid(applicationid);
 		message.setEventid(eventid);
 		message.setDeploymentid(deploymentid);
-		Date data = new Date();
-		message.setGenerattiontimestamp(data.toGMTString());
+		// M. Fontanella - 23 Jun 2016 - begin		
+		// Date data = new Date();
+		// message.setGenerattiontimestamp(data.toGMTString());
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");	    
+		df.setTimeZone(tz);
+				    
+		String data = df.format(new Date());		
+		message.setGenerattiontimestamp(data);
+		// M. Fontanella - 23 Jun 2016 - end		
+		
 		// used to specify the time the forecast is referred to, 
 		// but if refers to a measurement it is the same as the reference time (becayse it referes to the same time it has bee generated
-		if (referenceTime==null){
+		
+		// M. Fontanella - 23 Jun 2016 - begin
+		/*
+		if (referenceTime==null){		
 			message.setReferredtimestamp(data.toGMTString());
 		} else {
 			message.setReferredtimestamp(referenceTime);
 		}
+		*/
+		
+		if (referenceTime!=0l)
+			data = df.format(new java.util.Date(referenceTime));
+		
+		message.setReferredtimestamp(data);
+		// M. Fontanella - 23 Jun 2016 - end
 		message.setVms(vms);
 		message.setUnit(unit);
 		message.setValue(value);
@@ -120,7 +167,9 @@ public class EnergyModellerQueueServiceManager {
 	 */		
 	// M. Fontanella - 17 May 2016 - begin
 	// M. Fontanella - 26 Apr 2016 - begin
-	public void createTwoLayersConsumers(String appTopic, String measurementsTopic, final String defaultProviderId, final boolean enablePowerFromIaas){	
+	// M. Fontanella - 20 Jun 2016 - begin	
+	public void createTwoLayersConsumers(String appTopic, String measurementsTopic, String measurementsFromVMTopic, final String defaultProviderId, final boolean enablePowerFromIaas){
+	// M. Fontanella - 20 Jun 2016 - end
 	// M. Fontanella - 26 Apr 2016 - end
 	// M. Fontanella - 17 May 2016 - end	
 		// M. Fontanella - 06 Jun 2016 - begin
@@ -599,6 +648,8 @@ public class EnergyModellerQueueServiceManager {
 		                    		// M. Fontanella - 16 Jun 2016 - begin
 		                    		LOGGER.info("Write "+measureType+" "+value+" for provider "+providerid+", vm "+paasvmid+"time "+timestamp);		                    	
 		                    		
+		                    		// M. Fontanella - 20 Jun 2016 - begin
+		                    		/*
 		                    		if (!enablePowerFromIaas) { 
 		                            		
 		                    			double valueCPU = 0.0;
@@ -648,6 +699,8 @@ public class EnergyModellerQueueServiceManager {
 		                    				}
 		                    			}
 		                    		}
+		                    		*/
+		                    		// M. Fontanella - 20 Jun 2016 - end
 		                    		
 		                    		LOGGER.info("Received METRIC message");
 		                    	} else {
@@ -667,7 +720,8 @@ public class EnergyModellerQueueServiceManager {
 		            }
 		        }
 	        
-	
+	        	// M. Fontanella - 20 Jun 2016 - begin
+	        	/*
 	        	// M. Fontanella - 16 Jun 2016 - begin
 	        	public double calculatePaasPower(String paasvmid, double valueCPU, double valueMemory) {
 	        	// M. Fontanella - 16 Jun 2016 - end
@@ -676,17 +730,231 @@ public class EnergyModellerQueueServiceManager {
 	        		double valuePower = 5.0;
 	        			
 	        		return valuePower;
-	        	}	        	
+	        	}
+	        	*/
+	        	// M. Fontanella - 20 Jun 2016 - end
 		};
 		// M. Fontanella - 06 Jun 2016 - end
-	    
-	    LOGGER.debug("Received "+measurementsTopic);		
+		
+		LOGGER.debug("Received "+measurementsTopic);		
 	    LOGGER.debug("Received "+measureListener);
 		LOGGER.debug("Received "+paasQueuePublisher);
 		// M. Fontanella - 06 Jun 2016 - begin
 	    // iaasQueuePublisher.registerListener(measurementsTopic,measureListener);
 	    paasQueuePublisher.registerListener(measurementsTopic,measureListener);	
 		// M. Fontanella - 06 Jun 2016 - end
+	    
+	    
+		/* ----------------------------------------------- QUAAA
+	    // M. Fontanella - 20 Jun 2016 - begin	    	
+		MessageListener measureFromVMListener = new MessageListener(){
+			DataConsumptionHandler dataMapper = dataConsumptionHandler;
+			private CpuFeaturesHandler cpuMapper = cpuFeaturesHandler;
+			private ApplicationRegistry appRegistry=registry;
+			
+			public void onMessage(Message message) {
+				try {
+		            	
+					if (message instanceof TextMessage) {
+						// if (!enablePowerFromIaas) {
+						
+						LOGGER.info("************** SONO DENTRO *********"); // MAXIM
+                            
+		                TextMessage textMessage = (TextMessage) message;
+		                LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+		                String dest = message.getJMSDestination().toString();
+		                String[] topic = dest.split("\\.");
+		                if (topic.length<9){
+		                	LOGGER.debug("Received a message of no interest for the EM");
+		                	return;
+		                }
+		                
+		                LOGGER.info("Received: METRICS FROM VM provider " +topic[1]+", application "+topic[3]+", deployment "+topic[5]+", VM "+topic[7]);
+		                    
+		                if (topic[8].equals("FROMVM")){		                    	
+                  
+		                	DataConsumption dc= new DataConsumption();		                    
+		                	dc.setProviderid(topic[1]);
+		                	dc.setApplicationid(topic[3]);
+		                	dc.setDeploymentid(topic[5]);
+		                	dc.setVmid(topic[7]);			                    			                    
+			                    
+		                	SqlSession appsession = appRegistry.getSession();
+		                	AppRegistryMapper appmapper = appsession.getMapper(AppRegistryMapper.class); 
+		                	int count = appmapper.checkVM(dc.getProviderid(), dc.getApplicationid(), dc.getDeploymentid(), dc.getVmid());
+		                	appsession.close();
+		                	if (count==0){
+		                		LOGGER.debug("Received measure for a provider/application/deployment/vm not in the registry");
+		                		return;
+		                	}
+		                    	
+		                	String payload = textMessage.getText();
+		                	ObjectMapper jmapper = new ObjectMapper();
+		                	JsonNode jsontext = jmapper.readValue(payload, JsonNode.class);			                    
+			                    	                    	
+		                	if (jsontext.findValue("cpumodel")==null){
+		                		LOGGER.info("Unable to parse AMQP deployment message, missing CPU model");
+		                		return;
+		                	}
+		                	
+		                	String modelCPU = jsontext.findValue("cpumodel").textValue();		                    	
+		                	if (modelCPU == null){
+		                		LOGGER.warn("Received non valid measure for CPU model (null)");
+		                		return;
+		                	}                 	
+               	  
+		                	SqlSession cpusession = cpuMapper.getSession();
+		                	CpuFeaturesMapper cpumapper = cpusession.getMapper(CpuFeaturesMapper.class); 
+		                	int countcpu = cpumapper.checkCpuModel(modelCPU);
+		                	cpusession.close();
+		                	if (countcpu==0){
+		                		LOGGER.debug("Received measure for a cpu model not in the registry");
+		                		return;
+		                	}
+		                	
+		                	if (jsontext.findValue("core")==null){
+		                		LOGGER.info("Unable to parse AMQP deployment message, missing core number");
+		                		return;
+		                	}	                    
+			                                        	
+		                	int coreNumber = jsontext.findValue("core").intValue();		                    	
+		                	if (coreNumber <= 0){
+		                		LOGGER.warn("Received non valid measure for core number" +coreNumber);
+		                		return;
+		                	}
+		                	
+		                    if (jsontext.findValue("cpuload")==null){
+		                		LOGGER.info("Unable to parse AMQP deployment message, missing CPU load");
+		                		return;
+		                	}	                    
+			                                        	
+		                	double valueCPULoad = jsontext.findValue("cpuload").doubleValue();		                    	
+		                	if (valueCPULoad <0){
+		                		LOGGER.warn("Received non valid measure for CPU load" +valueCPULoad);
+		                		return;
+		                	}
+		                    
+		                	if (jsontext.findValue("cpusteal")==null){
+		                		LOGGER.info("Unable to parse AMQP deployment message, missing CPU steal");
+		                		return;
+		                	}
+		                	
+		                	double valueCPUSteal = jsontext.findValue("cpusteal").doubleValue();		                    	
+		                	if (valueCPUSteal <0){
+		                		LOGGER.warn("Received non valid measure for CPU Steal" +valueCPUSteal);
+		                		return;
+		                	}
+		                	
+		                	if (jsontext.findValue("memory")==null){
+		                		LOGGER.info("Unable to parse AMQP deployment message, missing memory");
+		                		return;
+		                	}	                    
+			                                        	
+		                	double valueMemory = jsontext.findValue("memory").doubleValue();		                    	
+		                	if (valueMemory <0){
+		                		LOGGER.warn("Received non valid measure for memory " +valueMemory);
+		                		return;
+		                	}	                    	
+		                	                 
+		                	if (jsontext.findValue("timestamp")==null){
+		                		LOGGER.info("Unable to parse AMQP deployment message, missing timestamp");
+		                		return;
+		                	}			                                        	
+		                	
+		                	long timestamp =  jsontext.findValue("timestamp").longValue();
+		                	if (timestamp <=0){
+		                		LOGGER.warn("Received non valid timestamp " +timestamp );
+		                		return;
+		                	}		                    			                    	
+		                	dc.setTime(timestamp);
+		                    	
+		                	LOGGER.debug("Received measures: CPU model="+modelCPU +", core="+coreNumber+", cpu_load="+valueCPULoad+", cpu_steal="+valueCPUSteal+", memory="+valueMemory );                    	
+		                    		                                
+		                	SqlSession datasession = dataMapper.getSession();
+		                	DataConsumptionMapper datamapper = datasession.getMapper(DataConsumptionMapper.class);                      
+	                    	
+		                	
+		                	int samplesMemory = datamapper.getSamplesAtTime( dc.getProviderid(), dc.getDeploymentid(), dc.getVmid(), "virtualmemory", timestamp);
+		                	int samplesCPU = datamapper.getSamplesAtTime( dc.getProviderid(), dc.getDeploymentid(), dc.getVmid(), "virtualcpu", timestamp);
+		                	int samplesPower = datamapper.getSamplesAtTime( dc.getProviderid(), dc.getDeploymentid(), dc.getVmid(), "virtualpower", timestamp);
+		                	
+		                	datasession.close();                  
+		                			                	
+		                	if (samplesMemory == 0 && samplesCPU == 0 && samplesPower == 0){		                    	
+		                    	
+		                		dc.setMetrictype("virtualmemory");
+			                	dc.setVmmemory(valueMemory);
+		                		datamapper.createMeasurement(dc);
+		                		LOGGER.info("Write memory "+valueMemory+" for provider="+dc.getProviderid()+", application="+dc.getApplicationid()+", deployment="+dc.getDeploymentid()+", vm="+dc.getVmid()+", time="+timestamp);		                    	
+		                    	
+		                		dc.setMetrictype("virtualcpu");
+		                		dc.setVmcpu(valueCPULoad);
+		                		datamapper.createMeasurement(dc);
+		                		LOGGER.info("Write CPU "+valueCPULoad+" for provider="+dc.getProviderid()+", application="+dc.getApplicationid()+", deployment="+dc.getDeploymentid()+", vm="+dc.getVmid()+", time="+timestamp);
+		                		
+		                		dc.setMetrictype("virtualpower");
+		                		double valuePower = calculateVMPower(modelCPU, coreNumber, valueCPULoad, valueCPUSteal);
+		                		dc.setVmpower(valuePower);
+		                		datamapper.createMeasurement(dc);
+		                		LOGGER.info("Write power="+valuePower+" for provider="+dc.getProviderid()+", application="+dc.getApplicationid()+", deployment="+dc.getDeploymentid()+", vm="+dc.getVmid()+", time="+timestamp);                				                				
+		                	} else {
+
+		                		LOGGER.info("Received an existing memory METRIC message for timestamp="+timestamp+" (ignored)");
+		                	}
+		                    
+		                	dc.setMetrictype("memory");
+		                	dc.setVmmemory(valueMemory);
+		                    	
+		                	LOGGER.info("Received METRIC message");
+		                    	
+		                    	
+		                }
+					}
+				} catch (Exception e) {
+					System.out.println("Exception while inserting data about measurements:" + e);
+					e.printStackTrace();
+				}
+			}
+	        
+			public double calculateVMPower(String modelCPU, int vmCore, double valueCPULoad, double valueCPUSteal) {
+	        	
+				double valuePower = 0.0;
+				
+				CpuFeatures cpuFeatures;
+				
+				SqlSession cpusession = cpuMapper.getSession();
+            	CpuFeaturesMapper cpumapper = cpusession.getMapper(CpuFeaturesMapper.class); 
+            	cpuFeatures = cpumapper.selectByModel(modelCPU);
+            	cpusession.close();
+            	if (cpuFeatures==null){
+            		LOGGER.warn("Received measure for a cpu model not in the registry");            		
+            	} else {
+				
+            		int hostCore = cpuFeatures.getCore();
+            		double tdp = cpuFeatures.getTdp();
+            		double maxPower = cpuFeatures.getMaxPower();
+            		double minPower = cpuFeatures.getMinPower();				
+        		
+            		// valuePower = (N. core VM / N. core Host) * (Pmax - Pmin) * ((avg_us + avg_sy) / 100) + (N. core VM / N. core Host) *  Pmin * ((100 - avg_st) /100);
+            		double coreFactor = (double )vmCore / (double )hostCore;
+            		valuePower = coreFactor * ((maxPower - minPower) * (valueCPULoad / 100) + minPower * ((100 - valueCPUSteal) / 100));
+            		            	
+            		LOGGER.info("Calculated VM power "+valuePower);
+            	
+            	}
+	        			
+				return valuePower;
+			}	        	
+		};
+		
+		LOGGER.debug("Received "+measurementsFromVMTopic);		
+	    LOGGER.debug("Received "+measureFromVMListener);
+		LOGGER.debug("Received "+paasQueuePublisher);
+		paasQueuePublisher.registerListener(measurementsFromVMTopic,measureFromVMListener);		
+		// M. Fontanella - 20 Jun 2016 - end
+		QUAAAA ----------------------------------------------- */
+		
+	    
 		
 	}
 	

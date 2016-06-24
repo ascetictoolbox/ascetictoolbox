@@ -20,6 +20,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
@@ -28,6 +30,9 @@ import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+//M. Fontanella - 23 Jun 2016 - begin
+import java.util.Date;
+//M. Fontanella - 23 Jun 2016 - end
 
 import org.apache.log4j.Logger;
 
@@ -38,9 +43,15 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.mes
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.interfaces.PaaSEnergyModeller;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.config.EMSettings;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.CpuFeatures;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.CpuFeaturesHandler;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.MonitoringRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
@@ -68,6 +79,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	// M. Fontanella - 26 Apr 2016 - end
 	
 	private DataConsumptionHandler dataCollectorHandler;
+	/* M. Fontanella - 20 Jun 2016 - begin */
+	private CpuFeaturesHandler cpuFeaturesHandler;
+	/* M. Fontanella - 20 Jun 2016 - end */
 	private PredictorInterface predictor;
 	private ApplicationRegistry appRegistry;
 	private MonitoringRegistry monitoringRegistry;
@@ -107,12 +121,16 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			if (unit==Unit.ENERGY){
 				LOGGER.info("Measuring all energy consumption");
 				double result = aggregateVMenergyConsumption(providerid,applicationid,deploymentid, vmids,eventid,null,null);
-				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
+				// M. Fontanella - 23 Jun 2016 - begin
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, 0l, result);
+				// M. Fontanella - 23 Jun 2016 - end
 				return result;
 			} else {
 				LOGGER.info("Measuring average instant power"); 
 				double result = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
-				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
+				// M. Fontanella - 23 Jun 2016 - begin
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, 0l, result);
+				// M. Fontanella - 23 Jun 2016 - end
 				return result;
 			}
 		}else {
@@ -142,12 +160,16 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("Measuring energy consumption");
 				double result =  aggregateVMenergyConsumption( providerid, applicationid, deploymentid, vmids,  eventid,  start,  end);
 				LOGGER.info("Sending to queue");
-				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, result);
+				// M. Fontanella - 23 Jun 2016 - begin
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, 0, result);
+				// M. Fontanella - 23 Jun 2016 - end
 				return result;
 			} else {
 				LOGGER.info("Measuring average instant power"); 
 				double result =  averagePower(providerid,applicationid, deploymentid, vmids,  eventid,start,end);
-				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, result);
+				// M. Fontanella - 23 Jun 2016 - begin
+				if (result>=0)sendToQueue(monitoringTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, 0, result);
+				// M. Fontanella - 23 Jun 2016 - end
 				return result;
 			}
 			
@@ -173,6 +195,21 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		// M. Fontanella - 11 Jan 2016 - begin
 		if (providerid==null) providerid=emsettings.getProviderIdDefault();
 		// M. Fontanella - 11 Jan 2016 - end
+		
+		// M. Fontanella - 23 Jun 2016 - begin
+		Date currentDate = new Date();
+						
+		long endDate = currentDate.getTime();
+		// M. Fontanella - 26 May 2016 - begin
+		//long endDate = 1459787827000L; //test #1
+		//long endDate = 1459960847000L; //test #2
+		//long endDate = 1461739092000L; //test #3
+		// M. Fontanella - 26 May 2016 - end		
+		// add after millisec conversion the time of the forecast
+		long forecasttime = endDate + (window*1000);
+		LOGGER.info("Forecaster: now is "+endDate+" and forecast time is "+forecasttime);			
+		// M. Fontanella - 23 Jun 2016 - end
+		
 		if (eventid==null){
 			double total_power_estim=0;
 			double total_energy_estim=0;
@@ -181,7 +218,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				count_vm++;
 				LOGGER.info("Forecasting for this vm  "+vm);
 				// M. Fontanella - 26 Apr 2016 - begin
-				currentval = predictor.estimate(providerid,applicationid, deploymentid, vm, eventid, unit, window, this.enablePowerFromIaas);	
+				// M. Fontanella - 26 May 2016 - begin
+				// currentval = predictor.estimate(providerid,applicationid, deploymentid, vm, eventid, unit, window, this.enablePowerFromIaas);	
+				currentval = predictor.estimate(providerid,applicationid, deploymentid, vm, eventid, unit, forecasttime, this.enablePowerFromIaas);
+				// M. Fontanella - 26 May 2016 - end
 				// M. Fontanella - 26 Apr 2016 - end
 				List<String> thisvm = new Vector<String>();
 				thisvm.add(vm);
@@ -214,30 +254,42 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						LOGGER.info("############ New  consumption for this vm "+predicted_consumption);
 						double partial = predicted_consumption + current_consumption;
 						LOGGER.info("############ Added to the previously counsumption on this vm "+partial);
-						if (predicted_consumption>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, partial);
+						// M. Fontanella - 23 Jun 2016 - begin
+						if (predicted_consumption>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATTHOUR, forecasttime, partial);
+						// M. Fontanella - 23 Jun 2016 - end
 					}
 					
 				}else{
 					LOGGER.info("############ Predicted power "+currentval );
-					if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
+					// M. Fontanella - 23 Jun 2016 - begin
+					if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, thisvm, eventid, GenericEnergyMessage.Unit.WATT, forecasttime, currentval);
+					// M. Fontanella - 23 Jun 2016 - end
 				}
 			}	
 			if (unit==Unit.ENERGY){
 				LOGGER.info("############ Forecast of consumption for the whole app "+total_energy_estim);
-				if (total_energy_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, total_energy_estim);
-				return total_energy_estim;
+				// M. Fontanella - 23 Jun 2016 - begin				
+				if (total_energy_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, forecasttime, total_energy_estim);
+				// M. Fontanella - 23 Jun 2016 - end
+				return total_energy_estim;				
 			} else if (count_vm>0) {
 
 				LOGGER.info("############ Forecast of power for the whole app "+total_power_estim);
-				if (total_power_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, total_power_estim);
+				// M. Fontanella - 23 Jun 2016 - begin
+				if (total_power_estim>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, forecasttime, total_power_estim);
+				// M. Fontanella - 23 Jun 2016 - end
 				return total_power_estim;
 			}
 		} else {
 			// an event id is provided, basically is the average power of events occurred in the past, if consumption is requested, the values is multiplied for their average duration
 			currentval = averagePower(providerid,applicationid, deploymentid, vmids,  eventid,null,null);
-			LOGGER.info("############ EVENTs Forecasted instant power, now set to queue " + currentval); 
-			if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, null, currentval);
-			double duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid);
+			LOGGER.info("############ EVENTs Forecasted instant power, now set to queue " + currentval);
+			// M. Fontanella - 23 Jun 2016 - begin
+			if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATT, forecasttime, currentval);
+			
+			double duration = averageDuration(providerid,applicationid, deploymentid, vmids,  eventid, forecasttime);
+			// M. Fontanella - 23 Jun 2016 - end
+			
 			LOGGER.info("############ EVENT Forecasting duration (sec) " + duration); 
 			LOGGER.info("############ EVENT val is " + currentval); 
 			if (unit==Unit.ENERGY){
@@ -252,7 +304,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				}else{
 					LOGGER.warn("############ EVENT Something wrong with this values, check calculation");
 				}
-				if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, null, currentval);
+				// M. Fontanella - 23 Jun 2016 - begin
+				if (currentval>0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.WATTHOUR, forecasttime, currentval);
+				// M. Fontanella - 23 Jun 2016 - end
 				return currentval;
 			}
 		}
@@ -389,7 +443,9 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 * 
 	 */	
 	
-	private double averageDuration(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid){
+	// M. Fontanella - 23 Jun 2016 - begin
+	private double averageDuration(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid, long forecasttime){
+	// M. Fontanella - 23 Jun 2016 - end
 		double duration=0;
 		long vmwithevent=0;
 		
@@ -423,17 +479,20 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 			List<String> vms = new Vector<String>();
 			vms.add(vm);
 			LOGGER.info("############ Sending to queue event statistics for this VM ");
-			if (vmavg>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.SEC, null, vmavg);
-			if (totalevent>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.COUNT, null, totalevent);
-			
+			// M. Fontanella - 23 Jun 2016 - begin
+			if (vmavg>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.SEC, forecasttime, vmavg);
+			if (totalevent>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vms, eventid, GenericEnergyMessage.Unit.COUNT, forecasttime, totalevent);
+			// M. Fontanella - 23 Jun 2016 - end
 		}
 		if (vmwithevent>0){
 			duration = duration/vmwithevent;
 		}
 		LOGGER.info("This event has been reported by vms  " + vmwithevent + " with an avg " + duration  );
 		LOGGER.info("Sending to queue event statistics for the whole application ");
-		if (vmwithevent>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.APP_DURATION, null, duration);
-		if (vmwithevent>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.APP_COUNT, null, vmwithevent);
+		// M. Fontanella - 23 Jun 2016 - begin
+		if (vmwithevent>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.APP_DURATION, forecasttime, duration);
+		if (vmwithevent>=0)sendToQueue(predictionTopic, providerid, applicationid, deploymentid, vmids, eventid, GenericEnergyMessage.Unit.APP_COUNT, forecasttime, vmwithevent);
+		// M. Fontanella - 23 Jun 2016 - end
 		
 		return duration;
 	}
@@ -817,7 +876,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	 *  
 	 */
 	
-	private void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+	// M. Fontanella - 23 Jun 2016 - begin
+	// private void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, String referenceTime,double value){
+	private void sendToQueue(String queue,String providerid,String applicationid, String deploymentid, List<String> vms, String eventid, GenericEnergyMessage.Unit unit, long referenceTime,double value){
+	// M. Fontanella - 23 Jun 2016 - end
 		// M. Fontanella - 11 Jan 2016 - begin
 		if (providerid==null) providerid=emsettings.getProviderIdDefault();
 		// M. Fontanella - 11 Jan 2016 - end
@@ -915,20 +977,30 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				monitoringRegistry = MonitoringRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 				appRegistry = ApplicationRegistry.getRegistry(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
 				dataCollectorHandler = DataConsumptionHandler.getHandler(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
+				/* M. Fontanella - 20 Jun 2016 - begin */
+				cpuFeaturesHandler = CpuFeaturesHandler.getHandler(emsettings.getPaasdriver(),emsettings.getPaasurl(),emsettings.getPaasdbuser(),emsettings.getPaasdbpassword());
+				/* M. Fontanella - 20 Jun 2016 - end */
 				energyService.setDataRegistry(dataCollectorHandler);
+				/* M. Fontanella - 20 Jun 2016 - begin */
+				energyService.setCpuFeaturesRegistry(cpuFeaturesHandler);
+				/* M. Fontanella - 20 Jun 2016 - end */
 				energyService.setApplicationRegistry(appRegistry);
 				LOGGER.info("Enabling queue service");
 				// M. Fontanella - 06 Jun 2016 - begin
 				// TODO remove iaas queue when data will be sent directly to paas
 				// queueManager = new EnergyModellerQueueServiceManager(iaasQueueclient,paasQueueclient,appRegistry,dataCollectorHandler);
-				queueManager = new EnergyModellerQueueServiceManager(paasQueueclient,appRegistry,dataCollectorHandler);
+				/* M. Fontanella - 20 Jun 2016 - begin */				
+				queueManager = new EnergyModellerQueueServiceManager(paasQueueclient,appRegistry,dataCollectorHandler,cpuFeaturesHandler);
+				/* M. Fontanella - 20 Jun 2016 - end */
 				// M. Fontanella - 06 Jun 2016 - end
 				LOGGER.debug("Enabled");
 				
 				// TODO remove iaas queue when data will be sent directly to paas
 				// M. Fontanella - 17 May 2016 - begin
 				// M. Fontanella - 26 Apr 2016 - begin
-				queueManager.createTwoLayersConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic(), emsettings.getProviderIdDefault(), this.enablePowerFromIaas);
+				// M. Fontanella - 20 Jun 2016 - begin				
+				queueManager.createTwoLayersConsumers(emsettings.getAmanagertopic(),emsettings.getPowertopic(), emsettings.getPowerFromVMtopic(), emsettings.getProviderIdDefault(), this.enablePowerFromIaas);
+				// M. Fontanella - 20 Jun 2016 - end
 				// M. Fontanella - 26 Apr 2016 - end
 				// M. Fontanella - 17 May 2016 - end
 				LOGGER.debug("PaaS EM activemq connections are now Ready");

@@ -75,9 +75,12 @@ public class EMNeuralPredictor implements PredictorInterface{
 	// M. Fontanella - 30 Mar 2016 - End
 	
 	// M. Fontanella - 26 Apr 2016 - begin
+	// M. Fontanella - 26 Apr 2016 - begin
 	@Override
-	public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
-	// M. Fontanella - 26 Apr 2016 - end
+	public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
+	// public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - end
+		// M. Fontanella - 26 Apr 2016 - end
 		// M. Fontanella - 30 Mar 2016 - Begin
 		// only power then from power get energy estimation
 		double cur_power = 0;
@@ -85,7 +88,10 @@ public class EMNeuralPredictor implements PredictorInterface{
 		for (String vmid :vmids){
 			count++;
 			// M. Fontanella - 26 Apr 2016 - begin
-			cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  timelater, enablePowerFromIaas) ;
+			// M. Fontanella - 26 Apr 2016 - begin
+			cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  forecasttime, enablePowerFromIaas) ;
+			// cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  timelater, enablePowerFromIaas) ;
+			// M. Fontanella - 23 Jun 2016 - end
 			// M. Fontanella - 26 Apr 2016 - end
 		}
 		
@@ -103,16 +109,22 @@ public class EMNeuralPredictor implements PredictorInterface{
 	}
 
 	// M. Fontanella - 26 Apr 2016 - begin
+	// M. Fontanella - 23 Jun 2016 - begin	
 	@Override
-	public double estimate(List<DataConsumption> samples, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	public double estimate(List<DataConsumption> samples, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
+	// public double estimate(List<DataConsumption> samples, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - end
 	// M. Fontanella - 26 Apr 2016 - end
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	// M. Fontanella - 26 Apr 2016 - begin
+	// M. Fontanella - 23 Jun 2016 - begin	
 	@Override
-	public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
+	// public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - end
 	// M. Fontanella - 26 Apr 2016 - end
 		// M. Fontanella - 30 Mar 2016 - Begin
 		
@@ -122,6 +134,8 @@ public class EMNeuralPredictor implements PredictorInterface{
         double learningRate = 0.1;// (0.5) or (0.7)
         int slidingWindowSize = 9; // = 4 * 3(CPU, Memory, Power)
 		double estimation=0;
+		// M. Fontanella - 23 Jun 2016 - begin
+		/*
 		Date current = new Date();
 				
 		long end = current.getTime();
@@ -133,6 +147,9 @@ public class EMNeuralPredictor implements PredictorInterface{
 		LOGGER.info("Forecaster now is "+end);
 		// add after millisec conversion the time of the forecast
 		long forecasttime = end/1000 + (timelater);
+		*/
+		forecasttime = forecasttime/1000;
+		// M. Fontanella - 23 Jun 2016 - end
 		
 		LOGGER.info("Forecaster Provider "+providerid + " Application "+applicationid + " VM "+vm + " at time "+forecasttime);
 		LOGGER.info("############ Forecasting STARTED FOR Provider "+providerid + " Application "+applicationid + " VM "+vm+ "############");
@@ -294,8 +311,10 @@ public class EMNeuralPredictor implements PredictorInterface{
 		long timestamp;
 		int counterALL = 0;
 		
-		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm);
-		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm);
+		// M. Fontanella - 20 Jun 2016 - begin	
+		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
+		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
+		// M. Fontanella - 20 Jun 2016 - end
 		// M. Fontanella - 26 Apr 2016 - begin
 		List<DataConsumption> powerSample = service.samplePower(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
 		// M. Fontanella - 26 Apr 2016 - end

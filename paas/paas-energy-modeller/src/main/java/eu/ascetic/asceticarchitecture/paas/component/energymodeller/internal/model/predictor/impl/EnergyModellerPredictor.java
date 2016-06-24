@@ -30,7 +30,10 @@ public class EnergyModellerPredictor implements PredictorInterface {
 	
 	@Override
 	// M. Fontanella - 26 Apr 2016 - begin
-	public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - begin
+	public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
+	// public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - end
 	// M. Fontanella - 26 Apr 2016 - end
 		
 		// only power then from power get energy estimation
@@ -39,7 +42,10 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		for (String vmid :vmids){
 			count++;
 			// M. Fontanella - 26 Apr 2016 - begin
-			cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  timelater, enablePowerFromIaas) ;
+			// M. Fontanella - 23 Jun 2016 - begin
+			cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  forecasttime, enablePowerFromIaas) ;
+			// cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  timelater, enablePowerFromIaas) ;
+			// M. Fontanella - 23 Jun 2016 - begin
 			// M. Fontanella - 26 Apr 2016 - end
 		}
 		
@@ -53,10 +59,15 @@ public class EnergyModellerPredictor implements PredictorInterface {
 	}
 
 	// M. Fontanella - 26 Apr 2016 - begin
+	// M. Fontanella - 23 Jun 2016 - begin
 	@Override
-	public double estimate(List<DataConsumption> samples, Unit unit,long timelater, boolean enablePowerFromIaas) {
+	public double estimate(List<DataConsumption> samples, Unit unit,long forecasttime, boolean enablePowerFromIaas) {
+	// public double estimate(List<DataConsumption> samples, Unit unit,long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - end
 	// M. Fontanella - 26 Apr 2016 - end
 		double estimation=0;
+		// M. Fontanella - 23 Jun 2016 - begin
+		/*
 		Date current = new Date();
 		// from one week
 		long begin = current.getTime()-604800000;
@@ -65,6 +76,9 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		
 		// add after millisec conversion the time of the forecast
 		long forecasttime = end + (timelater*1000);
+		*/		
+		// M. Fontanella - 23 Jun 2016 - begin
+		
 		LOGGER.info("Samples "+samples.size());
 		//DataInterpolator interpolator;
 		Attribute time = new Attribute("Time");
@@ -123,11 +137,16 @@ public class EnergyModellerPredictor implements PredictorInterface {
 	}
 
 	// M. Fontanella - 26 Apr 2016 - begin
+	// M. Fontanella - 23 Jun 2016 - begin
 	@Override
-	public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
+	// public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
+	// M. Fontanella - 23 Jun 2016 - end
 	// M. Fontanella - 26 Apr 2016 - end
 
 		double estimation=0;
+		// M. Fontanella - 23 Jun 2016 - begin
+		/*
 		Date current = new Date();
 		// from one week
 		long begin = current.getTime()-604800000;
@@ -141,6 +160,9 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		LOGGER.info("Forecaster now is "+end);
 		// add after millisec conversion the time of the forecast
 		long forecasttime = end/1000 + (timelater);
+		*/
+		forecasttime = forecasttime/1000;
+		// M. Fontanella - 23 Jun 2016 - end
 		
 		// M. Fontanella - 20 Jan 2016 - begin
 		LOGGER.info("Forecaster Provider "+providerid + " Application "+applicationid + " VM "+vm + " at time "+forecasttime);
@@ -156,9 +178,11 @@ public class EnergyModellerPredictor implements PredictorInterface {
 		fvWekaAttributes.addElement(cpu);
 		fvWekaAttributes.addElement(memory);
 		fvWekaAttributes.addElement(power);
-		// M. Fontanella - 11 Jan 2016 - begin	
-		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm);
-		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm);
+		// M. Fontanella - 11 Jan 2016 - begin
+		// M. Fontanella - 20 Jun 2016 - begin		
+		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
+		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
+		// M. Fontanella - 20 Jun 2016 - end
 		// M. Fontanella - 26 Apr 2016 - begin
 		List<DataConsumption> powerSample = service.samplePower(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
 		// M. Fontanella - 26 Apr 2016 - end

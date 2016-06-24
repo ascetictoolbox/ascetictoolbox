@@ -1565,14 +1565,17 @@ paas/paas-energy-modeller/paas-energy-modeller.iml -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/datatype/messages/GenericEnergyMessage.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/datatype/messages/MetricMessage.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/config/EMSettings.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/CpuFeatures.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/DataConsumption.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/DataEvent.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/EnergyModellerMonitoring.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/database/table/VirtualMachine.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/ApplicationRegistry.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/CpuFeaturesHandler.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/DataConsumptionHandler.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/MonitoringRegistry.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/AppRegistryMapper.java -text
+paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/CpuFeaturesMapper.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/DataConsumptionMapper.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/ibatis/mapper/MonitoringMapper.java -text
 paas/paas-energy-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/component/energymodeller/internal/common/data/queue/MessageParserUtility.java -text

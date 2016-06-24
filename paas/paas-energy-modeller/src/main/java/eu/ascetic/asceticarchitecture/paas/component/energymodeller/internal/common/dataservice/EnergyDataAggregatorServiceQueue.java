@@ -23,8 +23,14 @@ import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.CpuFeatures;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
+/* M. Fontanella - 20 Jun 2016 - begin */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.CpuFeaturesHandler;
+/* M. Fontanella - 20 Jun 2016 - end */
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.DataConsumptionMapper;
 
@@ -34,6 +40,9 @@ public class EnergyDataAggregatorServiceQueue {
 
 	private ApplicationRegistry applicationRegistry;
 	private DataConsumptionHandler dataConsumptionHandler;
+	/* M. Fontanella - 20 Jun 2016 - begin */
+	private CpuFeaturesHandler cpuFeaturesHandler;
+	/* M. Fontanella - 20 Jun 2016 - end */
 	
 	private static final Logger logger = Logger.getLogger(EnergyDataAggregatorServiceQueue.class);
 	
@@ -44,6 +53,12 @@ public class EnergyDataAggregatorServiceQueue {
 	public void setDataRegistry(DataConsumptionHandler dataConsumptionHandler) {
 		this.dataConsumptionHandler = dataConsumptionHandler;
 	}
+	
+	/* M. Fontanella - 20 Jun 2016 - begin */
+	public void setCpuFeaturesRegistry(CpuFeaturesHandler cpuFeaturesHandler) {
+		this.cpuFeaturesHandler = cpuFeaturesHandler;
+	}
+	/* M. Fontanella - 20 Jun 2016 - end */
 
 	// M. Fontanella - 11 Jan 2016 - begin
 	// M. Fontanella - 26 Apr 2016 - begin
@@ -286,8 +301,10 @@ public class EnergyDataAggregatorServiceQueue {
 	}
 	
 	// M. Fontanella - 11 Jan 2016 - begin
-	public List<DataConsumption> sampleMemory(String providerid, String applicationid, String deployment, String vmid){
-		// M. Fontanella - 11 Jan 2016 - end
+	// M. Fontanella - 20 Jun 2016 - begin
+	public List<DataConsumption> sampleMemory(String providerid, String applicationid, String deployment, String vmid, boolean enablePowerFromIaas){
+	// M. Fontanella - 20 Jun 2016 - end
+	// M. Fontanella - 11 Jan 2016 - end
 		
 		// M. Fontanella - 16 Jun 2016 - begin
 		// vmid = translatePaaSFromIaasID(providerid,deployment,vmid);
@@ -299,7 +316,13 @@ public class EnergyDataAggregatorServiceQueue {
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
 		// M. Fontanella - 16 Jun 2016 - begin
-		List<DataConsumption> dc = dataConsumptionMapper.getMemory(providerid, deployment, vmid);
+		// M. Fontanella - 20 Jun 2016 - begin
+		List<DataConsumption> dc;
+		if (enablePowerFromIaas)
+			dc = dataConsumptionMapper.getMemory(providerid, deployment, vmid);
+		else
+			dc = dataConsumptionMapper.getVirtualMemory(providerid, deployment, vmid);
+		// M. Fontanella - 20 Jun 2016 - end
 		// M. Fontanella - 16 Jun 2016 - end
 		session.close();
 		return  dc;
@@ -308,8 +331,10 @@ public class EnergyDataAggregatorServiceQueue {
 	}
 
 	// M. Fontanella - 11 Jan 2016 - begin
-	public List<DataConsumption> sampleCPU(String providerid, String applicationid, String deployment, String vmid){
-		// M. Fontanella - 11 Jan 2016 - end
+	// M. Fontanella - 20 Jun 2016 - begin	
+	public List<DataConsumption> sampleCPU(String providerid, String applicationid, String deployment, String vmid, boolean enablePowerFromIaas){
+	// M. Fontanella - 20 Jun 2016 - end
+	// M. Fontanella - 11 Jan 2016 - end
 		
 		// M. Fontanella - 16 Jun 2016 - begin
 		// vmid = translatePaaSFromIaasID(providerid,deployment,vmid);
@@ -321,7 +346,13 @@ public class EnergyDataAggregatorServiceQueue {
 		SqlSession session = dataConsumptionHandler.getSession();
 		DataConsumptionMapper dataConsumptionMapper = session.getMapper(DataConsumptionMapper.class);
 		// M. Fontanella - 16 Jun 2016 - begin
-		List<DataConsumption> dc = dataConsumptionMapper.getCPUs(providerid, deployment, vmid);
+		// M. Fontanella - 20 Jun 2016 - begin
+		List<DataConsumption> dc;
+		if (enablePowerFromIaas)
+			dc = dataConsumptionMapper.getCPUs(providerid, deployment, vmid);
+		else
+			dc = dataConsumptionMapper.getVirtualCPUs(providerid, deployment, vmid);
+		// M. Fontanella - 20 Jun 2016 - end
 		// M. Fontanella - 16 Jun 2016 - end
 		session.close();
 		return  dc;

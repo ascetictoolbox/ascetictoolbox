@@ -160,8 +160,7 @@ public class AmqpClient {
 	 * send a message to the queue with two option, sending it with the prediction topic or with the monitoring topic
 	 */
 	public void sendMessage(String queue, String message){
-		LOGGER.info("Sending Message to queue "+queue);
-		// LOGGER.info("Sending Message -->" +  message + "<-- to queue "+queue);
+		LOGGER.info("Sending to queue "+queue+" Message "+ message);		
 		try {
 			if (queue=="prediction"){
 				TextMessage messagetext = session.createTextMessage(message);
@@ -182,7 +181,7 @@ public class AmqpClient {
 	public void registerListener(String topic, MessageListener listener){
 		LOGGER.info("Registering listener");
 		try {
-			Destination thisDestination = session.createTopic(topic);
+			Destination thisDestination = session.createTopic(topic);			
 			MessageConsumer thisConsumer = session.createConsumer(thisDestination);
 			thisConsumer.setMessageListener(listener);
 		
