@@ -215,6 +215,18 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleUpperBound_";
     private static final String ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY = "asceticAdaptationRuleNotificationType_";
     private static final String ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY = "asceticAdaptationRuleParameters_";
+    private static final String ASCETIC_TERM_MEASUREMENT_NUMBER = "asceticTermMeasurementMeasurementNumber_";
+    private static final String ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY = "asceticTermMeasurementApplicationEvent_";
+    private static final String ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY = "asceticTermMeasurementApplicationMetric_";
+    private static final String ASCETIC_TERM_MEASUREMENT_PERIOD_KEY = "asceticTermMeasurementPeriod_";
+    private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY = "asceticTermMeasurementAggerator_";
+    private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY = "asceticTermMeasurementAggregatorParams_";
+    private static final String ASCETIC_SLA_INFO_NUMBER = "asceticSlaInfoNumber";
+    private static final String ASCETIC_SLA_INFO_SLA_TERM_KEY = "asceticSlaInfoSlaTerm_";
+    private static final String ASCETIC_SLA_INFO_METRIC_UNIT_KEY = "asceticSlaInfoMetricUnit_";
+    private static final String ASCETIC_SLA_INFO_INFO_COMPARATOR_KEY = "asceticSlaInfoComparator_";
+    private static final String ASCETIC_SLA_INFO_BOUNDARY_VALUE_KEY = "asceticSlaInfoBoundaryValue_";
+    private static final String ASCETIC_SLA_INFO_TYPE_KEY = "asceticSlaInfoSlaType_";
     
     /**
      * The static KEY used to get and set the deployment name of a {@link VirtualSystemCollection}
@@ -2176,6 +2188,249 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         return getIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
     }
 
+    /**
+     * This adds a new measurement term
+     * @param event The event
+     * @param metric The metric name
+     * @param period The period
+     * @param aggregator The aggregator
+     * @param params The aggregator's parameters
+     * @return The index value of the next term measurement
+     */
+    public int addTermMeasurement(String event, String metric,
+            String period, String aggregator, String params) {
+       
+        // Find the next adaptation rule index
+        int i = getNextFreeIndexKeyValue(
+                ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY);
+        
+        addNewProperty(ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + i,
+                ProductPropertyType.STRING, event);
+        addNewProperty(ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + i,
+                ProductPropertyType.STRING, metric);
+        addNewProperty(ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + i,
+                ProductPropertyType.STRING, period);
+        addNewProperty(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + i,
+                ProductPropertyType.STRING, aggregator);
+        addNewProperty(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + i,
+                ProductPropertyType.STRING, params);        
+        // Increment the number of measurement terms stored
+        incrementIndexPropertyNumber(ASCETIC_TERM_MEASUREMENT_NUMBER);
+        // Return the measurement term index
+        return i;
+    }    
+
+    /**
+     * @param index The index to set
+     * @param event The application event
+     * @param metric The application metric name
+     * @param period The period
+     * @param aggregator The aggregator
+     * @param params The aggregator's parameters
+     */
+    public void setTermMeasurement(int index, String event, String metric,
+            String period, String aggregator, String params) {
+        setTermMeasurementApplicationEvent(index, event);
+        setTermMeasurementApplicationMetric(index, event);
+        setTermMeasurementPeriod(index, event);
+        setTermMeasurementAggregator(index, event);
+        setTermMeasurementAggregatorParams(index, event);
+    }
+
+    public String getTermMeasurementApplicationEvent(int index) {
+        return getPropertyByKey(
+                ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index).getValue();      
+    }
+
+    public void setTermMeasurementApplicationEvent(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index)
+                .setValue(agreementTerm);
+    }
+    
+    public String getTermMeasurementApplicationMetric(int index) {
+        return getPropertyByKey(
+                ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index).getValue();      
+    }      
+
+    public void setTermMeasurementApplicationMetric(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index)
+                .setValue(agreementTerm);
+    }    
+    
+    public String getTermMeasurementPeriod(int index) {
+        return getPropertyByKey(
+                ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index).getValue();      
+    }      
+
+    public void setTermMeasurementPeriod(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index)
+                .setValue(agreementTerm);
+    } 
+    
+    public String getTermMeasurementAggregator(int index) {
+        return getPropertyByKey(
+                ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index).getValue();      
+    }      
+
+    public void setTermMeasurementAggregator(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index)
+                .setValue(agreementTerm);
+    } 
+    
+     public String getTermMeasurementAggregatorParams(int index) {
+        return getPropertyByKey(
+                ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index).getValue();      
+    }      
+
+    public void setTermMeasurementAggregatorParams(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index)
+                .setValue(agreementTerm);
+    }    
+    
+    /**
+     * Remove a set of term measurement properties at a specific index.
+     * 
+     * @param index
+     *            The index of the term measurement to remove (not to be confused
+     *            with the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     */
+    public void removeTermMeasurement(int index) {
+        
+        removePropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index);
+        removePropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index);
+        removePropertyByKey(ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index);
+        removePropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index);
+        removePropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index);
+
+        // FIXME: We should decrement by 1 the index of all subsequent property
+        // sets
+
+        decrementIndexPropertyNumber(ASCETIC_TERM_MEASUREMENT_NUMBER);
+    }
+    
+    public int addSlaInfo(String slaTerm, String unit,
+            String comparator, String boundaryValue, String slaType) {
+       
+        // Find the next adaptation rule index
+        int i = getNextFreeIndexKeyValue(
+                ASCETIC_SLA_INFO_SLA_TERM_KEY);
+        
+        addNewProperty(ASCETIC_SLA_INFO_SLA_TERM_KEY + i,
+                ProductPropertyType.STRING, slaTerm);
+        addNewProperty(ASCETIC_SLA_INFO_METRIC_UNIT_KEY + i,
+                ProductPropertyType.STRING, unit);
+        addNewProperty(ASCETIC_SLA_INFO_INFO_COMPARATOR_KEY + i,
+                ProductPropertyType.STRING, comparator);
+        addNewProperty(ASCETIC_SLA_INFO_BOUNDARY_VALUE_KEY + i,
+                ProductPropertyType.STRING, boundaryValue);
+        addNewProperty(ASCETIC_SLA_INFO_TYPE_KEY + i,
+                ProductPropertyType.STRING, slaType);        
+        // Increment the number of sla values stored
+        incrementIndexPropertyNumber(ASCETIC_SLA_INFO_NUMBER);
+        // Return the sla info index
+        return i;
+    }    
+    
+    /**
+     * 
+     * @param index
+     * @param slaTerm
+     * @param unit
+     * @param comparator
+     * @param boundaryValue
+     * @param slaType 
+     */
+    public void setSlaInfo(int index, String slaTerm, String unit,
+            String comparator, String boundaryValue, String slaType) {
+        setSlaInfoSlaTerm(index, slaTerm);
+        setSlaInfoMetricUnit(index, unit);
+        setSlaInfoComparator(index, comparator);
+        setSlaInfoBoundaryValue(index, boundaryValue);
+        setSlaInfoSlaType(index, slaType);
+    }
+
+    public String getSlaInfoSlaTerm(int index) {
+        return getPropertyByKey(
+                ASCETIC_SLA_INFO_SLA_TERM_KEY + index).getValue();      
+    }
+
+    public void setSlaInfoSlaTerm(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_SLA_INFO_SLA_TERM_KEY + index)
+                .setValue(agreementTerm);
+    }
+    
+    public String getSlaInfoMetricUnit(int index) {
+        return getPropertyByKey(
+                ASCETIC_SLA_INFO_METRIC_UNIT_KEY + index).getValue();      
+    }      
+
+    public void setSlaInfoMetricUnit(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_SLA_INFO_METRIC_UNIT_KEY + index)
+                .setValue(agreementTerm);
+    }    
+    
+    public String getSlaInfoComparator(int index) {
+        return getPropertyByKey(
+                ASCETIC_SLA_INFO_INFO_COMPARATOR_KEY + index).getValue();      
+    }      
+
+    public void setSlaInfoComparator(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_SLA_INFO_INFO_COMPARATOR_KEY + index)
+                .setValue(agreementTerm);
+    } 
+    
+    public String getSlaInfoBoundaryValue(int index) {
+        return getPropertyByKey(
+                ASCETIC_SLA_INFO_BOUNDARY_VALUE_KEY + index).getValue();      
+    }      
+
+    public void setSlaInfoBoundaryValue(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_SLA_INFO_BOUNDARY_VALUE_KEY + index)
+                .setValue(agreementTerm);
+    } 
+    
+     public String getSlaInfoSlaType(int index) {
+        return getPropertyByKey(
+                ASCETIC_SLA_INFO_TYPE_KEY + index).getValue();      
+    }      
+
+    public void setSlaInfoSlaType(int index,
+            String agreementTerm) {
+        getPropertyByKey(ASCETIC_SLA_INFO_TYPE_KEY + index)
+                .setValue(agreementTerm);
+    }    
+    
+    /**
+     * Remove a set of sla info properties at a specific index.
+     * 
+     * @param index
+     *            The index of sla info to remove (not to be confused
+     *            with the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getEndPointIndexById(String)})
+     */
+    public void removeSlaInfo(int index) {    
+        removePropertyByKey(ASCETIC_SLA_INFO_SLA_TERM_KEY + index);
+        removePropertyByKey(ASCETIC_SLA_INFO_METRIC_UNIT_KEY + index);
+        removePropertyByKey(ASCETIC_SLA_INFO_INFO_COMPARATOR_KEY + index);
+        removePropertyByKey(ASCETIC_SLA_INFO_BOUNDARY_VALUE_KEY + index);
+        removePropertyByKey(ASCETIC_SLA_INFO_TYPE_KEY + index);
+
+        // FIXME: We should decrement by 1 the index of all subsequent property
+        // sets
+
+        decrementIndexPropertyNumber(ASCETIC_SLA_INFO_NUMBER);
+    }    
+    
     /**
      * Gets deployment name for a {@link VirtualSystemCollection}.
      * 
