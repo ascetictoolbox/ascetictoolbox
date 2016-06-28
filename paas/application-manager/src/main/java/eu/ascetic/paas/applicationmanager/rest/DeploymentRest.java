@@ -540,10 +540,11 @@ public class DeploymentRest extends AbstractRest {
 		energyModeller = getEnergyModeller();
 		
 		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		String providerId = deployment.getProviderId();
 		List<String> ids = getVmsIds(deployment);
 		
 		logger.debug("Connecting to Energy Modeller");
-		return energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, unit, duration);
+		return energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, unit, duration);
 	}
 	
 	@GET

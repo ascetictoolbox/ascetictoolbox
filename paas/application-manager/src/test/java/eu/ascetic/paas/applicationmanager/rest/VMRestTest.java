@@ -226,15 +226,15 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		
 		VM vm = new VM();
-		vm.setId(2);
+		vm.setId(444);
 		vm.setProviderVmId("abab");
+		vm.setProviderId("1");
 		
 		when(vmDAO.getById(444)).thenReturn(vm);
 		
 		List<String> ids = new ArrayList<String>();
-		ids.add("2");
-		when(energyModeller.estimate(null,  "111", "333", ids, null, Unit.ENERGY, 2l)).thenReturn(22.0);
-		//when(energyModeller.energyEstimation(null, "111", ids, "eventX")).thenReturn(22.0);
+		ids.add("444");
+		when(energyModeller.estimate("1",  "111", "333", ids, null, Unit.ENERGY, 2l)).thenReturn(22.0);
 		
 		Response response = vmRest.getEnergyEstimation("111", "333", "444", 2l);
 		assertEquals(200, response.getStatus());

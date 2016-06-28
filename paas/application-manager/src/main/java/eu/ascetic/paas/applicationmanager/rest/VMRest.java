@@ -416,12 +416,14 @@ public class VMRest extends AbstractRest {
 		energyModeller = getEnergyModeller();
 		
 		VM vm = vmDAO.getById(Integer.parseInt(vmId));
+		String providerId = vm.getProviderId();
+		
 		List<String> ids = new ArrayList<String>();
 		ids.add("" + vm.getId());
 		
 		logger.debug("Connecting to Energy Modeller");
 
-		return energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, unit, duration);
+		return energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, unit, duration);
 	}
 	
 	@GET

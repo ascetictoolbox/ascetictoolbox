@@ -1038,6 +1038,7 @@ public class DeploymentRestTest extends AbstractTest {
 	public void getEnergyEstimationForEventTest() throws JAXBException {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);
+		deployment.setProviderId("33");
 		
 		VM vm1 = new VM();
 		vm1.setId(1);
@@ -1058,7 +1059,7 @@ public class DeploymentRestTest extends AbstractTest {
 		deploymentRest.deploymentDAO = deploymentDAO;
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 				
-		when(energyModeller.estimate(isNull(String.class),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+		when(energyModeller.estimate(eq("33"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
 			 
 			@Override
 			public boolean matches(Object arg0) {
