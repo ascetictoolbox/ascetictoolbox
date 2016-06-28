@@ -62,7 +62,7 @@ public class EnergyModellerData {
 	private static String DEP = "877";
 	*/
 	
-	/* Test 4 */
+	/* Test 4 
 	private static String HOST = "2444";
 	private static String PROVIDER = "1";
 	private static String EVENT = "event_dstest";	
@@ -72,7 +72,7 @@ public class EnergyModellerData {
 	// long endlong   = 1444147925771L;
 	long beginlong = 1444147613000L;
 	long endlong   = 1444147925000L;
-	/**/
+	*/
 	
 	/* Test 5
 	private static String HOST = "2456";
@@ -81,6 +81,14 @@ public class EnergyModellerData {
 	private static String APP = "JEPlus";
 	private static String DEP = "942";
 	*/
+	
+	/* Test 6 */
+	private static String HOST = "2363";
+	private static String PROVIDER = "1";
+	private static String EVENT = "ciao";	
+	private static String APP = "JEPlus";
+	private static String DEP = "843";
+	/* */
 	
 	// long beginlong = 1410449721L;
 	// long endlong = 1443705931826L;
@@ -124,9 +132,9 @@ public class EnergyModellerData {
 		List<String> vmids = new Vector<String>();
 		vmids.add(HOST);		
 		EVENT=null;
-		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
+		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
 		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));
-		// double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,3600);
+		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,0);
 		System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
 		
 		// M. Fontanella - 23 Jun 2016 - begin	

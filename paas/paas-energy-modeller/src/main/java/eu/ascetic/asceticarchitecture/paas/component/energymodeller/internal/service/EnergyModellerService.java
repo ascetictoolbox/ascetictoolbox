@@ -201,9 +201,10 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						
 		long endDate = currentDate.getTime();
 		// M. Fontanella - 26 May 2016 - begin
-		//long endDate = 1459787827000L; //test #1
-		//long endDate = 1459960847000L; //test #2
-		//long endDate = 1461739092000L; //test #3
+		// endDate = 1459787827000L; //test #1
+		// endDate = 1459960847000L; //test #2
+		// endDate = 1461739092000L; //test #3
+		// endDate = 1466835417000L; //test #5						 
 		// M. Fontanella - 26 May 2016 - end		
 		// add after millisec conversion the time of the forecast
 		long forecasttime = endDate + (window*1000);
