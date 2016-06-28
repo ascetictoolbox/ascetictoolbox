@@ -1541,6 +1541,15 @@ paas/application-monitor/test-amqp/AMQPTestClient/AMQPTestClient.iml -text
 paas/application-monitor/test-amqp/AMQPTestClient/pom.xml -text
 paas/application-monitor/test-amqp/AMQPTestClient/src/test/java/es/bsc/amon/amqp/test/AMQPTest.java -text
 paas/application-monitor/test-amqp/AMQPTestClient/src/test/resources/jndi.properties -text
+paas/emslamintegrator/.mvn/wrapper/maven-wrapper.jar -text
+paas/emslamintegrator/.mvn/wrapper/maven-wrapper.properties -text
+paas/emslamintegrator/mvnw -text
+paas/emslamintegrator/mvnw.cmd -text
+paas/emslamintegrator/pom.xml -text
+paas/emslamintegrator/src/main/kotlin/es/bsc/paas/EmslamintegratorApplication.kt -text
+paas/emslamintegrator/src/main/kotlin/es/bsc/paas/InitiateMonitoringListener.kt -text
+paas/emslamintegrator/src/main/resources/application.properties -text
+paas/emslamintegrator/src/test/kotlin/es/bsc/paas/EmslamintegratorApplicationTests.kt -text
 paas/gui/css/styles.css -text
 paas/gui/index.html -text
 paas/gui/js/components.json -text
