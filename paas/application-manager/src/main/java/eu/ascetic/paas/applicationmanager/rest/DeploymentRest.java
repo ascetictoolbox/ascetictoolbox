@@ -522,10 +522,17 @@ public class DeploymentRest extends AbstractRest {
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getEnergyEstimationForEvent(@PathParam("application_name") String applicationName, 
 												@PathParam("deployment_id") String deploymentId, 
-												@PathParam("event_id") String eventId) {
+												@PathParam("event_id") String eventId,
+												@QueryParam("duration") String durationQuery) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-estimation");
+		
+		long duration = 0l;
+		
+		if(durationQuery != null) {
+			duration = Long.parseLong(durationQuery);
+		}
 
-		double energyConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, eventId, Unit.ENERGY, 0l);
+		double energyConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, eventId, Unit.ENERGY, duration);
 		
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(energyConsumed);
@@ -550,10 +557,19 @@ public class DeploymentRest extends AbstractRest {
 	@GET
 	@Path("{deployment_id}/events/{event_id}/power-estimation")
 	@Produces(MediaType.APPLICATION_XML)
-	public Response getPowerEstimationForEvent(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, @PathParam("event_id") String eventId) {
+	public Response getPowerEstimationForEvent(@PathParam("application_name") String applicationName, 
+											   @PathParam("deployment_id") String deploymentId, 
+											   @PathParam("event_id") String eventId,
+											   @QueryParam("duration") String durationQuery) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/events/" + eventId + "/power-estimation");
 
-		double powerConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, eventId, Unit.POWER, 0l);
+		long duration = 0l;
+		
+		if(durationQuery != null) {
+			duration = Long.parseLong(durationQuery);
+		}
+		
+		double powerConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, eventId, Unit.POWER, duration);
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		powerMeasurement.setValue(powerConsumed);
 		

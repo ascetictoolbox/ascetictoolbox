@@ -1083,7 +1083,7 @@ public class DeploymentRestTest extends AbstractTest {
 		}), eq("eventX"), eq(Unit.ENERGY), eq(0l))).thenReturn(22.0);
 		
 		
-		Response response = deploymentRest.getEnergyEstimationForEvent("111", "1", "eventX");
+		Response response = deploymentRest.getEnergyEstimationForEvent("111", "1", "eventX", null);
 		
 		String xml = (String) response.getEntity();
 		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
@@ -1143,7 +1143,7 @@ public class DeploymentRestTest extends AbstractTest {
 		}), eq("eventX"), eq(Unit.POWER), eq(0l))).thenReturn(22.0);
 		
 		
-		Response response = deploymentRest.getPowerEstimationForEvent("111", "1", "eventX");
+		Response response = deploymentRest.getPowerEstimationForEvent("111", "1", "eventX", null);
 		
 		String xml = (String) response.getEntity();
 		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
