@@ -179,15 +179,19 @@ public interface DataConsumptionMapper {
 	  
 	  // M. Fontanella - 20 Jan 2016 - begin
 	  // M. Fontanella - 16 Jun 2016 - begin
-	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'power' ORDER BY providerid,applicationid,deploymentid,vmid DESC LIMIT 1")
+	  // M. Fontanella - 28 Jun 2016 - begin
+	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'power' ORDER BY providerid,applicationid,deploymentid,vmid,time DESC LIMIT 1")
 	  DataConsumption getLastSample(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
-	  // M. Fontanella - 16 Jun 2016 - begin
+	  // M. Fontanella - 28 Jun 2016 - end
+	  // M. Fontanella - 16 Jun 2016 - end
 	  // M. Fontanella - 20 Jan 2016 - end
 	 
 	  // M. Fontanella - 26 Apr 2016 - begin
 	  // M. Fontanella - 16 Jun 2016 - begin
-	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'virtualpower' ORDER BY providerid,applicationid,deploymentid,vmid DESC LIMIT 1")
+	  // M. Fontanella - 28 Jun 2016 - begin
+	  @Select("select * from DATACONSUMPTION WHERE providerid = #{providerid} and deploymentid = #{deploymentid} and vmid = #{vmid}  and metrictype = 'virtualpower' ORDER BY providerid,applicationid,deploymentid,vmid,time DESC LIMIT 1")
 	  DataConsumption getLastSampleVirtualPower(@Param("providerid")String providerid,@Param("deploymentid")String deploymentid,@Param("vmid") String vmid);
+	  // M. Fontanella - 28 Jun 2016 - end
 	  // M. Fontanella - 16 Jun 2016 - end
 	  // M. Fontanella - 26 Apr 2016 - end
 	  

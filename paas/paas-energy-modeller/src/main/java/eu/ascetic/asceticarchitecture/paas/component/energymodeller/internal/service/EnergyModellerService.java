@@ -113,6 +113,34 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	@Override
 	public double measure(String providerid, String applicationid, String deploymentid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end) {
+		
+		// M. Fontanella - 28 Jun 2016 - begin
+		
+		String CallString;
+		CallString = "measure(providerid="+providerid+", applicationid="+applicationid+", deploymentid="+deploymentid+", vmids={";
+		
+		int countVM = 0;
+		for(String vm : vmids){
+			countVM++;
+			if (countVM < vmids.size())
+				CallString = CallString+vm+", ";
+			else
+				CallString = CallString+vm;
+		}
+		
+		long startLong = 0l;
+		if (start!=null)
+			startLong=start.getTime();
+		long endLong = 0l;
+		if (end!=null)
+			startLong=end.getTime();
+				
+		// CallString = CallString+"}, eventid="+eventid+", unit="+unit+", start="+startLong+", stop="+endLong;
+		CallString = CallString+"}, eventid="+eventid+", unit="+unit+", start="+startLong+", stop="+endLong;
+					
+		LOGGER.info(CallString);
+		// M. Fontanella - 28 Jun 2016 - end
+		
 		// M. Fontanella - 11 Jan 2016 - begin
 		if (providerid==null) providerid=emsettings.getProviderIdDefault();
 		// M. Fontanella - 11 Jan 2016 - end
@@ -190,6 +218,25 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 	
 	@Override
 	public double estimate(String providerid, String applicationid,  String deploymentid,	List<String> vmids, String eventid, Unit unit, long window) {
+		
+		// M. Fontanella - 28 Jun 2016 - begin
+		String CallString;
+		CallString = "estimate(providerid="+providerid+", applicationid="+applicationid+", deploymentid="+deploymentid+", vmids={";
+		
+		int countVM = 0;
+		for(String vm : vmids){
+			countVM++;
+			if (countVM < vmids.size())
+				CallString = CallString+vm+", ";
+			else
+				CallString = CallString+vm;
+		}
+		
+		CallString = CallString+"}, eventid="+eventid+", unit="+unit+", window="+window;		
+			
+		LOGGER.info(CallString);
+		// M. Fontanella - 28 Jun 2016 - end
+		
 		LOGGER.info("Forecasting requested"); 
 		double currentval = 0;
 		// M. Fontanella - 11 Jan 2016 - begin
@@ -204,7 +251,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		// endDate = 1459787827000L; //test #1
 		// endDate = 1459960847000L; //test #2
 		// endDate = 1461739092000L; //test #3
-		// endDate = 1466835417000L; //test #5						 
+		// endDate = 1467058574000L; //test #5					 
 		// M. Fontanella - 26 May 2016 - end		
 		// add after millisec conversion the time of the forecast
 		long forecasttime = endDate + (window*1000);
@@ -220,6 +267,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				LOGGER.info("Forecasting for this vm  "+vm);
 				// M. Fontanella - 26 Apr 2016 - begin
 				// M. Fontanella - 26 May 2016 - begin
+				// Note: predictor.estimate() returns always a POWER value
 				// currentval = predictor.estimate(providerid,applicationid, deploymentid, vm, eventid, unit, window, this.enablePowerFromIaas);	
 				currentval = predictor.estimate(providerid,applicationid, deploymentid, vm, eventid, unit, forecasttime, this.enablePowerFromIaas);
 				// M. Fontanella - 26 May 2016 - end
@@ -245,10 +293,15 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 						LOGGER.info("######## ENERGY ESTIMATION SUMMARY");
 						
 						LOGGER.info("############ Last vm power "+dc.getVmpower()+" at time "+dc.getTime());
-						LOGGER.info("############ Estimated vm power "+currentval+" at time ");
+						// M. Fontanella - 28 Jun 2016 - begin
+						LOGGER.info("############ Estimated vm power "+currentval+" at time "+forecasttime/1000);
+						// M. Fontanella - 28 Jun 2016 - end
 						// M. Fontanella - 14 Jun 2016 - begin
 						// double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) / (window/SECONDS_IN_HOUR));
-						double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) / (window/(double )SECONDS_IN_HOUR));
+						// M. Fontanella - 28 Jun 2016 - begin
+						// double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) / (window/(double )SECONDS_IN_HOUR));
+						double predicted_consumption = (0.5)*((currentval + dc.getVmpower()) * (((forecasttime/1000)-dc.getTime())/(double )SECONDS_IN_HOUR));
+						// M. Fontanella - 28 Jun 2016 - end
 						// M. Fontanella - 14 Jun 2016 - end						
 						LOGGER.info("############ Estimated increased consumption for this vm "+predicted_consumption);
 						total_energy_estim = total_energy_estim + predicted_consumption + current_consumption;

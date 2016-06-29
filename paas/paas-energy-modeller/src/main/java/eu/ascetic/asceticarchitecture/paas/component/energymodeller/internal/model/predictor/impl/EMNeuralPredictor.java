@@ -289,9 +289,16 @@ public class EMNeuralPredictor implements PredictorInterface{
 			LOGGER.debug("FORECAST Adjusting - Timestamp: " + forecasttime +
 						" CPU:"    + deNormalizeValue(calcOutputCPU, PredictorObject.CPU) +
 						" Memory:" + deNormalizeValue(calcOutputMemory, PredictorObject.MEMORY) +
-						" Power:"  + deNormalizeValue(calcOutputPower, PredictorObject.POWER));		
+						" Power:"  + deNormalizeValue(calcOutputPower, PredictorObject.POWER));	
 		} else {
-			estimation = deNormalizeValue(currOutputPower, PredictorObject.POWER);			
+			estimation = deNormalizeValue(currOutputPower, PredictorObject.POWER);
+			
+			/* MAXIM
+			LOGGER.info("FORECAST NoAdjusting - Timestamp: " + forecasttime +
+					" CPU:"    + deNormalizeValue(currOutputCPU, PredictorObject.CPU) +
+					" Memory:" + deNormalizeValue(currOutputMemory, PredictorObject.MEMORY) +
+					" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));	//MAXIM
+			MAXIM */
 		}
 		
 		LOGGER.info("############ Forecasting TERMINATED POWER WILL BE "+estimation + " at "+forecasttime+ "############");
