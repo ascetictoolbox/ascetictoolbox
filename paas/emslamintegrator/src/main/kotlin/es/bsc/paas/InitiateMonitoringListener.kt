@@ -11,20 +11,19 @@ import org.springframework.stereotype.Component
 class InitiateMonitoringListener {
     val logger = LoggerFactory.getLogger(InitiateMonitoringListener::class.java)
     constructor() {
-        logger.info("STARTING")
+        logger.debug("Starting InitiateMonitoringListener")
     }
 
 
-    @JmsListener(destination = "testQueue")
-    fun processQueueMessage(content:String) {
-        logger.info("****** RECEIVED CONTENT FROM QUEUE")
-        logger.info(content)
-    }
+//    @JmsListener(destination = "appmon")
+//    fun processQueueMessage(content:String) {
+//        logger.debug("Received from Queue: $content")
+//
+//    }
 
 
-    @JmsListener(destination = "testTopic")
+    @JmsListener(destination = "appmon")
     fun processTopicMessage(content:String) {
-        logger.info("****** RECEIVED CONTENT FROM TOPIC")
-        logger.info(content)
+        logger.debug("Received from Topic: $content")
     }
 }
