@@ -280,6 +280,60 @@ paths:
             type: array
             items:
               $ref: "#/definitions/VM"
+  /experiments/{expid}/kpis:
+      get:
+        x-swagger-router-controller: Default
+        # Describe this verb here. Note: you can use markdown
+        operationId: experimentKPISGet
+        description: |
+          Gets the list of kpis for a specific experiment
+        # This is array of GET operation parameters:
+        parameters:
+          - name: expid
+            in: path
+            description: id of the experiment to retrieve
+            type: string
+        produces:
+          - application/json
+          - application/xml
+        responses:
+          # Response code
+          "200":
+            description: Successful response
+            # A schema describing your response object.
+            # Use JSON Schema format
+            schema:
+              type: array
+              items:
+                $ref: "#/definitions/KPI"
+  /snapshots/{snapid}/measurebyevent:
+    get:
+      x-swagger-router-controller: Default
+      operationId: snapshotMeasureByEventGet
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Get `Snapshot` object according.
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        - name: snapid
+          in: path
+          description: snapshotId
+          type: string
+      # Expected responses for this operation:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/EventWithMeasure"
 definitions:
   Experiment:
     type: object
@@ -343,6 +397,20 @@ definitions:
         type: string
       description:
         type: string
+  EventWithMeasure:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: UUID
+      name:
+        type: string
+      description:
+        type: string
+      measures:
+        type: array
+        items:
+          $ref: "#/definitions/Measure"
   SnapshotLess:
     type: object
     properties:

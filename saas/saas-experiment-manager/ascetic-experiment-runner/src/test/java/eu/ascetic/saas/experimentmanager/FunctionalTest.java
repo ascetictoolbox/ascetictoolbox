@@ -81,7 +81,7 @@ public class FunctionalTest {
 			for(KPI kpi:exp.getKpis()){
 				scopes.put(kpi.getName(),eventScopes);
 			}
-			Snapshot s = mi.takeSnapshot(exp, "A snapshot", "This is a snapshot", "490",scopes);
+			Snapshot s = mi.takeSnapshot("dzqfesghsef",exp, "A snapshot", "This is a snapshot", "490",scopes);
 			System.out.println("computed");
 			api.snapshotsPost(s);
 			System.out.println("saved and end");
@@ -110,7 +110,7 @@ public class FunctionalTest {
 			for(KPI kpi:exp.getKpis()){
 				scopes.put(kpi.getName(),eventScopes);
 			}
-			Snapshot s = mi.takeSnapshot(exp, "A snapshot", "This is a snapshot", "490",scopes);
+			Snapshot s = mi.takeSnapshot("dqzdzqdzqdef",exp, "A snapshot", "This is a snapshot", "490",scopes);
 			System.out.println("computed");
 			api.snapshotsPost(s);
 			System.out.println("saved and end");

@@ -37,7 +37,7 @@ public class Application {
 		
 		Experiment exp = API.createExperiment("News Asset Experiment","newsAsset","News Asset","Major experiment",
 				basePath+"events.xml", basePath+"deployments.xml", basePath+"kpis.xml");
-		Snapshot s = API.run(exp,"490", "This is a test snapshot", basePath+"scopes.xml");
+		Snapshot s = API.run("dzdqzde55",exp,"490", "This is a test snapshot", basePath+"scopes.xml");
 		API.persist("http://localhost:8080",s);
 	}
 

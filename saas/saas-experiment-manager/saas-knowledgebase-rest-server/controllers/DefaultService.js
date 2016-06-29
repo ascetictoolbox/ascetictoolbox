@@ -66,7 +66,7 @@ exports.eventGet = function(args, res, next) {
    **/
    Models.Experiment.find({_id: args.expid.value},function(err,data){
 	 	res.setHeader('Content-Type', 'application/json');
-	 	res.end(JSON.stringify(data.events));
+	 	res.end(JSON.stringify(data[0].events));
 	 });
 }
 exports.experimentSnapshotGet = function(args, res, next) {
@@ -76,7 +76,7 @@ exports.experimentSnapshotGet = function(args, res, next) {
    **/
    console.log(args.expId)
 
-   Models.Snapshot.find({experimentId: args.expId.value},function(err,data){
+   Models.Snapshot.find({experimentId: args.expid.value},function(err,data){
      res.setHeader('Content-Type', 'application/json');
      res.end(JSON.stringify(data));
    });
@@ -130,7 +130,7 @@ exports.snapshotMeasuresGet = function(args, res, next) {
 
  	 Models.Snapshot.find({_id: args.snapid.value},function(err,data){
  		 res.setHeader('Content-Type', 'application/json');
- 		 res.end(JSON.stringify(data.measures));
+ 		 res.end(JSON.stringify(data[0].measures));
  	 });
 }
 exports.snapshotVMsGet = function(args, res, next) {
@@ -140,6 +140,48 @@ exports.snapshotVMsGet = function(args, res, next) {
    **/
    Models.Snapshot.find({_id: args.snapid.value},function(err,data){
      res.setHeader('Content-Type', 'application/json');
-     res.end(JSON.stringify(data.vms));
+     res.end(JSON.stringify(data[0].vms));
    });
+}
+
+exports.experimentKPISGet = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+   * expid (String)
+   **/
+ 	Models.Experiment.find({_id: args.expid.value},function(err,data){
+ 	 res.setHeader('Content-Type', 'application/json');
+ 	 res.end(JSON.stringify(data[0].kpis));
+ 	});
+}
+
+
+exports.snapshotMeasureByEventGet = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+   * snapid (String)
+   **/
+
+	Models.Snapshot.find({_id: args.snapid.value},function(err,snapshots){
+		var snapshot = snapshots[0];
+		console.log("getting experiment with id : " + snapshot.expId)
+		Models.Experiment.find({_id: snapshot.experimentId},function(err,experiments){
+			var results = experiments[0].events.map(function(event){
+				var newEvent = Object()
+				newEvent._id = event._id
+				newEvent.name= event.name
+				newEvent.description = event.description
+				newEvent.measures = snapshot.measures.filter(function(m){
+					return m.refersTo.length == 1 && m.refersTo[0].name == event.name
+				});
+				return newEvent
+			});
+
+	 		res.setHeader('Content-Type', 'application/json');
+	 		res.end(JSON.stringify(results));
+	 	});
+	});
+	/*
+	what to return a cross join between event of the experiment and measure
+	*/
 }

@@ -9,14 +9,16 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.Pair;
 
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event;
+import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.SnapshotLess;
+import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.EventWithMeasure;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Measure;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.VM;
 
 import java.util.*;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-06-28T16:11:54.305+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-06-29T13:08:58.029+02:00")
 public class DefaultApi {
   private ApiClient apiClient;
 
@@ -219,6 +221,53 @@ public class DefaultApi {
   
   /**
    * 
+   * Gets the list of kpis for a specific experiment
+   * @param expid id of the experiment to retrieve
+   * @return List<KPI>
+   */
+  public List<KPI> experimentKPISGet(String expid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'expid' is set
+     if (expid == null) {
+        throw new ApiException(400, "Missing the required parameter 'expid' when calling experimentKPISGet");
+     }
+     
+    // create path and map variables
+    String path = "/experiments/{expid}/kpis".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "expid" + "\\}", apiClient.escapeString(expid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<List<KPI>> returnType = new GenericType<List<KPI>>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
    * Gets the list of event for a specific experiment
    * @param expid id of the experiment to retrieve
    * @return List<Snapshot>
@@ -396,6 +445,53 @@ public class DefaultApi {
 
     
     GenericType<SnapshotLess> returnType = new GenericType<SnapshotLess>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
+   * Get `Snapshot` object according.
+   * @param snapid snapshotId
+   * @return List<EventWithMeasure>
+   */
+  public List<EventWithMeasure> snapshotMeasureByEventGet(String snapid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'snapid' is set
+     if (snapid == null) {
+        throw new ApiException(400, "Missing the required parameter 'snapid' when calling snapshotMeasureByEventGet");
+     }
+     
+    // create path and map variables
+    String path = "/snapshots/{snapid}/measurebyevent".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "snapid" + "\\}", apiClient.escapeString(snapid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<List<EventWithMeasure>> returnType = new GenericType<List<EventWithMeasure>>() {};
     return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     
   }

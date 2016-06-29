@@ -32,7 +32,7 @@ public class ExperimentHandler {
 		this.saaSProvider = provider;
 	}
 	
-	public Snapshot takeSnapshot(Experiment experiment, String label, String description, String deplName, Map<String,List<Scope>> scope)  throws MetricDefinitionIncorrectException, NoMeasureException{
+	public Snapshot takeSnapshot(String experimentId, Experiment experiment, String label, String description, String deplName, Map<String,List<Scope>> scope)  throws MetricDefinitionIncorrectException, NoMeasureException{
 		Deployment deployment = experiment.getDeployment(deplName);
 		
 		Snapshot s= new Snapshot();
@@ -40,7 +40,7 @@ public class ExperimentHandler {
 		s.setDeplId(saaSProvider.getDeploymentId(deployment.getName()));
 		s.setDeplName(deployment.getName());
 		s.setDescription(description);
-		s.setExperimentId(experiment.getName());
+		s.setExperimentId(experimentId);
 		s.setName(label);
 		
 		s.setVms(ExperimentAdaptator.getVMs(deployment));

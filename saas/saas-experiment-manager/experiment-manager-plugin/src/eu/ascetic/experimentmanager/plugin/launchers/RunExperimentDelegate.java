@@ -28,9 +28,10 @@ public class RunExperimentDelegate extends JavaLaunchDelegate {
 		String scopesPath      = configuration.getAttribute(Constants.SCOPE_FILEPATH, "");
 		String experimentPath  = configuration.getAttribute(Constants.EXPERIMENT_FILEPATH, "");
 		
-		Experiment exp = API.loadExperiment(experimentPath);
-		Snapshot s = API.run(exp, deplName, description, scopesPath);
 		try {
+			Experiment exp = API.loadExperiment(experimentPath);
+			String expId = API.expId(skburl, exp);
+			Snapshot s = API.run(expId,exp, deplName, description, scopesPath);
 			API.persist(skburl, s);
 		} catch (ApiException e) {
 			// TODO Auto-generated catch block

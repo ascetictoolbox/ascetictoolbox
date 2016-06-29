@@ -22,6 +22,10 @@ module.exports.eventGet = function eventGet (req, res, next) {
   Default.eventGet(req.swagger.params, res, next);
 };
 
+module.exports.experimentKPISGet = function experimentKPISGet (req, res, next) {
+  Default.experimentKPISGet(req.swagger.params, res, next);
+};
+
 module.exports.experimentSnapshotGet = function experimentSnapshotGet (req, res, next) {
   Default.experimentSnapshotGet(req.swagger.params, res, next);
 };
@@ -36,6 +40,10 @@ module.exports.snapshotsPost = function snapshotsPost (req, res, next) {
 
 module.exports.snapshotGet = function snapshotGet (req, res, next) {
   Default.snapshotGet(req.swagger.params, res, next);
+};
+
+module.exports.snapshotMeasureByEventGet = function snapshotMeasureByEventGet (req, res, next) {
+  Default.snapshotMeasureByEventGet(req.swagger.params, res, next);
 };
 
 module.exports.snapshotMeasuresGet = function snapshotMeasuresGet (req, res, next) {

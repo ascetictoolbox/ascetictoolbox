@@ -24,7 +24,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client.DefaultA
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 
 public class API {
-	public static Snapshot run(Experiment exp, String deplName, String description, String scopeDefinitionPath){
+	public static Snapshot run(String expId, Experiment exp, String deplName, String description, String scopeDefinitionPath){
 		if ((!scopeDefinitionPath.startsWith("//")) && scopeDefinitionPath.startsWith("/")){
 			scopeDefinitionPath = "/"+ scopeDefinitionPath;
 		}
@@ -35,7 +35,7 @@ public class API {
 		ExperimentHandler mi = (ExperimentHandler) context.getBean("MeasureInterceptor");
 		
 		try {
-			return mi.takeSnapshot(exp, "A snapshot", description, deplName, scopedefinition);
+			return mi.takeSnapshot(expId, exp, "A snapshot", description, deplName, scopedefinition);
 		} catch (NoMeasureException e) {
 			e.printStackTrace();
 			return null;
@@ -99,6 +99,20 @@ public class API {
 		}
 		ApplicationContext context = new FileSystemXmlApplicationContext(experimentFile);
 		return (Experiment) context.getBean("Experiment");
+	}
+	
+	public static String expId(String persistServiceBaseUrl, Experiment exp) throws ApiException{
+		
+		DefaultApi api = new DefaultApi();
+		api.getApiClient().setBasePath(persistServiceBaseUrl);
+		List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment> exps= api.experimentsGet();
+		
+		for(eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment _exp:exps){
+			if(_exp.getName().equals(exp.getName())){
+				return _exp.getId();
+			}
+		}
+		return null;
 	}
 	
 	private static boolean exists(DefaultApi api, String experimentName) throws ApiException{

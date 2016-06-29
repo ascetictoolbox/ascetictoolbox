@@ -84,6 +84,27 @@ paths:
             items:
               $ref: "#/definitions/Event"
       x-swagger-router-controller: "Default"
+  /experiments/{expid}/kpis:
+    get:
+      description: "Gets the list of kpis for a specific experiment\n"
+      operationId: "experimentKPISGet"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "expid"
+        in: "path"
+        description: "id of the experiment to retrieve"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/KPI"
+      x-swagger-router-controller: "Default"
   /experiments/{expid}/snapshots:
     get:
       description: "Gets the list of event for a specific experiment\n"
@@ -168,6 +189,27 @@ paths:
           description: "Successful response"
           schema:
             $ref: "#/definitions/SnapshotLess"
+      x-swagger-router-controller: "Default"
+  /snapshots/{snapid}/measurebyevent:
+    get:
+      description: "Get `Snapshot` object according.\n"
+      operationId: "snapshotMeasureByEventGet"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "snapid"
+        in: "path"
+        description: "snapshotId"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/EventWithMeasure"
       x-swagger-router-controller: "Default"
   /snapshots/{snapid}/measures:
     get:
@@ -272,6 +314,20 @@ definitions:
         type: "string"
       description:
         type: "string"
+  EventWithMeasure:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+        description: "UUID"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      measures:
+        type: "array"
+        items:
+          $ref: "#/definitions/Measure"
   SnapshotLess:
     type: "object"
     properties:
