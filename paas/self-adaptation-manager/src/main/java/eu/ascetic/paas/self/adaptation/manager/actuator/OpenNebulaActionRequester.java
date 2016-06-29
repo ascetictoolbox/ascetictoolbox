@@ -155,21 +155,23 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
 
     /**
      * This gets the count of VMs that are been monitored by this hypervisor.
+     *
      * @param vms The list of VMs to count
      * @param type The type of VM to count
-     * @return 
+     * @return
      */
     public int getVmCountOfGivenType(List<VM> vms, String type) {
         return getVmCountOfGivenType(type);
     }
-    
+
     @Override
     public int getVmCountOfGivenType(String applicationId, String deploymentId, String type) {
         return getVmCountOfGivenType(type);
-    }    
+    }
 
     /**
      * This gets the count of VMs that are been monitored by this hypervisor.
+     *
      * @param type The type of VM to count
      * @return The count of VMs
      */
@@ -273,7 +275,7 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
             vm.delete();
         }
     }
-    
+
     /**
      * This scales a VM type to a set amount of VMs
      *
@@ -295,7 +297,7 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
                 deleteVM(applicationId, deploymentId, vmId.trim());
             }
         }
-    }    
+    }
 
     @Override
     public void scaleUpVM(String application, String deployment, String vmID) {
@@ -311,6 +313,21 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
         OneResponse rc = vm.resize("", false);
     }
 
+    @Override
+    public double getPowerUsageVM(String application, String deployment, String vmID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getAveragePowerUsage(String applicationId, String deploymentId, String vmType) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getTotalPowerUsage(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }        
+    
     /**
      * The things that are needed to invoke an action are:
      *
@@ -379,10 +396,10 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
             case HARD_SHUTDOWN_APP:
                 hardShutdown(response.getApplicationId(), response.getDeploymentId());
                 break;
-            case SCALE_DOWN_VM:
+            case DEFLATE_VM:
                 scaleDownVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
-            case SCALE_UP_VM:
+            case INFLATE_VM:
                 scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
         }

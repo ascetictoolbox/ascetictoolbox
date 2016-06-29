@@ -16,6 +16,8 @@
 package eu.ascetic.paas.self.adaptation.manager.rest;
 
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
@@ -321,6 +323,56 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     }
 
     /**
+     * This gets the power usage of a VM.
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @param vmID The id of the VM to get the measurement for
+     */
+    @Override
+    public double getPowerUsageVM(String applicationId, String deploymentId, String vmID) {
+        RestVMClient client = new RestVMClient(applicationId, deploymentId);
+        String response = client.getPowerEstimation(String.class, vmID);
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Deployment.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            PowerMeasurement measurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(response));
+            return measurement.getValue();
+        } catch (JAXBException ex) {
+            Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.0;
+    }
+
+    @Override
+    public double getAveragePowerUsage(String applicationId, String deploymentId, String vmType) {
+        double answer = 0.0;
+        double count = 0.0;
+        List<VM> vms = getVMs(applicationId, deploymentId);
+        for (VM vm : vms) {
+            if (vm.getOvfId().equals(vmType)) {
+                answer = answer + getPowerUsageVM(applicationId, deploymentId, vm.getId() + "");
+                count = count + 1;
+            }
+        }
+        if (count >= 1) {
+            return answer / count;
+        } else {
+            return answer;
+        }
+    }
+
+    @Override
+    public double getTotalPowerUsage(String applicationId, String deploymentId) {
+        double answer = 0.0;
+        List<VM> vms = getVMs(applicationId, deploymentId);
+        for (VM vm : vms) {
+            answer = answer + getPowerUsageVM(applicationId, deploymentId, vm.getId() + "");
+        }
+        return answer;
+    }
+
+    /**
      * This scales a VM type to a set amount of VMs
      *
      * @param applicationId The application the VM is part of
@@ -426,10 +478,10 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             case HARD_SHUTDOWN_APP:
                 hardShutdown(response.getApplicationId(), response.getDeploymentId());
                 break;
-            case SCALE_DOWN_VM:
+            case DEFLATE_VM:
                 scaleDownVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
-            case SCALE_UP_VM:
+            case INFLATE_VM:
                 scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
             case SCALE_TO_N_VMS:

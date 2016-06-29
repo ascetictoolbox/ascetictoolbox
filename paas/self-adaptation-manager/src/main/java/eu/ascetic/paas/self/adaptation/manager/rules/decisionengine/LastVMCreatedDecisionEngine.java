@@ -41,9 +41,9 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
             response = addVM(response);
         } else if (response.getActionType().equals(Response.AdaptationType.REMOVE_VM)) {
             response = deleteVM(response);
-        } else if (response.getActionType().equals(Response.AdaptationType.SCALE_UP_VM)) {
+        } else if (response.getActionType().equals(Response.AdaptationType.INFLATE_VM)) {
             response = scaleUp(response);
-        } else if (response.getActionType().equals(Response.AdaptationType.SCALE_DOWN_VM)) {
+        } else if (response.getActionType().equals(Response.AdaptationType.DEFLATE_VM)) {
             response = scaleDown(response);
         } else if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
             response = scaleToNVms(response);
@@ -99,7 +99,13 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
         if (!vmOvfTypes.isEmpty()) {
             Collections.shuffle(vmOvfTypes);
             response.setAdaptationDetails(vmOvfTypes.get(0));
-            return response;
+            if (getCanVmBeAdded(response, vmOvfTypes.get(0))) {
+                return response;    
+            } else {
+                response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+                response.setPossibleToAdapt(false);
+                return response;
+            }    
         } else {
             response.setAdaptationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);

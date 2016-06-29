@@ -30,11 +30,11 @@ public interface ActuatorInvoker {
      *
      * @param applicationId The application ID
      * @param deploymentId The deployment ID
-     * @return The ovf that describes a given deployment. If the OVF can't be 
+     * @return The ovf that describes a given deployment. If the OVF can't be
      * reported by this actuator then null is returned instead.
-     */    
+     */
     public abstract String getOvf(String applicationId, String deploymentId);
-    
+
     /**
      * This lists which VMs can be added to a deployment in order to make it
      * scale.
@@ -63,8 +63,8 @@ public interface ActuatorInvoker {
      * @param deploymentId The deployment ID
      * @return The OVF ids that can be used to down size the named deployment
      */
-    public abstract List<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId);    
-    
+    public abstract List<String> getVmTypesAvailableToRemove(String applicationId, String deploymentId);
+
     /**
      * This counts how many VMs have a given deployment type in a set of VMs
      *
@@ -74,6 +74,35 @@ public interface ActuatorInvoker {
      * @return The amount of VMs which have a given OVF id
      */
     public int getVmCountOfGivenType(String applicationId, String deploymentId, String type);
+
+    /**
+     * This gets the power usage of a VM.
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @param vmID The id of the VM to get the measurement for
+     * @return The power usage of a named VM. 
+     */
+    public double getPowerUsageVM(String applicationId, String deploymentId, String vmID);
+
+    /**
+     * This gets the power usage of a VM.
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @param vmType The id of the VM to get the measurement for
+     * @return The power usage of a named VM. 
+     */
+    public double getAveragePowerUsage(String applicationId, String deploymentId, String vmType);    
+
+    /**
+     * This gets the power usage of a VM.
+     *
+     * @param applicationId The application the VM is part of
+     * @param deploymentId The id of the deployment instance of the VM
+     * @return The power usage of a named VM. 
+     */
+    public double getTotalPowerUsage(String applicationId, String deploymentId);      
     
     /**
      * This adds a vm of a given ovf type to named deployment.
@@ -91,7 +120,7 @@ public interface ActuatorInvoker {
      * @param deployment The id of the deployment instance of the VM
      * @param vmID The id of the VM to delete
      */
-    public void deleteVM(String application, String deployment, String vmID);    
+    public void deleteVM(String application, String deployment, String vmID);
 
     /**
      * This deletes all VMs of an application
@@ -99,7 +128,7 @@ public interface ActuatorInvoker {
      * @param applicationId The application the VM is part of
      * @param deploymentId The id of the deployment instance of the VM
      */
-    public void hardShutdown(String applicationId, String deploymentId);    
+    public void hardShutdown(String applicationId, String deploymentId);
 
     /**
      * This scales a VM type to a set amount of VMs
@@ -109,31 +138,34 @@ public interface ActuatorInvoker {
      * @param response The response to actuator for
      */
     public void horizontallyScaleToNVms(String applicationId, String deploymentId, Response response);
-    
+
     /**
      * This scales up a named VM. VM types are expected to be in a co-ordinated
-     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     * series, thus allowing a +1 or -1 notion of direction and scaling to be
+     * used.
      *
      * @param application The application the VM is part of
      * @param deployment The id of the deployment instance of the VM
      * @param vmID The id of the VM to delete
      */
-    public void scaleUpVM(String application, String deployment, String vmID);    
-    
+    public void scaleUpVM(String application, String deployment, String vmID);
+
     /**
-     * This scales down a named VM. VM types are expected to be in a co-ordinated
-     * series, thus allowing a +1 or -1 notion of direction and scaling to be used.
+     * This scales down a named VM. VM types are expected to be in a
+     * co-ordinated series, thus allowing a +1 or -1 notion of direction and
+     * scaling to be used.
      *
      * @param application The application the VM is part of
      * @param deployment The id of the deployment instance of the VM
      * @param vmID The id of the VM to delete
      */
     public void scaleDownVM(String application, String deployment, String vmID);
-    
+
     /**
      * This causes the actuator to invoke a given action
-     * @param response 
+     *
+     * @param response
      */
     public void actuate(Response response);
-    
+
 }

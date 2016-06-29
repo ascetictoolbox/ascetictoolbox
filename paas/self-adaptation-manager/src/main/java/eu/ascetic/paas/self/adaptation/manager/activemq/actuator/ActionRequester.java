@@ -138,10 +138,10 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
             case REMOVE_VM:
                 deleteVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
-            case SCALE_DOWN_VM:
+            case DEFLATE_VM:
                 scaleDownVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
-            case SCALE_UP_VM:
+            case INFLATE_VM:
                 scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
         }
@@ -294,4 +294,19 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         queue.add(response);
     }
 
+    @Override
+    public double getPowerUsageVM(String application, String deployment, String vmID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getAveragePowerUsage(String applicationId, String deploymentId, String vmType) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public double getTotalPowerUsage(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }    
+    
 }
