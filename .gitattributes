@@ -4097,6 +4097,11 @@ saas/saas-experiment-manager/test-workspace/NewsAsset-Mojo/src/main/resources/ev
 saas/saas-experiment-manager/test-workspace/NewsAsset-Mojo/src/main/resources/experiments.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset-Mojo/src/main/resources/kpis.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset-Mojo/src/main/resources/scopes.xml -text
+saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager-less/deployments.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager-less/events.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager-less/experiments.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager-less/kpis.xml -text svneol=unset#text/plain
+saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager-less/scopes.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/deployments.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/events.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/experiments.xml -text

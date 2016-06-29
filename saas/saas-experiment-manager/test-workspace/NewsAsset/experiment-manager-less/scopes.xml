@@ -8,84 +8,48 @@
     	">
 
 	<util:map id="Scopes" map-class="java.util.HashMap">
-		<entry key="duration-estimation-avg">
-			<list>
-				<ref bean="DurationScope" />
-			</list>
-		</entry>
 		<entry key="energy-consumption">
-			<list>
-				<ref bean="get_news_items"/>
-				<ref bean="search_for_news_items"/>
-				<ref bean="Create-Object-Light-Load-9"/>
-				<ref bean="Update-Object-Light-Load-8"/>
-				<ref bean="Get-Attachment-Contents-Light-Load-8"/>
-				<ref bean="Simple-Search-Light-Load-8"/>
-				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
-				<ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/>
-				<ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/>
-				<ref bean="anticipated_workload"/>
-				<ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Small-Image-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Medium-Video-Light-Load-7"/>
-				<ref bean="Create-Object-Light-Load-8"/>
-				<ref bean="Update-Object-Light-Load-7"/>
-				<ref bean="Group-External-User-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Medium-Image-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-7"/>
-				<ref bean="Get-Object-Light-Load-8"/>
-				<ref bean="GROUP-Simple-Editor-Large-Image-Light-Load-7"/>
-				<ref bean="Get-Object-Light-Load-7"/>
-				<ref bean="Get-Attachment-FileNames-Light-Load-7"/>
-				<ref bean="Simple-Search-Light-Load-7"/>
-				<ref bean="Get-Attachment-Contents-Light-Load-7"/>
-				<ref bean="Advanced-Search-Light-Load-7"/>
-				<ref bean="Store-Object-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Medium-Image-Light-Load-7"/>
-				<ref bean="Create-Object-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-8"/>
-				<ref bean="Create-Object-Light-Load-1"/>
-			</list>
+			<ref bean="all_events"/>
 		</entry>
 		<entry key="duration-estimation">
-			<list>
-				<ref bean="get_news_items"/>
-				<ref bean="search_for_news_items"/>
-				<ref bean="Create-Object-Light-Load-9"/>
-				<ref bean="Update-Object-Light-Load-8"/>
-				<ref bean="Get-Attachment-Contents-Light-Load-8"/>
-				<ref bean="Simple-Search-Light-Load-8"/>
-				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
-				<ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/>
-				<ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/>
-				<ref bean="anticipated_workload"/>
-				<ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Small-Image-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Medium-Video-Light-Load-7"/>
-				<ref bean="Create-Object-Light-Load-8"/>
-				<ref bean="Update-Object-Light-Load-7"/>
-				<ref bean="Group-External-User-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Medium-Image-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-7"/>
-				<ref bean="Get-Object-Light-Load-8"/>
-				<ref bean="GROUP-Simple-Editor-Large-Image-Light-Load-7"/>
-				<ref bean="Get-Object-Light-Load-7"/>
-				<ref bean="Get-Attachment-FileNames-Light-Load-7"/>
-				<ref bean="Simple-Search-Light-Load-7"/>
-				<ref bean="Get-Attachment-Contents-Light-Load-7"/>
-				<ref bean="Advanced-Search-Light-Load-7"/>
-				<ref bean="Store-Object-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Medium-Image-Light-Load-7"/>
-				<ref bean="Create-Object-Light-Load-7"/>
-				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-8"/>
-				<ref bean="Create-Object-Light-Load-1"/>
-			</list>
+			<ref bean="all_events"/>
 		</entry>
 	</util:map>
+	
+	<util:list id="all_events" list-class="java.util.ArrayList">
+		<ref bean="get_news_items"/>
+		<ref bean="search_for_news_items"/>
+		<ref bean="Create-Object-Light-Load-9"/>
+		<ref bean="Update-Object-Light-Load-8"/>
+		<ref bean="Get-Attachment-Contents-Light-Load-8"/>
+		<ref bean="Simple-Search-Light-Load-8"/>
+		<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
+		<ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/>
+		<ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/>
+		<ref bean="anticipated_workload"/>
+		<ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/>
+		<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-7"/>
+		<ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/>
+		<ref bean="GROUP-Simple-Editor-Small-Image-Light-Load-7"/>
+		<ref bean="GROUP-Simple-Editor-Medium-Video-Light-Load-7"/>
+		<ref bean="Create-Object-Light-Load-8"/>
+		<ref bean="Update-Object-Light-Load-7"/>
+		<ref bean="Group-External-User-Light-Load-7"/>
+		<ref bean="GROUP-Simple-Editor-Medium-Image-Light-Load-7"/>
+		<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-7"/>
+		<ref bean="Get-Object-Light-Load-8"/>
+		<ref bean="GROUP-Simple-Editor-Large-Image-Light-Load-7"/>
+		<ref bean="Get-Object-Light-Load-7"/>
+		<ref bean="Get-Attachment-FileNames-Light-Load-7"/>
+		<ref bean="Simple-Search-Light-Load-7"/>
+		<ref bean="Get-Attachment-Contents-Light-Load-7"/>
+		<ref bean="Advanced-Search-Light-Load-7"/>
+		<ref bean="Store-Object-Light-Load-7"/>
+		<ref bean="GROUP-Advanced-Editor-Medium-Image-Light-Load-7"/>
+		<ref bean="Create-Object-Light-Load-7"/>
+		<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-8"/>
+		<ref bean="Create-Object-Light-Load-1"/>
+	</util:list>
 	
 	
 	<bean id="get_news_items" class="eu.ascetic.saas.experimentmanager.models.Scope">
@@ -727,378 +691,5 @@
 		<constructor-arg type="java.lang.String" value="events" />
 	</bean>
 
-	
-	
-
-	<bean id="DurationScope" class="eu.ascetic.saas.experimentmanager.models.Scope">
-		<constructor-arg type="java.lang.String" value="AllEvent" />
-		<constructor-arg type="java.lang.String" value="A specific event scope" />
-		<constructor-arg>
-			<list>
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="get_news_items" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="search_for_news_items" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Create-Object-Light-Load-9" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Update-Object-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Get-Attachment-Contents-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Simple-Search-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event"
-								value="GROUP-Advanced-Editor-Medium-Video-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Advanced-Editor-Large-Video-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Group-Advanced-Editor-Large-Image-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="anticipated_workload" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Simple-Editor-Small-Video-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Advanced-Editor-Small-Image-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Simple-Editor-Large-Video-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Simple-Editor-Small-Image-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Simple-Editor-Medium-Video-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Create-Object-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Update-Object-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Group-External-User-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Simple-Editor-Medium-Image-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event"
-								value="GROUP-Advanced-Editor-Medium-Video-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Get-Object-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Simple-Editor-Large-Image-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Get-Object-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Get-Attachment-FileNames-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Simple-Search-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Get-Attachment-Contents-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Advanced-Search-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Store-Object-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event"
-								value="GROUP-Advanced-Editor-Medium-Image-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Create-Object-Light-Load-7" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="GROUP-Advanced-Editor-Small-Image-Light-Load-8" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-					<constructor-arg type="java.util.Map">
-						<util:map map-class="java.util.HashMap">
-							<entry key="appId" value="newsAsset" />
-							<entry key="deplId" value="490" />
-							<entry key="event" value="Create-Object-Light-Load-1" />
-						</util:map>
-					</constructor-arg>
-				</bean>
-
-
-
-
-
-
-
-			</list>
-		</constructor-arg>
-		<constructor-arg type="java.lang.String" value="aggregated" />
-	</bean>
 
 </beans>
