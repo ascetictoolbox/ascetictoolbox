@@ -219,7 +219,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY = "asceticTermMeasurementApplicationEvent_";
     private static final String ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY = "asceticTermMeasurementApplicationMetric_";
     private static final String ASCETIC_TERM_MEASUREMENT_PERIOD_KEY = "asceticTermMeasurementPeriod_";
-    private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY = "asceticTermMeasurementAggerator_";
+    private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY = "asceticTermMeasurementAggregator_";
     private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY = "asceticTermMeasurementAggregatorParams_";
     private static final String ASCETIC_SLA_INFO_NUMBER = "asceticSlaInfoNumber";
     private static final String ASCETIC_SLA_INFO_SLA_TERM_KEY = "asceticSlaInfoSlaTerm_";
