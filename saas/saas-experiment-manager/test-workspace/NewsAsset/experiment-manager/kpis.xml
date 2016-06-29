@@ -15,6 +15,7 @@
 	</bean>
 
 	<util:list id="KPIs" list-class="java.util.ArrayList">
+			<ref bean="duration-estimation-avg"/>
 			<ref bean="duration-estimation"/>
 	</util:list>
 
@@ -30,7 +31,15 @@
 		<constructor-arg type="java.lang.String" value="duration-estimation"/>
 		<constructor-arg type="java.lang.String" value="duration of a workload"/>
 		<constructor-arg>
-			<ref bean="DurationMetric"/>
+			<ref bean="SimpleDurationEstimation"/>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="duration-estimation-avg" class="eu.ascetic.saas.experimentmanager.models.KPI">
+		<constructor-arg type="java.lang.String" value="duration-estimation-avg"/>
+		<constructor-arg type="java.lang.String" value="average duration of workloads"/>
+		<constructor-arg>
+			<ref bean="DurationMetricAvg"/>
 		</constructor-arg>
 	</bean>
 	
@@ -58,17 +67,19 @@
 		</constructor-arg>
 	</bean>
 	
-	<bean id="DurationMetric" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
-		<constructor-arg type="java.lang.String" value="duration-estimation"/>
+	<bean id="DurationMetricAvg" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<constructor-arg type="java.lang.String" value="duration-estimation-avg"/>
 		<constructor-arg>
-			<bean id="SimpleDurationEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-				<constructor-arg type="java.lang.String" value="event-duration"/>
-				<constructor-arg type="java.lang.String" value="${durationPattern}"/>
-				<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="JSON"/>
-				<constructor-arg type="java.lang.String" value="$..dur"/>
-				<constructor-arg type="java.lang.String" value="FROM events MATCH appId = &quot;:appId&quot; AND deploymentId = &quot;:deplId&quot; AND data.eventType = &quot;:event&quot;, GROUP BY data.eventType , avg(data.duration) as dur"/>
-			</bean>
+			<ref bean="SimpleDurationEstimation"/>
 		</constructor-arg>
+	</bean>
+	
+	<bean id="SimpleDurationEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
+		<constructor-arg type="java.lang.String" value="event-duration"/>
+		<constructor-arg type="java.lang.String" value="${durationPattern}"/>
+		<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="JSON"/>
+		<constructor-arg type="java.lang.String" value="$..dur"/>
+		<constructor-arg type="java.lang.String" value="FROM events MATCH appId = &quot;:appId&quot; AND deploymentId = &quot;:deplId&quot; AND data.eventType = &quot;:event&quot;, GROUP BY data.eventType , avg(data.duration) as dur"/>
 	</bean>
 	   
 </beans>
