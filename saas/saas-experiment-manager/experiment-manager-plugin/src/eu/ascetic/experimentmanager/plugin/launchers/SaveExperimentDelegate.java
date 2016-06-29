@@ -9,6 +9,7 @@ import org.eclipse.jdt.launching.JavaLaunchDelegate;
 
 import eu.ascetic.saas.experimentmanager.API;
 import eu.ascetic.saas.experimentmanager.business.ExperimentAdaptator;
+import eu.ascetic.saas.experimentmanager.exception.AlreadyExistException;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.ApiException;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
@@ -30,6 +31,9 @@ public class SaveExperimentDelegate extends JavaLaunchDelegate {
 		try {
 			API.persist(skbUrl,ExperimentAdaptator.getExperiment(exp));
 		} catch (ApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AlreadyExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

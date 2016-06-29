@@ -23,7 +23,7 @@ public class ScopeFactory {
 		add("vmId");
 	}};
 
-	public static List<Scope> generateScopes(String scopeCategory, List<String> staticPart, 
+	public static List<Scope> generateScopes(String appId, String scopeCategory, List<String> staticPart, 
 			List<String> pivots, LinkedList<LinkedList<String>> variations,List<String> itemLabels){
 		Logger.getLogger("ScopeFactory").info("generating scope");
 		Generator<String> gen = new Generator<>();
@@ -43,7 +43,7 @@ public class ScopeFactory {
 				}
 				items.add(new ScopableItem(value));
 			}
-			scopes.add(new Scope("",items,scopeCategory));
+			scopes.add(new Scope(appId,"",items,scopeCategory));
 		}
 		
 		return scopes;
@@ -64,7 +64,7 @@ public class ScopeFactory {
 			add(deplId);
 		}};
 		
-		return generateScopes("Deployment", staticPart, 
+		return generateScopes(appId,"Deployment", staticPart, 
 				pivots,axes,itemLabels);
 	}
 	
@@ -82,7 +82,7 @@ public class ScopeFactory {
 		List<String> pivots=events.stream()
 				.map(e -> e.getName()).collect(Collectors.toList());
 		
-		return generateScopes("Events", staticPart, 
+		return generateScopes(appId,"Events", staticPart, 
 				pivots,axes,itemLabels);
 	}
 	

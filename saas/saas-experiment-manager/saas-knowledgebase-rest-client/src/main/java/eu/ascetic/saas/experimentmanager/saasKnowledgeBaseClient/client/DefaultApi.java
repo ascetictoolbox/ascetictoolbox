@@ -8,11 +8,15 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.Configurati
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.Pair;
 
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Experiment;
+import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
+import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.SnapshotLess;
+import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Measure;
+import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.VM;
 
 import java.util.*;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-25T15:22:24.802+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-06-28T16:11:54.305+02:00")
 public class DefaultApi {
   private ApiClient apiClient;
 
@@ -32,53 +36,6 @@ public class DefaultApi {
     this.apiClient = apiClient;
   }
 
-  
-  /**
-   * 
-   * Gets `Experiments` object.
-   * @param expid id of the experiment to retrieve
-   * @return Experiment
-   */
-  public Experiment experimentGet(String expid) throws ApiException {
-    Object postBody = null;
-    
-     // verify the required parameter 'expid' is set
-     if (expid == null) {
-        throw new ApiException(400, "Missing the required parameter 'expid' when calling experimentGet");
-     }
-     
-    // create path and map variables
-    String path = "/experiment/{expid}".replaceAll("\\{format\\}","json")
-      .replaceAll("\\{" + "expid" + "\\}", apiClient.escapeString(expid.toString()));
-
-    // query params
-    List<Pair> queryParams = new ArrayList<Pair>();
-    Map<String, String> headerParams = new HashMap<String, String>();
-    Map<String, Object> formParams = new HashMap<String, Object>();
-
-    
-
-    
-
-    
-
-    final String[] accepts = {
-      "application/json", "application/xml"
-    };
-    final String accept = apiClient.selectHeaderAccept(accepts);
-
-    final String[] contentTypes = {
-      
-    };
-    final String contentType = apiClient.selectHeaderContentType(contentTypes);
-
-    String[] authNames = new String[] {  };
-
-    
-    GenericType<Experiment> returnType = new GenericType<Experiment>() {};
-    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
-    
-  }
   
   /**
    * 
@@ -168,21 +125,21 @@ public class DefaultApi {
   
   /**
    * 
-   * Get `Snapshot` object according.
-   * @param snapid snapshotId
-   * @return Snapshot
+   * Gets `Experiments` object.
+   * @param expid id of the experiment to retrieve
+   * @return Experiment
    */
-  public Snapshot snapshotGet(String snapid) throws ApiException {
+  public Experiment experimentGet(String expid) throws ApiException {
     Object postBody = null;
     
-     // verify the required parameter 'snapid' is set
-     if (snapid == null) {
-        throw new ApiException(400, "Missing the required parameter 'snapid' when calling snapshotGet");
+     // verify the required parameter 'expid' is set
+     if (expid == null) {
+        throw new ApiException(400, "Missing the required parameter 'expid' when calling experimentGet");
      }
      
     // create path and map variables
-    String path = "/snapshot/{snapid}".replaceAll("\\{format\\}","json")
-      .replaceAll("\\{" + "snapid" + "\\}", apiClient.escapeString(snapid.toString()));
+    String path = "/experiments/{expid}".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "expid" + "\\}", apiClient.escapeString(expid.toString()));
 
     // query params
     List<Pair> queryParams = new ArrayList<Pair>();
@@ -208,7 +165,101 @@ public class DefaultApi {
     String[] authNames = new String[] {  };
 
     
-    GenericType<Snapshot> returnType = new GenericType<Snapshot>() {};
+    GenericType<Experiment> returnType = new GenericType<Experiment>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
+   * Gets the list of event for a specific experiment
+   * @param expid id of the experiment to retrieve
+   * @return List<Event>
+   */
+  public List<Event> eventGet(String expid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'expid' is set
+     if (expid == null) {
+        throw new ApiException(400, "Missing the required parameter 'expid' when calling eventGet");
+     }
+     
+    // create path and map variables
+    String path = "/experiments/{expid}/events".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "expid" + "\\}", apiClient.escapeString(expid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<List<Event>> returnType = new GenericType<List<Event>>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
+   * Gets the list of event for a specific experiment
+   * @param expid id of the experiment to retrieve
+   * @return List<Snapshot>
+   */
+  public List<Snapshot> experimentSnapshotGet(String expid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'expid' is set
+     if (expid == null) {
+        throw new ApiException(400, "Missing the required parameter 'expid' when calling experimentSnapshotGet");
+     }
+     
+    // create path and map variables
+    String path = "/experiments/{expid}/snapshots".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "expid" + "\\}", apiClient.escapeString(expid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<List<Snapshot>> returnType = new GenericType<List<Snapshot>>() {};
     return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     
   }
@@ -299,6 +350,147 @@ public class DefaultApi {
     
     GenericType<Snapshot> returnType = new GenericType<Snapshot>() {};
     return apiClient.invokeAPI(path, "POST", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
+   * Get `Snapshot` object according.
+   * @param snapid snapshotId
+   * @return SnapshotLess
+   */
+  public SnapshotLess snapshotGet(String snapid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'snapid' is set
+     if (snapid == null) {
+        throw new ApiException(400, "Missing the required parameter 'snapid' when calling snapshotGet");
+     }
+     
+    // create path and map variables
+    String path = "/snapshots/{snapid}".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "snapid" + "\\}", apiClient.escapeString(snapid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<SnapshotLess> returnType = new GenericType<SnapshotLess>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
+   * Get `Snapshot` object according.
+   * @param snapid snapshotId
+   * @return List<Measure>
+   */
+  public List<Measure> snapshotMeasuresGet(String snapid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'snapid' is set
+     if (snapid == null) {
+        throw new ApiException(400, "Missing the required parameter 'snapid' when calling snapshotMeasuresGet");
+     }
+     
+    // create path and map variables
+    String path = "/snapshots/{snapid}/measures".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "snapid" + "\\}", apiClient.escapeString(snapid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<List<Measure>> returnType = new GenericType<List<Measure>>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    
+  }
+  
+  /**
+   * 
+   * Get `Snapshot` object according.
+   * @param snapid snapshotId
+   * @return List<VM>
+   */
+  public List<VM> snapshotVMsGet(String snapid) throws ApiException {
+    Object postBody = null;
+    
+     // verify the required parameter 'snapid' is set
+     if (snapid == null) {
+        throw new ApiException(400, "Missing the required parameter 'snapid' when calling snapshotVMsGet");
+     }
+     
+    // create path and map variables
+    String path = "/snapshots/{snapid}/vms".replaceAll("\\{format\\}","json")
+      .replaceAll("\\{" + "snapid" + "\\}", apiClient.escapeString(snapid.toString()));
+
+    // query params
+    List<Pair> queryParams = new ArrayList<Pair>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, Object> formParams = new HashMap<String, Object>();
+
+    
+
+    
+
+    
+
+    final String[] accepts = {
+      "application/json", "application/xml"
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    String[] authNames = new String[] {  };
+
+    
+    GenericType<List<VM>> returnType = new GenericType<List<VM>>() {};
+    return apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     
   }
   

@@ -19,7 +19,6 @@ import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
 import eu.ascetic.saas.experimentmanager.models.KPI;
-import eu.ascetic.saas.experimentmanager.models.PhysicalComponent;
 import eu.ascetic.saas.experimentmanager.models.Scope;
 import eu.ascetic.saas.experimentmanager.paasAPI.InformationProvider;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.ApiException;
@@ -56,8 +55,8 @@ public class FunctionalTest {
 		return deployments;
 	}
 		
-	public static Experiment getExperiment(String label, String appId, String appName, InformationProvider sp){
-		Experiment exp = new Experiment(label,appId, appName, getEvents(),getDeployment(),getKPIs());
+	public static Experiment getExperiment(String label, String appId, String appName, String desc, InformationProvider sp){
+		Experiment exp = new Experiment(label,appId, appName, desc, getEvents(),getDeployment(),getKPIs());
 		return exp;
 	}
 
@@ -69,7 +68,37 @@ public class FunctionalTest {
 		DefaultApi api = new DefaultApi();
 		api.getApiClient().setBasePath("http://localhost:8080");
 		
-		Experiment exp = getExperiment("News Asset Experiment","newsAsset", "News Asset",mi.getSaaSProvider());
+		Experiment exp = getExperiment("News Asset Experiment","newsAsset", "News Asset", "This is a test experiment",
+				mi.getSaaSProvider());
+		
+		try {
+			System.out.println("start");
+			List<String> vms = exp.getDeployment("490").getComponents().stream().map(comp -> comp.getName()).collect(Collectors.toList());
+			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", "490", exp.getEvent(), 
+					exp.getDeployment("490").getComponents());
+			System.out.println("number of scopes : "+ eventScopes.size());
+			Map<String,List<Scope>> scopes = new HashMap<>();
+			for(KPI kpi:exp.getKpis()){
+				scopes.put(kpi.getName(),eventScopes);
+			}
+			Snapshot s = mi.takeSnapshot(exp, "A snapshot", "This is a snapshot", "490",scopes);
+			System.out.println("computed");
+			api.snapshotsPost(s);
+			System.out.println("saved and end");
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void listEvents() throws Exception {
+		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+		ExperimentHandler mi = (ExperimentHandler) context.getBean("MeasureInterceptor");
+		
+		DefaultApi api = new DefaultApi();
+		api.getApiClient().setBasePath("http://localhost:8080");
+		
+		Experiment exp = getExperiment("News Asset Experiment","newsAsset", "News Asset", "this is a test experiment",mi.getSaaSProvider());
 		
 		try {
 			System.out.println("start");

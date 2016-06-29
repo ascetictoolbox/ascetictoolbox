@@ -13,12 +13,13 @@ import io.swagger.annotations.ApiModelProperty;
  **/
 
 @ApiModel(description = "metrics")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-25T15:22:24.802+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-06-28T16:11:54.305+02:00")
 public class Metric   {
   
   private String id = null;
   private String name = null;
   private String description = null;
+  private String type = null;
 
   
   /**
@@ -61,6 +62,20 @@ public class Metric   {
   }
 
   
+  /**
+   * type of the metric (aggregated or simple)
+   **/
+  
+  @ApiModelProperty(value = "type of the metric (aggregated or simple)")
+  @JsonProperty("type")
+  public String getType() {
+    return type;
+  }
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  
 
   @Override
   public boolean equals(Object o) {
@@ -73,12 +88,13 @@ public class Metric   {
     Metric metric = (Metric) o;
     return Objects.equals(id, metric.id) &&
         Objects.equals(name, metric.name) &&
-        Objects.equals(description, metric.description);
+        Objects.equals(description, metric.description) &&
+        Objects.equals(type, metric.type);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, description);
+    return Objects.hash(id, name, description, type);
   }
 
   @Override
@@ -89,6 +105,7 @@ public class Metric   {
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("}");
     return sb.toString();
   }

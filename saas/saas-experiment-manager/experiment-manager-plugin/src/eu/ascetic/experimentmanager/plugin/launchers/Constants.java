@@ -6,5 +6,6 @@ public class Constants {
 	public static String SCOPE_FILEPATH = "scope_filepath";
 	public static String EXPERIMENT_FILEPATH = "experiment_filepath";
 	public static String SKB_URL = "saasknowledgebase_location";
+	public static String SNAPSHOT_DESCRIPTION = "snapshot_description";
 	
 }

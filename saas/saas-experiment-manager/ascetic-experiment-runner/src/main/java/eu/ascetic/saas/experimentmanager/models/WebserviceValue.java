@@ -30,6 +30,7 @@ public class WebserviceValue extends Metric {
 		this.query = query;
 		this.postPattern = null;
 		this.format = format;
+		this.setType("simple");
 	}
 	
 	public WebserviceValue(String id, String urlPattern, RESSOURCEFORMAT format, String query, String postPattern){
@@ -38,6 +39,7 @@ public class WebserviceValue extends Metric {
 		this.query = query;
 		this.postPattern = postPattern;
 		this.format = format;
+		this.setType("simple");
 	}
 	
 	/**

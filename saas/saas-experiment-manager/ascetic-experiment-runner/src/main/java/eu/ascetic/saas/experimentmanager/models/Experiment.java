@@ -8,19 +8,21 @@ public class Experiment {
 	private String name;
 	private String applicationId;
 	private String applicationName;
+	private String description;
 	
 	private List<Event> event;
 	private List<Deployment> deployments;
 	private List<KPI> kpis;
 	
 	
-	public Experiment(String name, String applicationId, String applicationName, List<Event> event, List<Deployment> deployments, List<KPI> kpis) {
+	public Experiment(String name, String applicationId, String applicationName, String description, List<Event> event, List<Deployment> deployments, List<KPI> kpis) {
 		this.name = name;
 		this.applicationId = applicationId;
 		this.applicationName = applicationName;
 		this.event = event;
 		this.deployments = deployments;
 		this.kpis = kpis;
+		this.description = description;
 	}
 
 	public String getApplicationId() {
@@ -59,9 +61,9 @@ public class Experiment {
 		return name;
 	}
 
-	public Deployment getDeployment(String deplId) {
+	public Deployment getDeployment(String deplName) {
 		for(Deployment depl:getDeployments()){
-			if(depl.getId().equals(deplId)){
+			if(depl.getName().equals(deplName)){
 				return depl;
 			}
 		}
@@ -76,7 +78,13 @@ public class Experiment {
 		this.applicationName = applicationName;
 	}
 
-	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description){
+		this.description = description;
+	}
 	
 	
 

@@ -24,7 +24,7 @@ import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client.DefaultA
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 
 public class API {
-	public static Snapshot run(Experiment exp, String deplId, String scopeDefinitionPath){
+	public static Snapshot run(Experiment exp, String deplName, String description, String scopeDefinitionPath){
 		if ((!scopeDefinitionPath.startsWith("//")) && scopeDefinitionPath.startsWith("/")){
 			scopeDefinitionPath = "/"+ scopeDefinitionPath;
 		}
@@ -35,7 +35,7 @@ public class API {
 		ExperimentHandler mi = (ExperimentHandler) context.getBean("MeasureInterceptor");
 		
 		try {
-			return mi.takeSnapshot(exp, "A snapshot", "This is a snapshot", deplId, scopedefinition);
+			return mi.takeSnapshot(exp, "A snapshot", description, deplName, scopedefinition);
 		} catch (NoMeasureException e) {
 			e.printStackTrace();
 			return null;
@@ -85,12 +85,12 @@ public class API {
 		return scopes;
 	}
 
-	public static Experiment createExperiment(String label, String appId, String appName, String eventsFile, String deplsFile, String kpisFile){
+	public static Experiment createExperiment(String label, String appId, String appName, String description, String eventsFile, String deplsFile, String kpisFile){
 		List<Event> events = getEvents(eventsFile);
 		List<Deployment> depls = getDeployment(deplsFile);
 		List<KPI> kpis = getKPIs(kpisFile);
 		
-		return new Experiment(label,appId, appName, events,depls,kpis);
+		return new Experiment(label,appId, appName, description, events,depls,kpis);
 	}
 	
 	public static Experiment loadExperiment(String experimentFile){

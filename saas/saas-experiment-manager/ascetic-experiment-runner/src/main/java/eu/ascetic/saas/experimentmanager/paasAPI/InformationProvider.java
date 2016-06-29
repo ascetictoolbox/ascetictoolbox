@@ -21,4 +21,6 @@ public interface InformationProvider {
 
 	public void setUrlToApplicationMonitor(String urlToApplicationMonitor) ;
 	
+	public String getDeploymentId(String deploymentName);
+	
 }

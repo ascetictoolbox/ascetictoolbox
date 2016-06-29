@@ -9,6 +9,7 @@ public abstract class Metric {
 
 	private String name;
 	private String description;
+	private String type;
 	
 	public String get(Scope scope) throws MetricDefinitionIncorrectException, NoMeasureException {
 		return null;
@@ -32,6 +33,16 @@ public abstract class Metric {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+
+	public String getType() {
+		return type;
+	}
+
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 

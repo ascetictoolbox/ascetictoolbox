@@ -23,12 +23,13 @@ public class RunExperimentDelegate extends JavaLaunchDelegate {
 			throws CoreException {
 
 		String skburl          = configuration.getAttribute(Constants.SKB_URL, "");
-		String deplId          = configuration.getAttribute(Constants.DEPLOYMENT_ID, "");
+		String deplName          = configuration.getAttribute(Constants.DEPLOYMENT_ID, "");
+		String description          = configuration.getAttribute(Constants.SNAPSHOT_DESCRIPTION, "");
 		String scopesPath      = configuration.getAttribute(Constants.SCOPE_FILEPATH, "");
 		String experimentPath  = configuration.getAttribute(Constants.EXPERIMENT_FILEPATH, "");
 		
 		Experiment exp = API.loadExperiment(experimentPath);
-		Snapshot s = API.run(exp, deplId, scopesPath);
+		Snapshot s = API.run(exp, deplName, description, scopesPath);
 		try {
 			API.persist(skburl, s);
 		} catch (ApiException e) {

@@ -18,6 +18,7 @@ public class ExperimentAdaptator {
 		
 		pexp.setAppId(exp.getApplicationId());
 		pexp.setName(exp.getName());
+		pexp.setDescription(exp.getDescription());
 		
 		pexp.setEvents(getEvents(exp.getEvent()));
 		pexp.setKpis(getKPIs(exp.getKpis()));
@@ -74,6 +75,7 @@ public class ExperimentAdaptator {
 		
 		m.setDescription(metric.getDescription());
 		m.setName(metric.getName());
+		m.setType(metric.getType());
 		
 		return m;
 	}

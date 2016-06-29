@@ -8,13 +8,15 @@ import java.util.stream.Collectors;
 public class Scope {
 	
 	private String description;
+	private String name;
 	
 	private List<ScopableItem> scopableItems;
 	private String category;
 	
 
-	public Scope(String description, List<ScopableItem> scopableItems, String category) {
+	public Scope(String name, String description, List<ScopableItem> scopableItems, String category) {
 		super();
+		this.name = name;
 		this.description = description;
 		this.scopableItems = scopableItems;
 		this.category = category;
@@ -54,11 +56,19 @@ public class Scope {
 		List<Scope> subscopes = new ArrayList<>(); 
 		for (ScopableItem spi:this.getScopableItems()){
 			subscopes.add(new Scope(
+					this.getName(),
 					getDescription()+" (subscope)",
 					new ArrayList<ScopableItem>(){{add(spi);}},
 					this.getCategory()));
 		}
 		return subscopes;
+	}
+
+	public void setName(String name) {
+		this.name=name;
+	}
+	public String getName() {
+		return name;
 	}
 
 }

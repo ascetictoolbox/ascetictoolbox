@@ -29,6 +29,7 @@ public class RunExperimentMainTab  extends AbstractLaunchConfigurationTab {
 	protected Text skbUrl;
 	protected Text deplId;	
 	protected Text scopePath;
+	protected Text descInput;
 	
 	
 	@Override
@@ -73,9 +74,17 @@ public class RunExperimentMainTab  extends AbstractLaunchConfigurationTab {
 	    this.experimentPath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 5, 1));
 	    this.experimentPath.addModifyListener(modyfyingListener);
 	    
+	    Label descLabel = new Label(mainComposite, SWT.NONE);
+	    descLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 5, 1));
+	    descLabel.setText("Description to identify your snapshot :");
+	    
+	    this.descInput = new Text(mainComposite, SWT.BORDER);
+	    this.descInput.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 5, 1));
+	    this.descInput.addModifyListener(modyfyingListener);
+	    
 	    Label labelDeplId = new Label(mainComposite, SWT.NONE);
 	    labelDeplId.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 5, 1));
-	    labelDeplId.setText("Identifier of the deployment that you want to compute a snapshot on :");
+	    labelDeplId.setText("Name of the deployment that you want to compute a snapshot on :");
 
 	    this.deplId = new Text(mainComposite, SWT.BORDER);
 	    this.deplId.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 5, 1));
@@ -106,6 +115,7 @@ public class RunExperimentMainTab  extends AbstractLaunchConfigurationTab {
 			experimentPath.setText(configuration.getAttribute(Constants.EXPERIMENT_FILEPATH,"/experiment-manager/experiments.xml"));
 			deplId.setText(configuration.getAttribute(Constants.DEPLOYMENT_ID,"DefaultDeploymentId"));
 			scopePath.setText(configuration.getAttribute(Constants.SCOPE_FILEPATH,baseDir + "/experiment-manager/scopes.xml"));
+			descInput.setText(configuration.getAttribute(Constants.SNAPSHOT_DESCRIPTION, "Type here your snapshot description"));
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -129,10 +139,12 @@ public class RunExperimentMainTab  extends AbstractLaunchConfigurationTab {
 	
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(Constants.SKB_URL, experimentPath.getText());
-		configuration.setAttribute(Constants.EXPERIMENT_FILEPATH, skbUrl.getText());
+		configuration.setAttribute(Constants.SKB_URL, skbUrl.getText());
+		configuration.setAttribute(Constants.EXPERIMENT_FILEPATH, experimentPath.getText());
 		configuration.setAttribute(Constants.DEPLOYMENT_ID, deplId.getText());
 		configuration.setAttribute(Constants.SCOPE_FILEPATH, scopePath.getText());
+		configuration.setAttribute(Constants.SNAPSHOT_DESCRIPTION, descInput.getText());
+		
 	}
 	
 	

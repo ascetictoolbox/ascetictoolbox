@@ -13,11 +13,12 @@ import java.util.*;
 
 
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-25T15:22:24.802+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-06-28T16:11:54.305+02:00")
 public class Experiment   {
   
   private String id = null;
   private String name = null;
+  private String description = null;
   private String appId = null;
   private List<KPI> kpis = new ArrayList<KPI>();
   private List<Event> events = new ArrayList<Event>();
@@ -47,6 +48,19 @@ public class Experiment   {
   }
   public void setName(String name) {
     this.name = name;
+  }
+
+  
+  /**
+   **/
+  
+  @ApiModelProperty(value = "")
+  @JsonProperty("description")
+  public String getDescription() {
+    return description;
+  }
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   
@@ -103,6 +117,7 @@ public class Experiment   {
     Experiment experiment = (Experiment) o;
     return Objects.equals(id, experiment.id) &&
         Objects.equals(name, experiment.name) &&
+        Objects.equals(description, experiment.description) &&
         Objects.equals(appId, experiment.appId) &&
         Objects.equals(kpis, experiment.kpis) &&
         Objects.equals(events, experiment.events);
@@ -110,7 +125,7 @@ public class Experiment   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, appId, kpis, events);
+    return Objects.hash(id, name, description, appId, kpis, events);
   }
 
   @Override
@@ -120,6 +135,7 @@ public class Experiment   {
     
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    appId: ").append(toIndentedString(appId)).append("\n");
     sb.append("    kpis: ").append(toIndentedString(kpis)).append("\n");
     sb.append("    events: ").append(toIndentedString(events)).append("\n");

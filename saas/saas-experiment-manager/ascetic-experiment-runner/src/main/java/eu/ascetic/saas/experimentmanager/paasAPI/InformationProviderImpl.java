@@ -34,7 +34,7 @@ public class InformationProviderImpl implements InformationProvider {
 	 * @see eu.ascetic.saas.experimentmanager.paasAPI.IPaaSInformationProvider#listVirtualMachine(java.lang.String, java.lang.String)
 	 */
 	public List<String> listVirtualMachine(String appId, String deplId) throws Exception{
-		String url = "http://192.168.3.222/application-manager/applications/" + appId + "/deployments/" + deplId + "/vms";
+		String url = urlToApplicationManager+"/application-manager/applications/" + appId + "/deployments/" + deplId + "/vms";
 		String query = "/collection/items/vm/id";
 		return WSBasic.getList(url, RESSOURCEFORMAT.XML, query);
 	}
@@ -43,7 +43,7 @@ public class InformationProviderImpl implements InformationProvider {
 	 * @see eu.ascetic.saas.experimentmanager.paasAPI.IPaaSInformationProvider#listEventIds(java.lang.String, java.lang.String)
 	 */
 	public List<String> listEventIds(String appId, String deplId) throws Exception {
-		String url = "http://192.168.3.222:9000/query";
+		String url = urlToApplicationMonitor+"/query";
 		String post = "FROM events MATCH appId = \"" + appId + "\" AND deploymentId = \"" + deplId + "\", GROUP BY data.eventType , avg(data.duration) as dur";
 		String query = "$.._id";
 		return WSBasic.getList(url, RESSOURCEFORMAT.JSON, query, post);
@@ -66,6 +66,8 @@ public class InformationProviderImpl implements InformationProvider {
 	}
 	
 	
-
+	public String getDeploymentId(String deploymentName){
+		return deploymentName;
+	}
 	
 }

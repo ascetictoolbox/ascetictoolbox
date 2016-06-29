@@ -10,10 +10,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-25T15:22:24.802+02:00")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-06-28T16:11:54.305+02:00")
 public class Item   {
   
   private String category = null;
+  private String name = null;
   private String reference = null;
 
   
@@ -32,10 +33,24 @@ public class Item   {
 
   
   /**
-   * Complete item reference
+   * specific name of the targeted item (event name for example)
    **/
   
-  @ApiModelProperty(value = "Complete item reference")
+  @ApiModelProperty(value = "specific name of the targeted item (event name for example)")
+  @JsonProperty("name")
+  public String getName() {
+    return name;
+  }
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  
+  /**
+   * Complete item reference (depending on the item)
+   **/
+  
+  @ApiModelProperty(value = "Complete item reference (depending on the item)")
   @JsonProperty("reference")
   public String getReference() {
     return reference;
@@ -56,12 +71,13 @@ public class Item   {
     }
     Item item = (Item) o;
     return Objects.equals(category, item.category) &&
+        Objects.equals(name, item.name) &&
         Objects.equals(reference, item.reference);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(category, reference);
+    return Objects.hash(category, name, reference);
   }
 
   @Override
@@ -70,6 +86,7 @@ public class Item   {
     sb.append("class Item {\n");
     
     sb.append("    category: ").append(toIndentedString(category)).append("\n");
+    sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    reference: ").append(toIndentedString(reference)).append("\n");
     sb.append("}");
     return sb.toString();

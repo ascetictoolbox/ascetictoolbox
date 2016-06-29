@@ -22,8 +22,7 @@ mongoose.connect(config.db_url, {server: {auto_reconnect: true}});
 
 var Models = require('../models/Models.js');
 
-
-exports.experimentsGet = function(req, res, next) {
+exports.experimentsGet = function(args, res, next) {
   /**
    * parameters expected in the args:
   **/
@@ -32,9 +31,7 @@ exports.experimentsGet = function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(data));
   });
-
 }
-
 exports.experimentsPost = function(args, res, next) {
   /**
    * parameters expected in the args:
@@ -51,7 +48,6 @@ exports.experimentsPost = function(args, res, next) {
       });
     });
 }
-
 exports.experimentGet = function(args, res, next) {
   /**
    * parameters expected in the args:
@@ -62,30 +58,50 @@ exports.experimentGet = function(args, res, next) {
 	 	res.setHeader('Content-Type', 'application/json');
 	 	res.end(JSON.stringify(data));
 	 });
-};
+}
+exports.eventGet = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+   * expid (String)
+   **/
+   Models.Experiment.find({_id: args.expid.value},function(err,data){
+	 	res.setHeader('Content-Type', 'application/json');
+	 	res.end(JSON.stringify(data.events));
+	 });
+}
+exports.experimentSnapshotGet = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+   * expid (String)
+   **/
+   console.log(args.expId)
 
+   Models.Snapshot.find({experimentId: args.expId.value},function(err,data){
+     res.setHeader('Content-Type', 'application/json');
+     res.end(JSON.stringify(data));
+   });
+}
 exports.snapshotsGet = function(args, res, next) {
   /**
    * parameters expected in the args:
    * expId (String)
   **/
-	console.log(args.expId)
-	if(args.expId.value==null){
-		Models.Snapshot.find(function(err,data){
-	    res.setHeader('Content-Type', 'application/json');
-	    res.end(JSON.stringify(data));
-	  });
-	}
-	else{
-		Models.Snapshot.find({experimentId: args.expId.value},function(err,data){
-	    res.setHeader('Content-Type', 'application/json');
-	    res.end(JSON.stringify(data));
-	  });
-	}
+  console.log(args.expId)
+  if(args.expId.value==null){
+    Models.Snapshot.find(function(err,data){
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(data));
+    });
+  }
+  else{
+    Models.Snapshot.find({experimentId: args.expId.value},function(err,data){
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(data));
+    });
+  }
 }
-
 exports.snapshotsPost = function(args, res, next) {
-	console.log(util.inspect(args.body.value,false,null));
+  console.log(util.inspect(args.body.value,false,null));
   var exp = new Models.Snapshot(args.body.value);
   exp.save(function (err) {
       if (err) throw err;
@@ -95,7 +111,6 @@ exports.snapshotsPost = function(args, res, next) {
       });
     });
 }
-
 exports.snapshotGet = function(args, res, next) {
   /**
    * parameters expected in the args:
@@ -106,4 +121,25 @@ exports.snapshotGet = function(args, res, next) {
 		 res.setHeader('Content-Type', 'application/json');
 		 res.end(JSON.stringify(data));
 	 });
+}
+exports.snapshotMeasuresGet = function(args, res, next) {
+   /**
+    * parameters expected in the args:
+    * snapid (String)
+    **/
+
+ 	 Models.Snapshot.find({_id: args.snapid.value},function(err,data){
+ 		 res.setHeader('Content-Type', 'application/json');
+ 		 res.end(JSON.stringify(data.measures));
+ 	 });
+}
+exports.snapshotVMsGet = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+   * snapid (String)
+   **/
+   Models.Snapshot.find({_id: args.snapid.value},function(err,data){
+     res.setHeader('Content-Type', 'application/json');
+     res.end(JSON.stringify(data.vms));
+   });
 }

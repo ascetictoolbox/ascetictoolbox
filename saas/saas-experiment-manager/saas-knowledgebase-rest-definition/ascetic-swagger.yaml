@@ -122,7 +122,7 @@ paths:
             $ref: "#/definitions/Snapshot"
         "400":
           description: Invalid Snapshot
-  /experiment/{expid}:
+  /experiments/{expid}:
     get:
       x-swagger-router-controller: Default
       # Describe this verb here. Note: you can use markdown
@@ -146,7 +146,59 @@ paths:
           # Use JSON Schema format
           schema:
               $ref: "#/definitions/Experiment"
-  /snapshot/{snapid}:
+  /experiments/{expid}/events:
+    get:
+      x-swagger-router-controller: Default
+      # Describe this verb here. Note: you can use markdown
+      operationId: eventGet
+      description: |
+        Gets the list of event for a specific experiment
+      # This is array of GET operation parameters:
+      parameters:
+        - name: expid
+          in: path
+          description: id of the experiment to retrieve
+          type: string
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Event"
+  /experiments/{expid}/snapshots:
+      get:
+        x-swagger-router-controller: Default
+        # Describe this verb here. Note: you can use markdown
+        operationId: experimentSnapshotGet
+        description: |
+          Gets the list of event for a specific experiment
+        # This is array of GET operation parameters:
+        parameters:
+          - name: expid
+            in: path
+            description: id of the experiment to retrieve
+            type: string
+        produces:
+          - application/json
+          - application/xml
+        responses:
+          # Response code
+          "200":
+            description: Successful response
+            # A schema describing your response object.
+            # Use JSON Schema format
+            schema:
+              type: array
+              items:
+                $ref: "#/definitions/Snapshot"
+  /snapshots/{snapid}:
     get:
       x-swagger-router-controller: Default
       operationId: snapshotGet
@@ -171,7 +223,63 @@ paths:
           # A schema describing your response object.
           # Use JSON Schema format
           schema:
-            $ref: "#/definitions/Snapshot"
+            $ref: "#/definitions/SnapshotLess"
+  /snapshots/{snapid}/measures:
+    get:
+      x-swagger-router-controller: Default
+      operationId: snapshotMeasuresGet
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Get `Snapshot` object according.
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        - name: snapid
+          in: path
+          description: snapshotId
+          type: string
+      # Expected responses for this operation:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Measure"
+  /snapshots/{snapid}/vms:
+    get:
+      x-swagger-router-controller: Default
+      operationId: snapshotVMsGet
+      # Describe this verb here. Note: you can use markdown
+      description: |
+        Get `Snapshot` object according.
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        - name: snapid
+          in: path
+          description: snapshotId
+          type: string
+      # Expected responses for this operation:
+      produces:
+        - application/json
+        - application/xml
+      responses:
+        # Response code
+        "200":
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/VM"
 definitions:
   Experiment:
     type: object
@@ -180,6 +288,8 @@ definitions:
         type: string
         description : UUID
       name:
+        type: string
+      description:
         type: string
       appId:
         type: string
@@ -220,6 +330,9 @@ definitions:
         type: string
       description:
         type: string
+      type:
+        type: string
+        description: type of the metric (aggregated or simple)
   Event:
     type: object
     properties:
@@ -230,6 +343,31 @@ definitions:
         type: string
       description:
         type: string
+  SnapshotLess:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: UUID
+      experimentId:
+        type: string
+        description: UUID of the experiment
+      name:
+        type: string
+      deplId:
+        type: string
+      deplName:
+        type: string
+        description: human readable name of the deployment
+      description:
+        type: string
+      deplName:
+        type: string
+      description:
+        type: string
+      date:
+        type: string
+        format: date-time
   Snapshot:
     type: object
     properties:
@@ -242,6 +380,11 @@ definitions:
       name:
         type: string
       deplId:
+        type: string
+      deplName:
+        type: string
+        description: human readable name of the deployment
+      description:
         type: string
       deplName:
         type: string
@@ -300,6 +443,9 @@ definitions:
       category:
         type: string
         description: Item category (VM, event) describing a part of a scope
+      name:
+        type: string
+        description: specific name of the targeted item (event name for example)
       reference:
         type: string
-        description: Complete item reference
+        description: Complete item reference (depending on the item)

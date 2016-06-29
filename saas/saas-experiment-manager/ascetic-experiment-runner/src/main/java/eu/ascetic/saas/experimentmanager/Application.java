@@ -35,9 +35,9 @@ public class Application {
 	public static void main(String[] args) throws Exception{
 		String basePath = "//Users/ddu/Documents/CETIC/PROJECTS/ASCETIC/CODE/WHOLE2/saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/";
 		
-		Experiment exp = API.createExperiment("News Asset Experiment","newsAsset","News Asset",
+		Experiment exp = API.createExperiment("News Asset Experiment","newsAsset","News Asset","Major experiment",
 				basePath+"events.xml", basePath+"deployments.xml", basePath+"kpis.xml");
-		Snapshot s = API.run(exp,"490", basePath+"scopes.xml");
+		Snapshot s = API.run(exp,"490", "This is a test snapshot", basePath+"scopes.xml");
 		API.persist("http://localhost:8080",s);
 	}
 

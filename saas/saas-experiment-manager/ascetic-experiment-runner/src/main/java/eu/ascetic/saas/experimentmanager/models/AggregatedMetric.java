@@ -16,6 +16,7 @@ public class AggregatedMetric extends Metric {
 	public AggregatedMetric(String id, Metric m){
 		this.name = id;
 		this.metric = m;
+		this.setType("aggregated");
 	}
 	
 	@Override

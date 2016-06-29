@@ -43,8 +43,8 @@ public class RunExperiment
     @Parameter(defaultValue = "${saasknowledgebase_url}", property = "skbUrl", required = true )
     private String skburl;
     
-    @Parameter(defaultValue = "${target_depl_id}", property = "deplId", required = true )
-    private String deplId;
+    @Parameter(defaultValue = "${target_depl_name}", property = "deplName", required = true )
+    private String deplName;
     
     public void execute()
         throws MojoExecutionException
@@ -53,14 +53,14 @@ public class RunExperiment
 		String experimentPath  = resourceDirectory + "/experiments.xml";
 
 		this.getLog().info("SaaS knowledge base URL is : "+skburl);
-		this.getLog().info("Deployment identifier is : "+deplId);
+		this.getLog().info("Deployment identifier is : "+deplName);
 		this.getLog().info("experiment path is : "+experimentPath);
 		this.getLog().info("scope path is : "+scopesPath);
 		
 		this.getLog().info("Start loading experiment ...");
 		Experiment exp = API.loadExperiment(experimentPath);
 		this.getLog().info("Computing snapshot ...");
-		Snapshot s = API.run(exp, deplId, scopesPath);
+		Snapshot s = API.run(exp, deplName, scopesPath);
 		try {
 			this.getLog().info("Persisting snapshot ...");
 			API.persist(skburl, s);
