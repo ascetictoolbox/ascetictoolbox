@@ -103,7 +103,7 @@ public class Application {
 		links.add(link);
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "application_id", referencedColumnName="application_id", nullable = true)
 	public List<Image> getImages() {
 		return images;
