@@ -36,5 +36,6 @@ public class Dictionary {
 	public static String DEPLOYMENT_EVENT_TOPIC = "topic.deployment.status";
 	
 	// VM States
+	public static String STATE_VM_ACTIVE = "ACTIVE";
 	public static String STATE_VM_DELETED = "DELETED";
 }

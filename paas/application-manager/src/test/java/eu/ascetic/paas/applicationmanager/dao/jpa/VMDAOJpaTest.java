@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_ACTIVE;
 
 import java.util.List;
 
@@ -403,6 +404,52 @@ public class VMDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTests 
 		assertEquals(2, vms.size());
 		vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("ovf-id", deploymentId1);
 		assertEquals(1, vms.size());
+	}
+	
+	@Test
+	public void getVMsWithOvfIdAndActive() {
+		// Prior
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+		
+		VM vm1 = new VM();
+		vm1.setOvfId("ovfid1");
+		vm1.setStatus(STATE_VM_ACTIVE);
+		
+		VM vm2 = new VM();
+		vm2.setOvfId("ovfid1");
+		vm2.setStatus(STATE_VM_ACTIVE);
+		
+		VM vm3 = new VM();
+		vm3.setOvfId("ovfid1");
+		vm3.setStatus(STATE_VM_DELETED);
+		
+		VM vm4 = new VM();
+		vm4.setOvfId("ovfid2");
+		vm4.setStatus(STATE_VM_DELETED);
+		
+		VM vm5 = new VM();
+		vm5.setOvfId("ovfid1");
+		vm5.setStatus("whatever");
+		
+		deployment1.addVM(vm1);
+		deployment1.addVM(vm2);
+		deployment1.addVM(vm3);
+		deployment1.addVM(vm4);
+		deployment1.addVM(vm5);
+		
+		deploymentDAO.save(deployment1);
+		
+		List<VM> vms = vmDAO.getVMsWithOvfIdAndActive(deployment1.getId(), "ovfid1");
+		
+		assertEquals(2, vms.size());
+		assertEquals(vm1, vms.get(0));
+		assertEquals(vm2, vms.get(1));
+		
+		 vms = vmDAO.getVMsWithOvfIdAndActive(deployment1.getId(), "ovfid2");
+			
+		 assertEquals(0, vms.size());
 	}
 }
 

@@ -1,5 +1,6 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_ACTIVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -51,6 +52,7 @@ import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.event.deployment.matchers.ImageToUploadWithEquals;
 import eu.ascetic.paas.applicationmanager.event.deployment.matchers.VmWithEquals;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Cost;
@@ -90,6 +92,10 @@ import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 public class VMRestTest extends AbstractTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.vmc.xml";
 	private String threeTierWebAppOvfString;
+	private String slaAgreementFile = "sla-agreement.xml";
+	private String slaAgreementText;
+	private String slaAgreement2File = "sla-agreement-2.xml";
+	private String slaAgreement2Text;
 	
 	/**
 	 * We just read an ovf example... 
@@ -100,6 +106,12 @@ public class VMRestTest extends AbstractTest {
 	public void setup() throws IOException, URISyntaxException {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		
+		file = new File(this.getClass().getResource( "/" + slaAgreementFile ).toURI());		
+		slaAgreementText = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		
+		file = new File(this.getClass().getResource( "/" + slaAgreement2File ).toURI());		
+		slaAgreement2Text = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
@@ -1349,6 +1361,517 @@ public class VMRestTest extends AbstractTest {
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfHref());
 		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfId());
 		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(500l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.11.VM.0.DEPLOYED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("11", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("DEPLOYED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		assertEquals("haproxy", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getVms().get(0).getOvfId());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void postVMWithoutEnergyLimits() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// Pre Test 1 - Image already exits in the DB
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus("DEPLOYED");
+		deployment.setProviderId("prod-id");
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setSlaAgreement(slaAgreementText);
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(agreement);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy</ovf-id>"
+						+ "</vm>";
+		
+		Image image = new Image();
+		image.setId(22);
+		image.setOvfId("haproxy-img");
+		image.setOvfHref("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img");
+		image.setProviderId("haproxy-uuid");
+		image.setProviderImageId("haproxy-uuid");
+		
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		when(imageDAO.getById(22)).thenReturn(image);
+		
+		VM vm1 = new VM();
+		vm1.addImage(image);
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		VmManagerClient vmMaClient = mock(VmManagerClient.class);
+		
+		List<Vm> vms1 = new ArrayList<Vm>();
+		VmWithEquals vm1e = new VmWithEquals("HAProxy_2","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_2","threeTierWebApp", "haproxy", "sla-id", false);
+		System.out.println("VM with equals: " + vm1e);
+		vms1.add(vm1e);
+		List<String> ids1 = new ArrayList<String>();
+		ids1.add("haproxy-vm1");
+		
+		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
+		
+		// We mock the calls to get VMs
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		
+		// Test 1
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.vmManagerClient = vmMaClient;
+		vmRest.imageDAO = imageDAO;
+		vmRest.agreementDAO = agreementDAO;
+		
+		Response response = vmRest.postVM("threeTierWebApp", "11", false, vmRequest);
+		assertEquals(200, response.getStatus());
+		assertTrue(!(null == response.getEntity()));
+		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
+		assertEquals("haproxy", vmFromRest.getOvfId());
+		assertEquals("ACTIVE", vmFromRest.getStatus());
+		assertEquals("haproxy-uuid", vmFromRest.getImages().get(0).getProviderImageId());
+		assertEquals(2l, vmFromRest.getNumberVMsMax());
+		assertEquals(1l, vmFromRest.getNumberVMsMin());
+		
+		//Post test 1 verifications:
+		// We verify that at the end we store in the database the right object
+		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
+		verify(deploymentDAO, times(1)).update(deploymentCaptor.capture());
+		assertEquals(1, deploymentCaptor.getValue().getVms().size());
+		assertEquals("haproxy", deploymentCaptor.getValue().getVms().get(0).getOvfId());
+		assertEquals("10.0.0.1", deploymentCaptor.getValue().getVms().get(0).getIp());
+		assertEquals("haproxy-vm1", deploymentCaptor.getValue().getVms().get(0).getProviderVmId());
+		assertEquals("prod-id", deploymentCaptor.getValue().getVms().get(0).getProviderId());
+		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(0).getStatus());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(0).getImages().size());
+		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfHref());
+		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfId());
+		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(500l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.11.VM.0.DEPLOYED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("11", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("DEPLOYED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		assertEquals("haproxy", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getVms().get(0).getOvfId());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void postNoRunningVMtoGetEnergyEstimation() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// Pre Test 1 - Image already exits in the DB
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus("DEPLOYED");
+		deployment.setProviderId("prod-id");
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setSlaAgreement(slaAgreement2Text);
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(agreement);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy</ovf-id>"
+						+ "</vm>";
+		
+		Image image = new Image();
+		image.setId(22);
+		image.setOvfId("haproxy-img");
+		image.setOvfHref("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img");
+		image.setProviderId("haproxy-uuid");
+		image.setProviderImageId("haproxy-uuid");
+		
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		when(imageDAO.getById(22)).thenReturn(image);
+		
+		VM vm1 = new VM();
+		vm1.addImage(image);
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		when(vmDAO.getVMsWithOvfIdAndActive(11, "haproxy")).thenReturn(new ArrayList<VM>());
+		
+		VmManagerClient vmMaClient = mock(VmManagerClient.class);
+		
+		List<Vm> vms1 = new ArrayList<Vm>();
+		VmWithEquals vm1e = new VmWithEquals("HAProxy_2","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_2","threeTierWebApp", "haproxy", "sla-id", false);
+		System.out.println("VM with equals: " + vm1e);
+		vms1.add(vm1e);
+		List<String> ids1 = new ArrayList<String>();
+		ids1.add("haproxy-vm1");
+		
+		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
+		
+		// We mock the calls to get VMs
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		
+		// Test 1
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.vmManagerClient = vmMaClient;
+		vmRest.imageDAO = imageDAO;
+		vmRest.agreementDAO = agreementDAO;
+		
+		Response response = vmRest.postVM("threeTierWebApp", "11", false, vmRequest);
+		assertEquals(200, response.getStatus());
+		assertTrue(!(null == response.getEntity()));
+		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
+		assertEquals("haproxy", vmFromRest.getOvfId());
+		assertEquals("ACTIVE", vmFromRest.getStatus());
+		assertEquals("haproxy-uuid", vmFromRest.getImages().get(0).getProviderImageId());
+		assertEquals(2l, vmFromRest.getNumberVMsMax());
+		assertEquals(1l, vmFromRest.getNumberVMsMin());
+		
+		//Post test 1 verifications:
+		// We verify that at the end we store in the database the right object
+		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
+		verify(deploymentDAO, times(1)).update(deploymentCaptor.capture());
+		assertEquals(1, deploymentCaptor.getValue().getVms().size());
+		assertEquals("haproxy", deploymentCaptor.getValue().getVms().get(0).getOvfId());
+		assertEquals("10.0.0.1", deploymentCaptor.getValue().getVms().get(0).getIp());
+		assertEquals("haproxy-vm1", deploymentCaptor.getValue().getVms().get(0).getProviderVmId());
+		assertEquals("prod-id", deploymentCaptor.getValue().getVms().get(0).getProviderId());
+		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(0).getStatus());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(0).getImages().size());
+		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfHref());
+		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfId());
+		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(500l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.11.VM.0.DEPLOYED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("11", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("DEPLOYED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		assertEquals("haproxy", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getVms().get(0).getOvfId());
+		
+		receiver.close();
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void postNoRunningVMSLAViolationOfMaximumVMLimit() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// Pre Test 1 - Image already exits in the DB
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus("DEPLOYED");
+		deployment.setProviderId("prod-id");
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setSlaAgreement(slaAgreement2Text);
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(agreement);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy</ovf-id>"
+						+ "</vm>";
+		
+		VM vm1 = new VM();
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		List<VM> vmsFromDB = new ArrayList<VM>();
+		VM vm2 = new VM();
+		vm2.setId(444);
+		vm2.setProviderId("prod-id");
+		vm2.setOvfId("haproxy");
+		vmsFromDB.add(vm2);
+		
+		when(vmDAO.getVMsWithOvfIdAndActive(11, "haproxy")).thenReturn(vmsFromDB);
+		when(vmDAO.getById(444)).thenReturn(vm2);
+		
+		// We mock the Energy Modeller
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		List<String> ids = new ArrayList<String>();
+		ids.add("444");
+		when(energyModeller.estimate("prod-id",  "threeTierWebApp", "11", ids, null, Unit.POWER, 0l)).thenReturn(60.0);
+		
+		// Test 1
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.agreementDAO = agreementDAO;
+		vmRest.energyModeller = energyModeller;
+		
+		Response response = vmRest.postVM("threeTierWebApp", "11", false, vmRequest);
+		assertEquals(403, response.getStatus());
+		assertEquals("Over the limit of the SLA agreement per this VM type... !!!", (String) response.getEntity());
+		
+		receiver.close();
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void postNoRunningVMSLAViolationOfMaximumAppLimit() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// Pre Test 1 - Image already exits in the DB
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus("DEPLOYED");
+		deployment.setProviderId("prod-id");
+		
+		VM vmD1 = new VM();
+		vmD1.setId(111);
+		vmD1.setStatus(STATE_VM_ACTIVE);
+		VM vmD2 = new VM();
+		vmD2.setId(222);
+		vmD2.setStatus(STATE_VM_ACTIVE);
+		
+		deployment.addVM(vmD1);
+		deployment.addVM(vmD2);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setSlaAgreement(slaAgreement2Text);
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(agreement);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy</ovf-id>"
+						+ "</vm>";
+		
+		VM vm1 = new VM();
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		List<VM> vmsFromDB = new ArrayList<VM>();
+		VM vm2 = new VM();
+		vm2.setId(444);
+		vm2.setProviderId("prod-id");
+		vm2.setOvfId("haproxy");
+		vmsFromDB.add(vm2);
+		
+		when(vmDAO.getVMsWithOvfIdAndActive(11, "haproxy")).thenReturn(vmsFromDB);
+		when(vmDAO.getById(444)).thenReturn(vm2);
+		
+		// We mock the Energy Modeller
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		List<String> ids = new ArrayList<String>();
+		ids.add("444");
+		when(energyModeller.estimate("prod-id",  "threeTierWebApp", "11", ids, null, Unit.POWER, 0l)).thenReturn(5.0);
+		
+		List<String> ids2 = new ArrayList<String>();
+		ids2.add("111");
+		ids2.add("222");
+		when(energyModeller.estimate("prod-id",  "threeTierWebApp", "11", ids2, null, Unit.POWER, 0l)).thenReturn(140.0);
+		
+		// Test 1
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.agreementDAO = agreementDAO;
+		vmRest.energyModeller = energyModeller;
+		
+		Response response = vmRest.postVM("threeTierWebApp", "11", false, vmRequest);
+		assertEquals(403, response.getStatus());
+		assertEquals("Over the limit of the SLA agreement per application... !!!", (String) response.getEntity());
+		
+		receiver.close();
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void postVMInsideSLALimits() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		// Pre Test 1 - Image already exits in the DB
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus("DEPLOYED");
+		deployment.setProviderId("prod-id");
+		
+		VM vmD1 = new VM();
+		vmD1.setId(111);
+		vmD1.setStatus(STATE_VM_ACTIVE);
+		VM vmD2 = new VM();
+		vmD2.setId(222);
+		vmD2.setStatus(STATE_VM_ACTIVE);
+		
+		deployment.addVM(vmD1);
+		deployment.addVM(vmD2);
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setSlaAgreement(slaAgreement2Text);
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(agreement);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy</ovf-id>"
+						+ "</vm>";
+		
+		Image image = new Image();
+		image.setId(22);
+		image.setOvfId("haproxy-img");
+		image.setOvfHref("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img");
+		image.setProviderId("haproxy-uuid");
+		image.setProviderImageId("haproxy-uuid");
+		
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		when(imageDAO.getById(22)).thenReturn(image);
+		
+		VM vm1 = new VM();
+		vm1.addImage(image);
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		List<VM> vmsFromDB = new ArrayList<VM>();
+		VM vm2 = new VM();
+		vm2.setId(444);
+		vm2.setProviderId("prod-id");
+		vm2.setOvfId("haproxy");
+		vmsFromDB.add(vm2);
+		
+		when(vmDAO.getVMsWithOvfIdAndActive(11, "haproxy")).thenReturn(vmsFromDB);
+		when(vmDAO.getById(444)).thenReturn(vm2);
+		
+		// We mock the Energy Modeller
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		List<String> ids = new ArrayList<String>();
+		ids.add("444");
+		when(energyModeller.estimate("prod-id",  "threeTierWebApp", "11", ids, null, Unit.POWER, 0l)).thenReturn(5.0);
+		
+		List<String> ids2 = new ArrayList<String>();
+		ids2.add("111");
+		ids2.add("222");
+		when(energyModeller.estimate("prod-id",  "threeTierWebApp", "11", ids2, null, Unit.POWER, 0l)).thenReturn(5.0);
+		
+		VmManagerClient vmMaClient = mock(VmManagerClient.class);
+		
+		List<Vm> vms1 = new ArrayList<Vm>();
+		VmWithEquals vm1e = new VmWithEquals("HAProxy_2","haproxy-uuid",1,1024,20, 0,"/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_2","threeTierWebApp", "haproxy", "sla-id", false);
+		System.out.println("VM with equals: " + vm1e);
+		vms1.add(vm1e);
+		List<String> ids1 = new ArrayList<String>();
+		ids1.add("haproxy-vm1");
+		
+		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
+		
+		// We mock the calls to get VMs
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		
+		// Test 1
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.vmManagerClient = vmMaClient;
+		vmRest.imageDAO = imageDAO;
+		vmRest.agreementDAO = agreementDAO;
+		vmRest.energyModeller = energyModeller;
+		
+
+		Response response = vmRest.postVM("threeTierWebApp", "11", false, vmRequest);
+		assertEquals(200, response.getStatus());
+		assertTrue(!(null == response.getEntity()));
+		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
+		assertEquals("haproxy", vmFromRest.getOvfId());
+		assertEquals("ACTIVE", vmFromRest.getStatus());
+		assertEquals("haproxy-uuid", vmFromRest.getImages().get(0).getProviderImageId());
+		assertEquals(2l, vmFromRest.getNumberVMsMax());
+		assertEquals(1l, vmFromRest.getNumberVMsMin());
+		
+		//Post test 1 verifications:
+		// We verify that at the end we store in the database the right object
+		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
+		verify(deploymentDAO, times(1)).update(deploymentCaptor.capture());
+		assertEquals(3, deploymentCaptor.getValue().getVms().size());
+		assertEquals("haproxy", deploymentCaptor.getValue().getVms().get(2).getOvfId());
+		assertEquals("10.0.0.1", deploymentCaptor.getValue().getVms().get(2).getIp());
+		assertEquals("haproxy-vm1", deploymentCaptor.getValue().getVms().get(2).getProviderVmId());
+		assertEquals("prod-id", deploymentCaptor.getValue().getVms().get(2).getProviderId());
+		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(2).getStatus());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(2).getImages().size());
+		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(2).getImages().get(0).getOvfHref());
+		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(2).getImages().get(0).getOvfId());
+		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(2).getImages().get(0).getProviderImageId());
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);

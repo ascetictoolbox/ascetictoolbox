@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.rest;
 
 import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_ACTIVE;
 import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_STATUS_DEPLOYED; 
 
 import java.sql.Timestamp;
@@ -47,6 +48,7 @@ import eu.ascetic.paas.applicationmanager.ovf.VMLimits;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.rest.util.EnergyModellerConverter;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
+import eu.ascetic.paas.applicationmanager.slam.sla.SLAAgreementHelper;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.ImageUploader;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
@@ -162,7 +164,37 @@ public class VMRest extends AbstractRest {
 				return createVM(ovf, vm, vms, applicationName, vmLimits, deployment);
 			}
 			
-			return null;
+			SLAAgreementHelper helper = new SLAAgreementHelper(agreement.getSlaAgreement());
+			
+			double slaPowerApp = helper.getPowerUsagePerApp();
+			double slaPowerVM = helper.getPowerUsagePerOVFId(vm.getOvfId());
+			
+			if(slaPowerApp == 0.0 && slaPowerVM == 0.0) {
+				return createVM(ovf, vm, vms, applicationName, vmLimits, deployment);
+			}
+			
+			List<VM> activeVMs = vmDAO.getVMsWithOvfIdAndActive(deploymentIdInt, vm.getOvfId());
+			
+			if(activeVMs.size() == 0) {
+				return createVM(ovf, vm, vms, applicationName, vmLimits, deployment);
+			}
+			
+			// We get the estimation of creating a VM of that type
+			double powerEstimation = getEnergyOrPowerEstimation(applicationName, deploymentId, "" + activeVMs.get(0).getId(), null, Unit.POWER, 0l);
+			
+			// We check if pass over the violation of the specifci type of VM
+			if(powerEstimation > slaPowerApp) {
+				return buildResponse(Status.FORBIDDEN, "Over the limit of the SLA agreement per this VM type... !!!");
+			}
+			
+			List<String> ids = getVmsIds(deployment);
+			powerEstimation = energyModeller.estimate(deployment.getProviderId(),  applicationName, deploymentId, ids, null,  Unit.POWER, 0l);
+			// We check if pass over the violation of the total of the VM
+			if(powerEstimation > slaPowerApp) {
+				return buildResponse(Status.FORBIDDEN, "Over the limit of the SLA agreement per application... !!!");
+			}
+			
+			return createVM(ovf, vm, vms, applicationName, vmLimits, deployment);
 		}
 	}
 	
@@ -510,6 +542,18 @@ public class VMRest extends AbstractRest {
 
 		
 		return getEnergyConsumptionInGeneral(applicationName, deploymentId, vmId, eventId, startTime, endTime); 
+	}
+	
+	protected List<String> getVmsIds(Deployment deployment) {
+		List<String> ids = new ArrayList<String>();
+		
+		for(VM vm : deployment.getVms()) {
+			if(vm.getStatus() == STATE_VM_ACTIVE) {
+				ids.add("" + vm.getId());
+			}
+		}
+		
+		return ids;
 	}
 	
 	private Response getEnergyConsumptionInGeneral(String applicationName, String deploymentId, String vmId, String eventId, long startTime, long endTime) {

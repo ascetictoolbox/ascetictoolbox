@@ -38,8 +38,11 @@ import org.junit.Test;
  *
  */
 public class SLAAgreementHelperTest {
-	private String slaAgreementFile = "sla-agreement-2.xml";
+	private String slaAgreement2File = "sla-agreement-2.xml";
+	private String slaAgreement2Text;
+	private String slaAgreementFile = "sla-agreement.xml";
 	private String slaAgreementText;
+
 	
 	/**
 	 * We just read an sla agreement example... 
@@ -48,13 +51,16 @@ public class SLAAgreementHelperTest {
 	 */
 	@Before
 	public void setup() throws IOException, URISyntaxException {
-		File file = new File(this.getClass().getResource( "/" + slaAgreementFile ).toURI());		
+		File file = new File(this.getClass().getResource( "/" + slaAgreement2File ).toURI());		
+		slaAgreement2Text = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		
+		file = new File(this.getClass().getResource( "/" + slaAgreementFile ).toURI());		
 		slaAgreementText = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
 	public void constructor() {
-		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreementText);
+		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreement2Text);
 		assertNotNull(helper.getSla());
 		assertEquals("1a9a2a46-cfe5-477c-8508-94417955ab53", helper.getSla().getUuid());
 		
@@ -64,21 +70,31 @@ public class SLAAgreementHelperTest {
 	
 	@Test
 	public void getPowerUsagePerApp() {
-		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreementText);
+		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreement2Text);
 		double powerUsage = helper.getPowerUsagePerApp();
 		
 		assertEquals(21.0, powerUsage, 0.0001);
+		
+		helper = new SLAAgreementHelper(slaAgreementText);
+		powerUsage = helper.getPowerUsagePerApp();
+		
+		assertEquals(0.0, powerUsage, 0.0001);
 	}
 	
 	@Test
 	public void getPowerUsagePerOVFId() {
-		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreementText);
+		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreement2Text);
 	
 		double powerUsage = helper.getPowerUsagePerOVFId("jboss");
 		assertEquals(10.0, powerUsage, 0.0001);
 		
 		powerUsage = helper.getPowerUsagePerOVFId("haproxy");
 		assertEquals(12.3, powerUsage, 0.0001);
+		
+		helper = new SLAAgreementHelper(slaAgreementText);
+		
+		powerUsage = helper.getPowerUsagePerOVFId("jboss");
+		assertEquals(0.0, powerUsage, 0.0001);
 	}
 	
 	/**

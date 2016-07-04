@@ -102,21 +102,15 @@ public class SLATest {
 		SLA slaAgreement = (SLA) jaxbUnmarshaller.unmarshal(new StringReader(slaTemplateString));
 		
 		assertNotNull(slaAgreement);
-		assertEquals(8, slaAgreement.getAgreementTerms().size());
+		assertEquals(6, slaAgreement.getAgreementTerms().size());
 		
 		AgreementTerm agreementTerm1 = slaAgreement.getAgreementTerms().get(0);
 		assertEquals("jmeter_Guarantees", agreementTerm1.getId());
 		
-		AgreementTerm agreementTerm2 = slaAgreement.getAgreementTerms().get(1);
-		assertEquals("haproxy_Guarantees", agreementTerm2.getId());
-		
-		AgreementTerm agreementTerm3 = slaAgreement.getAgreementTerms().get(2);
-		assertEquals("jboss_Guarantees", agreementTerm3.getId());
-		
-		AgreementTerm agreementTerm4 = slaAgreement.getAgreementTerms().get(3);
+		AgreementTerm agreementTerm4 = slaAgreement.getAgreementTerms().get(1);
 		assertEquals("mysql_Guarantees", agreementTerm4.getId());
 		
-		AgreementTerm agreementTerm5 = slaAgreement.getAgreementTerms().get(4);
+		AgreementTerm agreementTerm5 = slaAgreement.getAgreementTerms().get(2);
 		assertEquals("Infrastructure_Price_Of_jmeter", agreementTerm5.getId());
 		assertNotNull(agreementTerm5.getGuaranteed());
 		assertNotNull(agreementTerm5.getGuaranteed().getAction());
@@ -132,39 +126,8 @@ public class SLATest {
 		assertEquals("http://www.slaatsoi.org/coremodel/units#vm", 
 				     agreementTerm5.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity().getDatatype());
 		
-		AgreementTerm agreementTerm6 = slaAgreement.getAgreementTerms().get(5);
-		assertEquals("Infrastructure_Price_Of_haproxy", agreementTerm6.getId());
-		assertNotNull(agreementTerm6.getGuaranteed());
-		assertNotNull(agreementTerm6.getGuaranteed().getAction());
-		assertNotNull(agreementTerm6.getGuaranteed().getAction().getPostCondition());
-		assertNotNull(agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice());
-		assertEquals("Product_Offering_Price_Of_haproxy", agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getId());
-		assertNotNull(agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getPrice());
-		assertNotNull(agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity());
-		assertEquals(0.0, agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getPrice().getValue(), 0.0001);
-		assertEquals("http://www.slaatsoi.org/coremodel/units#http://www.slaatsoi.org/coremodel/units#EUR", 
-				     agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getPrice().getDatatype());
-		assertEquals(1l,agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity().getValue(), 0.0001);
-		assertEquals("http://www.slaatsoi.org/coremodel/units#vm", 
-				     agreementTerm6.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity().getDatatype());
 		
-		AgreementTerm agreementTerm7 = slaAgreement.getAgreementTerms().get(6);
-		assertEquals("Infrastructure_Price_Of_jboss", agreementTerm7.getId());
-		assertNotNull(agreementTerm7.getGuaranteed());
-		assertNotNull(agreementTerm7.getGuaranteed().getAction());
-		assertNotNull(agreementTerm7.getGuaranteed().getAction().getPostCondition());
-		assertNotNull(agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice());
-		assertEquals("Product_Offering_Price_Of_jboss", agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getId());
-		assertNotNull(agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getPrice());
-		assertNotNull(agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity());
-		assertEquals(0.0, agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getPrice().getValue(), 0.0001);
-		assertEquals("http://www.slaatsoi.org/coremodel/units#http://www.slaatsoi.org/coremodel/units#EUR", 
-				     agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getPrice().getDatatype());
-		assertEquals(1l,agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity().getValue(), 0.0001);
-		assertEquals("http://www.slaatsoi.org/coremodel/units#vm", 
-				     agreementTerm7.getGuaranteed().getAction().getPostCondition().getProductOfferingPrice().getComponentProdOfferingPrice().getQuantity().getDatatype());
-		
-		AgreementTerm agreementTerm8 = slaAgreement.getAgreementTerms().get(7);
+		AgreementTerm agreementTerm8 = slaAgreement.getAgreementTerms().get(5);
 		assertEquals("Infrastructure_Price_Of_mysql", agreementTerm8.getId());
 		assertNotNull(agreementTerm8.getGuaranteed());
 		assertNotNull(agreementTerm8.getGuaranteed().getAction());

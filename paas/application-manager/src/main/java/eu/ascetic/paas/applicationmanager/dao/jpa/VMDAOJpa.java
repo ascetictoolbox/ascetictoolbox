@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.dao.jpa;
 
 import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_DELETED;
+import static eu.ascetic.paas.applicationmanager.Dictionary.STATE_VM_ACTIVE;
 
 import java.util.List;
 
@@ -141,6 +142,22 @@ public class VMDAOJpa implements VMDAO {
 		query.setParameter("id", deploymentId);
 		query.setParameter("ovfid", ovfId);
 		
+		return (List<VM>) query.getResultList();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public List<VM> getVMsWithOvfIdAndActive(int deploymentId, String ovfId) {
+		Query query = entityManager.createQuery("SELECT v FROM VM v " +
+												"WHERE v.status = :status " + 
+												"AND v.ovfId = :ovfid " +
+												"AND v.deployment.id = :id");
+		
+		query.setParameter("status", STATE_VM_ACTIVE);
+		query.setParameter("id", deploymentId);
+		query.setParameter("ovfid", ovfId);
+
 		return (List<VM>) query.getResultList();
 	}
 }
