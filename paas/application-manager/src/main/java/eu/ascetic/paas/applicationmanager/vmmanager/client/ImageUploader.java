@@ -38,9 +38,11 @@ public class ImageUploader {
 		logger.debug("#### applicationName: " + application);
 		if(application != null) {
 			logger.debug("#### applicationName: <-->");
-			application.addImage(image);
-			boolean x = applicationDAO.update(application);
-			logger.debug("#### applicationName: " + x);
+			//application.addImage(image);
+			image.setApplication(application);
+			imageDAO.update(image);
+			//boolean x = applicationDAO.update(application);
+			//logger.debug("#### applicationName: " + x);
 		}
 		
 		return image;

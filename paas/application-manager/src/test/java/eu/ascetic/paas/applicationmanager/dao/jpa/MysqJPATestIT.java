@@ -272,6 +272,22 @@ public class MysqJPATestIT {
 //		
 //	}
 	
+//	public static void main(String args[]) throws InterruptedException {
+//		// Load Spring configuration
+//		@SuppressWarnings("resource")
+//		ApplicationContext context = new ClassPathXmlApplicationContext("/mysql-jpa-test-configuration.xml");
+//		ApplicationDAO applicationDAO = (ApplicationDAO) context.getBean("ApplicationService");
+//		DeploymentDAO deploymentDAO = (DeploymentDAO) context.getBean("DeploymentService");
+//		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
+//		ImageDAO imageDAO = (ImageDAO) context.getBean("ImageService");
+//		
+//		List<VM> vms = deploymentDAO.getById(490).getVms();
+//		
+//		for(VM vm : vms) {
+//			System.out.println("ID: " + vm.getId());
+//		}
+//	}
+	
 	public static void main(String args[]) throws InterruptedException {
 		// Load Spring configuration
 		@SuppressWarnings("resource")
@@ -281,11 +297,23 @@ public class MysqJPATestIT {
 		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
 		ImageDAO imageDAO = (ImageDAO) context.getBean("ImageService");
 		
-		List<VM> vms = deploymentDAO.getById(490).getVms();
+		Image image = new Image();
+		image.setProviderImageId("111");
+		image.setOvfHref("url");
+		image.setDemo(false);
+		image.setOvfId("fileId");
+		image.setDemo(false);
 		
-		for(VM vm : vms) {
-			System.out.println("ID: " + vm.getId());
-		}
+		imageDAO.save(image);
+		
+		Application application = applicationDAO.getById(1);
+		image.setApplication(application);
+		imageDAO.update(image);
+		
+		
+//		application.addImage(image);
+//		
+//		applicationDAO.update(application);
 	}
 	
 	

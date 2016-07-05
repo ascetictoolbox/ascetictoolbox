@@ -277,12 +277,16 @@ public class ImageDAOJpaTest extends AbstractTransactionalJUnit4SpringContextTes
 		image4.setProviderImageId("provider-image-id4");
 		image4.setDemo(true);
 		image4.setOvfHref("href4");
+		saved = imageDAO.save(image4);
+		assertTrue(saved);
 		
 		Image image5 = new Image();
 		image5.setOvfId("ovf-id1");
 		image5.setProviderImageId("provider-image-id5");
 		image5.setDemo(false);
 		image5.setOvfHref("href1");
+		saved = imageDAO.save(image5);
+		assertTrue(saved);
 		
 		int size = applicationDAO.getAll().size();
 		Application application = new Application();
