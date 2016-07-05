@@ -1,0 +1,56 @@
+<application-config applicationName="NewsAssetSingle_AppPackager" deploymentName="myDeployment" deploymentMode="production" chef-server-url="https://localhost/">
+	<applicationSLAInfo>
+		<SLATarget SLATerm="app_energy_consumption" SLAMetricUnit="WattHour" comparator="less_than" boundaryValue="2000" SLAType="violation"/>
+		<SLATarget SLATerm="app_charges" SLAMetricUnit="Euro" comparator="less_than_or_equals" boundaryValue="50" SLAType="violation"/>		
+	</applicationSLAInfo>
+  <node type="vm" name="NA-HAProxy" minNumCore="2" maxCoreMin="2" prefNumCore="2" minCPUfreq="500MHz" maxCPUfreq="2100MHz" prefCPUfreq="1GHz" minSizeMin="1024MB" maxMemSize="4096MB" prefMemSize="2048MB" minDiskSize="10GB" maxDiskSize="20GB" prefDiskSize="10GB" minInstance="1" maxInstance="1" prefInstance="1">
+    <base-dependency OS="Linux" OSVersion="debian-7" />
+    <software_install name="CPU" chefURI="http://localhost:8080/cpu.tar.gz">
+      <attribute name="default['cpu']['test1']" value="'value1'" />
+    </software_install>
+    <software_install name="BuildEssential" chefURI="http://localhost:8080/build-essential.tar.gz">
+      <attribute name="default['build-essential']['test1']" value="'value1'" />
+    </software_install>
+    <software_install name="HAProxy" chefURI="http://localhost:8080/haproxy.tar.gz">
+      <attribute name="default['haproxy']['member_port']" value="8080" />
+      <!-- WARNING: attribute names and values need to be properly escaped! See example bellow -->
+      <attribute name="default['haproxy']['members']" value="[{ &quot;hostname&quot; =&gt; &quot;localhost&quot;, &quot;ipaddress&quot; =&gt; &quot;127.0.0.1&quot; }]" />
+    </software_install>
+	<vmSLAInfo>	
+			<SLATarget SLATerm="power_usage_per_vm" SLAMetricUnit="Watt" comparator="less_than" boundaryValue="50" SLAType="violation"/>
+			<SLATarget SLATerm="price_per_vm" SLAMetricUnit="EuroPerHour" comparator="less_than" boundaryValue="0.25" SLAType="violation" />
+		</vmSLAInfo>
+		<vmAdaptationRules>		
+			<adaptation-rule id="NAServerScaleUp" description="scale up NA servers if search news items is too slow">
+				<!-- for the type of trigger exchanged in email such as 
+					aggregated_event_metric_over_period( "searchForNewsItems", "duration", 15, "percentile", 90 ) > 0.7
+				-->
+				<SLATarget 
+					SLATerm="aggregated_event_metric_over_period" 
+					applicationEvent="searchForNewsItems"
+					applicationMetric="duration"
+					period="15" 
+					aggregator="percentile" 
+					aggregatorParams="90" 
+					comparator="less_than_or_equals" 
+					boundaryValue="0.7" 
+					SLAType="information" />
+				<adapt triggerBreachDistancePercentageMin="0" triggerBreachDistancePercentageMax="50" type="vmVertical" direction="up"/>
+				<adapt triggerBreachDistancePercentageMin="50" type="vmHorizontal" direction="up"/>
+			</adaptation-rule>  
+			<adaptation-rule id="NAServerPeriodicalResets" description="Adapt num of NA servers VMs according to anticipated workload">
+				<SLATarget 
+					SLATerm="aggregated_event_metric_over_period" 
+					applicationEvent="anticipatedWorkload"
+					applicationMetric="degree" 
+					aggregator="last" 
+					comparator="less_than" 
+					boundaryValue="0"
+					SLAType="information" />				
+				<adapt resetLevel="1" minimalNumOfVMs="1"/>
+				<adapt resetLevel="2" minimalNumOfVMs="3"/>
+				<adapt resetLevel="10" minimalNumOfVMs="5"/>
+			</adaptation-rule>
+		</vmAdaptationRules>
+  </node>
+</application-config>
