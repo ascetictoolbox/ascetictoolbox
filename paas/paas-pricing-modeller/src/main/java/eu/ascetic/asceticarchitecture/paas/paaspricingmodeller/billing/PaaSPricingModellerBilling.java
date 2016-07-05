@@ -16,14 +16,25 @@
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
+import eu.ascetic.asceticarchitecture.paas.type.ChargesCalculator;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.Price;
+import eu.ascetic.asceticarchitecture.paas.type.ResetCharges;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
@@ -49,7 +60,14 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	
 	
 	double averagePrice=1;
+
 	
+	
+	
+	public PaaSPricingModellerBilling(){
+		
+		 logger = Logger.getLogger(PaaSPricingModellerBilling.class);
+	}
 	
 	
 	
@@ -69,17 +87,42 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	
 	public double getAppCurrentTotalCharges(int depl){
 		 if (allApps.containsKey(depl)) {
+			
+			 List <Integer> vm = new ArrayList<Integer>();
 			 	DeploymentInfo app = allApps.get(depl);
-	            double charges = 0;
+	            double totalcharges = 0;
+	            double currentcharges = 0;
 	            for (int i=0; i<app.getNumberOfVMs();i++){
-
+	            	
 	            	int VMid = app.getVM(i).getVMid();
 	            	VMinfo VM = app.getVM(i);
-	            	                          	
-	                charges = charges + getVMCharges(VM);
+	            	if(VM.isActive()){
+	            	  vm.add(VMid);                       	
+	            	  totalcharges = totalcharges + getVMCharges(VM);
+	            	  currentcharges = currentcharges + VM.getCurrentCharges();
+	            	//  System.out.println("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
+	            	  logger.info("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
+	            	}else{
+	            		totalcharges = totalcharges + VM.getTotalCharges();
+	            		 currentcharges = currentcharges + VM.getCurrentCharges();
+	            	}
 	            }
-
-	            return charges;
+	            try{
+        			app.setCurrentCharges(currentcharges);
+        			app.setTotalCharges(totalcharges);
+        			// System.out.println("Billing: current charges of app are "+ app.getCurrentCharges());
+        			 logger.info("Billing: current charges of app are "+ app.getCurrentCharges());
+         			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.TOTALCHARGES, app.getTotalCharges());
+        			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.CHARGES, app.getCurrentCharges());
+	            	
+        			
+        			}
+        			catch (Exception ex){
+        				//System.out.println("Billing: Could not send the message to queue");
+        				logger.error("PM: Could not send message to queue");
+        				//logger.info("Could not send the message to queue");
+        			}
+	            return totalcharges;
 	        } else {
 	            return 0;
 	        }
@@ -90,6 +133,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 
 	        PaaSPricingModellerPricingScheme scheme = VM.getScheme();
 	      //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
+	        logger.info("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
 	        return scheme.getTotalCharges(VM);
 	    }
 	 
@@ -104,55 +148,49 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 		 }
 	 }
 	 
-	 public void updateVMEnergy(HashMap<Integer, Double> energyPerVM){
+	 public void updateVMEnergy(HashMap<Integer, Double> energyPerVM) throws Exception{
 		 VMinfo VM;
 		 for (Integer key : registeredDynamicEnergyPricesVMs.keySet()) {
 	        	VM= registeredDynamicEnergyPricesVMs.get(key);
 		 	 
 	        	if (energyPerVM.containsKey(VM.getVMid())){
 	        		VM.updateEnergyConsumption((energyPerVM.get(VM.getVMid())));
+	       //  System.out.println("Billing: energy of VM "+VM.getVMid()+" is updated");
+	         logger.info("Billing: energy of VM "+VM.getVMid()+" is updated");
+	    	        
 	        	}
 		 }
 		 
 	 }
-	 
-	 public double predictCharges(DeploymentInfo deploy, HashMap<Integer, Double> averageWattPerHourPerVM){
-		 VMinfo VM;
-		 double charges=0;
-		 for (int i=0; i<deploy.getNumberOfVMs();i++){
-			 VM=deploy.getVM(i);
-			 if (VM.getSchemeID()==0){
-				 charges= charges+ VM.getScheme().predictTotalCharges(VM);
-			 }
-			 else {
-				 VM.setEnergyPredicted(averageWattPerHourPerVM.get(VM.getVMid())*(Math.ceil(VM.getActualDuration()/3600)));
-				 charges= charges+ VM.getScheme().predictTotalCharges(VM);
-			 }
-		 }
-		 return charges;
-	 }
-	 
-	 
-	public LinkedList<Integer> consumingVMs(int deplID, double currentAppCharges, double totalChargesLimit, double remainingAppDuration, HashMap<Integer, Double> averageWattPerHourPerVM){
+
+
+	public LinkedList<Integer> getCostlyVMs(int deplID, double currentAppCharges, double totalChargesLimit, double remainingAppDuration, HashMap<Integer, Double> energy){
 		 double differenceInCharges = totalChargesLimit - currentAppCharges;
 		 LinkedList<Integer> VMs = null;
 		 HashMap<Integer,Double> VMCharges = null;
+		 double charges = 0.0;
+		 double vmCharges = 0.0;
 		 if (allApps.containsKey(deplID)) {
 			 	DeploymentInfo app = allApps.get(deplID);
 			 	for (int i=0; i<app.getNumberOfVMs();i++){
 			 		VMinfo VM = app.getVM(i);
-			 		VM.setDuration(remainingAppDuration);
+			 		VM.setPredictedDuration(remainingAppDuration);
 			 		if (VM.getSchemeID()==0){
-						 VMCharges.put(VM.getVMid(),VM.getScheme().predictTotalCharges(VM));
+			 			vmCharges = VM.getScheme().predictTotalCharges(VM, false);
+						 VMCharges.put(VM.getVMid(),vmCharges);
+						 charges = charges + vmCharges;
 					 }
 					 else {
-						 VM.setEnergyPredicted(averageWattPerHourPerVM.get(VM.getVMid())*(Math.ceil(VM.getActualDuration()/3600)));
-			 			VMCharges.put(VM.getVMid(),VM.getScheme().predictTotalCharges(VM));
+						 VM.setEnergyPredicted(energy.get(VM.getVMid())*(Math.ceil(VM.getPredictedDuration()/3600)));
+						 vmCharges = VM.getScheme().predictTotalCharges(VM, true);
+						
+			 			VMCharges.put(VM.getVMid(),vmCharges);
+			 			charges = charges +vmCharges;
 					 }
 				 }
 			 	
-			 	double predictedCharges=predictCharges(app, averageWattPerHourPerVM);
-			 	while (differenceInCharges<predictedCharges) {
+			 //	double predictedCharges=predictCharges(app, averageWattPerHourPerVM);
+			 	while (differenceInCharges<charges) {
 			 		double maxValueInMap=(Collections.max(VMCharges.values()));
 				 	int key = 0;
 				 	for (Integer i : VMCharges.keySet()) {
@@ -160,30 +198,117 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 				 			key = i;
 				 		}
 				 	}
-			 		predictedCharges = predictedCharges - VMCharges.get(key);
+				 	charges = charges - VMCharges.get(key);
 			 		VMs.add(key);
 			 	}
 			 	return VMs;
 			 	
 		 }
-		 else return null;
-		 
+		 else return null; 
 	 }
+	
+	@SuppressWarnings("null")
+	public LinkedList<Integer> getCostlyVMs(int deplID){
+		synchronized(allApps.get(deplID).getLock()){
+			allApps.get(deplID).setChanging(true);
+		//	System.out.println("calculating costs");
+			if (allApps.containsKey(deplID)) {
+			DeploymentInfo app = allApps.get(deplID);
+			double differenceInCharges = app.getCurrentPrice()-app.getCurrentCharges();
+			LinkedList<Integer> VMs = new LinkedList<>();
+			HashMap<Integer,Double> VMCharges = new HashMap<>();
+			 double charges = 0.0;
+			 double vmCharges = 0.0;
+			 double remainingDuration = 3600;
+			 
+			for (int i=0; i<app.getNumberOfVMs();i++){
+				VMinfo VM = app.getVM(i);
+				double temp = 90 - VM.getCurrentDuration();
+				if (remainingDuration>temp){
+					remainingDuration = temp;
+				}
+			}
+		//	 System.out.println("the remaining duration is "+remainingDuration);
+			 	for (int i=0; i<app.getNumberOfVMs();i++){
+			 		VMinfo VM = app.getVM(i);
+			 		
+			 		VM.setPredictedDuration(remainingDuration);
+			 		if (VM.getSchemeID()==0){
+			 			vmCharges = VM.getScheme().predictTotalCharges(VM, false);
+			 			VMCharges.put(VM.getVMid(),vmCharges);
+			 //			System.out.println("Charges for scheme 0 " + vmCharges + " Just counted VMid " + VM.getVMid());
+			 			charges = charges + vmCharges;
+					 }
+					 else {
+						 vmCharges = VM.getScheme().predictTotalCharges(VM, false);
+							
+				 			VMCharges.put(VM.getVMid(),vmCharges);
+				 			charges = charges +vmCharges;
+				// 			System.out.println("Charges for scheme 1 " + charges + " Just counted VMid " + VM.getVMid());
+					 }
+				 }
+			 	
+			 //	System.out.println("Difference in charges is " + differenceInCharges + " Predicted ones are " + charges);
+			 	while (differenceInCharges<charges) {
+			 		double maxValueInMap=(Collections.max(VMCharges.values()));
+				 	int key = 0;
+				 	for (Integer i : VMCharges.keySet()) {
+				 		if (VMCharges.get(i)==maxValueInMap){
+				 			key = i;
+				 		}
+				 	}
+			//	 	System.out.println("key is " + key);
+				 	charges = charges - VMCharges.get(key);
+			 		VMs.add(key);
+			 	}
+				allApps.get(deplID).setChanging(false);
+				allApps.get(deplID).getLock().notifyAll();
+			 	return VMs;
+			 	
+		 }
+		 else{
+				allApps.get(deplID).setChanging(false);
+				allApps.get(deplID).getLock().notifyAll();
+				return null; 
+		 }
+			 
+
+	}
+}
+	
 	public void removeVM(int deplID, int VMid) {
+	//	 System.out.println("Billing: removing VM");
+	//	 System.out.println("try "+ allApps.containsKey(deplID));
+		 synchronized(allApps.get(deplID).getLock()){
+		 allApps.get(deplID).setChanging(true);
 		try{
+//			System.out.println("try "+ allApps.get(deplID).getVMbyID(VMid));
 			getVMCharges(allApps.get(deplID).getVMbyID(VMid));
+			
 		}catch (NullPointerException ex) {
-           // logger.error("The VM with VMid " + VMid + " does not exist");
+	//		System.out.println("catch");
+           logger.error("The VM with VMid " + VMid + " does not exist");
+			allApps.get(deplID).setChanging(false);
 			return;
 		}
 		allApps.get(deplID).getVMbyID(VMid).stopped();
 		allApps.get(deplID).getVMbyID(VMid).setEndTime(allApps.get(deplID).getVM().getChangeTime().getTimeInMillis());
+		allApps.get(deplID).setChanging(false);
+		 allApps.get(deplID).getLock().notifyAll();
+		 }
 	}
 	
 	public void resizeVM(int depID, int VMid, double CPU, double RAM, double storage){
-		//System.out.println("Billing: " +getVMCharges(allApps.get(depID).getVMbyID(VMid)));
-		//System.out.println("Billing: The charges of the VM with id " + VMid + " are until now " + allApps.get(depID).getVMbyID(VMid).getTotalChargesAll());
-		allApps.get(depID).getVM().createNewChars(CPU, RAM, storage, allApps.get(depID).getVMbyID(VMid).getTotalChargesAll());	
+		synchronized(allApps.get(depID).getLock()){
+			allApps.get(depID).setChanging(true);
+			getVMCharges(allApps.get(depID).getVMbyID(VMid));
+			allApps.get(depID).getVMbyID(VMid).createNewChars(CPU, RAM, storage,allApps.get(depID).getVMbyID(VMid).getTotalChargesAll() );	
+	//		System.out.println("Billing: The charges of the VM with id " + VMid + " are until now " + allApps.get(depID).getVMbyID(VMid).getTotalChargesAll().getChargesOnly());
+			allApps.get(depID).setChanging(false);
+			allApps.get(depID).getLock().notifyAll();
+		}
+		//new ResetCharges(allApps.get(depID), this);
+		
 	}
 	
 	 //////////////////////////////////Event Charges//////////////////////
@@ -217,7 +342,7 @@ public double getAppCurrentTotalCharges(int depl, double charges){
 		
 		DeploymentInfo deploy = getApp(depl);
 		if (deploy ==null){
-		deploy = new DeploymentInfo(depl);	
+		deploy = new DeploymentInfo(depl, this);	
 		}
 		
 		return IaaSBilling.getAppCurrentTotalCharges(deploy, charges);

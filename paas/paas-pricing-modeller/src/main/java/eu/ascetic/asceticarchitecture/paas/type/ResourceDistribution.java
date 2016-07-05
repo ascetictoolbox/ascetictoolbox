@@ -34,7 +34,13 @@ public class ResourceDistribution {
 	}
 	
 	public double getDistribution(VMinfo vm){
+	//	System.out.println("Distribution RAM: " + vm.getRAM() +" and Per " + ramPer);
+	//	System.out.println("Distribution CPU: " + vm.getRAM() +" and Per " + cpuPer);
+	//	System.out.println("Distribution storage: " + vm.getRAM() +" and Per " + storPer);
 		return vm.getRAM()*ramPer+vm.getCPU()*cpuPer+vm.getStorage()*storPer;
 	}
 	
+	public double getPreviousDistribution(VMinfo vm){
+		return vm.getPreviousVMChars().getRAM()*ramPer+vm.getPreviousVMChars().getCPU()*cpuPer+vm.getPreviousVMChars().getStorage()*storPer;
+	}
 }

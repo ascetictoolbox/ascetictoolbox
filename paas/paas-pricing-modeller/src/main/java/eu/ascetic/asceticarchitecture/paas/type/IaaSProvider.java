@@ -31,24 +31,50 @@ public class IaaSProvider {
 	double averageEnergyPrice;
 	
 	double EnergyPrice;
-	double oldEnergyPrice = 0.007;
+	double oldEnergyPrice = 0.008;
 	
 	public IaaSProvider(int id) {
 		
 		IaaSID = id;
 		distribution.setDistribution(0.6, 0.3, 0.1); 
-		staticResourcePrice = 0.14;
-		resourcePrice = 0.1;
-		averageEnergyPrice = 0.007;
-		EnergyPrice = 0.007;
+		int even= IaaSID%2;
+		if (even == 0){
+			staticResourcePrice = 0.14;}
+			else{
+				staticResourcePrice = 0.20;
+			}
+	
+			if (even == 0){
+				resourcePrice = 0.07;}
+			else{
+				resourcePrice = 0.1;
+			}
+	
+		
+		averageEnergyPrice = 0.13; //per kwat per hour
+		EnergyPrice = 0.08;
 	}
 	
 	public double getResoucePrice(){
+		//System.out.println(" resource price = " + resourcePrice);
 		return resourcePrice;
 	}
 	
 	public double getStaticResoucePrice(){
+	//	System.out.println("static resoiurce price = " + staticResourcePrice);
 		return staticResourcePrice;
+	}
+	
+	public double getPriceSec(double price){
+		if (price == 0.14)
+			return 0.00004;
+		if (price == 0.20)
+			return 0.00006;
+		if (price == 0.1)
+			return 0.00003;
+		if (price == 0.07)
+			return 0.00002;
+		return 0.00004;
 	}
 	
 	public double getAverageEnergyPrice(){
@@ -66,8 +92,9 @@ public class IaaSProvider {
 	public int getID(){
 		return IaaSID;
 	}
+
 	
-	public double predictResourcesCharges(VMinfo vm, long duration, double price) {
+	public double predictResourcesCharges(VMinfo vm, double duration, double price) {
 		Charges b = new Charges();
 		b.setCharges((distribution.getDistribution(vm)*price*(Math.ceil(duration/3600))));
 		return b.getChargesOnly();
@@ -79,7 +106,7 @@ public class IaaSProvider {
 		charges.setCharges(energy*average);
 		return charges.getChargesOnly();
 	}
-	
+
 	public double getEnergyPriceForBilling(){
 		return oldEnergyPrice;
 	}
@@ -88,4 +115,6 @@ public class IaaSProvider {
 		oldEnergyPrice = EnergyPrice;
 		this.EnergyPrice=price;
 	}
+	
+	
 }

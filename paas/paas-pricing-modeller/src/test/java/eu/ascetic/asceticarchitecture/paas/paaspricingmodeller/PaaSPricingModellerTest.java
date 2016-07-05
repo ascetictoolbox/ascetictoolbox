@@ -63,7 +63,7 @@ public class PaaSPricingModellerTest{
     public void testPriceEstimationBasic() throws Exception{
     	System.out.println("test PaaS");
     	PaaSPricingModeller prmodeller = new PaaSPricingModeller();
-    	  IaaSPricingModeller prModeller = new IaaSPricingModeller();
+    	
     	//AmqpMessageReceiver receiver = new AmqpMessageReceiver("localhost:5672", "guest", "guest", "test.topic2",true);
        // AmqpBasicListener listener = new AmqpBasicListener();
        // receiver.setMessageConsumer(listener);
@@ -99,7 +99,7 @@ public class PaaSPricingModellerTest{
     	test.add(vm1);
     	test.add(vm2);
     	System.out.println(prmodeller.getEventPredictedChargesOfApp(1, test, 10, 0));*/
-//>>>>>>> .r2173
+
     
    }
 

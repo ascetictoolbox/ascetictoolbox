@@ -66,8 +66,8 @@ public class PaaSPricingModellerBillingBasedOnIaaS extends PaaSPricingModellerRe
 public double getAppCurrentTotalCharges(DeploymentInfo deploy, double charges){
 		deploy.setIaaSTotalCurrentCharges(charges);
 		double totalcharges = charges + 0.2*charges;
-		deploy.setTotalCurrentCharges(totalcharges);
-		return deploy.getTotalCurrentCharges();
+		deploy.setTotalCharges(totalcharges);
+		return deploy.getTotalCharges();
 	}
 
 

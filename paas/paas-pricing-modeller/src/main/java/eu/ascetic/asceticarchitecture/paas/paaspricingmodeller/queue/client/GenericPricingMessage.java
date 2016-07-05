@@ -1,32 +1,40 @@
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class GenericPricingMessage {
-		
-		private int IaaSprovider;
-		private String applicationid;
-		private int	deploymentid;
-		private int schemeid;
 
-		private double energyPrice;
-		
-		private double charges;
+public class GenericPricingMessage {
+	
+		public enum Unit { PRICEHOUR, CHARGES, TOTALCHARGES };
+	
+	//	private int IaaSprovider;
+	//	private String applicationid;
+		protected int	deploymentid;
+	//	private int	eventid;
+	//	private int schemeid;
+		protected Unit unit;
+		protected double value;
+	//	private List<Integer> VMids;
+	//	private double energyPrice;
+	//	private int VMid;
 		
 		public GenericPricingMessage (){
 
 		}
 		
-		public GenericPricingMessage (int deploymentid, int schemeid, double charges){
-			this.deploymentid = deploymentid;
-			this.schemeid= schemeid;
-			this.charges = charges;
-		}
+	/*	public void setVMMessage(int deplID, int VMid, int schemeID, Unit unit, double value){
+			deploymentid = deplID;
+			this.schemeid = schemeID;
+			this.unit = unit;
+			this.value = value;
+			this.VMid = VMid;
+		}*/
 		
-		public GenericPricingMessage (int deploymentid, double charges){
-			this.deploymentid = deploymentid;
-			this.charges = charges;
+	/*	public void setAppMessage(int deplID, Unit unit, double value, List<Integer> VMs){
+			deploymentid = deplID;
+			this.unit = unit;
+			this.value = value;
+			this.VMids = VMs;
 		}
 		
 		public int getProvider() {
@@ -35,21 +43,52 @@ public class GenericPricingMessage {
 		public void setProvider(int provider) {
 			this.IaaSprovider = provider;
 		}
+		public List<Integer> getVms() {
+			return VMids;
+		}
+		public void setVms(List<Integer> vms) {
+			this.VMids = vms;
+		}
 		public String getApplicationid() {
 			return applicationid;
 		}
 		public void setApplicationid(String applicationid) {
 			this.applicationid = applicationid;
 		}
-		
+		public int getEventid() {
+			return eventid;
+		}
+		public void setEventid(int eventid) {
+			this.eventid = eventid;
+		}*/
+		public Unit getUnit() {
+			return unit;
+		}
+		public void setUnit(Unit unit) {
+			this.unit = unit;
+		}
+	
+		public double getValue() {
+			return value;
+		}
+		public void setValue(double value) {
+			this.value = value;
+			}
+	
 		public int getDeploymentid() {
 			return deploymentid;
 		}
-		public void setDeploymentid(int deploymentid) {
-			this.deploymentid = deploymentid;
+		public void setDeploymentid(int VMid) {
+			this.deploymentid = VMid;
 		}
-	
-		public int getSchemeid() {
+	/*	public int getVMid() {
+			return VMid;
+		}
+		public void setVMid(int deploymentid) {
+			this.VMid = deploymentid;
+		}
+		
+	/*	public int getSchemeid() {
 			return schemeid;
 		}
 		public void setSchemeid(int schemeid) {
@@ -62,12 +101,7 @@ public class GenericPricingMessage {
 		public void setEnergyPrice(double value) {
 			this.energyPrice = value;
 		}
-		
-		public String MsgToString (GenericPricingMessage msg){
-			String toprint = "\""+ Integer.toString(deploymentid) + "\""+"," +"\""+ Integer.toString(schemeid)+"\""+","+"\""+Double.toString(charges)+"\"";
-			return toprint;
-		}
-
-		
+		*/
+	
 	}
 

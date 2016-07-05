@@ -33,7 +33,7 @@ public class EnergyInfo {
 		return currentEnergyConsumption.getLast().getTime();
 	}
 	
-	public double getEnergyConsumedAfterUpdate(){
+	/*public double getEnergyConsumedAfterUpdate(){
 		double lastrecord = currentEnergyConsumption.getLast().getEnergy();
 		
 		if(currentEnergyConsumption.size()>2){
@@ -63,7 +63,7 @@ public class EnergyInfo {
 		Calendar lastrecord = currentEnergyConsumption.getLast().getTime();
 		Calendar previousrecord = currentEnergyConsumption.getFirst().getTime();
 		return getDuration(previousrecord, lastrecord);
-	}
+	}*/
 
 	public double getEnergyPredicted(){
 		return predictedEnergy;
@@ -72,4 +72,5 @@ public class EnergyInfo {
 	public void setEnergyPredicted(double energy){
 		predictedEnergy = energy;
 	}
+	
 }

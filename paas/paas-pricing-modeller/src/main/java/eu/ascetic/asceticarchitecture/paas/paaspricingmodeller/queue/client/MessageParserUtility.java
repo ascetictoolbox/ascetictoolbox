@@ -12,14 +12,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class MessageParserUtility {
 
-	
 private static ObjectMapper mapper = new ObjectMapper(); 
 
-/**
+
 public static String buildStringMessage(GenericPricingMessage message){
 		try {
-			
-			
+
 			Writer strWriter = new StringWriter();
 			mapper.writeValue(strWriter, message);
 			return strWriter.toString();
@@ -30,7 +28,7 @@ public static String buildStringMessage(GenericPricingMessage message){
 		
 		return null;
 	}
-	**/
+	
 	
 	public static GenericPricingMessage buildPricingMessage(String jsonMessage){
 		

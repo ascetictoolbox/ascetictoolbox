@@ -18,7 +18,11 @@ package eu.ascetic.asceticarchitecture.paas.type;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
 import eu.ascetic.asceticarchitecture.paas.type.Time;
 
 /**
@@ -30,8 +34,10 @@ import eu.ascetic.asceticarchitecture.paas.type.Time;
  */
 
 public class DeploymentInfo {
+	PaaSPricingModellerBilling billing;
 
 	int deploymentId;
+	String applicationId;
 	
 	DeploymPredInfo predictedInfo=new DeploymPredInfo();
 	
@@ -50,26 +56,70 @@ public class DeploymentInfo {
 	Charges resourceCharges= new Charges();
 	
 	Charges totalIaaSCharges= new Charges();
+	
+	boolean changing = false;
+	private final Object lock = new Object();
 
 	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
+	PricingModellerQueueServiceManager producer;
 	
 	IaaSProvider IaaS;
+	Timer timer;
+	
+	long delay = 10;
 	
 	double totalEnergy;//used for events;
+	double currentCharges=0.0;
+	double currentPrice;
 
+	public DeploymentInfo(String applicationID, int deploymentId, int schemeID) {
+		this.deploymentId=deploymentId;
+		this.schemeId = schemeID;
+		this.applicationId= applicationID;
+
+	}
+	
 	public DeploymentInfo(int deploymentId, int schemeID) {
 		this.deploymentId=deploymentId;
 		this.schemeId = schemeID;
+	}
 
+	public String getAppID(){
+		return applicationId;
+	}
+	public Object getLock(){
+		return lock;
+	}
+	public void setCurrentCharges (double charges){
+		currentCharges =charges;
 	}
 	
-	public DeploymentInfo(int deploymentId) {
+	public double getCurrentCharges (){
+		return currentCharges;
+	}
+	
+	public void resetCurrentCharges (){
+		currentCharges =0.0;
+	}
+	public DeploymentInfo(int deploymentId, PaaSPricingModellerBilling billing) {
 	//	System.out.println("DeloymentInfo: new deployment with ID: " + deploymentId);
-		this.deploymentId=deploymentId;
+		timer = new Timer();
 		
+		timer.scheduleAtFixedRate(new ChargesCalculator(this, billing), TimeUnit.SECONDS.toMillis(30), 30000);
+		timer.scheduleAtFixedRate(new ResetCharges(this, billing), TimeUnit.SECONDS.toMillis(90), 60000);
+		this.deploymentId=deploymentId;
 
 	}
-
+	public DeploymentInfo(int deplID) {
+		this.deploymentId=deploymentId;
+	}
+	public void setProducer (PricingModellerQueueServiceManager producer){
+	//	System.out.println("Deployment info: I have the producer");
+		this.producer = producer;
+	}
+	public PricingModellerQueueServiceManager getProducer (){
+		return producer;
+	}
 
 	public void setVMs(LinkedList<VMinfo> listofVMs){
 		for (int i=0; i<listofVMs.size();i++){
@@ -95,8 +145,12 @@ public class DeploymentInfo {
 		return VMs.getFirst();
 	}
 	
+	public LinkedList<VMinfo> getVMs(){
+		return VMs;
+	}
+	
 	public VMinfo getVMbyID(int VMid){
-		for  (int i=1; i<=VMs.size();i++){
+		for  (int i=0; i<VMs.size();i++){
 			if (VMs.get(i).getVMid() == VMid)
 			//	System.out.println("DeloymentInfo:VMid to find " + VMid + " found the " + VMs.get(i).getVMid());
 				return VMs.get(i);
@@ -121,12 +175,20 @@ public class DeploymentInfo {
 		totalIaaSCharges.setCharges(charges);
 	}
 	
-	public void setTotalCurrentCharges(double charges){
+	public void setTotalCharges(double charges){
 		TotalCharges.setCharges(charges);
 	}
 	
-	public double getTotalCurrentCharges(){
+	public void updateTotalCharges(double charges){
+		TotalCharges.updateCharges(charges);
+	}
+	
+	public double getTotalCharges(){
 		return TotalCharges.getChargesOnly();
+	}
+	
+	public double getEnergyCharges(){
+		return energyCharges.getChargesOnly();
 	}
 	
 	public VMinfo getVM(int i){
@@ -174,7 +236,22 @@ public class DeploymentInfo {
 		this.IaaS = new IaaSProvider(i);
 		
 	}
-
+	public void setCurrentPrice(double price) {
+		currentPrice = price;
+		
+	}
+	public double getCurrentPrice() {
+		
+		return currentPrice;
+	}
+	public void setChanging(boolean b) {
+		changing = b;
+		
+	}
+	public boolean getChanging() {
+		return changing;
+		
+	}
 	
 
 }

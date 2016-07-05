@@ -16,6 +16,9 @@
 package eu.ascetic.asceticarchitecture.paas.type;
 
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+
 import eu.ascetic.asceticarchitecture.paas.type.Charges;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeA;
@@ -26,12 +29,12 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.Pr
 public class VMinfo extends VMBasic{
 
 	
-	public VMinfo (double RAM, double CPU, double storage, long duration){
+	public VMinfo (double RAM, double CPU, double storage, long predictedDuration){
 		
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage/1000;
-		this.actualDuration=duration;
+		this.predictedDuration=predictedDuration;
 		time = new TimeParameters();
 		this.scheme = initializeScheme(0);
 		energyInfo.setCurrentTotalConsumption(0.0);
@@ -52,12 +55,12 @@ public class VMinfo extends VMBasic{
 	*/
 	
 	///For prediction
-	public VMinfo (int VMid, double RAM, double CPU, double storage, long duration, int scheme, int IaaSProviderID){
+	public VMinfo (int VMid, double RAM, double CPU, double storage, long predictedDuration, int scheme, int IaaSProviderID){
 		this.VMid= VMid; 
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage/1000;
-		this.actualDuration=duration;
+		this.predictedDuration=predictedDuration;
 		this.schemeID = scheme;
 		time = new TimeParameters();
 		this.scheme = initializeScheme(schemeID);
@@ -68,6 +71,7 @@ public class VMinfo extends VMBasic{
 		IaaSProvider Prov = new IaaSProvider(IaaSProviderID);
 		IaaSProviders.put(IaaSProviderID, Prov);
 		setIaaSProvider(IaaSProviders.get(IaaSProviderID));
+		
 	}
 	
 	
@@ -87,19 +91,24 @@ public class VMinfo extends VMBasic{
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
+	//	System.out.println("VMinfo: VM with id = " + VMid+" Time has started at " + time.getStartTime().getTimeInMillis()+ " end time is " + time.getEndTime().getTimeInMillis());
+		
+		
 	}
 	
 	public void updateEnergyConsumption(double energy){
 		 energyInfo.setCurrentTotalConsumption(energy);
 	}
-	
-	public double getEnergyConsumptionofLastPeriod(){
-		 return energyInfo.getEnergyConsumedAfterUpdate();
-	}
+//	
+	//public double getEnergyConsumptionofLastPeriod(){
+	//	 return energyInfo.getEnergyConsumedAfterUpdate();
+	//}
 		
 	public void setEnergyPredicted(double energy){
 		energyInfo.setEnergyPredicted(energy);
 	}
-	
+	public double getEnergyPredicted(){
+		return energyInfo.getEnergyPredicted();
+	}
 	
 }

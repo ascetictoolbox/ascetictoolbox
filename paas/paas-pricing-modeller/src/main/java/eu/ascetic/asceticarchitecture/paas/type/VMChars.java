@@ -41,10 +41,11 @@ public class VMChars {
 	
 	Charges totalChargesForThisVMCharacteristics;
 	
-	public VMChars(double RAM, double CPU, double storage){
+	public VMChars(double RAM, double CPU, double storage, Charges totalCharges){
 		this.RAM = RAM;
 		this.CPU = CPU;
 		this.storage = storage;
+		totalChargesForThisVMCharacteristics = totalCharges;
 	}
 	
 	public double getRAM(){

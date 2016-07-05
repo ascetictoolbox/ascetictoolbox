@@ -18,6 +18,7 @@
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes;
 
 
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
 import eu.ascetic.asceticarchitecture.paas.type.Charges;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.ResourceDistribution;
@@ -39,15 +40,37 @@ public class PricingSchemeB extends PaaSPricingModellerPricingScheme {
 	
 /////////////////////////PREDICT CHARGES ///////////////////////////////
 	@Override
-public double predictTotalCharges(VMinfo vm){
-	Charges a = predictEnergyCharges(vm, vm.getIaaSProvider().getAverageEnergyPrice());
-	Charges b = predictResourcesCharges(vm, getResourcePrice(vm));
+public double predictTotalCharges(VMinfo vm, boolean energySet){
+	Charges a = predictEnergyCharges(vm, vm.getIaaSProvider().getAverageEnergyPrice(), energySet);
+	Charges b = predictResourcesCharges(vm, getDistribution(vm), getResourcePrice(vm));
+	
 	double temp = (double) Math.round((a.getChargesOnly()+b.getChargesOnly()) * 1000) / 1000;
-	return temp;
+	try{
+		vm.getProducer().sendToQueue("PMPREDICTION",  vm.getDepID(), vm.getVMid(),vm.getSchemeID(), Unit.CHARGES, temp);
+		return temp;
+	}catch(Exception ex){
+	//	System.out.println("Pricing Modeller  getEnergy: Could not find producer");
+		 logger.error("PM: Could not set producer");
+		return temp;
+	}
+		
 }
 
-
-
+/////////////////////////////////////////////////
+	@Override 
+	public double getVMPredictedPrice(VMinfo VM, double duration) {
+		double price1 = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
+		double price2 = predictEnergyPrice (VM, duration);
+		VM.setCurrentPrice(price1+price2);
+		try{
+			VM.getProducer().sendToQueue("PMPREDICTION",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.PRICEHOUR, VM.getCurrentprice());
+		}
+		catch(Exception ex){
+		//	System.out.println("PM: Could not send message to queue");
+			 logger.error("PM: Could not send message to queue");
+		}
+		return VM.getCurrentprice();
+	}
 
 ///////////////////////////// UPDATE CHARGES BASED ON ENERGY CHANGES ////////////////
 public void updateVMCharges(VMinfo VM) {
@@ -56,7 +79,16 @@ public void updateVMCharges(VMinfo VM) {
 	updateVMEnergyCharges(VM);
 	updateVMResourceCharges(VM, getResourcePrice(VM), getDistribution(VM));
 	VM.setTotalCharges(VM.getEnergyCharges()+VM.getResourcesCharges());
-	System.out.println("charges= " +VM.getTotalCharges());
+	VM.setCurrentCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
+	//System.out.println("charges= " +VM.getTotalCharges());
+	try{
+		VM.getProducer().sendToQueue("PMBILLING",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.TOTALCHARGES, VM.getTotalCharges());
+		VM.getProducer().sendToQueue("PMBILLING",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.CHARGES, VM.getCurrentCharges());
+	}
+	catch(Exception ex){
+		//System.out.println("PM: Could not send message to queue");
+		 logger.error("PM: Could not send message to queue");
+	}
 }
 
 
@@ -71,12 +103,21 @@ public double getTotalCharges(VMinfo VM) {
 	updateVMEnergyCharges(VM);
 	
 	VM.setTotalCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
-	System.out.println("Total charges for VM = " +VM.getTotalCharges());
+//	System.out.println("B: Total charges for VM = " +VM.getTotalCharges());
+//	System.out.println("B: VMid =" + VM.getVMid()+" Current charges= " + VM.getCurrentCharges());
+	try{
+		VM.getProducer().sendToQueue("PMBILLING",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.TOTALCHARGES, VM.getTotalCharges());
+		VM.getProducer().sendToQueue("PMBILLING",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.CHARGES, VM.getCurrentCharges());
+	}
+	catch(Exception ex){
+	//	System.out.println("PM: Could not send message to queue");
+		 logger.error("PM: Could not send message to queue");
+	}
 	return (VM.getTotalCharges());
 }
 
 private double getResourcePrice(VMinfo VM){
-	return VM.getIaaSProvider().getResoucePrice();
+	return VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getResoucePrice());
 }
 
 

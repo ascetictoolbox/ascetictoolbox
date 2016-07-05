@@ -17,6 +17,7 @@
 
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes;
 
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
 import eu.ascetic.asceticarchitecture.paas.type.Charges;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.Price;
@@ -36,7 +37,7 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 public class PricingSchemeA extends PaaSPricingModellerPricingScheme {
 	
-Price price;
+//Price price; 
 ResourceDistribution distribution = new ResourceDistribution();
 	
 	
@@ -45,35 +46,65 @@ ResourceDistribution distribution = new ResourceDistribution();
 
 	}
 
-	public Price getPrice(){
+	/*public Price getPrice(){
 		return price;
-	}
+	}*/
 	
 	/////////////////////////PREDICTION/////////////////////////
 	@Override 
-	public double predictTotalCharges(VMinfo vm) {
-		Charges b = predictResourcesCharges(vm, getResourcePrice(vm));
+	public double predictTotalCharges(VMinfo vm, boolean energySet) {
+		Charges b = predictResourcesCharges(vm, getDistribution(vm), getResourcePrice(vm));
 		//double temp = (double) Math.round(b.getChargesOnly()*1000)/1000; 
-		double temp = b.getChargesOnly();
+		double temp = (double) Math.round(b.getChargesOnly()*1000) / 1000;
+	//	System.out.println("Pricing A: " + temp +" " + b.getChargesOnly() + " " + vm.getProducer());
+		try{
+			vm.getProducer().sendToQueue("PMPREDICTION",  vm.getDepID(), vm.getVMid(),vm.getSchemeID(), Unit.CHARGES, temp);
+		}
+		catch(Exception ex){
+		//	System.out.println("PM: Could not send message to queue");
+			 logger.error("PM: Could not set producer");
+		}
 		return temp;
 	}
 	
-
+	@Override 
+	public double getVMPredictedPrice(VMinfo VM, double duration) {
+		double price = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
+		VM.setCurrentPrice(price);
+		try{
+			VM.getProducer().sendToQueue("PMPREDICTION",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.PRICEHOUR, VM.getCurrentprice());
+		}
+		catch(Exception ex){
+		//	System.out.println("PM: Could not send message to queue");
+			 logger.error("PM: Could not set producer");
+		}
+		return VM.getCurrentprice();
+	}
 
 ////////////////////////////////// BILLING //////////////////////////
 	
 	
 	@Override
 	public double getTotalCharges(VMinfo VM) {
+		Unit unit = Unit.TOTALCHARGES;
 		VM.setChangeTime();
 		updateVMResourceCharges(VM, getResourcePrice(VM), getDistribution(VM));
+		
 		VM.setTotalCharges(VM.getResourcesCharges());
+		try{
+			VM.getProducer().sendToQueue("PMBILLING",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), unit, VM.getTotalCharges());
+			VM.getProducer().sendToQueue("PMBILLING",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.CHARGES, VM.getCurrentCharges());
+		}
+		catch(Exception ex){
+		//	System.out.println("PM: Could not send message to queue");
+			 logger.error("PM: Could not set producer");
+		}
 		return (VM.getTotalCharges());
 		
 	}
 	
 	private double getResourcePrice(VMinfo VM){
-		return VM.getIaaSProvider().getStaticResoucePrice();
+		return VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getStaticResoucePrice());
 	}
 	
 	private ResourceDistribution getDistribution(VMinfo VM){

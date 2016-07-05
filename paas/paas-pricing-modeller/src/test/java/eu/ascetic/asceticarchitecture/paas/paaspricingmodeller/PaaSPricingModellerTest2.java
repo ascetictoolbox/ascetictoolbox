@@ -72,7 +72,7 @@ public class PaaSPricingModellerTest2{
         test.add(vm1);
         test.add(vm2);
         test.add(vm3);
-        paasmodeller.initializeApp(1, test);
+        paasmodeller.initializeApp("1",1, test);
         Thread.sleep(20000);
         paasmodeller.resizeVM(1, 2, 4, 15360, 64000);
         Thread.sleep(20000);

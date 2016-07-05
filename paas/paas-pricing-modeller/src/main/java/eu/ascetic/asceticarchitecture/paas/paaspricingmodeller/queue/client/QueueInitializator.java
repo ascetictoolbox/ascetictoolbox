@@ -33,7 +33,7 @@ public class QueueInitializator {
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(queueName, usern, password, topicName, topic);
 		AmqpBasicListener listener = new AmqpBasicListener();
 	    receiver.setMessageConsumer(listener);
-		timer.scheduleAtFixedRate(new PaaSPricingMessageHandler(listener, provider), TimeUnit.SECONDS.toMillis(delay), 1000);
+	//	timer.scheduleAtFixedRate(new PaaSPricingMessageHandler(listener, provider), TimeUnit.SECONDS.toMillis(delay), 1000);
 		}
 		catch (NullPointerException ex){
 			LOGGER.info("Could not create queue");

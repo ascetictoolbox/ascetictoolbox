@@ -26,6 +26,7 @@ import java.util.Calendar;
 
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.Timer;
 
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 import eu.ascetic.asceticarchitecture.paas.type.Charges;
@@ -33,13 +34,15 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.Pa
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeA;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeB;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeC;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
 
 
 public class VMBasic {
 
 	int VMid;
 	
-	int appId;
+	int depID;
+	String applicationID;
 	
 	Stack<VMChars> changesToCharacteristics = new Stack<VMChars>();
 	
@@ -47,8 +50,9 @@ public class VMBasic {
 	double CPU;
 	double storage;
 	
-	double duration;
-	
+	double currentDuration;
+	double totalDuration;
+	double predictedDuration;
 	boolean active =true;
 	
 	static EnergyInfo energyInfo = new EnergyInfo();
@@ -56,17 +60,21 @@ public class VMBasic {
 	static HashMap<Integer,IaaSProvider> IaaSProviders = new HashMap<Integer,IaaSProvider>();
 	
 	//double energyPredicted;
+	Timer timer;
 	
+	long delay = 10;
 
 	int numberOfEvents;
 	
 	int schemeID; 
 	
+	PricingModellerQueueServiceManager producer;
+	
 	PaaSPricingModellerPricingScheme scheme;
 	
 	//long predictedDuration;
 	
-	long actualDuration;
+	
 	
 	TimeParameters time;
 	
@@ -78,10 +86,37 @@ public class VMBasic {
 	
 	IaaSProvider IaaSProvider;
 	
-	
-	public void updateEnergyConsumption(double energy){
-		 energyInfo.setCurrentTotalConsumption(energy);
+	double currentCharges=0.0;
+	double currentPrice;
+	public void setCurrentPrice (double price){
+		currentPrice =price;
 	}
+	
+	public double getCurrentprice (){
+		return currentPrice;
+	}
+	public void setCurrentCharges (double charges){
+		currentCharges =currentCharges+charges;
+	}
+	
+	public double getCurrentCharges (){
+		return currentCharges;
+	}
+	
+	public void resetCurrentCharges (){
+		currentCharges =0.0;
+	}
+	
+	public void setProducer (PricingModellerQueueServiceManager producer){
+		this.producer = producer;
+	}
+	public PricingModellerQueueServiceManager getProducer (){
+		return producer;
+	}
+	
+//	public void updateEnergyConsumption(double energy){
+//		 energyInfo.setCurrentTotalConsumption(energy);
+//	}
 	
 	public Charges getResourcesChargesAll(){
 		return resourceCharges;
@@ -95,14 +130,22 @@ public class VMBasic {
 		return VMid;
 	}
 	
-	public void setAppid(int appId){
-		this.appId= appId; 
+	public void setDepID(int depID){
+		this.depID= depID; 
 	}
 	
-	public int getAppID(){
-		return appId;
+	public int getDepID(){
+		return depID;
+	}
+	public void setAppID(String appID){
+		this.applicationID= appID; 
+	}
+	
+	public String getAppID(){
+		return applicationID;
 	}
 	public double getRAM(){
+		System.out.println("RAM:" + RAM );
 		return RAM;
 	}
 	
@@ -110,9 +153,11 @@ public class VMBasic {
 		return time.getDuration(start, end);
 	}
 	
-	public double getEnergyPredicted(){
-		return energyInfo.getEnergyPredicted();
-	}
+	
+	
+//	public double getEnergyPredicted(){
+//		return energyInfo.getEnergyPredicted();
+//	}
 	
 	public void setNumberOfEvents(int number){
 		numberOfEvents=number;
@@ -128,9 +173,9 @@ public class VMBasic {
 		return IaaSProvider;
 	}
 	
-	public void setEnergyPredicted(double energy){
-		energyInfo.setEnergyPredicted(energy);
-	}
+//	public void setEnergyPredicted(double energy){
+//		energyInfo.setEnergyPredicted(energy);
+//	}
 	
 	public int getNumberOfEvents(){
 		return numberOfEvents;
@@ -140,10 +185,27 @@ public class VMBasic {
 		return CPU;
 	}
 	
-	public void setDuration(double dur){
-		duration=dur;
+	public void setPredictedDuration(double dur){
+		predictedDuration=dur;
+	//	System.out.println("VMBasic: set the predicted duration to = "+ predictedDuration);
+	}
+	public double getPredictedDuration(){
+	//	System.out.println("VMBasic: return the predicted duration to = "+ predictedDuration);
+		return predictedDuration;
 	}
 	
+	public void setCurrentDuration(double dur){
+		currentDuration=dur;
+	}
+	public double getCurrentDuration(){
+		return currentDuration;
+	}
+	public void setTotalDuration(double dur){
+		totalDuration=dur;
+	}
+	public double getTotalDuration(){
+		return totalDuration;
+	}
 	public int getSchemeID(){
 		return schemeID;
 	}
@@ -157,9 +219,11 @@ public class VMBasic {
 	    return toPrint;
 	}
 	
-	public long getActualDuration(){
-		return actualDuration;
+	public VMChars getPreviousVMChars(){
+		return changesToCharacteristics.lastElement();
 	}
+	
+	
 	
 	public PaaSPricingModellerPricingScheme getScheme(){
 		return scheme;
@@ -179,6 +243,10 @@ public class VMBasic {
 		time.setEndTime();
 		
 	}
+	public void setStartTime(){
+		time.setStartTime();
+	}
+		
 	public Calendar getStartTime(){
 		return time.getStartTime();
 	}
@@ -228,6 +296,7 @@ public class VMBasic {
 	public void setTotalCharges(double charges){
 		TotalCharges.setCharges(time.getEndTime(), charges);
 		
+		
 	}
 	
 	 public PaaSPricingModellerPricingScheme initializeScheme(int schemeId) {
@@ -256,14 +325,32 @@ public class VMBasic {
 		//	System.out.println("VMBasic: this VM with id = "+ this.VMid+" has stopped");
 			active = false;
 		}
-		
+		public boolean isActive(){
+			return active;
+		}
 		public void createNewChars(double CPU, double RAM, double storage, Charges totalCharges){
-			VMChars oldVM = new VMChars(this.RAM, this.CPU, this.storage);
-			oldVM.setTotalCharges(totalCharges);
+			VMChars oldVM = new VMChars(this.RAM, this.CPU, this.storage, totalCharges);
 			changesToCharacteristics.add(oldVM);
-			this.RAM = RAM;
+			this.RAM = RAM/1024;
 			this.CPU = CPU;
-			this.storage = storage;
+			this.storage = storage/1000;
+			setChangeTime();
+		//	System.out.println("VMinfo: TIME HAS CHANGED HERE " +getChangeTime());
+		}
+		
+		public void setOldCharges(Charges totalCharges){
+			
+			getPreviousVMChars().setTotalCharges(totalCharges);
+		//	System.out.println("VMinfo: " + getPreviousVMChars().totalChargesForThisVMCharacteristics);
+		}
+		
+		public void resetVMTimers(){
+			time = new TimeParameters();
+		//	energyInfo.setCurrentTotalConsumption(0.0);
+			energyCharges = new Charges();
+			resourceCharges = new Charges();
+			TotalCharges = new Charges();
+		//	System.out.println("VMinfo: VM with id = " + VMid+" Time has started at " + time.getStartTime().getTimeInMillis()+ " end time is " + time.getEndTime().getTimeInMillis());
 		}
 
 }

@@ -233,6 +233,10 @@ public class TimeParameters {
         return endTime;
     }
     
+    public void setStartTime(){
+    	this.startTime = Calendar.getInstance();
+    	this.endTime = Calendar.getInstance();
+    }
     public void setEndTime(long endTime){
     	  this.endTime = new GregorianCalendar();
           this.endTime.setTimeInMillis(TimeUnit.SECONDS.toMillis(endTime));
