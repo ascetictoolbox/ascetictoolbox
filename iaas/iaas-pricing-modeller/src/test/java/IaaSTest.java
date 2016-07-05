@@ -86,7 +86,8 @@ public class IaaSTest
         
         Thread.sleep(20000);
 
-        prModeller.getVMFinalCharges("VMID1", false);
+        prModeller.changeEnergyPrice();
+     //   prModeller.getVMFinalCharges("VMID1", false);
         
         Thread.sleep(20000);
         prModeller.resizeVM("VMID1", 16, 56688, 256000);

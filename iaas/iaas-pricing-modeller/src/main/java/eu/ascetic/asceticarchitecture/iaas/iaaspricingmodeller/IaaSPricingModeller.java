@@ -144,6 +144,10 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     	return idIaaSP;
     }
     
+    public void changeEnergyPrice(){
+    	energyProvider.updateEnergyPrice();
+    }
+    
 ///////////////////////////////QUEUE//////////////////////////////////////////////////////////////////////
   /*  
     public void publishToQueue(GenericPricingMessage msg) throws Exception{
@@ -177,6 +181,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
             CPU = vm.getCpus();
             RAM = vm.getRamMb();
             storage = vm.getDiskGb();
+           // System.out.println("The VM with VMid " + VMid + " has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", storage: " + storage);
             logger.info("The VM with VMid " + VMid + " has been registered, with values CPU: " + CPU + ", RAM: " + RAM + ", storage: " + storage);
            
 
@@ -201,7 +206,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         scheme.setEnergyModeller(energyModeller);
         billing.registerVM(VM);
         
-    //   System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
+ //     System.out.println("Modeller: The VM with VMid " + VMid + " has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
         logger.info("IaaS Pricing Modeller: The VM with VMid " + VMid + "has been registered at: " + VM.getStartTime().getTimeInMillis()+" with RAM "+RAM+" CPU "+CPU+" storage "+storage);
     }
 

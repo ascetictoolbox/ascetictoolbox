@@ -97,8 +97,22 @@ public class EnergyProvider implements EnergyProviderInterface{
 		
 	}
 
+	public void updateEnergyPrice(){
+		DynamicEnergyPrice price = new DynamicEnergyPrice();
+		price.changePriceBinary();
+		
+		try {
+
+			updateDynamicEnergyPrice(price);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+		
+
 	public void updateDynamicEnergyPrice(DynamicEnergyPrice price) throws Exception{
-		//System.out.println("Energy Provider: Energy Price has changed to "+price.getPriceOnly());
+	//	System.out.println("Energy Provider: Energy Price has changed to "+price.getPriceOnly());
 		dynamicEnergyPrice.setPrice(price);
 		dynamicEnergyPriceOld.setPrice(price.getOldPriceOnly());
 		GenericPricingMessage msg = new GenericPricingMessage(iaasprovider.getIaaSProviderID(), price.getPriceOnly());
@@ -108,7 +122,5 @@ public class EnergyProvider implements EnergyProviderInterface{
 		chargesUpdated = false;
 		iaasprovider.getBilling().updateVMCharges(dynamicEnergyPriceOld);
 	}
-	
-	
 	
 }

@@ -32,9 +32,9 @@ public class StaticResourcePrice extends Price{
 		}
 		else {
 			if (even == 0){
-				Price = 0.1;}
+				Price = 0.07;}
 			else{
-				Price = 0.07;
+				Price = 0.1;
 			}
 		}
 	 }
@@ -70,7 +70,7 @@ public class StaticResourcePrice extends Price{
 			return 0.00004;
 		if (price == 0.20)
 			return 0.00006;
-		if (price == 0.01)
+		if (price == 0.1)
 			return 0.00003;
 		if (price == 0.07)
 			return 0.00002;

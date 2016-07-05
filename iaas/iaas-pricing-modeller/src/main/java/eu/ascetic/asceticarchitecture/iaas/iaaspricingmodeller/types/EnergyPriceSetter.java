@@ -26,6 +26,7 @@ public class EnergyPriceSetter extends TimerTask{
 	DynamicEnergyPrice price = new DynamicEnergyPrice();
 	public EnergyPriceSetter(EnergyProvider provider) {
 		this.provider = provider;
+		
 	}
 	
 	@Override
