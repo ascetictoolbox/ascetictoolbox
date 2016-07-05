@@ -1620,10 +1620,12 @@ paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paa
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/pricingschemes/PricingSchemeB.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/pricingschemes/PricingSchemeC.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/AmqpClientPM.java -text
+paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/ApplicationMessage.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/GenericPricingMessage.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/MessageParserUtility.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/PricingModellerQueueServiceManager.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/QueueInitializator.java -text
+paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/queue/client/VMMessage.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/rest/EMInteraction.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/rest/PMRestClient.java -text
 paas/paas-pricing-modeller/src/main/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/rest/RestDeploymentClient.java -text
@@ -1649,6 +1651,7 @@ paas/paas-pricing-modeller/src/main/resources/log4j.properties -text
 paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTest.java -text
 paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTest2.java -text
 paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerTestqueue.java -text
+paas/paas-pricing-modeller/src/test/java/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/Testlistener.java -text
 paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModeller.class -text
 paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/PaaSPricingModellerInterface.class -text
 paas/paas-pricing-modeller/target/classes/eu/ascetic/asceticarchitecture/paas/paaspricingmodeller/billing/PaaSPricingModellerBilling.class -text
