@@ -29,17 +29,12 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-
-
-
-
-
-
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModellerInterface;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.AmqpClientPM;
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.QueueInitializator;
-import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 

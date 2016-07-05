@@ -18,7 +18,7 @@ package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller;
 import eu.ascetic.amqp.client.AmqpBasicListener;
 import eu.ascetic.amqp.client.AmqpMessageProducer;
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
-import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
+//import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 import eu.ascetic.asceticarchitecture.paas.type.*;
 
 import java.io.StringWriter;
