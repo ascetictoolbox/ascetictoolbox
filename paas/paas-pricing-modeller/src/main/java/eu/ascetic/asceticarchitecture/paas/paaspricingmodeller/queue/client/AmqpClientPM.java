@@ -19,30 +19,38 @@ import javax.naming.InitialContext;
 import org.apache.log4j.Logger;
 
 
-public class AmqpClient {
+public class AmqpClientPM {
 
    
-	
-	private MessageProducer producerMeasurement;
+	//Message producer
+	private MessageProducer producerMeasurements;
 	private MessageProducer producerPrediction;
-	private Destination destinationPrediction;
-	private Destination destinationMeasurement;
 	
-	private String monitoringTopic="MEASUREMENTS";
-	private String predictionTopic="PREDICTION";
-	private String monitoringQueueTopic="PEM.ENERGY";
-
+	//Destination
+	private Destination destinationMeasurements;
+	private Destination destinationPrediction;
+	
+	
+	//Topics
+	private String billingTopic="PMBILLING";
+	private String predictionTopic="PMPREDICTION";
+	private String pmQueueTopic="PRICING";	
+	//Connection details
 	private ConnectionFactory factory;
 	private Connection connection;
 	private String user = "admin";
 	private String password = "admin";
 	private Session session;
 	
-	private final static Logger LOGGER = Logger.getLogger(AmqpClient.class.getName());
+	private final static Logger logger = Logger.getLogger(AmqpClientPM.class.getName());
 	
-	private String url = "10.15.5.55:61616";
+	//the URL ---------------------- to be checked...
+	//private String url = "10.15.5.55:61616";
+	private String url = "localhost:5672";
+	//private String url = "localhost:5673";
 	
-	public void setup(String url, String username, String password,  String monitoringQueueTopic) throws Exception {
+	//setting up the queue
+	public void setup(String url, String username, String password,  String pmQueueTopic) throws Exception {
 		
 		if(username != null) {
 			this.user = username;
@@ -56,25 +64,24 @@ public class AmqpClient {
 			this.url = url;
 		}
 		
-		if(monitoringQueueTopic != null) {
-			this.monitoringQueueTopic = monitoringQueueTopic;
+		if(pmQueueTopic != null) {
+			this.pmQueueTopic = pmQueueTopic;
 		}
 		
 		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
+		
 		String connectionJNDIName = UUID.randomUUID().toString();
 		String connectionURL = "amqp://" + this.user + ":" + this.password + "@" + this.url;
-		this.monitoringQueueTopic = monitoringQueueTopic.replaceAll("\\.", "");
-		String topicName = monitoringQueueTopic;
+		this.pmQueueTopic = pmQueueTopic.replaceAll("\\.", "");
+		String topicName = pmQueueTopic;
 		
 		// Set the properties ...
 		Properties properties = new Properties();
 		properties.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
 		properties.put("connectionfactory."+connectionJNDIName , connectionURL);
 
-		properties.put("topic"+"."+monitoringQueueTopic+"."+monitoringTopic , monitoringTopic);
-		properties.put("topic"+"."+monitoringQueueTopic+"."+predictionTopic , predictionTopic);
-		LOGGER.info("Connection param "+"topic"+"."+monitoringQueueTopic+"."+monitoringTopic);
-		LOGGER.info("Connection param"+topicName);
+		properties.put("topic"+"."+pmQueueTopic+"."+billingTopic , billingTopic);
+		properties.put("topic"+"."+pmQueueTopic+"."+predictionTopic , predictionTopic);
 		
 		javax.naming.Context context = new InitialContext(properties);
 
@@ -83,28 +90,29 @@ public class AmqpClient {
         connection.setExceptionListener(new MyExceptionListener());
         connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
+		System.out.println("here");
 		
 		// Create a Session for each queue
-        destinationPrediction = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.predictionTopic);
-        destinationMeasurement = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.monitoringTopic);
+     
+        destinationPrediction = (Destination) context.lookup(this.pmQueueTopic+"."+this.predictionTopic);
+        destinationMeasurements = (Destination) context.lookup(this.pmQueueTopic+"."+this.billingTopic);
         
 		producerPrediction = session.createProducer(destinationPrediction);
-		producerMeasurement = session.createProducer(destinationMeasurement);
-
-		LOGGER.info("Connection started");
-		
+        producerMeasurements = session.createProducer(destinationMeasurements);
+       
+        System.out.println("Connection started to queue " + pmQueueTopic + " to topics " + billingTopic + " and "+ predictionTopic);
+    
 	}
 	
 	public void sendMessage(String queue, String message){
-		LOGGER.info("Sending Message");
+		System.out.println("Sending Message to queue");
 		try {
 			if (queue=="prediction"){
 				TextMessage messagetext = session.createTextMessage(message);
 				producerPrediction.send( messagetext);
 			} else {
 				TextMessage messagetext = session.createTextMessage(message);
-				producerMeasurement.send( messagetext);
+				producerMeasurements.send( messagetext);
 			}
 		} catch (JMSException e) {
 			e.printStackTrace();
@@ -113,12 +121,12 @@ public class AmqpClient {
 	}
 	
 	public void sendMessageTopic(String topic, String message){
-		LOGGER.info("Sending Message");
+		System.out.println("Sending Message to topic" + topic);
 		try {
 			Destination destination = session.createTopic(topic);
 			MessageProducer producer = session.createProducer(destination);
 			TextMessage messagetext = session.createTextMessage(message);
-			producer.send( messagetext);
+			producer.send(messagetext);
 			producer.close();
 		
 		} catch (JMSException e) {
@@ -128,8 +136,9 @@ public class AmqpClient {
 	}
 	
 	public void registerListener(String topic, MessageListener listener){
-		LOGGER.info("Registering listener");
+		System.out.println("Registering listener with topic: " + topic);
 		try {
+			
 			Destination thisDestination = session.createTopic(topic);
 			MessageConsumer thisConsumer = session.createConsumer(thisDestination);
 			thisConsumer.setMessageListener(listener);
@@ -141,7 +150,7 @@ public class AmqpClient {
 	
     public void destroy() throws JMSException {
 
-    	producerMeasurement.close();
+    	producerMeasurements.close();
     	producerPrediction.close();
         session.close();
         connection.close();
@@ -150,10 +159,12 @@ public class AmqpClient {
     private static class MyExceptionListener implements ExceptionListener {
         @Override
         public void onException(JMSException exception) {
-            System.out.println("Connection ExceptionListener fired, exiting.");
+           // System.out.println("Connection ExceptionListener fired, exiting.");
+        	 logger.error("Connection ExceptionListener fired, exiting.");
             exception.printStackTrace(System.out);
             System.exit(1);
         }
     }
+
 
 }
