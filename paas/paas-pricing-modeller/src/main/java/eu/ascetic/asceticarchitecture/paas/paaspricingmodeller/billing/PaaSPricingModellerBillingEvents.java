@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.apache.log4j.Logger;
+
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.Price;
@@ -43,8 +45,10 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 public class PaaSPricingModellerBillingEvents extends PaaSPricingModellerBilling{
 	
-	
-	
+/*	public PaaSPricingModellerBillingEvents(){
+		Logger logger = Logger.getLogger(PaaSPricingModellerBillingEvents.class);
+	}
+	*/
 //////////////////////////////////Event Charges//////////////////////
 
 	public double predictEventCharges(DeploymentInfo deploy){

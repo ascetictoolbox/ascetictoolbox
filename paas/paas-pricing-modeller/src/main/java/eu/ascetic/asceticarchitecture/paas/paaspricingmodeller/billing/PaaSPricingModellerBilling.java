@@ -63,10 +63,10 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 
 	
 	
+	//static Logger logger = Logger.getLogger(PaaSPricingModellerBilling.class);
 	
 	public PaaSPricingModellerBilling(){
-		
-		 logger = Logger.getLogger(PaaSPricingModellerBilling.class);
+		//Logger logger = Logger.getLogger(PaaSPricingModellerBilling.class);
 	}
 	
 	
@@ -101,7 +101,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	            	  totalcharges = totalcharges + getVMCharges(VM);
 	            	  currentcharges = currentcharges + VM.getCurrentCharges();
 	            	//  System.out.println("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
-	            	  logger.info("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
+	            	//  logger.info("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
 	            	}else{
 	            		totalcharges = totalcharges + VM.getTotalCharges();
 	            		 currentcharges = currentcharges + VM.getCurrentCharges();
@@ -111,7 +111,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
         			app.setCurrentCharges(currentcharges);
         			app.setTotalCharges(totalcharges);
         			// System.out.println("Billing: current charges of app are "+ app.getCurrentCharges());
-        			 logger.info("Billing: current charges of app are "+ app.getCurrentCharges());
+        			// logger.info("Billing: current charges of app are "+ app.getCurrentCharges());
          			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.TOTALCHARGES, app.getTotalCharges());
         			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.CHARGES, app.getCurrentCharges());
 	            	
@@ -119,7 +119,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
         			}
         			catch (Exception ex){
         				//System.out.println("Billing: Could not send the message to queue");
-        				logger.error("PM: Could not send message to queue");
+        			//	logger.error("PM: Could not send message to queue");
         				//logger.info("Could not send the message to queue");
         			}
 	            return totalcharges;
@@ -133,7 +133,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 
 	        PaaSPricingModellerPricingScheme scheme = VM.getScheme();
 	      //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
-	        logger.info("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
+	   //     logger.info("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
 	        return scheme.getTotalCharges(VM);
 	    }
 	 
@@ -156,7 +156,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	        	if (energyPerVM.containsKey(VM.getVMid())){
 	        		VM.updateEnergyConsumption((energyPerVM.get(VM.getVMid())));
 	       //  System.out.println("Billing: energy of VM "+VM.getVMid()+" is updated");
-	         logger.info("Billing: energy of VM "+VM.getVMid()+" is updated");
+	       //  logger.info("Billing: energy of VM "+VM.getVMid()+" is updated");
 	    	        
 	        	}
 		 }
@@ -287,7 +287,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 			
 		}catch (NullPointerException ex) {
 	//		System.out.println("catch");
-           logger.error("The VM with VMid " + VMid + " does not exist");
+        //   logger.error("The VM with VMid " + VMid + " does not exist");
 			allApps.get(deplID).setChanging(false);
 			return;
 		}

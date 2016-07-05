@@ -172,15 +172,15 @@ public abstract class PaaSPricingModellerPricingScheme {
 
 	public double getEnergy(VMinfo VM){
 	        double difference=3000;
-	        ZonedDateTime zdt1 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getEnergyChargesAll().getTime().getTimeInMillis()), ZoneId.systemDefault());
+	   //     ZonedDateTime zdt1 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getEnergyChargesAll().getTime().getTimeInMillis()), ZoneId.systemDefault());
 	//        System.out.println(zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-	        ZonedDateTime zdt2 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getChangeTime().getTimeInMillis()), ZoneId.systemDefault());
+	    //    ZonedDateTime zdt2 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getChangeTime().getTimeInMillis()), ZoneId.systemDefault());
 	//        System.out.println(zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 	       try{
-	        	EMInteraction response = new EMInteraction();
-	        	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-	        	VM.updateEnergyConsumption(energy/1000);
-	        	return energy/1000;
+	    //    	EMInteraction response = new EMInteraction();
+	      //  	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+	        //	VM.updateEnergyConsumption(energy/1000);
+	        	//return energy/1000;
 	        }
 	       catch (Exception ex){
 			//	System.out.println("Pricing Modeller  getEnergy: Could receive asnwer");

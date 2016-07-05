@@ -12,8 +12,7 @@ public class RestDeploymentClient {
 
     private WebResource webResource;
     private final Client client;
-   // private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
-    private static String baseUri = "http://192.168.3.16/application-manager/";
+    private static String baseUri = "http://localhost/application-manager/";
 
     public RestDeploymentClient(String applicationName) {
         /*try {

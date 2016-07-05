@@ -63,7 +63,7 @@ public class PaaSPricingModellerRegistration {
 	double averagePrice=1;
 
 	static PricingModellerQueueServiceManager producer;
-	static Logger logger = Logger.getLogger(PaaSPricingModellerRegistration.class);
+	//Logger logger = Logger.getLogger(PaaSPricingModellerRegistration.class);
 	
 	public DeploymentInfo getApp(int depl) {
 		if (registeredDynamicApps.containsKey(depl))
@@ -86,7 +86,7 @@ public class PaaSPricingModellerRegistration {
 		}
 		catch(Exception ex){
 			System.out.println("PM: Could not set producer");
-			 logger.error("PM: Could not set producer");
+			// logger.error("PM: Could not set producer");
 		}
 	}
 	
@@ -100,7 +100,7 @@ public class PaaSPricingModellerRegistration {
 				 VM.setProducer(producer);
 			 }catch(Exception ex){
 					System.out.println("PM: Could not set producer");
-					 logger.error("PM: Could not set producer");
+					// logger.error("PM: Could not set producer");
 				}
 			 System.out.println(VM.getProducer());
 			 if (VM.getSchemeID()==0){
@@ -123,7 +123,7 @@ public class PaaSPricingModellerRegistration {
 		 }
 		 catch(Exception ex){
 			//	System.out.println("PM: Could not send message to queue");
-				 logger.error("PM: Could not set producer");
+				// logger.error("PM: Could not set producer");
 			}
 		// System.out.println("charges " + charges);
 		 return charges;
@@ -144,7 +144,7 @@ public class PaaSPricingModellerRegistration {
 					}
 					catch(Exception ex){
 					//	System.out.println("PM: Could not set producer");
-						 logger.error("PM: Could not set producer");
+						// logger.error("PM: Could not set producer");
 					}
 					System.out.println("Billing: VM with ID: " + app.getVM(i).getVMid() + " has been registered in static");
 	            
@@ -157,7 +157,7 @@ public class PaaSPricingModellerRegistration {
 					}
 					catch(Exception ex){
 					//	System.out.println("PM: Could not set producer");
-						 logger.error("PM: Could not set producer");
+					//	 logger.error("PM: Could not set producer");
 					}
 					app.getVM(i).resetVMTimers();
 				}
@@ -171,7 +171,7 @@ public class PaaSPricingModellerRegistration {
 				}
 				catch(Exception ex){
 				//	System.out.println("PM: Could not set producer");
-					 logger.error("PM: Could not set producer");
+					// logger.error("PM: Could not set producer");
 				}
 				predictPriceofNextHour(app);}
 	}
@@ -186,7 +186,7 @@ public class PaaSPricingModellerRegistration {
          		 vm.add(VMid);                       
          		 price = price + getVMPredictedPrice(VM);
          	//	 System.out.println("Billing: updating price of VM "+VM.getVMid()+" with "+ VM.getCurrentprice());
-         		 logger.error("PM: Could not set producer");
+         		// logger.error("PM: Could not set producer");
          	 }
 		 }
 		 try{
@@ -198,7 +198,7 @@ public class PaaSPricingModellerRegistration {
  			}
  			catch (Exception ex){
  				System.out.println("Billing: Could not send the message to queue");
- 				 logger.error("PM: Could not set producer");
+ 			//	 logger.error("PM: Could not set producer");
  				//logger.info("Could not send the message to queue");
  			}
          return price;
@@ -255,7 +255,7 @@ public class PaaSPricingModellerRegistration {
 					}
 					catch(Exception ex){
 					//	System.out.println("PM: Could not send message to queue");
-						 logger.error("PM: Could not set producer");
+					//	 logger.error("PM: Could not set producer");
 					}
 			//		System.out.println("Billing: VM with ID: " + VM.getVMid() + " has been registered in static");
 	            
@@ -269,7 +269,7 @@ public class PaaSPricingModellerRegistration {
 					}
 					catch(Exception ex){
 					//	System.out.println("PM: Could not send message to queue");
-						 logger.error("PM: Could not set producer");
+					//	 logger.error("PM: Could not set producer");
 					}
 				//		System.out.println("Billing: VM with ID: " + VM.getVMid() + " has been registered in dynamic");
 				}
