@@ -100,8 +100,12 @@ public class GetSLAClient {
 		HttpURLConnection httpConn = (HttpURLConnection)connection;
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		
+		
 		//testing purposes, remove...
 		//String slaId = "fe5f67da-c649-4c64-8929-2e765e3d9f4f";
+		
+		logger.debug("Invoking getSLA with SLAID "+slaId);
+		
 		
 		String xmlInput =
 				" <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:rep=\"http://reportingWS.businessManager.slasoi.org\">"+

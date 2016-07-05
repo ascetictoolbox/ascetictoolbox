@@ -54,23 +54,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.jms.Topic;
-import javax.jms.TopicConnection;
-import javax.jms.TopicConnectionFactory;
-import javax.jms.TopicSession;
-import javax.jms.TopicSubscriber;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -172,6 +166,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 		logger.debug("Properties file loaded...");
 
+		
+		
 		//recover old monitorings...
 		logger.debug("Recovering old monitorings...");
 		String monitoringPath = confPath + sepr	+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
@@ -188,6 +184,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 				logger.info("PaaS Violation Checker - recovering an active monitoring with this parameters: topicId "+parameters[0]+", appId "+parameters[1]+", deploymentId "+parameters[2]+", slaId "+parameters[3]);
 				new Thread(new PaasViolationChecker(properties, parameters[0], parameters[1], parameters[2], parameters[3], true)).start();
 			}
+			
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -314,46 +312,72 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 */
 	private String initiateMonitoring(String appId, String deploymentId, String slaId) {
 		try {
-			Context context;
-			//			ConnectionFactory connectionFActory;
-			TopicSession session;
-			MessageProducer messageProducer;
+			
+			/*
+			 * TODO: Verificare versione di ActiveMQ da utilizzare
+			 */
+//			AmqpMessageProducer producer = new AmqpMessageProducer("192.168.3.16:5673", "guest", "guest", "appmon", false);
+			
+			
+			
+						ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+						javax.jms.Connection connection = connectionFactory.createConnection();
+						connection.start();
+			
+						// JMS messages are sent and received using a Session. We will
+						// create here a non-transactional session object. If you want
+						// to use transactions you should set the first parameter to 'true'
+						Session session = connection.createSession(false,
+								Session.AUTO_ACKNOWLEDGE);
+			
+						Queue queue = session.createQueue("appmon");
+			
+						MessageProducer producer = session.createProducer(queue);
+			
+			
+			
 
-			String topicName = "application-monitor.monitoring." + appId + ".measurement";
-
-			//        String nodeId = "TheSinusNode";
-
-			System.out.println("Initiating " + appId);
-			Properties p = new Properties();
-
-			String sepr = System.getProperty("file.separator");
-			String confPath = System.getenv("SLASOI_HOME");
-			p.load(new FileInputStream(confPath + sepr
-					+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr
-					+ "jndi.properties"));
-			p.put("topic.topic",topicName);
-			context = new InitialContext(p);
-
-			TopicConnectionFactory connectionFactory
-			= (TopicConnectionFactory) context.lookup("asceticpaas");
-
-
-			TopicConnection connection = 
-					connectionFactory.createTopicConnection();
-
-			session = connection.createTopicSession(false, 
-					Session.AUTO_ACKNOWLEDGE);
-
-
-			Queue sendQueue = (Queue) context.lookup("appmon");
-			Topic topic = (Topic) context.lookup("topic");
-
-
-			TopicSubscriber clientTopic = session.createSubscriber(topic);
-			connection.start();
-
-			messageProducer = 
-					session.createProducer(sendQueue);
+			
+//			Context context;
+//			//			ConnectionFactory connectionFActory;
+//			TopicSession session;
+//			MessageProducer messageProducer;
+//
+//			String topicName = "application-monitor.monitoring." + appId + ".measurement";
+//
+//			//        String nodeId = "TheSinusNode";
+//
+//			System.out.println("Initiating " + appId);
+//			Properties p = new Properties();
+//
+//			String sepr = System.getProperty("file.separator");
+//			String confPath = System.getenv("SLASOI_HOME");
+//			p.load(new FileInputStream(confPath + sepr
+//					+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr
+//					+ "jndi.properties"));
+//			p.put("topic.topic",topicName);
+//			context = new InitialContext(p);
+//
+//			TopicConnectionFactory connectionFactory
+//			= (TopicConnectionFactory) context.lookup("asceticpaas");
+//
+//
+//			TopicConnection connection = 
+//					connectionFactory.createTopicConnection();
+//
+//			session = connection.createTopicSession(false, 
+//					Session.AUTO_ACKNOWLEDGE);
+//
+//
+//			Queue sendQueue = (Queue) context.lookup("appmon");
+//			Topic topic = (Topic) context.lookup("topic");
+//
+//
+//			TopicSubscriber clientTopic = session.createSubscriber(topic);
+//			connection.start();
+//
+//			messageProducer = 
+//					session.createProducer(sendQueue);
 
 			String termsString = "";
 			String period = "";
@@ -416,15 +440,30 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 					"\t\"Terms\" : ["+termsString+" ],\n" +
 					"\t\"Frequency\" : 10000\n" +
 					"}");
-			messageProducer.send(message);
+//			messageProducer.send(message);
+			
+//			String message = "{\n" +
+//					"\t\"Command\" : \"initiateMonitoring\",\n" +
+//					"\t\"ApplicationId\" : \""+ appId + "\",\n" +
+//					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
+//					"\t\"SlaId\" : \""+ slaId + "\",\n" +
+//					(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+//					"\t\"Terms\" : ["+termsString+" ],\n" +
+//					"\t\"Frequency\" : 10000\n" +
+//					"}";
+//			
+//			producer.sendMessage(message);
 
+			logger.debug("Message: "+message.getText());
+			producer.send(message);
+			
 			logger.debug("Message sent: "+message);
 
 			System.out.println("Message sent");
 
 
 			connection.close();
-			context.close();
+//			context.close();
 		}catch(Exception e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -545,7 +584,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 		String[] monitorableTerms = "power_usage_per_app,energy_usage_per_app,aggregated_event_metric_over_period".split(",");
 
 		SLA sla = null;
-		GetSLAClient gsc = new GetSLAClient("http://192.168.3.16:8080/services/BusinessManager_Reporting?wsdl","cb0acd63-3537-4617-afa3-d0102d90e1e0");
+		GetSLAClient gsc = new GetSLAClient("http://192.168.3.16:8080/services/BusinessManager_Reporting?wsdl","8f08b0f6-362c-4cd4-98ac-4a3d18578841");
 		try {
 			sla = gsc.getSLA();
 		} catch (Exception e) {
@@ -567,10 +606,14 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 							for (AgreementTerm at:sla.getAgreementTerms()) {
 
 								for (Guaranteed g:at.getGuarantees()) {
-
 									if (g.toString().indexOf("aggregated_event_metric_over_period")>-1) {
 										String[] parameters = g.toString().split("\"");
-
+										System.out.println(g.getPropertyKeys().length);
+										for (STND s:g.getPropertyKeys()) {
+											System.out.println(s.getValue());
+											System.out.println(g.getPropertyValue(s));
+										}
+										
 										switch (parameters[7]) {
 										case "percentile": termsString+="\\\"percentile("+parameters[1]+"_"+parameters[3]+","+parameters[9]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
 										case "max": termsString+="\\\"max("+parameters[1]+"_"+parameters[3]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
