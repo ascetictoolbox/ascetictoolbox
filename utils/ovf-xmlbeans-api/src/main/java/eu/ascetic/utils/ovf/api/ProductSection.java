@@ -17,7 +17,6 @@ package eu.ascetic.utils.ovf.api;
 
 import eu.ascetic.utils.ovf.api.enums.ProductPropertyType;
 import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 import org.apache.commons.codec.binary.Base64;
@@ -221,7 +220,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY = "asceticAdaptationRuleUpperBound_";
     private static final String ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY = "asceticAdaptationRuleNotificationType_";
     private static final String ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY = "asceticAdaptationRuleParameters_";
-    private static final String ASCETIC_TERM_MEASUREMENT_NUMBER = "asceticTermMeasurementMeasurementNumber_";
+    private static final String ASCETIC_TERM_MEASUREMENT_NUMBER = "asceticTermMeasurementNumber";
     private static final String ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY = "asceticTermMeasurementApplicationEvent_";
     private static final String ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY = "asceticTermMeasurementApplicationMetric_";
     private static final String ASCETIC_TERM_MEASUREMENT_PERIOD_KEY = "asceticTermMeasurementPeriod_";
