@@ -71,7 +71,7 @@ private static Logger logger = Logger.getLogger(AcceptAgreementEventHandler.clas
 		// We need first to read the deployment from the DB:
 		Deployment deployment = deploymentDAO.getById(deploymentEvent.getDeploymentId());
 		
-		PriceModellerClient.getInstance().initializeApplication(deploymentEvent.getDeploymentId(), deployment.getSchema());
+		PriceModellerClient.getInstance().initializeApplication(deploymentEvent.getApplicationName(), deploymentEvent.getDeploymentId(), deployment.getSchema());
 
 		if(deploymentEvent.getDeploymentStatus().equals(Dictionary.APPLICATION_STATUS_NEGOTIATIED) && deploymentEvent.isAutomaticNegotiation() == true) {
 			

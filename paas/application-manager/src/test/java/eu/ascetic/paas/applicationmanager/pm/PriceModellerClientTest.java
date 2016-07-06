@@ -57,8 +57,8 @@ public class PriceModellerClientTest {
 	
 	@Test
 	public void intializeAppTest() {		
-		pmc.initializeApplication(222, 3);
-		verify(ppm, times(1)).initializeApp(222, 3);
+		pmc.initializeApplication("x1", 222, 3);
+		verify(ppm, times(1)).initializeApp("x1", 222, 3);
 	}
 	
 	@Test

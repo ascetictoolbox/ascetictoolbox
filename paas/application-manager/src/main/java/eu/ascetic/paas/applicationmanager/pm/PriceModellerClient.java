@@ -53,8 +53,8 @@ public class PriceModellerClient {
 		return instance;
 	}
 	
-	public void initializeApplication(int deploymentId, int schemeId) {
-		priceModeller.initializeApp(deploymentId, schemeId);
+	public void initializeApplication(String applicationId, int deploymentId, int schemeId) {
+		priceModeller.initializeApp(applicationId, deploymentId, schemeId);
 	}
 	
 	public double getAppPredictedCharges(int deploymentId, int schemeID, double iaaSCharges) {

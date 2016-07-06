@@ -123,7 +123,7 @@ public class AgreementRest extends AbstractRest {
 		Agreement agreement = ModelConverter.xmlAgreementToObject(payload);
 		
 		// TODO The schema ID needs to be entered by the REST API
-		PriceModellerClient.getInstance().initializeApplication(Integer.parseInt(deploymentId), 1);
+		PriceModellerClient.getInstance().initializeApplication(applicationName, Integer.parseInt(deploymentId), 1);
 		
 		if(agreement.isAccepted()) {
 			Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
