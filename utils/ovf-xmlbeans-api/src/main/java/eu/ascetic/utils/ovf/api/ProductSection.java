@@ -64,7 +64,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystem}s to instantiate.
      */
     private static final String ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY = "asceticLowerBound";
-
+    /**
+     * The static KEY used to get and set the starting number of
+     * {@link VirtualSystem}s to instantiate.
+     */
+    private static final String ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY = "asceticStartBound";
+    
+    
     /**
      * The static KEY used to get and set the deployment ID of a
      * {@link VirtualSystemCollection}.
@@ -522,6 +528,37 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
             productProperty.setValue(lowerBound.toString());
         }
     }
+    
+    /**
+     * Gets the starting bound on the number of virtual machines to instantiate on
+     * a per {@link VirtualSystem} basis.
+     * 
+     * @return The starting bound
+     */
+    public int getStartingBound() {
+        return Integer.parseInt(
+                getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY)
+                        .getValue());
+    }
+
+    /**
+     * Sets the starting bound on the number of virtual machines to instantiate on
+     * a per {@link VirtualSystem} basis.
+     * 
+     * @param startingBound
+     *            The starting bound to set (i.e. the amount of VMs to create on
+     * initialisation of an application.
+     */
+    public void setStartingBound(Integer startingBound) {
+        ProductProperty productProperty = getPropertyByKey(
+                ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY);
+        if (productProperty == null) {
+            addNewProperty(ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY,
+                    ProductPropertyType.UINT32, startingBound.toString());
+        } else {
+            productProperty.setValue(startingBound.toString());
+        }
+    }    
 
     /**
      * Gets the deployment ID for a {@link VirtualSystemCollection}.
