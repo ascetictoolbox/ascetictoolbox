@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Scanner;
 
@@ -311,6 +312,10 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 * Returns the id of the topic where to read the measurements
 	 */
 	private String initiateMonitoring(String appId, String deploymentId, String slaId) {
+		int monitoringFrequency = 10000; //msec
+		
+		//possiamo impostare l'intervallo di misura almeno al doppio della monitoringFrequency
+		Timestamp Start_time =  new Timestamp(new java.util.Date().getTime()-2*monitoringFrequency);
 		try {
 			
 			/*
@@ -437,8 +442,9 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
 					"\t\"SlaId\" : \""+ slaId + "\",\n" +
 					(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+					"\t\"Start_time\" : \""+ Start_time + "\",\n" +
 					"\t\"Terms\" : ["+termsString+" ],\n" +
-					"\t\"Frequency\" : 10000\n" +
+					"\t\"Frequency\" : "+monitoringFrequency+"\n" +
 					"}");
 //			messageProducer.send(message);
 			
