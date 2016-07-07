@@ -226,6 +226,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_TERM_MEASUREMENT_PERIOD_KEY = "asceticTermMeasurementPeriod_";
     private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY = "asceticTermMeasurementAggregator_";
     private static final String ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY = "asceticTermMeasurementAggregatorParams_";
+    private static final String ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY = "asceticTermMeasurementBoundaryValue_";
     private static final String ASCETIC_SLA_INFO_NUMBER = "asceticSlaInfoNumber";
     private static final String ASCETIC_SLA_INFO_SLA_TERM_KEY = "asceticSlaInfoSlaTerm_";
     private static final String ASCETIC_SLA_INFO_METRIC_UNIT_KEY = "asceticSlaInfoMetricUnit_";
@@ -1777,6 +1778,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets the number of attributes for a given software dependency stored in
      * this {@link ProductSection}.
      * 
+     * @param softwareDependencyIndex
      * @return The number of attributes for a given software dependency
      */
     public int getSoftwareDependencyPackageAttributeNumber(
@@ -2229,12 +2231,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @param event The event
      * @param metric The metric name
      * @param period The period
+     * @param boundaryValue the boundary condition for the kpi 
      * @param aggregator The aggregator
      * @param params The aggregator's parameters
      * @return The index value of the next term measurement
      */
     public int addTermMeasurement(String event, String metric,
-            String period, String aggregator, String params) {
+            String period, String boundaryValue, String aggregator, String params) {
        
         // Find the next adaptation rule index
         int i = getNextFreeIndexKeyValue(
@@ -2249,7 +2252,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         addNewProperty(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + i,
                 ProductPropertyType.STRING, aggregator);
         addNewProperty(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + i,
-                ProductPropertyType.STRING, params);        
+                ProductPropertyType.STRING, params);
+        addNewProperty(ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY + i,
+                ProductPropertyType.STRING, boundaryValue);          
         // Increment the number of measurement terms stored
         incrementIndexPropertyNumber(ASCETIC_TERM_MEASUREMENT_NUMBER);
         // Return the measurement term index
@@ -2261,16 +2266,18 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @param event The application event
      * @param metric The application metric name
      * @param period The period
+     * @param boundaryValue the boundary condition for the kpi
      * @param aggregator The aggregator
      * @param params The aggregator's parameters
      */
     public void setTermMeasurement(int index, String event, String metric,
-            String period, String aggregator, String params) {
+            String period, String boundaryValue, String aggregator, String params) {
         setTermMeasurementApplicationEvent(index, event);
-        setTermMeasurementApplicationMetric(index, event);
-        setTermMeasurementPeriod(index, event);
-        setTermMeasurementAggregator(index, event);
-        setTermMeasurementAggregatorParams(index, event);
+        setTermMeasurementApplicationMetric(index, metric);
+        setTermMeasurementPeriod(index, period);
+        setTermMeasurementBoundaryValue(index, boundaryValue);
+        setTermMeasurementAggregator(index, aggregator);
+        setTermMeasurementAggregatorParams(index, params);
     }
 
     public String getTermMeasurementApplicationEvent(int index) {
@@ -2279,9 +2286,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     public void setTermMeasurementApplicationEvent(int index,
-            String agreementTerm) {
+            String event) {
         getPropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index)
-                .setValue(agreementTerm);
+                .setValue(event);
     }
     
     public String getTermMeasurementApplicationMetric(int index) {
@@ -2290,9 +2297,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }      
 
     public void setTermMeasurementApplicationMetric(int index,
-            String agreementTerm) {
+            String metric) {
         getPropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index)
-                .setValue(agreementTerm);
+                .setValue(metric);
     }    
     
     public String getTermMeasurementPeriod(int index) {
@@ -2301,10 +2308,21 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }      
 
     public void setTermMeasurementPeriod(int index,
-            String agreementTerm) {
+            String period) {
         getPropertyByKey(ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index)
-                .setValue(agreementTerm);
-    } 
+                .setValue(period);
+    }
+    
+    public String getTermMeasurementBoundaryValue(int index) {
+        return getPropertyByKey(
+                ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY + index).getValue();      
+    }      
+
+    public void setTermMeasurementBoundaryValue(int index,
+            String boundaryValue) {
+        getPropertyByKey(ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY + index)
+                .setValue(boundaryValue);
+    }     
     
     public String getTermMeasurementAggregator(int index) {
         return getPropertyByKey(
@@ -2312,9 +2330,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }      
 
     public void setTermMeasurementAggregator(int index,
-            String agreementTerm) {
+            String aggregator) {
         getPropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index)
-                .setValue(agreementTerm);
+                .setValue(aggregator);
     } 
     
      public String getTermMeasurementAggregatorParams(int index) {
@@ -2323,9 +2341,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }      
 
     public void setTermMeasurementAggregatorParams(int index,
-            String agreementTerm) {
+            String params) {
         getPropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index)
-                .setValue(agreementTerm);
+                .setValue(params);
     }    
     
     /**
@@ -2341,6 +2359,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         removePropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index);
         removePropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index);
         removePropertyByKey(ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index);
+        removePropertyByKey(ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY + index);
         removePropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index);
         removePropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index);
 
