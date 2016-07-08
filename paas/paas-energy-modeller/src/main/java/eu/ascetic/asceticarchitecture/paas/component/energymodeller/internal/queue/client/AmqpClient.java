@@ -55,10 +55,8 @@ public class AmqpClient {
 	
 	private final static Logger LOGGER = Logger.getLogger(AmqpClient.class.getName());
 	
-	// M. Fontanella - 05 Feb 2016 - begin
 	//	private String url = "10.15.5.55:61616";
 	private String url = "192.168.0.8:32777";
-	// M. Fontanella - 05 Feb 2016 - end
 	
 	
 	/**
