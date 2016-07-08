@@ -25,10 +25,8 @@ public class ApplicationSample {
 	 */
 	
 	
-	private int orderID;
-	// M. Fontanella - 20 Jan 2016 - begin
-	private String provid;
-	// M. Fontanella - 20 Jan 2016 - end
+	private int orderID;	
+	private String provid;	
 	private String vmid;
 	private String appid;
 	private long time;
@@ -61,16 +59,12 @@ public class ApplicationSample {
 	public void setP_value(double p_value) {
 		this.p_value = p_value;
 	}
-	
-	// M. Fontanella - 20 Jan 2016 - begin
 	public String getProvid() {
 		return provid;
 	}
 	public void setProvid(String provid) {
 		this.provid = provid;
-	}
-	
-	// M. Fontanella - 20 Jan 2016 - end
+	}	
 	public String getVmid() {
 		return vmid;
 	}
@@ -89,17 +83,11 @@ public class ApplicationSample {
 	public void setC_value(double c_value) {
 		this.c_value = c_value;
 	}	
-	
-	public String export(){
-		// M. Fontanella - 20 Jan 2016 - begin
-		return this.getProvid() + "," + this.getAppid() + ","+ this.getVmid() + "," +this.getTime()+"," + this.getC_value() + "," + this.getE_value() + "," + this.getP_value() ;
-		// M. Fontanella - 20 Jan 2016 - end
-	}
-	
-	public String toString(){
-		// M. Fontanella - 20 Jan 2016 - begin
-		return "Provider  "+ this.getProvid() + "App. Sample  "+ this.getAppid() + " VM "+ this.getVmid() + " Time " +this.getTime()+ " CPU " + this.getC_value() + " Energy " + this.getE_value() + " Power " + this.getP_value() ;
-		// M. Fontanella - 20 Jan 2016 - end
+	public String export(){	
+		return this.getProvid() + "," + this.getAppid() + ","+ this.getVmid() + "," +this.getTime()+"," + this.getC_value() + "," + this.getE_value() + "," + this.getP_value() ;	
+	}	
+	public String toString(){		
+		return "Provider  "+ this.getProvid() + "App. Sample  "+ this.getAppid() + " VM "+ this.getVmid() + " Time " +this.getTime()+ " CPU " + this.getC_value() + " Energy " + this.getE_value() + " Power " + this.getP_value() ;	
 	}
 	
 }

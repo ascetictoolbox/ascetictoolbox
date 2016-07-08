@@ -40,36 +40,24 @@ public class EMSettings {
 	// AM topics I subscribe
 	private String amanagertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.*";
 	// PaaS energy measurement I subscribe
-	// M. Fontanella - 06 Jun 2016 - begin
 	// private String powertopic="vm.*.item.*";
-	private String powertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*";
-	// M. Fontanella - 06 Jun 2016 - end
-	// M. Fontanella - 20 Jun 2016 - begin
-	private String powerfromvmtopic="PROVIDER.*.APPLICATION.*.DEPLOYMENT.*.VM.*.FROMVM";
-	// M. Fontanella - 20 Jun 2016 - end
+	private String powertopic="APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*";	
+	private String powerfromvmtopic="PROVIDER.*.APPLICATION.*.DEPLOYMENT.*.VM.*.FROMVM";	
 	
 	// 	temporarly for IaaS connection
 	private String enableIaasQueue="false";
 	private String iaasAmqpUser="admin";
 	private String iaasAmqpPassword="admin";
-	private String iaasAmqpUrl="tcp://localhost:61616";
-	
-	// M. Fontanella - 08 Jan 2016 - begin
+	private String iaasAmqpUrl="tcp://localhost:61616";	
 	
 	// PaaS Predictor
 	private String predictorType="basic";
-	// M. Fontanella - 08 Jan 2016 -  end
-	// M. Fontanella - 11 Jan 2016 - begin
 	
 	// PaaS params
 	private String providerIdDefault="00000";
-	// M. Fontanella - 11 Jan 2016 - end
-	
-	// M. Fontanella - 26 Apr 2016 - begin
+
 	// IaaS power data
-	private String enablePowerFromIaas="true";
-	// M. Fontanella - 26 Apr 2016 - end
-	
+	private String enablePowerFromIaas="true";	
 	
 	
 	public EMSettings() {
@@ -90,26 +78,15 @@ public class EMSettings {
 		this.setMonitoringQueueTopic(props.getProperty("monitoringQueueTopic"));
 		this.setEnableQueue(props.getProperty("enableQueue"));
 		this.setAmanagertopic(props.getProperty("amanagertopic"));
-		// M. Fontanella - 16 Jun 2016 - begin
-		//this.setPowertopic(props.getProperty("energytopic"));
 		this.setPowertopic(props.getProperty("powertopic"));
-		// M. Fontanella - 16 Jun 2016 - end
-		// M. Fontanella - 20 Jun 2016 - begin
 		this.setPowertopic(props.getProperty("powerfromvmtopic"));
-		// M. Fontanella - 20 Jun 2016 - end
 		this.setEnableIaasQueue(props.getProperty("enableIaasQueue"));
 		this.setIaasAmqpUser(props.getProperty("iaasAmqpUser"));
 		this.setIaasAmqpPassword(props.getProperty("iaasAmqpPassword"));
-		this.setIaasAmqpUrl(props.getProperty("iaasAmqpUrl"));
-		// M. Fontanella - 08 Jan 2016 -  begin
+		this.setIaasAmqpUrl(props.getProperty("iaasAmqpUrl"));		
 		this.setPredictorType(props.getProperty("predictorType"));
-		// M. Fontanella - 08 Jan 2016 -  end
-		// M. Fontanella - 11 Jan 2016 -  begin
 		this.setProviderIdDefault(props.getProperty("providerIdDefault"));
-		// M. Fontanella - 11 Jan 2016 -  end
-		// M. Fontanella - 26 Apr 2016 - begin
-		this.setEnablePowerFromIaas(props.getProperty("enablePowerFromIaas"));
-		// M. Fontanella - 26 Apr 2016 - end
+		this.setEnablePowerFromIaas(props.getProperty("enablePowerFromIaas"));		
 	}
 
 
@@ -229,7 +206,6 @@ public class EMSettings {
 	}
 
 
-	// M. Fontanella - 20 Jun 2016 - begin
 	public String getPowerFromVMtopic() {
 		return powerfromvmtopic;
 	}
@@ -238,7 +214,6 @@ public class EMSettings {
 	public void setPowerFromVMtopic(String powerfromvmtopic) {
 		this.powerfromvmtopic = powerfromvmtopic;
 	}
-	// M. Fontanella - 20 Jun 2016 - end
 	
 	
 	public String getEnableIaasQueue() {
@@ -281,7 +256,6 @@ public class EMSettings {
 	}
 		
 	
-	// M. Fontanella - 08 Jan 2016 -  begin
 	public String getPredictorType() {
 		return predictorType;
 	}
@@ -292,25 +266,22 @@ public class EMSettings {
 	}
 
 	
-	// M. Fontanella - 08 Jan 2016 -  end
-	// M. Fontanella - 11 Jan 2016 -  begin
 	public String getProviderIdDefault() {
 		return providerIdDefault;
 	}
+	
 
 	public void setProviderIdDefault(String providerIdDefault) {
 		this.providerIdDefault = providerIdDefault;
 	}
 	
-	// M. Fontanella - 11 Jan 2016 -  end
 	
-	// M. Fontanella - 26 Apr 2016 - begin
 	public String getEnablePowerFromIaas() {
 		return enablePowerFromIaas;
 	}
+	
 
 	public void setEnablePowerFromIaas(String enablePowerFromIaas) {
 		this.enablePowerFromIaas = enablePowerFromIaas;
 	}
-	// M. Fontanella - 26 Apr 2016 - end
 }

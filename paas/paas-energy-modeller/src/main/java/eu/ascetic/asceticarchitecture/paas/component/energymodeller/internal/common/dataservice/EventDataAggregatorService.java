@@ -31,62 +31,38 @@ public class EventDataAggregatorService {
 	
 	private static final Logger logger = Logger.getLogger(EventDataAggregatorService.class);
 
-// M. Fontanella - 11 Jan 2016 - begin
 	public List<DataEvent> getEvents(String provider, String app, String depl, String vmid, String event, Timestamp start,Timestamp end) {
+
 		eventDataManager = new EventDataService(eventCollectorService.generateEventData(provider, app, depl, vmid, event));
-		// M. Fontanella - 11 Jan 2016 - end
+		
 		if((start==null)&&(end==null)){
-			// M. Fontanella - 11 Jan 2016 - begin
 			List<DataEvent> events = eventDataManager.getByDeployId(provider,app,depl,vmid,event);
-			// M. Fontanella - 11 Jan 2016 - end
 			logger.info("##################### Total events "+events.size()+" from " + vmid + " event" + event);
 			return events;
 		} else {
-			// M. Fontanella - 11 Jan 2016 - begin
 			List<DataEvent> events = eventDataManager.getByDeployIdTime(provider,app,depl,vmid,event,start,end);
-			// M. Fontanella - 11 Jan 2016 - end
 			logger.info("##################### Total is "+events.size());
 			return events;
 		}
 	}
 
-	// M. Fontanella - 11 Jan 2016 - begin
-//	public int getEventsNumber(String provider, String app, String vmid, String event, long start,long end) {
-//		
-//		return eventDataManager.getEventsInTimeFrame(provider, app, vmid, event, start, end);
-		// M. Fontanella - 11 Jan 2016 - end
-//		
-//		
-//	}
-	
-	// M. Fontanella - 11 Jan 2016 - begin
 	public int getAllEventsNumber(String provider, String app, String vmid, String event, long start,long end) {
 				
-		return eventDataManager.getAllEventsInTimeFrame(provider, app, vmid, event, start, end);
-		// M. Fontanella - 11 Jan 2016 - end
-		
-		
+		return eventDataManager.getAllEventsInTimeFrame(provider, app, vmid, event, start, end);		
 		
 	}
 	
-	// M. Fontanella - 11 Jan 2016 - begin
 	public List<Long> getAllDeltas(String provider, String app, String vmid, String event, long start,long end) {
 				
 		return eventDataManager.getAllDeltas(provider, app, vmid, event, start, end);
-		// M. Fontanella - 11 Jan 2016 - end
-		
-		
+
 	}
 	
-	
-	// M. Fontanella - 18 May 2016 - begin
 	public List<Double> getAllProductsDurationWeight(String provider, String app, String vmid, String event, long start,long end) {
 		
 		return eventDataManager.getAllProductsDurationWeight(provider, app, vmid, event, start, end);
 			
-	}
-	// M. Fontanella - 18 May 2016 - end
-	
+	}	
 	
 	public void setupApplicationMonitor(String url){
 		// crea

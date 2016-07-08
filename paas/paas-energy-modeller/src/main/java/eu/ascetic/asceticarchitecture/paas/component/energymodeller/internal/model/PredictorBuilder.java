@@ -35,9 +35,7 @@ public class PredictorBuilder {
 	}
 	
 	public static PredictorInterface getPredictor(String type){
-		// M. Fontanella - 07 Apr 2016 - begin
-		//if (predictor == null) predictor = new EMNeuralPredictor();
-		//return (PredictorInterface)predictor ;
+
 		if (type.equals("basic")) {
 			if (predictor == null) predictor = (PredictorInterface) new EnergyModellerPredictor();
 			return (PredictorInterface)predictor ;
@@ -45,10 +43,6 @@ public class PredictorBuilder {
 		else {
 			if (predictor == null) predictor = new EMNeuralPredictor();
 			return (PredictorInterface)predictor ;			
-		}
-		// M. Fontanella - 07 Apr 2016 - end
-
-	}
-
-	
+		}	
+	}	
 }

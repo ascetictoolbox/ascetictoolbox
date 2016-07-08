@@ -28,15 +28,11 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
  */
 public interface PredictorInterface {
 	
-	// M. Fontanella - 26 Apr 2016 - begin
-	// M. Fontanella - 23 Jun 2016 - begin
 	double estimate(String providerid, String applicationid, String deploymentid, List<String> vmids, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas);
 	
 	double estimate(String providerid, String applicationid, String deploymentid, String vm, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas);
 		
 	double estimate(List<DataConsumption> samples, Unit unit, long forecasttime, boolean enablePowerFromIaas);
-	// M. Fontanella - 23 Jun 2016 - end
-	// M. Fontanella - 26 Apr 2016 - end
 	
 	void setEnergyService(EnergyDataAggregatorServiceQueue service);
 	

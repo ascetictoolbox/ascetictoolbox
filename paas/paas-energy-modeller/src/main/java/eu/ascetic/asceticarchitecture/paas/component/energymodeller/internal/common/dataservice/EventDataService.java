@@ -42,17 +42,14 @@ public class EventDataService {
 	}
 	
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public List<DataEvent> getByApplicationIdTime(String providerid, String applicationid,String vmid, String eventid, Timestamp start, Timestamp end) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		
 		for (DataEvent de : eventData){
 			
-			// M. Fontanella - 11 Jan 2016 - begin
 			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))&& (de.getEventid().equals(eventid))){
 				// ok events referred to the right prov/app/vm/dep
-				// M. Fontanella - 11 Jan 2016 - end
 				if ( (de.getBegintime()>=start.getTime()) && (de.getBegintime()<=end.getTime()) ){
 					resultSet.add(de);
 				}
@@ -64,42 +61,33 @@ public class EventDataService {
 	}
 
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public List<DataEvent> getByApplicationId(String providerid, String applicationid, String vmid, String eventid) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		
 		for (DataEvent de : eventData){
 			
-			// M. Fontanella - 11 Jan 2016 - begin
 			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))&& (de.getEventid().equals(eventid))){
 				// ok events referred to the right prov/app/vm/dep
-				// M. Fontanella - 11 Jan 2016 - end
 					resultSet.add(de);
-				
 			}
 		}
 		
-		return resultSet;
-		
+		return resultSet;		
 	}
 
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public List<DataEvent> getByDeployIdTime(String providerid, String applicationid, String deploymentid, String vmid, String eventid, Timestamp start, Timestamp end) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		
 		for (DataEvent de : eventData){
 			
-			// M. Fontanella - 11 Jan 2016 - begin
 			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid)) && (de.getEventid().equals(eventid)) && (de.getDeploymentid().equals(deploymentid)) && (de.getEventid().equals(eventid))){
 				// ok events referred to the right prov/app/vm/dep
-				// M. Fontanella - 11 Jan 2016 - end
 				if ( (de.getBegintime()>=start.getTime()) && (de.getBegintime()<=end.getTime()) ){
 					resultSet.add(de);
 				}
-				
 			}
 		}
 		
@@ -107,19 +95,16 @@ public class EventDataService {
 	}
 	
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public List<DataEvent> getByDeployId(String providerid, String applicationid, String deploymentid, String vmid, String eventid) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		List<DataEvent> resultSet = new Vector<DataEvent>();
 		if (vmid==null) return resultSet;
 		for (DataEvent de : eventData){
 			
 			// logger.info("PROV="+de.getProviderid()+", APP="+de.getApplicationid()+", VM="+de.getVmid()+", EVENT="+de.getEventid()+", DEP="+de.getDeploymentid());//MAXIM
-			// M. Fontanella - 11 Jan 2016 - begin
 			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid)) && (de.getEventid().equals(eventid)) && (de.getDeploymentid().equals(deploymentid))){
 				
 				// logger.info("***** ADD ***** PROV="+de.getProviderid()+", APP="+de.getApplicationid()+", VM="+de.getVmid()+", EVENT="+de.getEventid()+", DEP="+de.getDeploymentid());//MAXIM
-					// M. Fontanella - 11 Jan 2016 - end
 					resultSet.add(de);
 			}
 		}
@@ -128,9 +113,8 @@ public class EventDataService {
 	}
 
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public int getEventsInTimeFrame(String providerid, String applicationid, String vmid, String eventid, long tstart, long tend) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		// TODO Auto-generated method stub
 		int count = 0;
 		
@@ -138,53 +122,39 @@ public class EventDataService {
 		
 		for (DataEvent de : eventData){
 			
-			// M. Fontanella - 11 Jan 2016 - begin
 			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))&& (de.getEventid().equals(eventid))){
 				// ok events referred to the right prov/app/vm/dep
-				// M. Fontanella - 11 Jan 2016 - end
 				if ((de.getBegintime()<tend)&&(de.getEndtime()>tstart)){
 					count++;
 				}
 				
 			}
 		}
-
-		
-		
 		return count;
 	}
 	
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public int getAllEventsInTimeFrame(String providerid, String applicationid, String vmid, String eventid, long tstart, long tend) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		// TODO Auto-generated method stub
 		int count = 0;
-		
-		
-		
+			
 		for (DataEvent de : eventData){
 			
-			// M. Fontanella - 11 Jan 2016 - begin
 			if ( (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))){
 				// ok events referred to the right prov/app/vm/dep
-				// M. Fontanella - 11 Jan 2016 - end
 				if ((de.getBegintime()<tend)&&(de.getEndtime()>tstart)){
 					count++;
 				}
 				
 			}
 		}
-
-		
-		
 		return count;
 	}
 	
 
-	// M. Fontanella - 11 Jan 2016 - begin
 	public List<Long> getAllDeltas(String providerid, String applicationid, String vmid, String eventid, long tstart, long tend) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		// TODO Auto-generated method stub
 		Vector<Long> results= new Vector<Long>();
 		
@@ -195,15 +165,12 @@ public class EventDataService {
 		
 		for (DataEvent de : eventData){
 			
-			// M. Fontanella - 11 Jan 2016 - begin
 			if (  (de.getProviderid().equals(providerid)) && (de.getApplicationid().equals(applicationid))&& (de.getVmid().equals(vmid))){
-				// M. Fontanella - 11 Jan 2016 - end
+			
 				logger.info("$$$ This Event on the same machine "+de.getEndtime()+"-"+de.getBegintime());
 				logger.info("$$$ This Event duration "+(de.getEndtime()-de.getBegintime()));
 				
-				// M. Fontanella - 11 Jan 2016 - begin
-				// ok events referred to the right prov/app/vm/dep
-				// M. Fontanella - 11 Jan 2016 - end
+				// ok events referred to the right prov/app/vm/dep			
 				Long delta=new Long(0);
 				long lowerbtime=0;
 				long upperbtime=0;
@@ -235,8 +202,9 @@ public class EventDataService {
 		return results;
 	}
 	
-	// M. Fontanella - 18 May 2016 - begin
+
 	public List<Double> getAllProductsDurationWeight(String providerid, String applicationid, String vmid, String eventid, long tstart, long tend) {
+
 		// TODO Auto-generated method stub
 		Vector<Double> results= new Vector<Double>();
 		
@@ -282,5 +250,4 @@ public class EventDataService {
 
 		return results;
 	}
-	// M. Fontanella - 18 May 2016 - end
 }

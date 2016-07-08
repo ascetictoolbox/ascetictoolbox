@@ -20,17 +20,11 @@ import java.sql.Timestamp;
 public class EnergyModellerMonitoring {
 
 	private String monitoringid;
-	// M. Fontanella - 20 Jan 2016 - begin
 	private String providerid;
-	// M. Fontanella - 20 Jan 2016 - end
 	private String applicationid;
 	private String deploymentid;
-	// M. Fontanella - 10 Feb 2016 - begin
-	// M. Fontanella - 12 Feb 2016 - begin
 	private long start;
 	private long stop;
-	// M. Fontanella - 12 Feb 2016 - end
-	// M. Fontanella - 10 Feb 2016 - end
 	private String events;
 	private boolean status;
 	// TODO will store data for future reference as: energy estimation ecc..
@@ -40,14 +34,12 @@ public class EnergyModellerMonitoring {
 	public void setMonitoringid(String monitoringid) {
 		this.monitoringid = monitoringid;
 	}
-	// M. Fontanella - 20 Jan 2016 - begin
 	public String getProviderid() {
 		return providerid;
 	}
 	public void setProviderid(String providerid) {
 		this.providerid = providerid;
 	}
-	// M. Fontanella - 20 Jan 2016 - end
 	public String getApplicationid() {
 		return applicationid;
 	}
@@ -60,8 +52,6 @@ public class EnergyModellerMonitoring {
 	public void setDeploymentid(String deploymentid) {
 		this.deploymentid = deploymentid;
 	}
-	// M. Fontanella - 10 Feb 2016 - begin
-	// M. Fontanella - 12 Feb 2016 - begin
 	public long getStart() {
 		return start;
 	}
@@ -74,8 +64,6 @@ public class EnergyModellerMonitoring {
 	public void setStop(long stop) {
 		this.stop = stop;
 	}
-	// M. Fontanella - 12 Feb 2016 - end
-	// M. Fontanella - 10 Feb 2016 - end
 	public boolean isStatus() {
 		return status;
 	}

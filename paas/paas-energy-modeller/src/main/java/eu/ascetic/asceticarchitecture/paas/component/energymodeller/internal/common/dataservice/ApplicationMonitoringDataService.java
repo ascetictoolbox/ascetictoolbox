@@ -85,34 +85,27 @@ public class ApplicationMonitoringDataService  {
 	 * retrieves values from the application manager about an event by using a rest interface, if not event are supplied it retrieves all events of the same application
 	 * it is possible that events have missing vmid in that case they are assinged to the current vm as they are global events assigned to all vms belonging to the same application
 	 */
-	// M. Fontanella - 11 Jan 2016 - begin 
 	public List<DataEvent> generateEventData(String providerid, String applicationid, String deploymentid,String vmid, String eventid) {
-		// M. Fontanella - 11 Jan 2016 - end
+
 		// TODO deployment id shoudl be used and in case to filter only some events. 
-			// M. Fontanella - 11 Jan 2016 - begin 
 			logger.info("Now getting events for prov " + providerid);
-			// M. Fontanella - 11 Jan 2016 - end
 			logger.info("Now getting events for app " + applicationid);
 			logger.info("Now getting events for dep " + deploymentid);
 			logger.info("Now getting events for vm " + vmid);
 			String requestEntity;
-			// M. Fontanella - 18 May 2016 - begin
 	    	// Assumption: an application can not run simultaneously on different provider id
 			// otherwise this change will be required: 
 			// requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\"AND nodeId=\""+vmid+"\"";
-			// M. Fontanella - 18 May 2016 - end
+
 			// TODO this is the original query replaced 
 			//requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" AND nodeId=\""+vmid+"\"";
-			// M. Fontanella - 14 Jun 2016 - begin
 			requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND nodeId=\""+vmid+"\"";
-			// M. Fontanella - 14 Jun 2016 - end
+
 			if (eventid==null){
 				logger.warn("No event id supplied. I will load all events for the application");
-				// M. Fontanella - 18 May 2016 - begin
 		    	// Assumption: an application can not run simultaneously on different provider id
 				// otherwise this change will be required:  
 				//requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\"";
-				// M. Fontanella - 18 May 2016 - end
 				requestEntity = "FROM events MATCH appId=\""+applicationid+"\"";
 			}
 
@@ -124,11 +117,9 @@ public class ApplicationMonitoringDataService  {
 			    if ((entries==null)){
 			    }else if (entries.size()==0) {
 			    	logger.info("specifi events for only this VM not found, looking global events");
-			    	// M. Fontanella - 18 May 2016 - begin
 			    	// Assumption: an application can not run simultaneously on different provider id
 					// otherwise this change will be required: 
 			    	// requestEntity = "FROM events MATCH provId=\""+providerid+"\"AND appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
-			    	// M. Fontanella - 18 May 2016 - end
 			    	requestEntity = "FROM events MATCH appId=\""+applicationid+"\" AND data.eventType=\""+eventid+"\" ";
 			    	// requestEntity = "FROM events MATCH appId=\""+applicationid+"\""; //MAXIM
 			    	entries = checkEvents(requestEntity);
@@ -139,11 +130,9 @@ public class ApplicationMonitoringDataService  {
 			    for (JsonElement el : entries){			    	
 			    	JsonObject jo = (JsonObject) el;
 			    	logger.debug("id" + jo.getAsJsonObject("_id"));
-			    	// M. Fontanella - 18 May 2016 - begin
 			    	// Assumption: an application can not run simultaneously on different provider id
 					// otherwise this change will be required:
 			    	// logger.debug("provId" + jo.getAsJsonPrimitive("provId"));
-			    	// M. Fontanella - 18 May 2016 - end
 			    	logger.debug("appId" + jo.getAsJsonPrimitive("appId"));
 			    	logger.debug("nodeId" + jo.getAsJsonPrimitive("nodeId"));
 			    	logger.debug("data" + jo.getAsJsonObject("data"));
@@ -154,9 +143,7 @@ public class ApplicationMonitoringDataService  {
 			    	
 			    	boolean valid_data = true;
 			    	
-			    	// M. Fontanella - 18 May 2016 - begin
 			    	data.setProviderid(providerid);
-			    	// M. Fontanella - 18 May 2016 - end
 			    	data.setApplicationid(applicationid);
 			    	data.setDeploymentid(deploymentid);
 			    	if (jo.getAsJsonPrimitive("eventType")!=null){
@@ -177,7 +164,7 @@ public class ApplicationMonitoringDataService  {
 			    			}
 			    		}
 			    	}
-			    	// M. Fontanella - 18 May 2016 - begin
+
 			    	double weight = 1.0;
 			    	if (jo.getAsJsonPrimitive("eventWeight")!=null){
 			    		weight=jo.getAsJsonPrimitive("eventWeight").getAsDouble();			    		
@@ -193,16 +180,13 @@ public class ApplicationMonitoringDataService  {
 			    		}
 			    	}
 			    	data.setWeight(weight);
-			    	// M. Fontanella - 18 May 2016 - end
 			    	
-			    	// M. Fontanella - 18 May 2016 - begin
 			    	// Assumption: an application can not run simultaneously on different provider id
 					// otherwise this change will be required:
 			    	// if (jo.getAsJsonPrimitive("provId")==null) 	{
 			    	// 	valid_data = false;
 			    	//	logger.warn("prov id is null"+jo.getAsJsonObject("_id"));
 			    	// }
-			    	// M. Fontanella - 18 May 2016 - end
 			    	
 			    	if (jo.getAsJsonPrimitive("appId")==null) 	{
 			    		valid_data = false;
@@ -255,11 +239,7 @@ public class ApplicationMonitoringDataService  {
 			    		} else {
 			    			   // TODO in future could be worth checking if the event is already in the databse
 				    			if (valid_data)resultSet.add(data);
-				    			// M. Fontanella - 18 May 2016 - begin
-								// M. Fontanella - 11 Jan 2016 - begin
 								if (valid_data)logger.info("saving event="+data.getEventid()+", providerid="+data.getProviderid()+", applicationid="+data.getApplicationid()+", nodeid="+data.getVmid()+", begin="+data.getBegintime()+", end="+data.getEndtime()+", weight="+data.getWeight());
-								// M. Fontanella - 11 Jan 2016 - end
-								// M. Fontanella - 18 May 2016 - end
 				    		}
 			    		}
 			    }

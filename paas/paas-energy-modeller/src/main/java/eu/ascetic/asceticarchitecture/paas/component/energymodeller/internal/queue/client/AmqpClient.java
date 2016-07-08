@@ -180,14 +180,14 @@ public class AmqpClient {
 	 */
 	public void registerListener(String topic, MessageListener listener){
 		LOGGER.info("Registering listener");
-		try {
+		try {			
 			Destination thisDestination = session.createTopic(topic);			
 			MessageConsumer thisConsumer = session.createConsumer(thisDestination);
 			thisConsumer.setMessageListener(listener);
 		
 		} catch (JMSException e1) {
 			e1.printStackTrace();
-		}
+		}		
 	}
 	
     public void destroy() throws JMSException {

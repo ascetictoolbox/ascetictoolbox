@@ -36,9 +36,7 @@ public class EMQueuePEM {
 	private static AmqpClient iaasQm;
 	private static ApplicationRegistry registry;
 	private static DataConsumptionHandler dataCollectorHandler;
-	/* M. Fontanella - 20 Jun 2016 - begin */
 	private static CpuFeaturesHandler cpuFeaturesHandler;
-	/* M. Fontanella - 20 Jun 2016 - end */
 	static EnergyModellerQueueServiceManager queueManager;
 	
 
@@ -51,7 +49,6 @@ public class EMQueuePEM {
 		iaasQm =  new AmqpClient();
 		try {			
 			
-			// M. Fontanella - 05 Feb 2016 - begin
 			// dev enb
 			//	paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
 			//	iaasQm.setup("192.168.0.8:32778", "admin", "admin");
@@ -63,27 +60,15 @@ public class EMQueuePEM {
 			
 			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
 			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
-			/* M. Fontanella - 20 Jun 2016 - begin */			              
 			cpuFeaturesHandler = CpuFeaturesHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
-			/* M. Fontanella - 20 Jun 2016 - end */
 			
-			// M. Fontanella - 05 Feb 2016 - end
-			/* M. Fontanella - 20 Jun 2016 - begin */
 			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler,cpuFeaturesHandler);
-			/* M. Fontanella - 20 Jun 2016 - end */
 			
-			// M. Fontanella - 26 Apr 2016 - begin
 			boolean enablePowerFromIaas = true; // Power values from IaaS
 			// boolean enablePowerFromIaas = false; // Power values from PaaS
 			String defaultProviderId = "00000";
-			// M. Fontanella - 06 Jun 2016 - begin
 			// queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.*", defaultProviderId, enablePowerFromIaas);
-			// M. Fontanella - 20 Jun 2016 - begin
-			// queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*",defaultProviderId, enablePowerFromIaas);
 			queueManager.createTwoLayersConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","APPLICATION.*.DEPLOYMENT.*.VM.*.METRIC.*","PROVIDER.*.APPLICATION.*.DEPLOYMENT.*.VM.*.FROMVM",defaultProviderId, enablePowerFromIaas);
-			// M. Fontanella - 20 Jun 2016 - end
-			// M. Fontanella - 06 Jun 2016 - end
-			// M. Fontanella - 26 Apr 2016 - end
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

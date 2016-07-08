@@ -19,13 +19,10 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Vector;
 import java.util.Arrays;
-//M. Fontanella - 23 Jun 2016 - begin
 import java.util.Date;
 import java.util.TimeZone;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-//M. Fontanella - 23 Jun 2016 - end
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,7 +33,6 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.ser
 
 public class EnergyModellerData {
 
-	// M. Fontanella - 05 Feb 2016 - begin
 	private static EnergyModellerService serviceEM;
 	
 	/* Test 1 
@@ -83,13 +79,29 @@ public class EnergyModellerData {
 	private static String DEP = "942";
 	*/
 	
-	/* Test 6 */
+	/* Test 6 
 	private static String HOST = "2363";
 	private static String PROVIDER = "1";
 	private static String EVENT = "ciao";	
 	private static String APP = "JEPlus";
 	private static String DEP = "843";
-	/* */
+	*/
+	
+	/* Test 7 */
+	private static String HOST = "1765";
+	private static String PROVIDER = "1";
+	private static String EVENT = "ciao";	
+	private static String APP = "newsAsset";
+	private static String DEP = "490";
+	/**/
+	
+	/* Test 8
+	private static String HOST = "1";
+	private static String PROVIDER = "12";
+	private static String EVENT = "ciao";	
+	private static String APP = "lorenzoTestApp";
+	private static String DEP = "1";
+	*/
 	
 	// long beginlong = 1410449721L;
 	// long endlong = 1443705931826L;
@@ -118,17 +130,13 @@ public class EnergyModellerData {
 
 	// private static String TEST= "11";
 	
-	// M. Fontanella - 05 Feb 2016 - end
-	
 	@BeforeClass
 	public static void setup() {
 		
-		// M. Fontanella - 05 Feb 2016 - begin
 		serviceEM = (EnergyModellerService) EnergyModellerFactory.getEnergyModeller("c:/mfontanella/new/lavoro/ascetic/config/config.properties");
-		// M. Fontanella - 05 Feb 2016 - end
 	}
 
-// M. Fontanella - 09 Jun 2016 - begin
+	
 	@Test
 	public void eventPowerInterface() {
 		
@@ -143,20 +151,53 @@ public class EnergyModellerData {
 				9400, 9896, 10391, 10877, 11373	
 		};
 		*/
-		long[] TimeValues = new long[] {0};
+		
+		/*
+		long[] TimeValues = new long[] {
+		 		0,   496,   991,  1478,  1974,  2480,
+  				3178,  3512,  3997,  4493,  4989,  5474,
+  				5970,  6465,  7123,  7629,  8124,  8620
+		};
+		*/
+		
+		/*
+		long[] TimeValues = new long[] {
+  				9116,  9601, 10107, 10775, 11270, 11776,
+ 				12272, 12778, 13273, 13769, 14265, 14943,
+ 				15438, 15944, 16440, 16935, 17431, 17937
+				};
+				*/
+				
+		
+		// long[] TimeValues = new long[] {0};
         
 		List<String> vmids = new Vector<String>();
 		vmids.add(HOST);		
 		EVENT=null;
+		
+		/*
 		for (int i = 0; i < TimeValues.length; i++) { 
-			double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
+			// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
 			// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));		      	
-			// double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,TimeValues[i]);
+			double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,TimeValues[i]);
 			// double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,TimeValues[i]);
 			System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
 		}
+		*/
+		
+		/*
+		for (int i = 0; i < 100; i++) { 
+			
+			double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,i*5);
+			
+			System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
+		}
+		*/
+		
+		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,0);
+		
+		System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
 				
-		// M. Fontanella - 29 Jun 2016 - begin
 		/*
 		long beginlong = 1444147613000L;
 		long endlong   = 1444147925000L;
@@ -165,11 +206,8 @@ public class EnergyModellerData {
 		vmids1.add("VM2");
 		callTest(null, "APP1", "DEP1",vmids1, "EVENT1", Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));
 		*/
-		// M. Fontanella - 29 Jun 2016 - end
-				
-		// M. Fontanella - 23 Jun 2016 - begin	
-		// dataTest();
-		// M. Fontanella - 23 Jun 2016 - end
+			
+		// dataTest();		
 	}
 	
 	public static void callTest(String providerid, String applicationid, String deploymentid,List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end) {
@@ -212,9 +250,8 @@ public class EnergyModellerData {
 		String fmm = df.format(new java.util.Date(end));
 		System.out.println("ORA2="+fmm);
 	}
-// M. Fontanella - 09 Jun 2016 - end	
 	
-// M. Fontanella - 05 Feb 2016 - begin
+
 //	@Test
 //	public void eventPowerInterface() {
 //		List<String> vmids = new Vector<String>();
@@ -224,10 +261,8 @@ public class EnergyModellerData {
 //		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,60);
 //		System.out.println("################################ HOST "+HOST+"Average Power "+EVENT+" estimated is:  "+result);
 //	}
-// M. Fontanella - 05 Feb 2016 - end	
 
 
-// M. Fontanella - 05 Feb 2016 - begin
 //	@Test
 //	public void eventPowerInterface() {
 //		List<String> vmids = new Vector<String>();
@@ -237,7 +272,6 @@ public class EnergyModellerData {
 //		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,null,null);
 //		System.out.println("################################ HOST "+HOST+"Average Power "+EVENT+" estimated is:  "+result);
 //	}
-// M. Fontanella - 05 Feb 2016 - end	
 	
 	
 //	@Test

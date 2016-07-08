@@ -16,7 +16,6 @@
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.predictor.impl;
 
 import java.util.List;
-// M. Fontanella - 30 Mar 2016 - Begin
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -26,16 +25,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.TreeMap;
-// import java.sql.Timestamp;
-// import java.io.BufferedReader;
-// import java.io.BufferedWriter;
-// import java.io.FileReader;
-// import java.io.FileWriter;
-// import java.io.IOException;
-// import java.util.LinkedList;
-
 import org.apache.log4j.Logger;
-
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
@@ -45,8 +35,6 @@ import org.neuroph.core.learning.SupervisedLearning;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.nnet.learning.MomentumBackpropagation;
-// M. Fontanella - 30 Mar 2016 - End
-
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
@@ -55,7 +43,6 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.mod
 
 public class EMNeuralPredictor implements PredictorInterface{
 
-	// M. Fontanella - 30 Mar 2016 - Begin
 	private final static Logger LOGGER = Logger.getLogger(PredictorInterface.class.getName());
 	private EnergyDataAggregatorServiceQueue service;
 	
@@ -72,98 +59,55 @@ public class EMNeuralPredictor implements PredictorInterface{
 	public enum PredictorObject {
 	CPU,MEMORY,POWER
 	}
-	// M. Fontanella - 30 Mar 2016 - End
-	
-	// M. Fontanella - 26 Apr 2016 - begin
-	// M. Fontanella - 26 Apr 2016 - begin
+
 	@Override
 	public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
-	// public double estimate(String providerid, String applicationid,	String deploymentid, List<String> vmids, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
-	// M. Fontanella - 23 Jun 2016 - end
-		// M. Fontanella - 26 Apr 2016 - end
-		// M. Fontanella - 30 Mar 2016 - Begin
+	
 		// only power then from power get energy estimation
 		double cur_power = 0;
 		int count=0;
 		for (String vmid :vmids){
 			count++;
-			// M. Fontanella - 26 Apr 2016 - begin
-			// M. Fontanella - 26 Apr 2016 - begin
 			cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  forecasttime, enablePowerFromIaas) ;
-			// cur_power = cur_power + estimate( providerid,  applicationid,	 deploymentid,  vmid,  eventid,  unit,  timelater, enablePowerFromIaas) ;
-			// M. Fontanella - 23 Jun 2016 - end
-			// M. Fontanella - 26 Apr 2016 - end
 		}
 		
 		if (count>0)return cur_power/count;
-		// M. Fontanella - 30 Mar 2016 - End
+
 		return 0;
 	}
 
 	@Override
 	public void setEnergyService(EnergyDataAggregatorServiceQueue service) {
-		// M. Fontanella - 30 Mar 2016 - Begin
+
 		this.service = service;
-		// M. Fontanella - 30 Mar 2016 - End
-		
 	}
 
-	// M. Fontanella - 26 Apr 2016 - begin
-	// M. Fontanella - 23 Jun 2016 - begin	
 	@Override
 	public double estimate(List<DataConsumption> samples, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
-	// public double estimate(List<DataConsumption> samples, Unit unit, long timelater, boolean enablePowerFromIaas) {
-	// M. Fontanella - 23 Jun 2016 - end
-	// M. Fontanella - 26 Apr 2016 - end
+
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	// M. Fontanella - 26 Apr 2016 - begin
-	// M. Fontanella - 23 Jun 2016 - begin	
 	@Override
 	public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
-	// public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long timelater, boolean enablePowerFromIaas) {
-	// M. Fontanella - 23 Jun 2016 - end
-	// M. Fontanella - 26 Apr 2016 - end
-		// M. Fontanella - 30 Mar 2016 - Begin
 		
 		// Neuroph parameters
 		int maxIterations = 1000;
-		double maxError = 0.003;// (0.00001) or (0.001)
-        double learningRate = 0.1;// (0.5) or (0.7)
-        int slidingWindowSize = 9; // = 4 * 3(CPU, Memory, Power)
+		double maxError = 0.007;// (0.007) or (0.003)
+        double learningRate = 0.1;// (0.1) or (0.5) or (0.7)
+        int slidingWindowSize = 9; // 9 = 3 * 3(CPU, Memory, Power)
 		double estimation=0;
-		// M. Fontanella - 23 Jun 2016 - begin
-		/*
-		Date current = new Date();
-				
-		long end = current.getTime();
-		// M. Fontanella - 26 May 2016 - begin
-		//long end = 1459787827000L; //test #1
-		//long end = 1459960847000L; //test #2
-		//long end = 1461739092000L; //test #3
-		// M. Fontanella - 26 May 2016 - end		
-		LOGGER.info("Forecaster now is "+end);
-		// add after millisec conversion the time of the forecast
-		long forecasttime = end/1000 + (timelater);
-		*/
 		forecasttime = forecasttime/1000;
-		// M. Fontanella - 23 Jun 2016 - end
 		
 		LOGGER.info("Forecaster Provider "+providerid + " Application "+applicationid + " VM "+vm + " at time "+forecasttime);
 		LOGGER.info("############ Forecasting STARTED FOR Provider "+providerid + " Application "+applicationid + " VM "+vm+ "############");
 		
-		// M. Fontanella - 26 Apr 2016 - begin
 		double[][] valuesRow = dataAggregation(providerid, applicationid, deploymentid, vm, eventid, maxIterations, enablePowerFromIaas);
-		// M. Fontanella - 26 Apr 2016 - end
 				
 		maxIterations = valuesRow.length;
 		LOGGER.info("Samples of analysis for model will be " + valuesRow.length);
-		// M. Fontanella - 16 Jun 2016 - begin
-		// if (valuesRow.length == 0){
 		if (valuesRow.length <= 1){
-		// M. Fontanella - 16 Jun 2016 - end
 			LOGGER.warn("Not enought samples " + valuesRow.length);
 			LOGGER.info("############ Forecasting not performed on Provider "+providerid + " Application "+applicationid + " VM "+vm+ "############");
 			return 0;
@@ -198,9 +142,11 @@ public class EMNeuralPredictor implements PredictorInterface{
 				LOGGER.debug("CPU, Memory, Power - Network error for interation " + rule.getCurrentIteration() + ": " + rule.getTotalNetworkError());
 			}
 		});
-				
+		
 		DataSet trainingSet = trainingImportObjectFromMatrix(valuesRow, slidingWindowSize, 3);
+		// LOGGER.info("BEFORE TRAINING"); //MAXIM
 		neuralNetwork.learn(trainingSet);
+		// LOGGER.info("AFTER  TRAINING"); //MAXIM
 		// neuralNetwork.save(neuralNetworkModelFilePath);
 		// trainingSet.saveAsTxt("/temp/CPU_Memory_Power.txt","|");
 		
@@ -259,7 +205,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 			LOGGER.debug("FORECAST - Timestamp: " + (this.lastSampleTimestamp + (this.sampleIntervalAverage * (counter + 1))) +
 						" CPU:"    + deNormalizeValue(currOutputCPU, PredictorObject.CPU) +
 						" Memory:" + deNormalizeValue(currOutputMemory, PredictorObject.MEMORY) +
-						" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));					
+						" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));				
 								
 			// CPU, Memory, Power: setup for next estimations
 			// input array update: 
@@ -289,16 +235,16 @@ public class EMNeuralPredictor implements PredictorInterface{
 			LOGGER.debug("FORECAST Adjusting - Timestamp: " + forecasttime +
 						" CPU:"    + deNormalizeValue(calcOutputCPU, PredictorObject.CPU) +
 						" Memory:" + deNormalizeValue(calcOutputMemory, PredictorObject.MEMORY) +
-						" Power:"  + deNormalizeValue(calcOutputPower, PredictorObject.POWER));	
+						" Power:"  + deNormalizeValue(calcOutputPower, PredictorObject.POWER));
 		} else {
 			estimation = deNormalizeValue(currOutputPower, PredictorObject.POWER);
 			
-			/* MAXIM
+			/* MAXIM 
 			LOGGER.info("FORECAST NoAdjusting - Timestamp: " + forecasttime +
 					" CPU:"    + deNormalizeValue(currOutputCPU, PredictorObject.CPU) +
 					" Memory:" + deNormalizeValue(currOutputMemory, PredictorObject.MEMORY) +
-					" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));	//MAXIM
-			MAXIM */
+					" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));	
+			MAXIM */			
 		}
 		
 		LOGGER.info("############ Forecasting TERMINATED POWER WILL BE "+estimation + " at "+forecasttime+ "############");
@@ -308,9 +254,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 	}
 
 	
-	// M. Fontanella - 26 Apr 2016 - begin
 	public double[][] dataAggregation(String providerid, String applicationid, String deploymentid, String vm, String eventid, int maxIterations, boolean enablePowerFromIaas) {
-	// M. Fontanella - 26 Apr 2016 - end
 		
 		int counter;
 		boolean isnull = false;
@@ -318,13 +262,9 @@ public class EMNeuralPredictor implements PredictorInterface{
 		long timestamp;
 		int counterALL = 0;
 		
-		// M. Fontanella - 20 Jun 2016 - begin	
 		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
 		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
-		// M. Fontanella - 20 Jun 2016 - end
-		// M. Fontanella - 26 Apr 2016 - begin
 		List<DataConsumption> powerSample = service.samplePower(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
-		// M. Fontanella - 26 Apr 2016 - end
 		
 		LOGGER.debug("Samples for the analysis ");
 		
@@ -560,15 +500,11 @@ public class EMNeuralPredictor implements PredictorInterface{
 							valuesRowTmp[counter][2] = valuesMemory[counter2]; 
 							valuesRowTmp[counter][3] = valuesPower[counter3];
 							counter++;
-							// M. Fontanella - 14 Jun 2016 - begin
 							break;
-							// M. Fontanella - 14 Jun 2016 - end
 						}
 					}
 					
-					// M. Fontanella - 14 Jun 2016 - begin
 					break;
-					// M. Fontanella - 14 Jun 2016 - end
 				}
 			}
 			
@@ -595,9 +531,13 @@ public class EMNeuralPredictor implements PredictorInterface{
 			valuesRow[counter1][2] = valuesRowTmp[counter1 + firstRow][2]; 
 			valuesRow[counter1][3] = valuesRowTmp[counter1 + firstRow][3];
 				
-			// valuesRow[counter1] = valuesRowTmp[counter1 + firstRow];
 			if (counter1 < 10)
-				LOGGER.debug("#" + (counter1) + ": " + ((long )valuesRow[counter1][0]) + " "+ valuesRow[counter1][1] + " "+ valuesRow[counter1][2] + " "+ valuesRow[counter1][3]);				
+				LOGGER.debug("#" + (counter1) + ": " + ((long )valuesRow[counter1][0]) + " "+ valuesRow[counter1][1] + " "+ valuesRow[counter1][2] + " "+ valuesRow[counter1][3]);
+			
+			/* MAXIM
+			if (counter1 < 10000) //MAXIM
+				LOGGER.info((counter1) + "|" + ((long )valuesRow[counter1][0]) + "|"+ valuesRow[counter1][1] + "|"+ valuesRow[counter1][2] + "|"+ valuesRow[counter1][3]); //MAXIM
+			MAXIM */
 		}
 		
 		
@@ -606,13 +546,10 @@ public class EMNeuralPredictor implements PredictorInterface{
 		if (counterALL > 0) {		
 			
 			this.lastSampleTimestamp = (long )valuesRow[counterALL-1][0];
-			// M. Fontanella - 16 Jun 2016 - begin
-			//this.sampleIntervalAverage = this.lastSampleTimestamp - (long )valuesRow[counterALL-2][0];
 			if (counterALL > 1)
 				this.sampleIntervalAverage = (this.lastSampleTimestamp - (long )valuesRow[0][0])/(counterALL-1);
 			else
 				this.sampleIntervalAverage = 0;
-			// M. Fontanella - 16 Jun 2016 - end
 		
 			LOGGER.info("Last Sample Timestamp / Average Interval: " + this.lastSampleTimestamp + " / " + this.sampleIntervalAverage);
 
@@ -647,7 +584,8 @@ public class EMNeuralPredictor implements PredictorInterface{
 				this.maxPower = valuePower;
 			if (valuePower < this.minPower)
 				this.minPower = valuePower;			
-		}
+		}	
+		
 	}
 
 	
@@ -761,7 +699,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 		value = (input - (0.8 * min)) / ((1.2 * max) - (0.8 * min));
 		
 		if (input < (0.8 * min))
-			LOGGER.debug("Normalize " + objectType + ": Input=" + input + "Output=" + value);
+			LOGGER.debug("**********MIN Normalize " + objectType + ": Input=" + input + "Output=" + value);		
 		
 		return value;
 	}

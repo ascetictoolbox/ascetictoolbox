@@ -26,17 +26,14 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 
 public class DataConsumptionData {
 
-	// M. Fontanella - 08 Feb 2016 - begin
 	private static int MILLISEC=1000;
-	// M. Fontanella - 08 Feb 2016 - end
 	private static DataConsumptionHandler manager;
 	private static DataConsumptionMapper mapper;
 	
 	@BeforeClass
 	public static void setup() {
-		// M. Fontanella - 05 Feb 2016 - begin
+
 		manager = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.8:3306/ascetic_paas_em","root","root");
-		// M. Fontanella - 05 Feb 2016 - end
 		mapper = manager.getSession().getMapper(DataConsumptionMapper.class);
 	}
 	
@@ -45,10 +42,7 @@ public class DataConsumptionData {
 	public void testCreate() {
 		
 		DataConsumption dc = new DataConsumption();
-		// M. Fontanella - 20 Jan 2016 - begin
 		dc.setProviderid("00000");
-		// M. Fontanella - 20 Jan 2016 - end
-		// M. Fontanella - 05 Feb 2016 - begin
 		dc.setApplicationid("app2");
 		dc.setVmcpu(0.6);
 		dc.setDeploymentid("2");
@@ -56,18 +50,12 @@ public class DataConsumptionData {
 		dc.setVmpower(5);
 		dc.setVmid("iaas2");
 		dc.setMetrictype("power");
-		// M. Fontanella - 05 Feb 2016 - end
-		// M. Fontanella - 08 Feb 2016 - begin
 		long init = new Date().getTime() / MILLISEC;
 		dc.setTime(new Date().getTime() / MILLISEC);
-		// M. Fontanella - 08 Feb 2016 - end
 		mapper.createMeasurement(dc);
 		
 		dc = new DataConsumption();
-		// M. Fontanella - 20 Jan 2016 - begin
 		dc.setProviderid("00000");
-		// M. Fontanella - 20 Jan 2016 - end
-		// M. Fontanella - 05 Feb 2016 - begin
 		dc.setApplicationid("app2");
 		dc.setVmcpu(0.6);
 		dc.setDeploymentid("2");
@@ -75,19 +63,13 @@ public class DataConsumptionData {
 		dc.setVmpower(5);
 		dc.setVmid("iaas2");
 		dc.setMetrictype("power");
-		// M. Fontanella - 05 Feb 2016 - end
-		// M. Fontanella - 08 Feb 2016 - begin
 		init = new Date().getTime() / MILLISEC;
 		dc.setTime(new Date().getTime() / MILLISEC);
-		// M. Fontanella - 08 Feb 2016 - end
 		mapper.createMeasurement(dc);		
 		
 		
 		dc = new DataConsumption();
-		// M. Fontanella - 20 Jan 2016 - begin
 		dc.setProviderid("00000");
-		// M. Fontanella - 20 Jan 2016 - end
-		// M. Fontanella - 05 Feb 2016 - begin
 		dc.setApplicationid("app2");
 		dc.setVmcpu(0.6);
 		dc.setDeploymentid("2");
@@ -95,41 +77,26 @@ public class DataConsumptionData {
 		dc.setVmpower(15);
 		dc.setVmid("iaas2");
 		dc.setMetrictype("power");
-		// M. Fontanella - 05 Feb 2016 - end
-		// M. Fontanella - 08 Feb 2016 - begin
 		init = new Date().getTime() / MILLISEC;
 		dc.setTime(new Date().getTime() / MILLISEC);
-		// M. Fontanella - 08 Feb 2016 - end
 		mapper.createMeasurement(dc);		
 		
-		// M. Fontanella - 05 Feb 2016 - begin
-		// M. Fontanella - 26 Apr 2016 - begin
 		// if (in EMSettings) enablePowerFromIass="true" use "getTotalEnergyForVM"
 		// else use "getLastConsumptionForVMVirtualPower"
-		// M. Fontanella - 16 Jun 2016 - begin
 		System.out.println(mapper.getLastConsumptionForVM("00000","2", "iaas2"));
 		// System.out.println(mapper.getLastConsumptionForVMVirtualPower("00000","2", "iaas2"));
-		// M. Fontanella - 16 Jun 2016 - end
-		// M. Fontanella - 26 Apr 2016 - end
 		
-		// M. Fontanella - 26 Apr 2016 - begin
 		// if (in EMSettings) enablePowerFromIass="true" use "getTotalEnergyForVM"
 		// else use "getTotalEnergyForVMVirtualPower"
-		// M. Fontanella - 16 Jun 2016 - begin
 		System.out.println(mapper.getTotalEnergyForVM("00000","2", "iaas2"));
 		// System.out.println(mapper.getTotalEnergyForVMVirtualPower("00000","2", "iaas2"));
-		// M. Fontanella - 16 Jun 2016 - end
-		// M. Fontanella - 26 Apr 2016 - end
 		
 		//	System.out.println(mapper.getPowerInIntervalForVM("2", "iaas2", init, end));
 		
-		// M. Fontanella - 26 Apr 2016 - begin
 		// if (in EMSettings) enablePowerFromIass="true" use "getSampleTimeAfter"
 		// else use "getSampleTimeAfterVirtualPower"
-		// M. Fontanella - 16 Jun 2016 - begin
 		System.out.println(mapper.getSampleTimeAfter("00000","2", "iaas2", init));
 		// System.out.println(mapper.getSampleTimeAfterVirtualPower("00000","2", "iaas2", init));
-		// M. Fontanella - 16 Jun 2016 - end
 		
 		//	System.out.println(mapper.getSampleTimeBefore("2", "iaas2",end));
 		
@@ -141,27 +108,15 @@ public class DataConsumptionData {
 		
 		System.out.println(mapper.selectByDeploy("2"));
 		
-		// M. Fontanella - 26 Apr 2016 - begin
 		// if (in EMSettings) enablePowerFromIass="true" use "selectByVm"
 		// else use "selectByVmVirtualPower"
-		// M. Fontanella - 16 Jun 2016 - begin
 		System.out.println(mapper.selectByVm("00000", "2", "iaas2"));		
 		// System.out.println(mapper.selectByVmVirtualPower("00000", "2", "iaas2"));
-		// M. Fontanella - 16 Jun 2016 - end
-		// M. Fontanella - 26 Apr 2016 - end
 				
-		// M. Fontanella - 26 Apr 2016 - begin
 		// if (in EMSettings) enablePowerFromIass="true" use "getSampleAtTime"
 		// else use "getSampleAtTimeVirtualPower"
-		// M. Fontanella - 16 Jun 2016 - begin
 		System.out.println(mapper.getSampleAtTime("00000", "2", "iaas2", init));
 		// System.out.println(mapper.getSampleAtTimeVirtualPower("00000", "2", "iaas2", init));
-		// M. Fontanella - 16 Jun 2016 - end
-		// M. Fontanella - 26 Apr 2016 - end
-
-		// M. Fontanella - 05 Feb 2016 - end
-	}
-	
-	
+	}	
 	
 }

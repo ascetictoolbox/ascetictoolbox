@@ -22,29 +22,22 @@ package eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.co
  */
 public class VirtualMachine {
 	
-	// M. Fontanella - 10 Feb 2016 - begin
-	// M. Fontanella - 20 Jan 2016 - begin
 	private String providerid;
-	// M. Fontanella - 20 Jan 2016 - end
 	private String applicationid;
 	private String deploymentid;
 	private String vmid;
-	// M. Fontanella - 10 Feb 2016 - end
 	private long start;
 	private long stop;
-	// M. Fontanella - 10 Feb 2016 - begin
 	private int profileid;
 	private int modelid;
 	private String iaasid;
 		
-	// M. Fontanella - 20 Jan 2016 - begin
 	public String getProviderid() {
 		return providerid;
 	}
 	public void setProviderid(String providerid) {
 		this.providerid = providerid;
 	}
-	// M. Fontanella - 20 Jan 2016 - end
 	public String getApplicationid() {
 		return applicationid;
 	}
@@ -63,7 +56,6 @@ public class VirtualMachine {
 	public void setVmid(String vmid) {
 		this.vmid = vmid;
 	}
-	// M. Fontanella - 10 Feb 2016 - end
 	public long getStart() {
 		return start;
 	}
@@ -76,7 +68,6 @@ public class VirtualMachine {
 	public void setStop(long stop) {
 		this.stop = stop;
 	}
-	// M. Fontanella - 10 Feb 2016 - end
 	public int getProfileid() {
 		return profileid;
 	}
@@ -95,8 +86,5 @@ public class VirtualMachine {
 	public void setIaasid(String iaasid) {
 		this.iaasid = iaasid;
 	}
-	// M. Fontanella - 10 Feb 2016 - end
-	
-	
 
 }
