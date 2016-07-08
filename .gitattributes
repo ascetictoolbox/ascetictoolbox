@@ -1272,6 +1272,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Properties.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Quantity.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLA.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATemplate.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SimpleDomainExpr.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/State.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/TypeConstraintExpr.java -text
@@ -1367,6 +1368,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ProductOfferingPriceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/PropertiesTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/QuantityTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATemplateTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SLATest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/SimpleDomainExprTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/StateTest.java -text

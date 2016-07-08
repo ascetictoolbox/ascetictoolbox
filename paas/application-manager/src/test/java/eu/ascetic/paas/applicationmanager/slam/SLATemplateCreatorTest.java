@@ -4,11 +4,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +51,14 @@ import eu.slaatsoi.slamodel.SLATemplateDocument;
 public class SLATemplateCreatorTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
+	private String ovfSelfAdaptationFile = "output-file-ovf-appPackager.ovf";
+	private String ovfSelfAdaptationString;
 	private MockWebServer mServer;
 	private String mBaseURL = "http://localhost:";
+	private String value =  "{\"ProvidersList\": [ \n " +
+				"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.0.9.149:8080/services/asceticNegotiation?wsdl\"}\n" +
+				"{\"provider-uuid\":\"2\", \"p-slam-url\":\"http://10.0.10.149:8080/services/asceticNegotiation?wsdl\"}\n" +
+			"]}";
 	
 	/**
 	 * We just read an ovf example... 
@@ -58,53 +69,91 @@ public class SLATemplateCreatorTest {
 	public void setup() throws IOException, URISyntaxException {
 		File file = new File(this.getClass().getResource( "/" + threeTierWebAppOvfFile ).toURI());		
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		file = new File(this.getClass().getResource( "/" + ovfSelfAdaptationFile ).toURI());		
+		ovfSelfAdaptationString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		mServer = new MockWebServer();
 		mServer.start();
 		mBaseURL = "http://localhost:";
 		mBaseURL = mBaseURL + mServer.getPort();
-		System.out.println("######### " + mBaseURL);
+	}
+	
+	@Test
+	public void totalConversion() throws Exception {
+		// We start fake provider registry
+		setupFakeProviderRegistry();
+		
+		// We read the OVF definition from file
+		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
+		
+		// We setup the propierties section for the template... /
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition,  "http://localhost/application-manager/appid/deployments/111/ovf");
+		
+		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
+		SLATemplateDocument slaTemplateRendered =
+		SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+		
+		String slaTemplateString = slaTemplateRendered.toString();
+		
+		eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate slat = null;
+		
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			slat = (eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate) jaxbUnmarshaller.unmarshal(new StringReader(slaTemplateString));
+		} catch(JAXBException jaxbExpcetion) {
+			jaxbExpcetion.printStackTrace();
+		}
+		
+		// We verify that the UUID is correctly set
+		assertEquals("ASCETiC-SLaTemplate-Example-01", slat.getUUID());
+		assertEquals("sla_at_soi_sla_model_v1.0", slat.getModelVersion());
+		
+		// We verify that we set correctly the Provider list
+		assertEquals(1, slat.getProperties().getEntries().size());
+		assertEquals(value, slat.getProperties().getEntries().get(0).getValue());
+
+		System.out.println("SLA rendered as XML: ############################## ");
+		System.out.println(slaTemplateString);
+	}
+	
+	private void setupFakeProviderRegistry() {
+		// We configure the mocked Provider Registry
+		Configuration.providerRegistryEndpoint = mBaseURL + "/";
+
+		String collection = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+				"<collection xmlns=\"http://provider-registry.ascetic.eu/doc/schemas/xml\" href=\"/\">" +
+				"<items offset=\"0\" total=\"2\">" +
+				"<provider href=\"/1\">" +
+				"<id>1</id>" +
+				"<name>default</name>" +
+				"<vmm-url>http://iaas-vm-dev:34372/vmmanager</vmm-url>" +
+				"<slam-url>http://10.0.9.149:8080/services/asceticNegotiation?wsdl</slam-url>" +
+				"<amqp-url>amqp://guest:guest@iaas-vm-dev:5673</amqp-url>" +
+				"<link rel=\"parent\" href=\"/\" type=\"application/xml\"/>" +
+				"<link rel=\"self\" href=\"/1\" type=\"application/xml\"/>" +
+				"</provider>" +
+				"<provider href=\"/1\">" +
+				"<id>2</id>" +
+				"<name>default</name>" +
+				"<vmm-url>http://iaas-vm-dev:34372/vmmanager</vmm-url>" +
+				"<slam-url>http://10.0.10.149:8080/services/asceticNegotiation?wsdl</slam-url>" +
+				"<amqp-url>amqp://guest:guest@iaas-vm-dev:5673</amqp-url>" +
+				"<link rel=\"parent\" href=\"/\" type=\"application/xml\"/>" +
+				"<link rel=\"self\" href=\"/1\" type=\"application/xml\"/>" +
+				"</provider>" +
+				"</items>" +
+				"<link rel=\"self\" href=\"/\" type=\"application/xml\"/>" +
+				"</collection>";
+
+		mServer.addPath("/", collection);
 	}
 	
 	@Test
 	public void addPropertiesTest() {
-		// We configure the mocked Provider Registry
-		Configuration.providerRegistryEndpoint = mBaseURL + "/";
-		
-		System.out.println("######### configuration " + Configuration.providerRegistryEndpoint);
-		
-		String collection = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-							"<collection xmlns=\"http://provider-registry.ascetic.eu/doc/schemas/xml\" href=\"/\">" +
-								"<items offset=\"0\" total=\"2\">" +
-									"<provider href=\"/1\">" +
-										"<id>1</id>" +
-										"<name>default</name>" +
-										"<vmm-url>http://iaas-vm-dev:34372/vmmanager</vmm-url>" +
-										"<slam-url>http://10.0.9.149:8080/services/asceticNegotiation?wsdl</slam-url>" +
-										"<amqp-url>amqp://guest:guest@iaas-vm-dev:5673</amqp-url>" +
-										"<link rel=\"parent\" href=\"/\" type=\"application/xml\"/>" +
-										"<link rel=\"self\" href=\"/1\" type=\"application/xml\"/>" +
-									"</provider>" +
-									"<provider href=\"/1\">" +
-										"<id>2</id>" +
-										"<name>default</name>" +
-										"<vmm-url>http://iaas-vm-dev:34372/vmmanager</vmm-url>" +
-										"<slam-url>http://10.0.10.149:8080/services/asceticNegotiation?wsdl</slam-url>" +
-										"<amqp-url>amqp://guest:guest@iaas-vm-dev:5673</amqp-url>" +
-										"<link rel=\"parent\" href=\"/\" type=\"application/xml\"/>" +
-										"<link rel=\"self\" href=\"/1\" type=\"application/xml\"/>" +
-									"</provider>" +
-								"</items>" +
-								"<link rel=\"self\" href=\"/\" type=\"application/xml\"/>" +
-							"</collection>";
-		
-		mServer.addPath("/", collection);
+		setupFakeProviderRegistry();
 		
 		// Test
 		SLATemplate slaTemplate = new SLATemplate();
-		String value = "{\"ProvidersList\": [ \n " +
-				"{\"provider-uuid\":\"1\", \"p-slam-url\":\"http://10.0.9.149:8080/services/asceticNegotiation?wsdl\"}\n" +
-				"{\"provider-uuid\":\"2\", \"p-slam-url\":\"http://10.0.10.149:8080/services/asceticNegotiation?wsdl\"}\n" +
-			"]}";
 		
 		SLATemplateCreator.addProperties(slaTemplate);
 		

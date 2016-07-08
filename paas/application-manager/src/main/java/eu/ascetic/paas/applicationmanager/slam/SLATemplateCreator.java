@@ -75,6 +75,9 @@ public class SLATemplateCreator {
 		addInterfaceDclr(slaTemplate, ovf, ovfURL);
 		addAgreementTerms(slaTemplate, ovf);
 		
+		//We verify that the values are the right ones parsing the SLATemplate with different libs...
+		
+		
 		return slaTemplate;
 	}
 	
