@@ -285,8 +285,8 @@ public class VmicApiTest extends TestCase {
             VmicApi vmicApi = new VmicApi(globalConfiguration);
 
             // Read the testing OVF
-            //URL url = getClass().getClassLoader().getResource("atc-single-ovf.xml");
-            URL url = getClass().getClassLoader().getResource("atc-ovf.xml");
+            URL url = getClass().getClassLoader().getResource("atc-single-ovf.xml");
+            //URL url = getClass().getClassLoader().getResource("atc-ovf.xml");
             String ovfDefinitionAsString = null;
             try {
                 ovfDefinitionAsString = new String(Files.readAllBytes(Paths
