@@ -54,6 +54,8 @@ public class OVFUtilsTest {
 	private String threeTierWebAppDEMOOvfString;
 	private String threeTierWebAppWithUpperLimitsFile = "3tier-webapp.ovf-only-upper-bounds.xml";
 	private String threeTierWebAppWithUpperLimitsString;
+	private String ovfSelfAdaptationFile = "output-file-ovf-appPackager.ovf";
+	private String ovfSelfAdaptationString;
 	private String atcOVFFile="atc-ovf.xml";
 	private String atcOVFString;
 	private OvfDefinition ovfDocument;
@@ -76,6 +78,36 @@ public class OVFUtilsTest {
 		// Reading the OVF file with ATC OVF ...
 		file = new File(this.getClass().getResource( "/" + atcOVFFile ).toURI());		
 		atcOVFString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		// Reading ovf with self adatpation
+		file = new File(this.getClass().getResource( "/" + ovfSelfAdaptationFile ).toURI());		
+		ovfSelfAdaptationString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+	}
+	
+	@Test
+	public void getAppSlaTerms() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
+		AsceticSLAInfo info = OVFUtils.getAppSlaInfo(ovfDocument, "app_energy_consumption");
+		
+		assertEquals("app_energy_consumption", info.getTerm());
+		assertEquals("violation", info.getType());
+		assertEquals("2000", info.getBoundaryValue());
+		assertEquals("LT", info.getComparator());
+		assertEquals("WattHour", info.getMetricUnit());
+		
+		info = OVFUtils.getAppSlaInfo(ovfDocument, "app_charges");
+		
+		assertEquals("app_charges", info.getTerm());
+		assertEquals("violation", info.getType());
+		assertEquals("50", info.getBoundaryValue());
+		assertEquals("LTE", info.getComparator());
+		assertEquals("Euro", info.getMetricUnit());
+		
+		info = OVFUtils.getAppSlaInfo(ovfDocument, "XXXX");
+		assertNull(info);
+		
+		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
+		info = OVFUtils.getAppSlaInfo(ovfDocument, "app_energy_consumption");
+		assertNull(info);
 	}
 	
 	@Test

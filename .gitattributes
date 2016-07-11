@@ -1235,6 +1235,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/http/C
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/IaaSAMQPTopicListener.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/MonitoringBean.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/VMData.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/AsceticSLAInfo.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/VMLimits.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
@@ -1263,9 +1264,14 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ComponentProdOfferingPrice.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Constraint.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Domain.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/EndPoint.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Entry.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/FuncExpr.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Guaranteed.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Interface.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/InterfaceDeclr.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/InterfaceResourceType.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Party.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/PostCondition.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/Price.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ProductOfferingPrice.java -text
@@ -1333,6 +1339,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/reactor/TestService.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monitoring/MonitoringBeanTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monitoring/VMDataTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/AsceticSLAInfoTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/VMLimitsTest.java -text
@@ -1360,9 +1367,14 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/s
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ComponentProdOfferingPriceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ConstraintTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/DomainTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/EndPointTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/EntryTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/FuncExprTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/GuaranteedTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/InterfaceDeclrTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/InterfaceResourceTypeTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/InterfaceTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/PartyTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/PostConditionTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/PriceTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/slam/sla/model/ProductOfferingPriceTest.java -text

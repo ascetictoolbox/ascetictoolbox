@@ -2,9 +2,6 @@ package eu.ascetic.paas.applicationmanager.slam.sla.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 /**
@@ -26,29 +23,26 @@ import org.junit.Test;
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net
  * 
- * JUnit test to verify the behaviour of the SLATemplate test.
+ * unit test for  the InterfaceDeclr entry inside an SLA Template
  */
-public class SLATemplateTest {
+public class InterfaceDeclrTest {
 
 	@Test
-	public void pojo() {
-		SLATemplate slat = new SLATemplate();
-		slat.setUUID("uuid");
-		slat.setModelVersion("model");
+	public void pojoTest() {
+		InterfaceDeclr interfaceDeclr = new InterfaceDeclr();
 		Properties properties = new Properties();
-		slat.setProperties(properties);
-		List<Party> parties = new ArrayList<Party>();
-		slat.setParties(parties);
-		List<InterfaceDeclr> interfaceDeclrs = new ArrayList<InterfaceDeclr>();
-		slat.setInterfaceDeclrs(interfaceDeclrs);
-		List<AgreementTerm> agreementTerms = new ArrayList<AgreementTerm>();
-		slat.setAgreemenTerms(agreementTerms);
+		interfaceDeclr.setProperties(properties);
+		interfaceDeclr.setId("id");
+		interfaceDeclr.setProviderRef("ref");
+		Interface intf = new Interface();
+		interfaceDeclr.setIntf(intf);
+		EndPoint endpoint = new EndPoint();
+		interfaceDeclr.setEndPoint(endpoint);
 		
-		assertEquals(agreementTerms, slat.getAgreemenTerms());
-		assertEquals(interfaceDeclrs, slat.getInterfaceDeclrs());
-		assertEquals("uuid", slat.getUUID());
-		assertEquals("model", slat.getModelVersion());
-		assertEquals(properties, slat.getProperties());
-		assertEquals(parties, slat.getParties());
+		assertEquals(endpoint, interfaceDeclr.getEndPoint());
+		assertEquals(intf, interfaceDeclr.getIntf());
+		assertEquals("id", interfaceDeclr.getId());
+		assertEquals("ref", interfaceDeclr.getProviderRef());
+		assertEquals(properties, interfaceDeclr.getProperties());
 	}
 }

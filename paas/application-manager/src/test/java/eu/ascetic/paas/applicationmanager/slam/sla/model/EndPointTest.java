@@ -2,9 +2,6 @@ package eu.ascetic.paas.applicationmanager.slam.sla.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 /**
@@ -26,29 +23,22 @@ import org.junit.Test;
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net
  * 
- * JUnit test to verify the behaviour of the SLATemplate test.
+ * unit test for  the EndPoint entry inside an SLA Template
  */
-public class SLATemplateTest {
+public class EndPointTest {
 
 	@Test
-	public void pojo() {
-		SLATemplate slat = new SLATemplate();
-		slat.setUUID("uuid");
-		slat.setModelVersion("model");
+	public void pojoTEst() {
+		EndPoint endPoint = new EndPoint();
+		endPoint.setId("id");
 		Properties properties = new Properties();
-		slat.setProperties(properties);
-		List<Party> parties = new ArrayList<Party>();
-		slat.setParties(parties);
-		List<InterfaceDeclr> interfaceDeclrs = new ArrayList<InterfaceDeclr>();
-		slat.setInterfaceDeclrs(interfaceDeclrs);
-		List<AgreementTerm> agreementTerms = new ArrayList<AgreementTerm>();
-		slat.setAgreemenTerms(agreementTerms);
+		endPoint.setProperties(properties);
+		endPoint.setLocation("location");
+		endPoint.setProtocol("http");
 		
-		assertEquals(agreementTerms, slat.getAgreemenTerms());
-		assertEquals(interfaceDeclrs, slat.getInterfaceDeclrs());
-		assertEquals("uuid", slat.getUUID());
-		assertEquals("model", slat.getModelVersion());
-		assertEquals(properties, slat.getProperties());
-		assertEquals(parties, slat.getParties());
+		assertEquals("http", endPoint.getProtocol());
+		assertEquals("id", endPoint.getId());
+		assertEquals(properties, endPoint.getProperties());
+		assertEquals("location", endPoint.getLocation());
 	}
 }

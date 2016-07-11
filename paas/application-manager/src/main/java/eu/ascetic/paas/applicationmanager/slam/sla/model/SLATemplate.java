@@ -2,6 +2,8 @@ package eu.ascetic.paas.applicationmanager.slam.sla.model;
 
 import static eu.ascetic.paas.applicationmanager.Dictionary.SLA_XMLNS;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,7 +40,36 @@ public class SLATemplate {
 	private String modelVersion;
 	@XmlElement(name="Properties", namespace=SLA_XMLNS)
 	private Properties properties;
+	@XmlElement(name="Party", namespace=SLA_XMLNS)
+	private List<Party> parties;
+	@XmlElement(name="InterfaceDeclr", namespace=SLA_XMLNS)
+	private List<InterfaceDeclr> interfaceDeclrs;
+	@XmlElement(name="AgreementTerm", namespace=SLA_XMLNS)
+	private List<AgreementTerm> agreemenTerms;
+	
+	public List<AgreementTerm> getAgreemenTerms() {
+		return agreemenTerms;
+	}
 
+	public void setAgreemenTerms(List<AgreementTerm> agremmenTerms) {
+		this.agreemenTerms = agremmenTerms;
+	}
+
+	public List<InterfaceDeclr> getInterfaceDeclrs() {
+		return interfaceDeclrs;
+	}
+
+	public void setInterfaceDeclrs(List<InterfaceDeclr> interfaceDeclrs) {
+		this.interfaceDeclrs = interfaceDeclrs;
+	}
+
+	public List<Party> getParties() {
+		return parties;
+	}
+
+	public void setParties(List<Party> parties) {
+		this.parties = parties;
+	}
 
 	public String getModelVersion() {
 		return modelVersion;

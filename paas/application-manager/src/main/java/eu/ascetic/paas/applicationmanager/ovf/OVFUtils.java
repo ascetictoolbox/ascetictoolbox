@@ -412,4 +412,37 @@ public class OVFUtils {
 	
 		return urlImg;
 	}
+
+	/**
+	 * Returns an specifci App Guarantee
+	 * @param ovfDocument from which to find the guarantee
+	 * @param slaInfoTerm the name of the guarantee
+	 * @return null if the guarantee does not exists, if not the guarantee itself
+	 */
+	public static AsceticSLAInfo getAppSlaInfo(OvfDefinition ovfDocument, String slaInfoTerm) {
+		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getProductSectionAtIndex(0);
+		
+		ProductProperty propertyCount = productSection.getPropertyByKey("asceticSlaInfoNumber");
+		
+		if(propertyCount != null) {
+			int count = Integer.parseInt(propertyCount.getValue());
+			
+			for(int i = 0; i < count; i++) {
+				ProductProperty property = productSection.getPropertyByKey("asceticSlaInfoSlaTerm_" + i);
+				
+				if(slaInfoTerm.equals(property.getValue())) {
+					AsceticSLAInfo slaInfo = new AsceticSLAInfo();
+					slaInfo.setTerm(slaInfoTerm);
+					slaInfo.setBoundaryValue(productSection.getPropertyByKey("asceticSlaInfoBoundaryValue_"+ i).getValue());
+					slaInfo.setComparator(productSection.getPropertyByKey("asceticSlaInfoComparator_"+ i).getValue());
+					slaInfo.setMetricUnit(productSection.getPropertyByKey("asceticSlaInfoMetricUnit_"+ i).getValue());
+					slaInfo.setType(productSection.getPropertyByKey("asceticSlaInfoSlaType_"+ i).getValue());
+					
+					return slaInfo;
+				}
+			}
+		}
+		
+		return null;
+	}
 }

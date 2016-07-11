@@ -111,7 +111,31 @@ public class SLATemplateCreatorTest {
 		// We verify that we set correctly the Provider list
 		assertEquals(1, slat.getProperties().getEntries().size());
 		assertEquals(value, slat.getProperties().getEntries().get(0).getValue());
-
+		
+		// We verify the we set correctly the Party list
+		assertEquals(2, slat.getParties().size());
+		assertEquals("AsceticProvider", slat.getParties().get(0).getId());
+		assertEquals("http://www.slaatsoi.org/slamodel#provider", slat.getParties().get(0).getRole());
+		assertEquals("http://www.slaatsoi.org/slamodel#gslam_epr", slat.getParties().get(0).getProperties().getEntries().get(0).getKey());
+		assertEquals("http://111.222.333.444:8080/services/asceticNegotiation?wsdl", slat.getParties().get(0).getProperties().getEntries().get(0).getValue());
+		assertEquals("333", slat.getParties().get(1).getId());
+		assertEquals("http://www.slaatsoi.org/slamodel#customer", slat.getParties().get(1).getRole());
+		assertEquals("http://www.slaatsoi.org/slamodel#gslam_epr", slat.getParties().get(1).getProperties().getEntries().get(0).getKey());
+		assertEquals("http://111.222.333.444:8080/services/asceticNegotiation?wsdl", slat.getParties().get(1).getProperties().getEntries().get(0).getValue());
+		
+		// We verify the interface declarition is correct
+		assertEquals("OVF_URL", slat.getInterfaceDeclrs().get(0).getProperties().getEntries().get(0).getKey());
+		assertEquals("http://localhost/application-manager/appid/deployments/111/ovf", slat.getInterfaceDeclrs().get(0).getProperties().getEntries().get(0).getValue());
+		assertEquals("OVF-Item-NA-HAProxy", slat.getInterfaceDeclrs().get(0).getId());
+		assertEquals("AsceticProvider", slat.getInterfaceDeclrs().get(0).getProviderRef());
+		assertEquals("OVF_VirtualSystem_ID", slat.getInterfaceDeclrs().get(0).getEndPoint().getProperties().getEntries().get(0).getKey());
+		assertEquals("NA-HAProxy", slat.getInterfaceDeclrs().get(0).getEndPoint().getProperties().getEntries().get(0).getValue());
+		assertEquals("NA-HAProxy-VM-Type", slat.getInterfaceDeclrs().get(0).getEndPoint().getId());
+		assertEquals("VM-Manager ID", slat.getInterfaceDeclrs().get(0).getEndPoint().getLocation());
+		assertEquals("http://www.slaatsoi.org/slamodel#HTTP", slat.getInterfaceDeclrs().get(0).getEndPoint().getProtocol());
+		assertEquals("OVFAppliance", slat.getInterfaceDeclrs().get(0).getIntf().getInterfaceResourceType().getName());
+		assertEquals("App Guarantees", slat.getAgreemenTerms().get(0).getId());
+		
 		System.out.println("SLA rendered as XML: ############################## ");
 		System.out.println(slaTemplateString);
 	}

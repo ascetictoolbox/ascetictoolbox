@@ -252,8 +252,12 @@ public abstract class AbstractRest {
 
 			energyConsumed = energyModeller.measure(providerId,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
 		} else {
+			logger.info("Getting power value for: Provider ID: " + providerId + ", applicationName: " + applicationName + ", deploymentId: " + deploymentId + ", eventId: " + eventId + ", unit: " + unit + ", startTime: " + startTime + ", endtime: " + endTime);
+			
 			Timestamp startStamp = new Timestamp(startTime);
 			Timestamp endStamp = new Timestamp(endTime);
+			
+			logger.info("Getting power value for: Provider ID: " + providerId + ", applicationName: " + applicationName + ", deploymentId: " + deploymentId + ", eventId: " + eventId + ", unit: " + unit + ", startTime: " + startStamp + ", endtime: " + endStamp);
 
 			energyConsumed = energyModeller.measure(providerId,  applicationName, deploymentId, vmIds, eventId, unit, startStamp, endStamp); 
 		}
