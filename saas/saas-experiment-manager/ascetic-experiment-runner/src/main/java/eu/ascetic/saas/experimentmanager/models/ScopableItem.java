@@ -1,5 +1,6 @@
 package eu.ascetic.saas.experimentmanager.models;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +14,7 @@ public class ScopableItem {
 	
 	private Map<String,Object> location;
 	
-	public ScopableItem(Map<String,Object> location) {
+	public ScopableItem(List<String> tags, Map<String,Object> location) {
 		super();
 		this.location = location;
 	}

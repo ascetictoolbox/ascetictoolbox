@@ -4,13 +4,14 @@ public class KPI {
 	
 	private String name;
 	private String description;
-	
+	private String level;
 	private Metric metric;
 
-	public KPI(String name, String description, Metric metric) {
+	public KPI(String name, String level, String description, Metric metric) {
 		super();
 		this.name = name;
 		this.description = description;
+		this.level = level;
 		this.metric = metric;
 	}
 
@@ -32,6 +33,14 @@ public class KPI {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 	

@@ -4008,6 +4008,7 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/Application.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/business/ExperimentAdaptator.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/business/ExperimentHandler.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/AlreadyExistException.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/IncorrectScopeException.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/MetricDefinitionIncorrectException.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/exception/NoMeasureException.java -text

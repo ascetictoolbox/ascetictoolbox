@@ -48,6 +48,7 @@ public class ExperimentAdaptator {
 			eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI pkpi = new 
 					eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.KPI();
 			pkpi.setName(kpi.getName());
+			pkpi.setLevel(kpi.getLevel());
 			List<eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Metric> metrics = new ArrayList<>();
 			metrics.add(getMetric(kpi.getMetric()));
 			pkpi.setMetrics(metrics);
