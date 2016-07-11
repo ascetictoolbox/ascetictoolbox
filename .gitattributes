@@ -2523,6 +2523,7 @@ saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integrat
 saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/Configuration.java -text
 saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/VM.java -text
 saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/ascetic/WorkerStarter.java -text
+saas/programming_model/compss/runtime/toolkit-interaction/src/main/java/integratedtoolkit/connectors/ascetic/AsceticConnector.java -text
 saas/programming_model/compss/runtime/toolkit-interaction/src/test/java/integratedtoolkit/ascetic/test/Test.java -text
 saas/programming_model/compss/tools/monitor/pom.xml -text
 saas/programming_model/compss/tools/monitor/scripts/compss-monitor -text
