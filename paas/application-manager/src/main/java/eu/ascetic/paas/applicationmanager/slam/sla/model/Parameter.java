@@ -24,33 +24,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * e-mail david.garciaperez@atos.net
+ * e-mail david.garciaperez@atos.net 
  * 
- * This class represents an object from the XML SLA Agreement, to be specific
- * an FuncExpr inside the SLA Agreement
+ * Model class that represents the Parameter tag in an SLA Template xml document
+ *
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "FuncExpr", namespace = SLA_XMLNS)
-public class FuncExpr {
-	@XmlElement(name = "Operator", namespace = SLA_XMLNS)
-	private String operator;
-	@XmlElement(name = "Parameter", namespace = SLA_XMLNS)
-	private Parameter parameter;
+@XmlRootElement(name = "Parameter", namespace = SLA_XMLNS)
+public class Parameter {
+	@XmlElement(name = "ID", namespace = SLA_XMLNS)
+	private String id;
 
-	public Parameter getParameter() {
-		return parameter;
+	public String getId() {
+		return id;
 	}
 
-	public void setParameter(Parameter parameter) {
-		this.parameter = parameter;
-	}
-
-	public String getOperator() {
-		return operator;
-	}
-
-	public void setOperator(String operator) {
-		this.operator = operator;
+	public void setId(String id) {
+		this.id = id;
 	}
 }

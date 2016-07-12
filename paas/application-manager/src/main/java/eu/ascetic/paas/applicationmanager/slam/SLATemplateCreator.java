@@ -1,5 +1,11 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_OVF;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA_OPERATOR;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.COMPARATORS;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.METRIC_UNITS;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,10 +29,11 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.ovf.AsceticSLAInfo;
+import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.providerregistry.model.Provider;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 
 /**
@@ -78,7 +85,7 @@ public class SLATemplateCreator {
 		//Add the App Energy Consumption Agreement Term
 		addAppEnergyConsumptionAgreementTerm(slaTemplate, ovf);
 		
-		addAgreementTerms(slaTemplate, ovf);
+		//addAgreementTerms(slaTemplate, ovf);
 		
 		//We verify that the values are the right ones parsing the SLATemplate with different libs...
 		
@@ -87,9 +94,54 @@ public class SLATemplateCreator {
 	}
 	
 	private static void addAppEnergyConsumptionAgreementTerm(SLATemplate slaTemplate, OvfDefinition ovf) {
-		ProductSection productSection = ovf.getVirtualSystemCollection().getProductSectionArray()[0];
+		// We extract the ASCETiC Sla Info
+		AsceticSLAInfo info = OVFUtils.getAppSlaInfo(ovf, APP_ENERGY_CONSUMPTION_OVF);
 		
-		
+		if(info != null) {
+			
+			// ID for the agreement term
+			ID id = new ID("App Guarantees");
+			
+			// We add the TypeConstraintExpre
+			ValueExpr[] valueExpre = new ValueExpr[0];
+			FunctionalExpr energyUsagePerAppFuncExpr = new FunctionalExpr(new STND(APP_ENERGY_CONSUMPTION_SLA_OPERATOR), valueExpre);
+			
+			
+			SimpleDomainExpr simpleDomainExprAppEnergy = new SimpleDomainExpr(
+																new CONST(
+																		info.getBoundaryValue(), 
+																		new STND(METRIC_UNITS.get(info.getMetricUnit()))),
+																new STND(COMPARATORS.get(info.getComparator())));
+			
+			TypeConstraintExpr typeConstraintExprEnergyApp = new TypeConstraintExpr(energyUsagePerAppFuncExpr, simpleDomainExprAppEnergy);
+			
+			Guaranteed.State energyUsagePerAppGuarantee = new Guaranteed.State(new ID(APP_ENERGY_CONSUMPTION_SLA), typeConstraintExprEnergyApp);
+						
+			Guaranteed[] guarantees = new Guaranteed[1];
+			guarantees[0] = energyUsagePerAppGuarantee;
+			
+			VariableDeclr[] vars = new VariableDeclr[0];
+			
+			AgreementTerm agreementTerm = new AgreementTerm(id, null, vars, guarantees);
+			
+			// Now we add this agreement terms to the others ones that there are in teh SLATemplate
+			AgreementTerm[] agreementTerms = slaTemplate.getAgreementTerms();
+			if(agreementTerms != null) {
+				AgreementTerm[] newAgreementTerms = new AgreementTerm[agreementTerms.length + 1];
+				
+				for(int i = 0; i < agreementTerms.length ; i++) {
+					newAgreementTerms[i] = agreementTerms[i];
+				}
+				
+				newAgreementTerms[agreementTerms.length] = agreementTerm;
+				slaTemplate.setAgreementTerms(newAgreementTerms);
+				
+			} else {
+				AgreementTerm[] newAgreementTerms = new AgreementTerm[1];
+				newAgreementTerms[0] = agreementTerm;
+				slaTemplate.setAgreementTerms(newAgreementTerms);
+			}
+		}
 	}
 
 	/**

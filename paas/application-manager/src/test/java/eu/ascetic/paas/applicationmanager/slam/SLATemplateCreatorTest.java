@@ -23,6 +23,7 @@ import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
+import eu.ascetic.paas.applicationmanager.ovf.OVFThingsIT;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.slaatsoi.slamodel.SLATemplateDocument;
@@ -134,7 +135,27 @@ public class SLATemplateCreatorTest {
 		assertEquals("VM-Manager ID", slat.getInterfaceDeclrs().get(0).getEndPoint().getLocation());
 		assertEquals("http://www.slaatsoi.org/slamodel#HTTP", slat.getInterfaceDeclrs().get(0).getEndPoint().getProtocol());
 		assertEquals("OVFAppliance", slat.getInterfaceDeclrs().get(0).getIntf().getInterfaceResourceType().getName());
+		
+		// We verify the application guarantees
 		assertEquals("App Guarantees", slat.getAgreemenTerms().get(0).getId());
+		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA, slat.getAgreemenTerms().get(0).getGuaranteed().getState().getId());
+		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA_OPERATOR, 
+				     slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals(OVFToSLANames.COMPARATORS.get("LT"),
+				     slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+		assertEquals("2000",
+				     slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+		assertEquals(OVFToSLANames.METRIC_UNITS.get("WattHour"),
+			         slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
+		
+		// We verify that we add the Agreement Terms per VM
+		assertEquals("NA-HAProxy_Guarantees", slat.getAgreemenTerms().get(1).getId());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getVar());
+		assertEquals("http://www.slaatsoi.org/coremodel#subset_of", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getOperator());
+		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameter().getId());
+		assertEquals("Power_Usage_for_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getId());
+		assertEquals("http://www.slaatsoi.org/resources#power_usage_per_vm", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameter().getId());
 		
 		System.out.println("SLA rendered as XML: ############################## ");
 		System.out.println(slaTemplateString);

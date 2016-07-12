@@ -56,7 +56,7 @@ public class OVFUtilsTest {
 	private String threeTierWebAppWithUpperLimitsString;
 	private String ovfSelfAdaptationFile = "output-file-ovf-appPackager.ovf";
 	private String ovfSelfAdaptationString;
-	private String atcOVFFile="atc-ovf.xml";
+	private String atcOVFFile = "atc-ovf.xml";
 	private String atcOVFString;
 	private OvfDefinition ovfDocument;
 	

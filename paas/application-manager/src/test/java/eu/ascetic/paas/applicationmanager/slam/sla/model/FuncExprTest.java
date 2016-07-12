@@ -32,7 +32,10 @@ public class FuncExprTest {
 		FuncExpr funcExpr = new FuncExpr();
 		String operator = "operator";
 		funcExpr.setOperator(operator);
+		Parameter parameter = new Parameter();
+		funcExpr.setParameter(parameter);
 		
 		assertEquals(operator, funcExpr.getOperator());
+		assertEquals(parameter, funcExpr.getParameter());
 	}
 }

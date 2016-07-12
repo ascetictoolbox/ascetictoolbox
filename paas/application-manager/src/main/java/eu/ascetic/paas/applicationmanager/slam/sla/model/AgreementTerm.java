@@ -35,8 +35,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AgreementTerm  {
 	@XmlElement(name = "ID", namespace = SLA_XMLNS)
 	private String id;
+	@XmlElement(name = "VariableDeclr", namespace = SLA_XMLNS)
+	private VariableDeclr variableDeclr;
 	@XmlElement(name = "Guaranteed", namespace = SLA_XMLNS)
 	private Guaranteed guaranteed;
+
+	public VariableDeclr getVariableDeclr() {
+		return variableDeclr;
+	}
+
+	public void setVariableDeclr(VariableDeclr variableDeclr) {
+		this.variableDeclr = variableDeclr;
+	}
 
 	public String getId() {
 		return id;

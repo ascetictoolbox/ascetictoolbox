@@ -6,7 +6,7 @@ import org.junit.Test;
 
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2016 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -21,26 +21,21 @@ import org.junit.Test;
  * limitations under the License.
  * 
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
- * e-mail david.garciaperez@atos.net
+ * e-mail david.garciaperez@atos.net 
  * 
- * This class is the Unit test that verifies the correct parsing of the SLA AgreementTerm
+ * Model classs that represents the VariableDeclar tag in an SLA Template xml document
+ *
  */
-
-public class AgreementTermTest {
-
+public class VariableDeclrTest {
+	
 	@Test
-	public void pojo() {
-		AgreementTerm agreementTerm = new AgreementTerm();
-		agreementTerm.setId("ID");
-		
-		Guaranteed guaranteed = new Guaranteed();
-		agreementTerm.setGuaranteed(guaranteed);
-		
+	public void pojoTest() {
 		VariableDeclr variableDeclr = new VariableDeclr();
-		agreementTerm.setVariableDeclr(variableDeclr);
+		variableDeclr.setVar("var");
+		Expr expr = new Expr();
+		variableDeclr.setExpr(expr);
 		
-		assertEquals("ID", agreementTerm.getId());
-		assertEquals(guaranteed, agreementTerm.getGuaranteed());
-		assertEquals(variableDeclr, agreementTerm.getVariableDeclr());
+		assertEquals("var", variableDeclr.getVar());
+		assertEquals(expr, variableDeclr.getExpr());
 	}
 }
