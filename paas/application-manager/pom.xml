@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+ 
 	<parent>
 		<groupId>eu.ascetic</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 		<artifactId>paas</artifactId>
-	</parent>
+	</parent> 
 
 
 	<groupId>eu.ascetic.paas</groupId>
@@ -151,6 +151,7 @@
 					<flattenFiles>true</flattenFiles>
 					<!-- generateServerSide>true</generateServerSide -->
 					<wsdlFile>${myDirectory}/paas/application-manager/src/main/resources/ProviderNegotiation.wsdl</wsdlFile>
+					<!-- <wsdlFile>${myDirectory}/src/main/resources/ProviderNegotiation.wsdl</wsdlFile> -->
 					<serverSide>false</serverSide>
 				</configuration>
 				<executions>
@@ -172,7 +173,7 @@
 		</plugins>
 	</build>
 	
-	<repositories>
+	<!--  <repositories>
                 <repository>
                 <id>slasoi-hp-snapshots</id>
                 <name>SLA@SOI SOURCEFORGE repository for snapshots</name>
@@ -197,7 +198,7 @@
                 </snapshots>
         </repository>
 
-	</repositories>	 
+	</repositories>	 -->
 
 	<dependencies>
 
@@ -416,12 +417,14 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
 		</dependency>
 
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -626,12 +629,14 @@
 		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
 		</dependency>
 
 		<!-- Mysql connector -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.30</version>
 		</dependency>
 		
 		<!-- JAXB and JSON -->

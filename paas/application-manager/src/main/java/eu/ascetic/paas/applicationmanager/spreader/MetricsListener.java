@@ -114,8 +114,6 @@ public class MetricsListener implements MessageListener {
         		vm.setVmId("" + vmFromDB.getId());
         		vm.setProviderId(providerId);
 
-        		logger.debug("creó el nuevo mensaje");
-
         		ApplicationManagerMessage amM = new ApplicationManagerMessage();
         		amM.setApplicationId(vmFromDB.getDeployment().getApplication().getName());
         		amM.setDeploymentId("" + vmFromDB.getDeployment().getId());

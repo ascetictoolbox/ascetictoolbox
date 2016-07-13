@@ -1189,14 +1189,6 @@ paas/application-manager/doc/source/index.rst -text
 paas/application-manager/doc/source/rest_api/rest_api.rst -text
 paas/application-manager/doc/source/user_doc/user_doc.rst -text
 paas/application-manager/pom.xml -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationCallbackHandler.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/BZNegotiationStub.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/InvalidNegotiationIDExceptionException.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/OperationInProgressExceptionException.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/OperationNotPossibleExceptionException.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/ProvisioningExceptionException.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/SLACreationExceptionException.java -text
-paas/application-manager/src/main/java/eu/ascetic/applicationmanager/slam/stub/SLANotFoundExceptionException.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/Dictionary.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/ApplicationMonitorClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/amonitor/ApplicationMonitorClientHC.java -text
