@@ -6,6 +6,46 @@
         <artifactId>utils</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>eu.ascetic.utils.paassameventinjectiontool.PaaSSamEventSubmitterTool</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>uber-jar</shadedClassifierName>                         
+                            <finalName>${artifactId}</finalName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>eu.ascetic.utils.paassameventinjectiontool.PaaSSamEventSubmitterTool</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>          
+        </plugins>
+    </build>
     <groupId>eu.ascetic.utils</groupId>
     <artifactId>PaaSSAMEventInjectionTool</artifactId>
     <packaging>jar</packaging>
