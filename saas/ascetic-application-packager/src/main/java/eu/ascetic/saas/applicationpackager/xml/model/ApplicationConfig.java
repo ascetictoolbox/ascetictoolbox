@@ -35,39 +35,66 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ApplicationConfig {
 
-	/** The name. */
-	@XmlAttribute(name="name")
-	private String name;
+	/** The application name. */
+	@XmlAttribute(name="applicationName")
+	private String applicationName;
+	
+	/** The deployment name. */
+	@XmlAttribute(name="deploymentName")
+	private String deploymentName;
 	
 	/** The mode. */
-	@XmlAttribute(name="mode")
-	private String mode;
+	@XmlAttribute(name="deploymentMode")
+	private String deploymentMode;
 	
 	/** The chef server url. */
 	@XmlAttribute(name="chef-server-url")
 	private String chefServerUrl;
+	
+	/** The application sla info. */
+	@XmlElement(name="applicationSLAInfo")
+    private ApplicationSlaInfo applicationSLAInfo;
 	
 	/** The nodes. */
 	@XmlElement(name="node")
     private ArrayList<Node> nodes;
 	
 	/**
-	 * Gets the name.
+	 * Gets the application name.
 	 *
-	 * @return the name
+	 * @return the application name
 	 */
-	public String getName() {
-		return name;
+	public String getApplicationName() {
+		return applicationName;
 	}
- 
-//	@XmlAttribute
+
+	//	@XmlAttribute
 	/**
- * Sets the name.
- *
- * @param name the new name
- */
-public void setName(String name) {
-		this.name = name;
+	 * Sets the application name.
+	 *
+	 * @param applicationName the new application name
+	 */
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+
+	/**
+	 * Gets the deploymentName name.
+	 *
+	 * @return the deploymentName name
+	 */
+	public String getDeploymentName() {
+		return deploymentName;
+	}
+
+	//@XmlAttribute
+	/**
+	 * Sets the deploymentName name.
+	 *
+	 * @param deploymentName the new deployment name
+	 */
+	public void setDeploymentName(String deploymentName) {
+		this.deploymentName = deploymentName;
 	}
 	
 	/**
@@ -75,20 +102,20 @@ public void setName(String name) {
 	 *
 	 * @return the mode
 	 */
-	public String getMode() {
-		return mode;
+	public String getDeploymentMode() {
+		return deploymentMode;
 	}
  
-//	@XmlAttribute
+	//	@XmlAttribute
 	/**
- * Sets the mode.
- *
- * @param mode the new mode
- */
-public void setMode(String mode) {
-		this.mode = mode;
+	 * Sets the mode.
+	 *
+	 * @param mode the new mode
+	 */
+	public void setDeploymentMode(String deploymentMode) {
+		this.deploymentMode = deploymentMode;
 	}
-	
+
 	/**
 	 * Gets the nodes.
 	 *
@@ -126,14 +153,33 @@ public void setMode(String mode) {
 		return chefServerUrl;
 	}
  
-//	@XmlAttribute
-	/**
- * Sets the chef server url.
- *
- * @param chefServerUrl the new chef server url
- */
-public void setChefServerUrl(String chefServerUrl) {
+	//	@XmlAttribute
+		/**
+	 * Sets the chef server url.
+	 *
+	 * @param chefServerUrl the new chef server url
+	 */
+	public void setChefServerUrl(String chefServerUrl) {
 		this.chefServerUrl = chefServerUrl;
 	}
+
+	/**
+	 * Gets the application sla info.
+	 *
+	 * @return the application sla info
+	 */
+	public ApplicationSlaInfo getApplicationSLAInfo() {
+		return applicationSLAInfo;
+	}
+
+	/**
+	 * Sets the application sla info.
+	 *
+	 * @param applicationSLAInfo the new application sla info
+	 */
+	public void setApplicationSLAInfo(ApplicationSlaInfo applicationSLAInfo) {
+		this.applicationSLAInfo = applicationSLAInfo;
+	}
+	
 	
 }

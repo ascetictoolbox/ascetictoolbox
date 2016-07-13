@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * Copyright 2015 ATOS SPAIN S.A. 
@@ -35,6 +36,10 @@ public class BaseDependency {
 	@XmlAttribute(name="OS")
 	private String os;
 
+	/** The os version. */
+	@XmlAttribute(name="OSVersion")
+	private String osVersion;
+	
 	/**
 	 * Gets the os.
 	 *
@@ -46,15 +51,30 @@ public class BaseDependency {
 
 //	@XmlAttribute
 	/**
- * Sets the os.
- *
- * @param os the new os
- */
-public void setOs(String os) {
+	 * Sets the os.
+	 *
+	 * @param os the new os
+	 */
+	public void setOs(String os) {
 		this.os = os;
 	}
-	
-	
-	
-	
+
+	/**
+	 * Gets the os version.
+	 *
+	 * @return the os version
+	 */
+	public String getOsVersion() {
+		return osVersion;
+	}
+
+	/**
+	 * Sets the os version.
+	 *
+	 * @param osVersion the new os version
+	 */
+	public void setOsVersion(String osVersion) {
+		this.osVersion = osVersion;
+	}
+
 }

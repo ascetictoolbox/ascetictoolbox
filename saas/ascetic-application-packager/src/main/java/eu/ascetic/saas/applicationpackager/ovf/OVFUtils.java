@@ -6,6 +6,8 @@ package eu.ascetic.saas.applicationpackager.ovf;
 import org.apache.log4j.Logger;
 
 import eu.ascetic.saas.applicationpackager.Dictionary;
+import eu.ascetic.saas.applicationpackager.xml.model.Adapt;
+import eu.ascetic.saas.applicationpackager.xml.model.AdaptationSlaTarget;
 import eu.ascetic.saas.applicationpackager.xml.model.CpuSpeed;
 import eu.ascetic.saas.applicationpackager.xml.model.StorageResource;
 //import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -25,6 +27,7 @@ import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 //import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
 import eu.ascetic.utils.ovf.api.utils.OvfRuntimeException;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * Copyright 2014 ATOS SPAIN S.A. 
@@ -90,6 +93,12 @@ public class OVFUtils {
 	}
 	
 	
+	/**
+	 * Removes the software dependency elements.
+	 *
+	 * @param ovf the ovf
+	 * @return the string
+	 */
 	public static String removeSoftwareDependencyElements(String ovf) {
 		if (ovf != null){
 			try {
@@ -399,6 +408,12 @@ public class OVFUtils {
 	}
 
 
+	/**
+	 * Uses a cache image.
+	 *
+	 * @param virtualSystem1 the virtual system1
+	 * @return true, if successful
+	 */
 	public static boolean usesACacheImage(VirtualSystem virtualSystem1) {
 		ProductProperty[] productPropertyArray = virtualSystem1.getProductSectionAtIndex(0).getPropertyArray();
 		
@@ -415,6 +430,12 @@ public class OVFUtils {
 	}
 	
 	
+	/**
+	 * Gets the storage resource formatted.
+	 *
+	 * @param strStorageResourceSize the str storage resource size
+	 * @return the storage resource formatted
+	 */
 	public static StorageResource getStorageResourceFormatted(String strStorageResourceSize){
 		StorageResource storageResource = null;
 		int index = 0;
@@ -438,6 +459,12 @@ public class OVFUtils {
 	}
 
 	
+	/**
+	 * Gets the storage units in ovf format.
+	 *
+	 * @param units the units
+	 * @return the storage units in ovf format
+	 */
 	public static String getStorageUnitsInOvfFormat(String units) {
 		String ovfCapacity = "";
 
@@ -453,6 +480,12 @@ public class OVFUtils {
 		return ovfCapacity;
 	}
 	
+	/**
+	 * Gets the cpu speed units in ovf format.
+	 *
+	 * @param units the units
+	 * @return the cpu speed units in ovf format
+	 */
 	public static String getCpuSpeedUnitsInOvfFormat(String units) {
 		String ovfCapacity = "";
 
@@ -468,6 +501,12 @@ public class OVFUtils {
 		return ovfCapacity;
 	}
 	
+	/**
+	 * Gets the cpu speed formatted.
+	 *
+	 * @param strCpuSpeed the str cpu speed
+	 * @return the cpu speed formatted
+	 */
 	public static CpuSpeed getCpuSpeedFormatted(String strCpuSpeed){
 		CpuSpeed cpuSpeed = null;
 		int index = 0;
@@ -494,4 +533,55 @@ public class OVFUtils {
 		}		
 		return cpuSpeed;
 	}
+	
+	/**
+	 * Gets the comparator ovf format.
+	 *
+	 * @param comparatorXmlFormat the comparator xml format
+	 * @return the comparator ovf format
+	 */
+	public static String getComparatorOvfFormat(String comparatorXmlFormat){
+		if (comparatorXmlFormat.equalsIgnoreCase("less_than_or_equals")){
+			return "LTE";
+		}
+		else if (comparatorXmlFormat.equalsIgnoreCase("less_than")){
+			return "LT";
+		}
+		else if (comparatorXmlFormat.equalsIgnoreCase("greater_than_or_equals")){
+			return "GTE";
+		}
+		else if (comparatorXmlFormat.equalsIgnoreCase("greater_than")){
+			return "GT";
+		}
+		else if (comparatorXmlFormat.equalsIgnoreCase("equals")){
+			return "EQ";
+		}
+		else {
+			return "";
+		}
+	}
+	
+
+	public static String getResponseType(AdaptationSlaTarget ast, Adapt adapt){
+		if (ast.getApplicationEvent().equalsIgnoreCase("anticipatedWorkload")){
+			String result = "SCALE_TO_" + adapt.getMinimalNumOfVMs() + "_VMS";
+			return result;
+		}
+		else if (adapt.getType() != null && adapt.getDirection() != null && adapt.getType().equalsIgnoreCase("vmVertical") && adapt.getDirection().equalsIgnoreCase("up")){
+			return "SCALE_UP_VM";
+		}
+		else if (adapt.getType() != null && adapt.getDirection() != null && adapt.getType().equalsIgnoreCase("vmHorizontal") && adapt.getDirection().equalsIgnoreCase("up")){
+			return "ADD_VM";
+		}
+		else if (adapt.getType() != null && adapt.getDirection() != null && adapt.getType().equalsIgnoreCase("vmVertical") && adapt.getDirection().equalsIgnoreCase("down")){
+			return "SCALE_DOWN_VM";
+		}
+		else if (adapt.getType() != null && adapt.getDirection() != null && adapt.getType().equalsIgnoreCase("vmHorizontal") && adapt.getDirection().equalsIgnoreCase("down")){
+			return "REMOVE_VM";
+		}
+		else {
+			return "";
+		}
+	}
+	
 }

@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * Copyright 2015 ATOS SPAIN S.A. 
@@ -99,9 +100,9 @@ public class Node {
 	@XmlAttribute(name="maxInstance")
 	private String maxInstance;
 	
-	/** The pref max instance. */
-	@XmlAttribute(name="prefMaxInstance")
-	private String prefMaxInstance;
+	/** The pref instance. */
+	@XmlAttribute(name="prefInstance")
+	private String prefInstance;
 	
 	/** The base dependency. */
 	@XmlElement(name="base-dependency")
@@ -110,6 +111,51 @@ public class Node {
 	/** The software installs. */
 	@XmlElement(name="software_install")
     private ArrayList<SoftwareInstall> softwareInstalls;
+
+	/** The vm sla info. */
+	@XmlElement(name="vmSLAInfo")
+    private VmSlaInfo vmSLAInfo;
+	
+	/** The vm adaptation rules. */
+	@XmlElement(name="vmAdaptationRules")
+    private VmAdaptationRules vmAdaptationRules;
+	
+	
+	/**
+	 * Gets the vm sla info.
+	 *
+	 * @return the vm sla info
+	 */
+	public VmSlaInfo getVmSLAInfo() {
+		return vmSLAInfo;
+	}
+
+	/**
+	 * Sets the vm sla info.
+	 *
+	 * @param vmSLAInfo the new vm sla info
+	 */
+	public void setVmSLAInfo(VmSlaInfo vmSLAInfo) {
+		this.vmSLAInfo = vmSLAInfo;
+	}
+
+	/**
+	 * Gets the vm adaptation rules.
+	 *
+	 * @return the vm adaptation rules
+	 */
+	public VmAdaptationRules getVmAdaptationRules() {
+		return vmAdaptationRules;
+	}
+
+	/**
+	 * Sets the vm adaptation rules.
+	 *
+	 * @param vmAdaptationRules the new vm adaptation rules
+	 */
+	public void setVmAdaptationRules(VmAdaptationRules vmAdaptationRules) {
+		this.vmAdaptationRules = vmAdaptationRules;
+	}
 
 	/**
 	 * Gets the type.
@@ -450,20 +496,20 @@ public void setMaxInstance(String maxInstance) {
 	}
 
 	/**
-	 * Gets the pref max instance.
+	 * Gets the pref instance.
 	 *
-	 * @return the pref max instance
+	 * @return the pref instance
 	 */
-	public String getPrefMaxInstance() {
-		return prefMaxInstance;
+	public String getPrefInstance() {
+		return prefInstance;
 	}
 
 	/**
-	 * Sets the pref max instance.
+	 * Sets the pref instance.
 	 *
-	 * @param prefMaxInstance the new pref max instance
+	 * @param prefMaxInstance the new pref instance
 	 */
-	public void setPrefMaxInstance(String prefMaxInstance) {
-		this.prefMaxInstance = prefMaxInstance;
+	public void setPrefInstance(String prefInstance) {
+		this.prefInstance = prefInstance;
 	}
 }

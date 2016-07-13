@@ -11,10 +11,16 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import eu.ascetic.saas.applicationpackager.ovf.OVFUtils;
+import eu.ascetic.saas.applicationpackager.xml.model.Adapt;
+import eu.ascetic.saas.applicationpackager.xml.model.AdaptationRule;
+import eu.ascetic.saas.applicationpackager.xml.model.AdaptationSlaTarget;
 import eu.ascetic.saas.applicationpackager.xml.model.ApplicationConfig;
+import eu.ascetic.saas.applicationpackager.xml.model.ApplicationSlaInfo;
+import eu.ascetic.saas.applicationpackager.xml.model.ApplicationSlaTarget;
 import eu.ascetic.saas.applicationpackager.xml.model.Attribute;
 import eu.ascetic.saas.applicationpackager.xml.model.CpuSpeed;
 import eu.ascetic.saas.applicationpackager.xml.model.Node;
+import eu.ascetic.saas.applicationpackager.xml.model.NodeSlaTarget;
 import eu.ascetic.saas.applicationpackager.xml.model.SoftwareInstall;
 import eu.ascetic.saas.applicationpackager.xml.model.StorageResource;
 import eu.ascetic.utils.ovf.api.Disk;
@@ -80,7 +86,7 @@ public class Xml2OvfTranslator {
 		// Virtual System Collection
         VirtualSystemCollection virtualSystemCollection = VirtualSystemCollection.Factory
                 .newInstance();
-        virtualSystemCollection.setId(appCfg.getName());
+        virtualSystemCollection.setId(appCfg.getApplicationName());
         virtualSystemCollection.setInfo("test description.");
         // Product Section
         ProductSection productSection = ProductSection.Factory.newInstance();
@@ -89,6 +95,20 @@ public class Xml2OvfTranslator {
         productSection.setProduct("product");
         productSection.setVersion("1.0");
         productSection.setVmicMode("online");
+        productSection.setDeploymentName(appCfg.getDeploymentName());
+        
+        //node applicationSLAInfo, get all SLATarget nodes
+        ApplicationSlaInfo appSlaInfo = appCfg.getApplicationSLAInfo();
+        List<ApplicationSlaTarget> appSlaTargetList = appSlaInfo.getApplicationSlaTarget();
+        for (ApplicationSlaTarget applicationSlaTarget : appSlaTargetList){
+        	productSection.addSlaInfo(
+        			applicationSlaTarget.getSlaTerm(),
+        			applicationSlaTarget.getSlaMetricUnit(),
+        			OVFUtils.getComparatorOvfFormat(applicationSlaTarget.getComparator()),
+        			applicationSlaTarget.getBoundaryValue(),
+        			applicationSlaTarget.getSlaType());        	
+        }
+        
 //        productSection.addNewProperty("asceticVmicMode", ProductPropertyType.STRING,
 //                appCfg.getMode());
         virtualSystemCollection.addProductSection(productSection);
@@ -115,14 +135,18 @@ public class Xml2OvfTranslator {
 		        OperatingSystem operatingSystem = OperatingSystem.Factory.newInstance();
 		        operatingSystem.setInfo("Description of " + n.getName() + " Operating System.");
 		        if (n.getBaseDependency().getOs().equalsIgnoreCase("Linux")){
+		        	//Linux
 			        operatingSystem
 			                .setId(OperatingSystemType.LINUX);
-			        operatingSystem.setVersion("debian-7");
+			        operatingSystem.setVersion(n.getBaseDependency().getOsVersion());
+			        //operatingSystem.setVersion("debian-7");
 		        }
 		        else {
+		        	//Windows
 		        	 operatingSystem
 		                .setId(OperatingSystemType.MICROSOFT_WINDOWS_SERVER_2003);
-		        	 operatingSystem.setVersion("2003");
+		        	 operatingSystem.setVersion(n.getBaseDependency().getOsVersion());
+		        	 //operatingSystem.setVersion("2003");
 		        }
 		        virtualSystem.setOperatingSystem(operatingSystem);
 
@@ -133,6 +157,7 @@ public class Xml2OvfTranslator {
 		        productSection2.setVersion("2.0");
 		        productSection2.setLowerBound(Integer.parseInt(n.getMinInstance()));
 		        productSection2.setUpperBound(Integer.parseInt(n.getMaxInstance()));
+		        productSection2.setStartingBound(Integer.parseInt(n.getPrefInstance()));
                 productSection2.setAssociatePublicIp(true);
 		        productSection2.addNewProperty("asceticCacheImage", ProductPropertyType.UINT32 , "1");
 		        
@@ -142,14 +167,9 @@ public class Xml2OvfTranslator {
 		        		 int index = productSection2.addSoftwareDependencyProperties(sw.getName(), "chef-cookbook", sw.getChefUri(), "");
                          List<Attribute> attList = sw.getAttributes();
 		        		 for (int i=0; i<attList.size(); i++){
-								System.out.println(Utils.replaceSpecialCharacters(attList.get(i).getName()));
-								System.out.println(Utils.replaceSpecialCharacters(attList.get(i).getValue()));
 		        			 productSection2.addSoftwareDependencyPackageAttribute(
 		        					 index, 
 		        					 sw.getName(), 
-//		        					 Utils.replaceSpecialCharacters(attList.get(i).getName()), 
-//		        					 Utils.replaceSpecialCharacters(attList.get(i).getValue()));
-//culo
 		        					 attList.get(i).getName(), 
 		        					 attList.get(i).getValue());
 		        		 }
@@ -157,6 +177,57 @@ public class Xml2OvfTranslator {
 			       
 		        }
 		        
+		        //<vmSLAInfo> node inside <node>
+		        List<NodeSlaTarget> nodeSlaTargetList = n.getVmSLAInfo().getNodeSlaTarget();
+		        if (nodeSlaTargetList != null){
+			        for (NodeSlaTarget nodeSlaTarget : nodeSlaTargetList){
+			        	productSection2.addSlaInfo(
+			        			nodeSlaTarget.getSlaTerm(),
+			        			nodeSlaTarget.getSlaMetricUnit(),
+			        			OVFUtils.getComparatorOvfFormat(nodeSlaTarget.getComparator()),
+			        			nodeSlaTarget.getBoundaryValue(),
+			        			nodeSlaTarget.getSlaType());
+			        }
+		        }
+		        
+		        //<vmAdaptationRules> node, composed by <adaptation-rule> list
+		        if (n.getVmAdaptationRules() != null && n.getVmAdaptationRules().getAdaptationRules() != null){
+		        	List<AdaptationRule> adaptationRuleList = n.getVmAdaptationRules().getAdaptationRules();
+			        for (AdaptationRule adaptationRule : adaptationRuleList){
+			        	AdaptationSlaTarget adaptationSlaTarget = adaptationRule.getAdaptationSlaTarget();
+			        	productSection2.addTermMeasurement(
+			        			adaptationSlaTarget.getApplicationEvent(),
+			        			adaptationSlaTarget.getApplicationMetric(), 
+			        			adaptationSlaTarget.getPeriod(), 
+			        			adaptationSlaTarget.getBoundaryValue(),
+			        			adaptationSlaTarget.getAggregator(), 
+			        			adaptationSlaTarget.getAggregatorParams());	
+			        	//<adapt> node list inside <adaptation-rule>
+			        	List<Adapt> adaptList = adaptationRule.getAdapt();
+			        	for (Adapt adapt : adaptList){
+			        		if (adapt.getResetLevel() != null && adapt.getMinimalNumOfVMs() != null){
+			        			//<adapt resetLevel="1" minimalNumOfVMs="1"/> node type
+			        			int index = productSection2.addAdaptationRule(
+			        					adaptationSlaTarget.getSlaTerm(),
+			        					OVFUtils.getComparatorOvfFormat(adaptationSlaTarget.getComparator()), 
+			        					OVFUtils.getResponseType(adaptationSlaTarget, adapt));
+			        			productSection2.setAdaptationRuleParameters(index, "VM_TYPE=" + n.getName() + "-img; VM_COUNT=" + adapt.getMinimalNumOfVMs());
+			        		}
+			        		else {
+			        			//<adapt weightdistanceMin="0%" weightedDistanceMax="50%" type="vertical" direction="up"/> node type
+			        			productSection2.addAdaptationRule(
+			        					adaptationSlaTarget.getSlaTerm(),
+			        					OVFUtils.getComparatorOvfFormat(adaptationSlaTarget.getComparator()), 
+			        					OVFUtils.getResponseType(adaptationSlaTarget, adapt),
+			        					adapt.getTriggerBreachDistancePercentageMin(), 
+			        					adapt.getTriggerBreachDistancePercentageMax(), 
+			        					adaptationSlaTarget.getSLAType());
+//			        			productSection2.addAdaptationRule(agreementTerm, direction, responseType, lowerBound, upperBound, notificationType)
+//			        			productSection2.addAdaptationRule(agreementTerm, direction, responseType, lowerBound, upperBound)
+			        		}
+			        	}
+			        }	
+		        }     
 		        
 		        Vector<ProductSection> productSections = new Vector<ProductSection>();
 		        productSections.add(productSection2);

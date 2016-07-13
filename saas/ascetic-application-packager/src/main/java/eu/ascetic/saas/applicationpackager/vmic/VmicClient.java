@@ -73,7 +73,8 @@ public class VmicClient {
 		try {
 			ovfDefinitionAsString = Utils.readFile(
 					"C:\\data\\projects\\ARI\\it\\ASCETiC\\svn\\trunk\\saas\\ascetic-application-packager"
-					+ "\\src\\main\\resources\\atc-single-feb2016.ovf");
+					+ "\\src\\main\\resources\\input-vmic-ovf-v15_swDependencies.ovf");
+					//input-vmic-v14-fullAttributes.ovf");
 		 } catch (IOException e) {
             e.printStackTrace();
 		}
@@ -104,8 +105,8 @@ public class VmicClient {
 
             // Initialise the VMIC's configuration
             GlobalConfiguration globalConfiguration = new GlobalConfiguration(            
-//        "C:\\data\\projects\\ARI\\it\\ASCETiC\\svn\\trunk\\saas\\ascetic-application-packager\\src\\main\\resources\\cfg.properties");
-    		"/home/ubuntu/ascetic/saas/app-packager/cfg.properties");
+        "C:\\data\\projects\\ARI\\it\\ASCETiC\\svn\\trunk\\saas\\ascetic-application-packager\\src\\main\\resources\\cfg.properties");
+//    		"/home/ubuntu/ascetic/saas/app-packager/cfg.properties");
             System.out.println("Config file assigned");
             VmicApi vmicApi = new VmicApi(globalConfiguration);
             System.out.println("Configs parameters loaded");
