@@ -75,10 +75,7 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
     public boolean writeOutDefaults(ResultsStore rulesFile) {
         boolean answer = false;
         //Agreement Term, Guarantee Direction and Response Type
-        if (!workingDir.endsWith("/")) {
-            workingDir = workingDir + "/";
-        }
-        if (!new File(workingDir + RULES_FILE).exists()) {
+        if (!rulesFile.getResultsFile().exists()) {
             rulesFile.add("Agreement Term");
             rulesFile.append("Direction");
             rulesFile.append("Response Type");
@@ -104,12 +101,15 @@ public class ThresholdEventAssessor extends AbstractEventAssessor {
      * This loads the rules used by this event assessor in from disk.
      */
     private void loadRules() {
-        writeOutDefaults(rulesFile);
         /**
          * Load in from file the following: Agreement Term, Guarantee Direction
          * and Response Type
          */
+        if (!workingDir.endsWith("/")) {
+            workingDir = workingDir + "/";
+        }
         rulesFile = new ResultsStore(workingDir + RULES_FILE);
+        writeOutDefaults(rulesFile);        
         rulesFile.load();
         //ignore the header of the file
         for (int i = 1; i < rulesFile.size(); i++) {
