@@ -32,7 +32,10 @@ public class ParameterTest {
 	public void pojoTest() {
 		Parameter parameter = new Parameter();
 		parameter.setId("id");
+		CONST cONST = new CONST();
+		parameter.setcONST(cONST);
 		
 		assertEquals("id", parameter.getId());
+		assertEquals(cONST, parameter.getcONST());
 	}
 }

@@ -35,8 +35,11 @@ public class GuaranteedTest {
 		guaranteed.setAction(action);
 		State state = new State();
 		guaranteed.setState(state);
+		Entry entry = new Entry();
+		guaranteed.setEntry(entry);
 		
 		assertEquals(action, guaranteed.getAction());
 		assertEquals(state, guaranteed.getState());
+		assertEquals(entry, guaranteed.getEntry());
 	}
 }

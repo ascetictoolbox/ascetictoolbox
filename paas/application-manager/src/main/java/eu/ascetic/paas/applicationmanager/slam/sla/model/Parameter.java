@@ -34,6 +34,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Parameter {
 	@XmlElement(name = "ID", namespace = SLA_XMLNS)
 	private String id;
+	@XmlElement(name = "CONST", namespace = SLA_XMLNS)
+	private CONST cONST;
+
+	public CONST getcONST() {
+		return cONST;
+	}
+
+	public void setcONST(CONST cONST) {
+		this.cONST = cONST;
+	}
 
 	public String getId() {
 		return id;

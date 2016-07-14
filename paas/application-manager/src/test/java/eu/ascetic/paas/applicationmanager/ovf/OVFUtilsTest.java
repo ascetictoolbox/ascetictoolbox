@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +82,64 @@ public class OVFUtilsTest {
 		// Reading ovf with self adatpation
 		file = new File(this.getClass().getResource( "/" + ovfSelfAdaptationFile ).toURI());		
 		ovfSelfAdaptationString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+	}
+	
+	@Test
+	public void getVMSlaTerms() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
+		AsceticSLAInfo info = OVFUtils.getVMSlaInfo(ovfDocument, "power_usage_per_vm", "NA-HAProxy");
+		
+		assertEquals("power_usage_per_vm", info.getTerm());
+		assertEquals("violation", info.getType());
+		assertEquals("50", info.getBoundaryValue());
+		assertEquals("LT", info.getComparator());
+		assertEquals("Watt", info.getMetricUnit());
+		
+		info = OVFUtils.getVMSlaInfo(ovfDocument, "price_per_vm", "NA-HAProxy");
+		
+		assertEquals("price_per_vm", info.getTerm());
+		assertEquals("violation", info.getType());
+		assertEquals("0.25", info.getBoundaryValue());
+		assertEquals("LT", info.getComparator());
+		assertEquals("EuroPerHour", info.getMetricUnit());
+		
+		info = OVFUtils.getVMSlaInfo(ovfDocument, "XXXX", "NA-HAProxy");
+		assertNull(info);
+		
+		info = OVFUtils.getVMSlaInfo(ovfDocument, "XXXX", "NA-HAProxy2222");
+		assertNull(info);
+		
+		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
+		info = OVFUtils.getVMSlaInfo(ovfDocument, "app_energy_consumption", "NA-HAProxy");
+		assertNull(info);
+	}
+	
+	@Test
+	public void getVMTermMeasurements() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
+		List<AsceticTermMeasurement> termMeasurements = OVFUtils.getVMTermMeasurement(ovfDocument, "NA-HAProxy");
+		
+		assertEquals(2, termMeasurements.size());
+		
+		AsceticTermMeasurement termMeasurement = termMeasurements.get(0);
+		assertEquals("searchForNewsItems", termMeasurement.getEvent());
+		assertEquals("duration", termMeasurement.getMetric());
+		assertEquals(15, termMeasurement.getPeriod().intValue());
+		assertEquals("percentile", termMeasurement.getAggregator());
+		assertEquals(90, termMeasurement.getParams().intValue());
+		assertEquals(0.7, termMeasurement.getBoundary().doubleValue(), 0.001);
+		
+		termMeasurement = termMeasurements.get(1);
+		assertEquals("anticipatedWorkload", termMeasurement.getEvent());
+		assertEquals("degree", termMeasurement.getMetric());
+		assertNull(termMeasurement.getPeriod());
+		assertEquals("last", termMeasurement.getAggregator());
+		assertNull(termMeasurement.getParams());
+		assertEquals(0.0, termMeasurement.getBoundary().doubleValue(), 0.001);
+		
+		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
+		termMeasurements = OVFUtils.getVMTermMeasurement(ovfDocument, "NA-HAProxy");
+		assertEquals(0, termMeasurements.size());
 	}
 	
 	@Test

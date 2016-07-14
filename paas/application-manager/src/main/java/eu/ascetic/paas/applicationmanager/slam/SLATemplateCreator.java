@@ -3,8 +3,20 @@ package eu.ascetic.paas.applicationmanager.slam;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_OVF;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA_OPERATOR;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.POWER_USAGE_PER_VM_OVF;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.POWER_USAGE_PER_VM_SLA;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.POWER_USAGE_PER_VM_SLA_OPERATOR;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.COMPARATORS;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.METRIC_UNITS;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.OVF_ITEM;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.SUBSET_OF;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.VM_TYPE;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.VM_GUARANTEES;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.AGGREGATED_METRIC_SLA;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.AGGREGATED_METRIC_SLA_OPERATOR;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.DATATYPE_DECIMAL;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.DATATYPE_INTEGER;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.DATATYPE_STRING;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +42,7 @@ import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.ovf.AsceticSLAInfo;
+import eu.ascetic.paas.applicationmanager.ovf.AsceticTermMeasurement;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.providerregistry.model.Provider;
@@ -85,6 +98,8 @@ public class SLATemplateCreator {
 		//Add the App Energy Consumption Agreement Term
 		addAppEnergyConsumptionAgreementTerm(slaTemplate, ovf);
 		
+		addVMSpecificAgreementTerms(slaTemplate, ovf);
+		
 		//addAgreementTerms(slaTemplate, ovf);
 		
 		//We verify that the values are the right ones parsing the SLATemplate with different libs...
@@ -93,6 +108,116 @@ public class SLATemplateCreator {
 		return slaTemplate;
 	}
 	
+	private static void addVMSpecificAgreementTerms(SLATemplate slaTemplate, OvfDefinition ovf) {
+		// We need to go over all VMs
+		VirtualSystem[] virtualSystemArray = ovf.getVirtualSystemCollection().getVirtualSystemArray();
+		
+		for(int i = 0; i < virtualSystemArray.length; i++) {
+			VirtualSystem virtualSystem = virtualSystemArray[i];
+			String ovfId = virtualSystem.getId();
+			
+			// We get the specific guarantees we are interested
+			addPowerVMConsumptionAgreementTerm(slaTemplate, ovf, ovfId);
+			
+			// We add aggregated guarantees if available
+			addAggregatedGuarantees(slaTemplate, ovf, ovfId);
+		}
+	}
+	
+	private static void addAggregatedGuarantees(SLATemplate slaTemplate, OvfDefinition ovf, String ovfId) {
+		List<AsceticTermMeasurement> measurementTerms = OVFUtils.getVMTermMeasurement(ovf, ovfId);
+		
+		for(AsceticTermMeasurement measurementTerm : measurementTerms) {
+			// ID for the agreement term
+			ID id = new ID(AGGREGATED_METRIC_SLA);
+			// No Variable declarations for this type
+			VariableDeclr[] vars = new VariableDeclr[0];
+			
+			// We add the TypeConstraintExpre
+			ValueExpr[] valueExpreArray = new ValueExpr[5];
+			//Event Type
+			valueExpreArray[0] = new CONST(measurementTerm.getEvent(), new STND(DATATYPE_STRING));
+			//Metric
+			valueExpreArray[1] = new CONST(measurementTerm.getMetric(), new STND(DATATYPE_STRING));
+			//Period
+			if(measurementTerm.getPeriod() != null) {
+				valueExpreArray[2] = new CONST("" + measurementTerm.getPeriod().intValue(), new STND(DATATYPE_INTEGER));
+			} else {
+				valueExpreArray[2] = new CONST("NaN", new STND(DATATYPE_INTEGER));
+			}
+			//Aggregated Function
+			valueExpreArray[3] = new CONST(measurementTerm.getAggregator(), new STND(DATATYPE_STRING));
+			// Function Parameter
+			if(measurementTerm.getParams() != null) {
+				valueExpreArray[4] = new CONST("" + measurementTerm.getParams().intValue(), new STND(DATATYPE_INTEGER));
+			} else {
+				valueExpreArray[4] = new CONST("NaN", new STND(DATATYPE_INTEGER));
+			}
+			
+			FunctionalExpr aggregatedFuncExpr = new FunctionalExpr(new STND(AGGREGATED_METRIC_SLA_OPERATOR), valueExpreArray);
+			
+			SimpleDomainExpr simpleDomainExprePowerUsage = new SimpleDomainExpr(
+								new CONST("" +measurementTerm.getBoundary().doubleValue(), new STND(DATATYPE_DECIMAL)), 
+								new STND(COMPARATORS.get("GT")));
+			
+			TypeConstraintExpr typeConstraintExprVMCores = new TypeConstraintExpr(aggregatedFuncExpr, simpleDomainExprePowerUsage);
+			
+			// We create the guarantee
+			Guaranteed.State aggregatedGuarantee = new Guaranteed.State(new ID(measurementTerm.getEvent() + "_for_" + ovfId), typeConstraintExprVMCores);
+			
+			// We create the agreement term
+			Guaranteed[] guarantees = new Guaranteed[1];
+			guarantees[0] = aggregatedGuarantee;
+			//guarantees[1] = memoryState;
+			
+			AgreementTerm agreementTerm = new AgreementTerm(id, null, vars, guarantees);
+			// Now we add this agreement terms to the others ones that there are in the SLATemplate
+			addAgreementTerm(slaTemplate, agreementTerm); 
+		}
+	}
+
+	private static void addPowerVMConsumptionAgreementTerm(SLATemplate slaTemplate, OvfDefinition ovf, String ovfId) {
+		// We estract the ASCETiC SLA Power VM info from OVF
+		AsceticSLAInfo info = OVFUtils.getVMSlaInfo(ovf, POWER_USAGE_PER_VM_OVF, ovfId);
+		
+		if(info != null) {
+			// ID for the agreement term
+			ID id = new ID(ovfId + VM_GUARANTEES);
+			
+			// Variable Declarations		
+			VariableDeclr variableDeclr = new VariableDeclr(
+					new ID(VM_TYPE + ovfId),
+					new FunctionalExpr(
+							new STND(SUBSET_OF), 
+							new ValueExpr[]{new ID(OVF_ITEM + ovfId)})					
+					);
+			
+			// Power requirements
+			FunctionalExpr functionalExprePowerUsage = new FunctionalExpr(
+					new STND(POWER_USAGE_PER_VM_SLA_OPERATOR), 
+					new ValueExpr[]{new ID(VM_TYPE + ovfId)});
+			SimpleDomainExpr simpleDomainExprePowerUsage = new SimpleDomainExpr(
+														new CONST(info.getBoundaryValue(), new STND(METRIC_UNITS.get(info.getMetricUnit()))), 
+														new STND(COMPARATORS.get(info.getComparator())));
+			
+			TypeConstraintExpr typeConstraintExprVMCores = new TypeConstraintExpr(functionalExprePowerUsage, simpleDomainExprePowerUsage);
+			
+			Guaranteed.State powerUsageState = new Guaranteed.State(new ID(POWER_USAGE_PER_VM_SLA  + ovfId), typeConstraintExprVMCores);
+			
+			// We create the agreement term
+			Guaranteed[] guarantees = new Guaranteed[1];
+			guarantees[0] = powerUsageState;
+			//guarantees[1] = memoryState;
+			
+			VariableDeclr[] vars = new VariableDeclr[1];
+			vars[0] = variableDeclr;
+ 			
+			AgreementTerm agreementTerm = new AgreementTerm(id, null, vars, guarantees);
+			// Now we add this agreement terms to the others ones that there are in the SLATemplate
+			addAgreementTerm(slaTemplate, agreementTerm); 
+		}
+	}
+
 	private static void addAppEnergyConsumptionAgreementTerm(SLATemplate slaTemplate, OvfDefinition ovf) {
 		// We extract the ASCETiC Sla Info
 		AsceticSLAInfo info = OVFUtils.getAppSlaInfo(ovf, APP_ENERGY_CONSUMPTION_OVF);
@@ -125,22 +250,27 @@ public class SLATemplateCreator {
 			AgreementTerm agreementTerm = new AgreementTerm(id, null, vars, guarantees);
 			
 			// Now we add this agreement terms to the others ones that there are in teh SLATemplate
-			AgreementTerm[] agreementTerms = slaTemplate.getAgreementTerms();
-			if(agreementTerms != null) {
-				AgreementTerm[] newAgreementTerms = new AgreementTerm[agreementTerms.length + 1];
-				
-				for(int i = 0; i < agreementTerms.length ; i++) {
-					newAgreementTerms[i] = agreementTerms[i];
-				}
-				
-				newAgreementTerms[agreementTerms.length] = agreementTerm;
-				slaTemplate.setAgreementTerms(newAgreementTerms);
-				
-			} else {
-				AgreementTerm[] newAgreementTerms = new AgreementTerm[1];
-				newAgreementTerms[0] = agreementTerm;
-				slaTemplate.setAgreementTerms(newAgreementTerms);
+			addAgreementTerm(slaTemplate, agreementTerm); 
+		}
+	}
+	
+	private static void addAgreementTerm(SLATemplate slaTemplate, AgreementTerm agreementTerm) {
+		// Now we add this agreement terms to the others ones that there are in teh SLATemplate
+		AgreementTerm[] agreementTerms = slaTemplate.getAgreementTerms();
+		if(agreementTerms != null) {
+			AgreementTerm[] newAgreementTerms = new AgreementTerm[agreementTerms.length + 1];
+
+			for(int i = 0; i < agreementTerms.length ; i++) {
+				newAgreementTerms[i] = agreementTerms[i];
 			}
+
+			newAgreementTerms[agreementTerms.length] = agreementTerm;
+			slaTemplate.setAgreementTerms(newAgreementTerms);
+
+		} else {
+			AgreementTerm[] newAgreementTerms = new AgreementTerm[1];
+			newAgreementTerms[0] = agreementTerm;
+			slaTemplate.setAgreementTerms(newAgreementTerms);
 		}
 	}
 

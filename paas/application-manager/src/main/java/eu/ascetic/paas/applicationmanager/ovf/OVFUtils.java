@@ -1,5 +1,10 @@
 package eu.ascetic.paas.applicationmanager.ovf;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.math.NumberUtils;
+
 //import java.util.ArrayList;
 //import java.util.List;
 
@@ -302,6 +307,11 @@ public class OVFUtils {
 	 */
 	public static VirtualSystem getVirtualSystemForOvfId(String ovf, String ovfId) {
 		OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
+		return getVirtualSystemForOvfIdNotString(ovfDocument, ovfId);
+	}
+	
+	private static VirtualSystem getVirtualSystemForOvfIdNotString(OvfDefinition ovfDocument, String ovfId) {
+
 		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
 		
 		for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
@@ -412,16 +422,25 @@ public class OVFUtils {
 	
 		return urlImg;
 	}
-
+	
 	/**
-	 * Returns an specifci App Guarantee
+	 * Returns an specific VM Guarantee
 	 * @param ovfDocument from which to find the guarantee
 	 * @param slaInfoTerm the name of the guarantee
+	 * @param ovfId of the VM we are going to extract the info.
 	 * @return null if the guarantee does not exists, if not the guarantee itself
 	 */
-	public static AsceticSLAInfo getAppSlaInfo(OvfDefinition ovfDocument, String slaInfoTerm) {
-		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getProductSectionAtIndex(0);
-		
+	public static AsceticSLAInfo getVMSlaInfo(OvfDefinition ovfDocument, String slaInfoTerm, String ovfId) {
+		try {
+			ProductSection productSection = getVirtualSystemForOvfIdNotString(ovfDocument, ovfId).getProductSectionAtIndex(0);
+			return getSlaInfoInProductSection(productSection, slaInfoTerm);
+		} catch(NullPointerException ex) {
+			logger.error("No Product section for vm with ID: " + ovfId);
+			return null;
+		}
+	}
+	
+	private static AsceticSLAInfo getSlaInfoInProductSection(ProductSection productSection, String slaInfoTerm) {
 		ProductProperty propertyCount = productSection.getPropertyByKey("asceticSlaInfoNumber");
 		
 		if(propertyCount != null) {
@@ -444,5 +463,61 @@ public class OVFUtils {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Returns an specifci App Guarantee
+	 * @param ovfDocument from which to find the guarantee
+	 * @param slaInfoTerm the name of the guarantee
+	 * @return null if the guarantee does not exists, if not the guarantee itself
+	 */
+	public static AsceticSLAInfo getAppSlaInfo(OvfDefinition ovfDocument, String slaInfoTerm) {
+		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getProductSectionAtIndex(0);
+		
+		return getSlaInfoInProductSection(productSection, slaInfoTerm);
+	}
+
+	public static List<AsceticTermMeasurement> getVMTermMeasurement(OvfDefinition ovfDocument, String ovfId) {
+		List<AsceticTermMeasurement> termMeasurements = new ArrayList<AsceticTermMeasurement>();
+		
+		try {
+			ProductSection productSection = getVirtualSystemForOvfIdNotString(ovfDocument, ovfId).getProductSectionAtIndex(0);
+			
+			ProductProperty propertyCount = productSection.getPropertyByKey("asceticTermMeasurementNumber");
+			
+			if(propertyCount != null) {
+				int count = Integer.parseInt(propertyCount.getValue());
+				
+				for(int i = 0; i < count; i++) {
+					AsceticTermMeasurement termMeasurement = new AsceticTermMeasurement();
+					
+					termMeasurement.setEvent(productSection.getPropertyByKey("asceticTermMeasurementApplicationEvent_" + i).getValue());
+					termMeasurement.setMetric(productSection.getPropertyByKey("asceticTermMeasurementApplicationMetric_" + i).getValue());
+					termMeasurement.setAggregator(productSection.getPropertyByKey("asceticTermMeasurementAggregator_" + i).getValue());
+					
+					String period = productSection.getPropertyByKey("asceticTermMeasurementPeriod_" + i).getValue();
+					if(NumberUtils.isNumber(period)) {
+						termMeasurement.setPeriod(new Integer(Integer.parseInt(period)));
+					}
+					
+					String param = productSection.getPropertyByKey("asceticTermMeasurementAggregatorParams_" + i).getValue();
+					if(NumberUtils.isNumber(param)) {
+						termMeasurement.setParams(new Integer(Integer.parseInt(param)));
+					}
+					
+					String boundaryValue = productSection.getPropertyByKey("asceticTermMeasurementBoundaryValue_" + i).getValue();
+					if(NumberUtils.isNumber(boundaryValue)) {
+						termMeasurement.setBoundary(new Double(Double.parseDouble(boundaryValue)));
+					}
+						
+					termMeasurements.add(termMeasurement);
+				}
+			}
+			
+		} catch(NullPointerException ex) {
+			logger.error("No Product section for vm with ID: " + ovfId);
+		}
+		
+		return termMeasurements;
 	}
 }

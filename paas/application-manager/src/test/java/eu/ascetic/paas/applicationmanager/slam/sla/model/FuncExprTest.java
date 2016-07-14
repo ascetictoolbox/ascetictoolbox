@@ -2,6 +2,9 @@ package eu.ascetic.paas.applicationmanager.slam.sla.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 /**
@@ -32,10 +35,10 @@ public class FuncExprTest {
 		FuncExpr funcExpr = new FuncExpr();
 		String operator = "operator";
 		funcExpr.setOperator(operator);
-		Parameter parameter = new Parameter();
-		funcExpr.setParameter(parameter);
+		List<Parameter> parameters = new ArrayList<Parameter>();
+		funcExpr.setParameters(parameters);
 		
 		assertEquals(operator, funcExpr.getOperator());
-		assertEquals(parameter, funcExpr.getParameter());
+		assertEquals(parameters, funcExpr.getParameters());
 	}
 }

@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,6 +27,10 @@ import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
 import eu.ascetic.paas.applicationmanager.ovf.OVFThingsIT;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.AgreementTerm;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.FuncExpr;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.Parameter;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SimpleDomainExpr;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.slaatsoi.slamodel.SLATemplateDocument;
 
@@ -95,6 +101,10 @@ public class SLATemplateCreatorTest {
 		
 		String slaTemplateString = slaTemplateRendered.toString();
 		
+		System.out.println("SLA rendered as XML: ############################## ");
+		System.out.println(slaTemplateString);
+		
+		// TEST
 		eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate slat = null;
 		
 		try {
@@ -136,6 +146,9 @@ public class SLATemplateCreatorTest {
 		assertEquals("http://www.slaatsoi.org/slamodel#HTTP", slat.getInterfaceDeclrs().get(0).getEndPoint().getProtocol());
 		assertEquals("OVFAppliance", slat.getInterfaceDeclrs().get(0).getIntf().getInterfaceResourceType().getName());
 		
+		// We have to have 4 Agreement Terms
+		assertEquals(4, slat.getAgreemenTerms().size());
+		
 		// We verify the application guarantees
 		assertEquals("App Guarantees", slat.getAgreemenTerms().get(0).getId());
 		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA, slat.getAgreemenTerms().get(0).getGuaranteed().getState().getId());
@@ -152,13 +165,88 @@ public class SLATemplateCreatorTest {
 		assertEquals("NA-HAProxy_Guarantees", slat.getAgreemenTerms().get(1).getId());
 		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getVar());
 		assertEquals("http://www.slaatsoi.org/coremodel#subset_of", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getOperator());
-		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameter().getId());
+		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameters().get(0).getId());
 		assertEquals("Power_Usage_for_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getId());
-		assertEquals("http://www.slaatsoi.org/resources#power_usage_per_vm", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
-		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameter().getId());
+		assertEquals(OVFToSLANames.POWER_USAGE_PER_VM_SLA_OPERATOR, slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameters().get(0).getId());
+		assertEquals(OVFToSLANames.COMPARATORS.get("LT"),
+			     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+		assertEquals("50",
+			     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+		assertEquals(OVFToSLANames.METRIC_UNITS.get("Watt"),
+		         slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
 		
-		System.out.println("SLA rendered as XML: ############################## ");
-		System.out.println(slaTemplateString);
+		// We verify the Aggregated Guarantees
+		AgreementTerm agreementTerm =  slat.getAgreemenTerms().get(2);
+		assertEquals("Aggregated Guarantees", agreementTerm.getId());
+		//assertEquals("violation_type", agreementTerm.getGuaranteed().getEntry().getKey());
+		//assertEquals("information", agreementTerm.getGuaranteed().getEntry().getValue());
+		assertEquals("searchForNewsItems_for_NA-HAProxy", agreementTerm.getGuaranteed().getState().getId());
+		FuncExpr funcExpr = agreementTerm.getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr();
+		assertEquals(OVFToSLANames.AGGREGATED_METRIC_SLA_OPERATOR, funcExpr.getOperator());
+		List<Parameter> parameters = funcExpr.getParameters();
+		assertEquals(5, parameters.size());
+		// Event Type
+		Parameter parameter = parameters.get(0);
+		assertEquals("searchForNewsItems", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_STRING, parameter.getcONST().getDatatype());
+		// Metric
+		parameter = parameters.get(1);
+		assertEquals("duration", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_STRING, parameter.getcONST().getDatatype());
+		// Period
+		parameter = parameters.get(2);
+		assertEquals("15", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_INTEGER, parameter.getcONST().getDatatype());
+		// Aggregated Function
+		parameter = parameters.get(3);
+		assertEquals("percentile", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_STRING, parameter.getcONST().getDatatype());
+		// Function Parameter
+		parameter = parameters.get(4);
+		assertEquals("90", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_INTEGER, parameter.getcONST().getDatatype());
+		// Comparison
+		SimpleDomainExpr simpleDomainExpr = agreementTerm.getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr();
+		assertEquals(OVFToSLANames.COMPARATORS.get("GT"), simpleDomainExpr.getComparisonOp());
+		assertEquals(OVFToSLANames.DATATYPE_DECIMAL, simpleDomainExpr.getValue().getConstVariable().getDatatype());
+		assertEquals("0.7", simpleDomainExpr.getValue().getConstVariable().getValue());
+		
+		
+		agreementTerm =  slat.getAgreemenTerms().get(3);
+		assertEquals("Aggregated Guarantees", agreementTerm.getId());
+		//assertEquals("violation_type", agreementTerm.getGuaranteed().getEntry().getKey());
+		//assertEquals("information", agreementTerm.getGuaranteed().getEntry().getValue());
+		assertEquals("anticipatedWorkload_for_NA-HAProxy", agreementTerm.getGuaranteed().getState().getId());
+		funcExpr = agreementTerm.getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr();
+		assertEquals(OVFToSLANames.AGGREGATED_METRIC_SLA_OPERATOR, funcExpr.getOperator());
+		parameters = funcExpr.getParameters();
+		assertEquals(5, parameters.size());
+		// Event Type
+		parameter = parameters.get(0);
+		assertEquals("anticipatedWorkload", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_STRING, parameter.getcONST().getDatatype());
+		// Metric
+		parameter = parameters.get(1);
+		assertEquals("degree", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_STRING, parameter.getcONST().getDatatype());
+		// Period
+		parameter = parameters.get(2);
+		assertEquals("NaN", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_INTEGER, parameter.getcONST().getDatatype());
+		// Aggregated Function
+		parameter = parameters.get(3);
+		assertEquals("last", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_STRING, parameter.getcONST().getDatatype());
+		// Function Parameter
+		parameter = parameters.get(4);
+		assertEquals("NaN", parameter.getcONST().getValue());
+		assertEquals(OVFToSLANames.DATATYPE_INTEGER, parameter.getcONST().getDatatype());
+		// Comparison
+		simpleDomainExpr = agreementTerm.getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr();
+		assertEquals(OVFToSLANames.COMPARATORS.get("GT"), simpleDomainExpr.getComparisonOp());
+		assertEquals(OVFToSLANames.DATATYPE_DECIMAL, simpleDomainExpr.getValue().getConstVariable().getDatatype());
+		assertEquals("0.0", simpleDomainExpr.getValue().getConstVariable().getValue());
 	}
 	
 	private void setupFakeProviderRegistry() {
@@ -255,7 +343,7 @@ public class SLATemplateCreatorTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void verifyGenerateSLATemplate() throws Exception {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
 

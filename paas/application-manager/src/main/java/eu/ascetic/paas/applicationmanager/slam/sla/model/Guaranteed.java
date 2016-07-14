@@ -35,8 +35,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Guaranteed {
 	@XmlElement(name = "Action", namespace = SLA_XMLNS)
 	private Action action;
+	@XmlElement(name = "Entry", namespace = SLA_XMLNS)
+	private Entry entry;
 	@XmlElement(name = "State", namespace = SLA_XMLNS)
 	private State state;
+
+	public Entry getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Entry entry) {
+		this.entry = entry;
+	}
 
 	public Action getAction() {
 		return action;

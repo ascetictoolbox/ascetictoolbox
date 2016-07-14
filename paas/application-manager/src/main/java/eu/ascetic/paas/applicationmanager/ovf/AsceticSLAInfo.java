@@ -16,7 +16,7 @@ package eu.ascetic.paas.applicationmanager.ovf;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
+ * @author David Garcia Perez. Atos Resea rch and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net
  * 
  * Represents the SLA info information inside an OVF with ASCETiC features

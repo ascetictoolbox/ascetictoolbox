@@ -71,7 +71,8 @@
         <ovf:Property ovf:key="asceticTermMeasurementPeriod_0" ovf:type="string" ovf:value="15"/>
         <ovf:Property ovf:key="asceticTermMeasurementAggregator_0" ovf:type="string" ovf:value="percentile"/>
         <ovf:Property ovf:key="asceticTermMeasurementAggregatorParams_0" ovf:type="string" ovf:value="90"/>
-        <ovf:Property ovf:key="asceticTermMeasurementMeasurementNumber_" ovf:type="uint32" ovf:value="2"/>
+        <ovf:Property ovf:key="asceticTermMeasurementBoundaryValue_0" ovf:type="string" ovf:value="0.7"/>
+        <ovf:Property ovf:key="asceticTermMeasurementNumber" ovf:type="uint32" ovf:value="2"/>
         <ovf:Property ovf:key="asceticAdaptationRuleSlaTerm_0" ovf:type="string" ovf:value="aggregated_event_metric_over_period"/>
         <ovf:Property ovf:key="asceticAdaptationRuleComparator_0" ovf:type="string" ovf:value="LTE"/>
         <ovf:Property ovf:key="asceticAdaptationRuleResponseType_0" ovf:type="string" ovf:value="SCALE_UP_VM"/>
@@ -90,6 +91,7 @@
         <ovf:Property ovf:key="asceticTermMeasurementPeriod_1" ovf:type="string" ovf:value=""/>
         <ovf:Property ovf:key="asceticTermMeasurementAggregator_1" ovf:type="string" ovf:value="last"/>
         <ovf:Property ovf:key="asceticTermMeasurementAggregatorParams_1" ovf:type="string" ovf:value=""/>
+        <ovf:Property ovf:key="asceticTermMeasurementBoundaryValue_1" ovf:type="string" ovf:value="0.0"/>
         <ovf:Property ovf:key="asceticAdaptationRuleSlaTerm_2" ovf:type="string" ovf:value="aggregated_event_metric_over_period"/>
         <ovf:Property ovf:key="asceticAdaptationRuleComparator_2" ovf:type="string" ovf:value="LT"/>
         <ovf:Property ovf:key="asceticAdaptationRuleResponseType_2" ovf:type="string" ovf:value="SCALE_TO_1_VMS"/>

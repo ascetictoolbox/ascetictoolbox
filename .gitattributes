@@ -1228,6 +1228,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monito
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/MonitoringBean.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/monitoring/VMData.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/AsceticSLAInfo.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/AsceticTermMeasurement.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/VMLimits.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
@@ -1337,6 +1338,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monitoring/MonitoringBeanTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/monitoring/VMDataTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/AsceticSLAInfoTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/AsceticTermMeasurementTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFThingsIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtilsTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/ovf/VMLimitsTest.java -text
@@ -1413,6 +1415,7 @@ paas/application-manager/src/test/resources/davidgp-ovf.xml -text
 paas/application-manager/src/test/resources/em.config.properties -text
 paas/application-manager/src/test/resources/generic-slamanager/syntax-converter/broker.properties -text
 paas/application-manager/src/test/resources/iaas-slat-adaptation.xml.txt -text
+paas/application-manager/src/test/resources/input-appManager-v15-swDependencies.ovf -text
 paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/log4j.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
