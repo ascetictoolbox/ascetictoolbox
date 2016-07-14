@@ -38,6 +38,9 @@ public class OVFUtils {
      * @return the ovf definition
      */
     public static OvfDefinition getOvfDefinition(String ovf) {
+        if (ovf == null || ovf.equals("")) {
+            return null;
+        }
         try {
             OvfDefinition ovfDocument = OvfDefinition.Factory.newInstance(ovf);
             return ovfDocument;

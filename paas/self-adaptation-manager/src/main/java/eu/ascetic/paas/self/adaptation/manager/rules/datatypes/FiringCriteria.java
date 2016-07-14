@@ -231,6 +231,9 @@ public class FiringCriteria {
      */
     public static ArrayList<FiringCriteria> getFiringCriteriaFromOVF(OvfDefinition ovf) {
         ArrayList<FiringCriteria> answer = new ArrayList<>();
+        if (ovf == null) {
+            return answer;
+        }
         //This ensures rules that are gloabal are collected correctly
         for (ProductSection section : ovf.getVirtualSystemCollection().getProductSectionArray()) {
             answer.addAll(parseProductSection(section));
