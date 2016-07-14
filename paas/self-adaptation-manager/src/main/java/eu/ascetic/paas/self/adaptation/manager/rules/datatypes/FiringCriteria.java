@@ -319,4 +319,16 @@ public class FiringCriteria {
         this.parameters = parameters;
     }
 
+    @Override
+    public String toString() {
+        return "Rule: " 
+                + agreementTerm + ":" + 
+                operator + ":" + 
+                type  + ":" + 
+                responseType  + ":" + 
+                parameters;
+    }
+    
+    
+
 }

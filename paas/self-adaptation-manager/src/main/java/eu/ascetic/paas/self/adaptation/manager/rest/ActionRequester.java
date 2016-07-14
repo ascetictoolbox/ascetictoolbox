@@ -17,7 +17,6 @@ package eu.ascetic.paas.self.adaptation.manager.rest;
 
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
-import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;

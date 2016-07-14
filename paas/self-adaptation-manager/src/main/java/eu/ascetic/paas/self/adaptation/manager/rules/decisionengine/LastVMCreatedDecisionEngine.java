@@ -100,12 +100,12 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
             Collections.shuffle(vmOvfTypes);
             response.setAdaptationDetails(vmOvfTypes.get(0));
             if (getCanVmBeAdded(response, vmOvfTypes.get(0))) {
-                return response;    
+                return response;
             } else {
                 response.setAdaptationDetails("Adding a VM would breach SLA criteria");
                 response.setPossibleToAdapt(false);
                 return response;
-            }    
+            }
         } else {
             response.setAdaptationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);
@@ -170,17 +170,20 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
             response.setPossibleToAdapt(false);
             return response;
         }
-        if (targetCount < details.getLowerBound() || targetCount > details.getUpperBound()) {
-            response.setPerformed(true);
-            response.setPossibleToAdapt(false);
-            response.setAdaptationDetails("Unable to adapt, the target was out of acceptable bounds");
-            return response;
+        if (ovf != null && details != null) {
+            if (targetCount < details.getLowerBound() || targetCount > details.getUpperBound()) {
+                response.setPerformed(true);
+                response.setPossibleToAdapt(false);
+                response.setAdaptationDetails("Unable to adapt, the target was out of acceptable bounds");
+                return response;
+            }
         }
         if (difference > 0) { //add VMs
-            response.setAdaptationDetails("VM_TYPE" + vmType + ";VM_COUNT=" + difference);
+            response.setAdaptationDetails("VM_TYPE=" + vmType + ";VM_COUNT=" + difference);
         } else { //less that zero so remove VMs
             List<Integer> vmsPossibleToRemove = getActuator().getVmIdsAvailableToRemove(appId, deploymentId);
-            response.setAdaptationDetails("VM_TYPE" + vmType + ";VMs_TO_REMOVE=" + getVmsToRemove(vmsPossibleToRemove, difference));
+            //Note: the 0 - difference is intended to make the number positive
+            response.setAdaptationDetails("VM_TYPE=" + vmType + ";VMs_TO_REMOVE=" + getVmsToRemove(vmsPossibleToRemove, 0 - difference));
         }
         return response;
     }
@@ -194,12 +197,12 @@ public class LastVMCreatedDecisionEngine extends AbstractDecisionEngine {
      */
     private String getVmsToRemove(List<Integer> vmsPossibleToRemove, int count) {
         String answer = "";
-            Collections.sort(vmsPossibleToRemove);
-            Collections.reverse(vmsPossibleToRemove);
-            //Remove the last VM to be created from the list of possible VMs
+        Collections.sort(vmsPossibleToRemove);
+        Collections.reverse(vmsPossibleToRemove);
+        //Remove the last VM to be created from the list of possible VMs
         for (int i = 0; i < count; i++) {
             Integer vmid = vmsPossibleToRemove.get(i);
-            answer = answer + "," + vmid;
+            answer = answer + (i == 0 ? "" : ",") + vmid;
         }
         return answer;
     }

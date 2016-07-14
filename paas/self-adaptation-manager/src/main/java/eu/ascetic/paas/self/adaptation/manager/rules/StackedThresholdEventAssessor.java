@@ -61,7 +61,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             config.setProperty("paas.self.adaptation.manager.threshold", threshold);
             workingDir = config.getString("paas.self.adaptation.manager.working.directory", ".");
         } catch (ConfigurationException ex) {
-            Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+            Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
         loadRules();
     }
@@ -212,6 +212,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         }
         for (FiringCriteria rule : rules) {
             if (rule.shouldFire(event)) {
+                 Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "A rule has been matched" + rule.toString());
                 answer.add(rule);
             }
         }

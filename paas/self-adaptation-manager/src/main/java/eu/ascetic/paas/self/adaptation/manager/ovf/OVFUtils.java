@@ -80,7 +80,7 @@ public class OVFUtils {
      */
     public static VirtualSystem getVMFromOvfType(OvfDefinition ovf, String ovfId) {
 
-        if (ovfId == null) {
+        if (ovf == null || ovfId == null) {
             return null;
         }
 
