@@ -24,6 +24,7 @@ import es.bsc.demiurge.core.models.images.ImageUploaded;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
 import es.bsc.demiurge.core.models.vms.VmRequirements;
+import es.bsc.demiurge.core.monitoring.hosts.Host;
 
 import java.util.List;
 import java.util.Map;
@@ -205,4 +206,12 @@ public interface CloudMiddleware {
      * @return 
      */
 	Map<String, HardwareInfo>  getHypervisors(String region);
+    
+    /**
+     * Delivers Host data from a hostname. This can replace call createHost coming from Monitoring.
+     * 
+     * @param hostname
+     * @return 
+     */
+    Host createHost(String hostname);
 }

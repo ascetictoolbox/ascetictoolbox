@@ -192,6 +192,7 @@ public class SelfAdaptationManager {
         logger.info("Executing on demand self-adaptation");
         db.insertRequirements(action.getSlamRequirements());
         
+        //TODO: Ideally, a reassignation should not be necessary to affect to the desired VM.
         if(action.getSlamRequirements() != null){
             for(String vmId : action.getSlamRequirements().keySet()){
                 action.addVmIdToReassign(vmId);

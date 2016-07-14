@@ -208,9 +208,10 @@ public enum Config {
 
 		vmmListeners = springContext.getBean("vmmListeners", List.class);
 		vmmGlobalListeners = springContext.getBean("vmmGlobalListeners", List.class);
-
+        
         // by the moment, don't need to put these two into beans (to simplify)
-		hostFactory = new HostFactory(cloudMiddleware, monitoring);
+        //HostFactory in this case should only use cloudMiddleware information.
+		hostFactory = new HostFactory(cloudMiddleware, null);
         cloplaConversor = new CloplaConversor();
         
         hwinfo = HardwareInfo.loadFromConfig(DEFAULT_HWINFO_LOCATION_1, DEFAULT_HWINFO_LOCATION_2);
@@ -223,6 +224,10 @@ public enum Config {
 
 	public Map<String,Class<? extends SimpleScoreCalculator>> getPlacementPolicies() {
 		return placementPolicies;
+	}
+    
+    public void setPlacementPolicies(Map<String,Class<? extends SimpleScoreCalculator>> placementPolicies) {
+		this.placementPolicies = placementPolicies;
 	}
 
 	public Monitoring getMonitoring() {

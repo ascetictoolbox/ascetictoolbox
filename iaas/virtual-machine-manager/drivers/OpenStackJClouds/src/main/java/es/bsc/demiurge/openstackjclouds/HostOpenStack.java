@@ -27,129 +27,32 @@ import org.jclouds.openstack.nova.v2_0.extensions.HostAdministrationApi;
 /**
  * Status of a host of an OpenStack infrastructure.
  * 
- * @author Mario Macias (github.com/mariomac), David Ortiz Lopez (david.ortiz@bsc.es)
+ * @author Raimon Bosch (raimon.bosch@bsc.es)
  *
  */
 public class HostOpenStack extends Host {
-
     private OpenStackJclouds openStackJclouds;
 
     public HostOpenStack(String name, OpenStackJclouds openStackJclouds) {
         super(name);
         this.openStackJclouds = openStackJclouds;
-        initTotalResources();
-        initAssignedResources();
-    }
-
-    private void initTotalResources() {
-        //get the host administration API
-        Optional<? extends HostAdministrationApi> hostAdminApi =
-                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
-
-        //get the information about the host resources
-        FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
-
-        //get the information about the total resources of the host
-        HostResourceUsage totalRes = hostResourcesInfo.get(0);
-
-        //assign total CPU, RAM, and disk
-        totalCpus = totalRes.getCpu();
-        totalMemoryMb = totalRes.getMemoryMb();
-        totalDiskGb = totalRes.getDiskGb();
-    }
-
-    private void initAssignedResources() {
-        assignedCpus = getAssignedCpus();
-        assignedMemoryMb = getAssignedMemoryMb();
-        assignedDiskGb = getAssignedDiskGb();
-    }
-
-    @Override
-    public double getAssignedCpus() {
-        //get the host administration API
-        Optional<? extends HostAdministrationApi> hostAdminApi =
-                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
-
-        //get the information about the host resources
-        FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
-
-        //get the assigned CPUs
-        int assignedCpus = hostResourcesInfo.get(1).getCpu();
-
-        //update the class attribute
-        updateAssignedCpus(assignedCpus);
-
-        return assignedCpus;
-    }
-
-    @Override
-    public double getAssignedMemoryMb() {
-        //get the host administration API
-        Optional<? extends HostAdministrationApi> hostAdminApi =
-                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
-
-        //get the information about the host resources
-        FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
-
-        //get the assigned memory
-        int assignedMemoryMb = hostResourcesInfo.get(1).getMemoryMb();
-
-        //update the class attribute
-        updateAssignedMemoryMb(assignedMemoryMb);
-
-        return assignedMemoryMb;
-    }
-
-    @Override
-    public double getAssignedDiskGb() {
-        //get the host administration API
-        Optional<? extends HostAdministrationApi> hostAdminApi =
-                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
-
-        //get the information about the host resources
-        FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
-
-        //get the assigned disk
-        int assignedDiskGb = hostResourcesInfo.get(1).getDiskGb();
-
-        //update the class attribute
-        updateAssignedDiskGb(assignedDiskGb);
-
-        return assignedDiskGb;
-    }
-
-    /**
-     * @return number of available CPUs of the host
-     */
-    @Override
-    public double getFreeCpus() {
-        return totalCpus - getAssignedCpus();
-    }
-
-    /**
-     * @return available memory of the host (in MB)
-     */
-    @Override
-    public double getFreeMemoryMb() {
-        return totalMemoryMb - getAssignedMemoryMb();
-    }
-
-    /**
-     * @return available disk space of the host (in GB)
-     */
-    @Override
-    public double getFreeDiskGb() {
-        return totalDiskGb - getAssignedDiskGb();
+        refreshMonitoringInfo();
     }
 
     @Override
     public void refreshMonitoringInfo() {
-        initTotalResources();
-        initAssignedResources();
+        Optional<? extends HostAdministrationApi> hostAdminApi =
+                openStackJclouds.getNovaApi().getHostAdministrationExtensionForZone(openStackJclouds.getZone());
+        FluentIterable<? extends HostResourceUsage> hostResourcesInfo = hostAdminApi.get().listResourceUsage(hostname);
+        
+        HostResourceUsage totalRes = hostResourcesInfo.get(0);
+        totalCpus = totalRes.getCpu();
+        totalMemoryMb = (double) totalRes.getMemoryMb();
+        totalDiskGb = (double) totalRes.getDiskGb();
+        
+        HostResourceUsage assignedRes = hostResourcesInfo.get(1);
+        assignedCpus = (double) assignedRes.getCpu();
+        assignedMemoryMb = (double) assignedRes.getMemoryMb();
+        assignedDiskGb = (double) assignedRes.getDiskGb();
     }
-
-    public void setOpenStackJclouds(OpenStackJclouds openStackJclouds) {
-        this.openStackJclouds = openStackJclouds;
-    }
-
 }
