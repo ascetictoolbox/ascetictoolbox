@@ -271,6 +271,19 @@ public class DemiurgeRestV1 {
 			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
 		}
 	}
+    
+    @POST
+    @Path("/slots")
+    @Consumes("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Slot> getSlots(String vmRequeriments) {
+		try {
+			return vmPlacementCallsManager.getSlots(vmRequeriments);
+		} catch (CloudMiddlewareException e) {
+			log.error("Error getting available slots: " + e.getMessage(), e);
+			throw new ErrorHandler(e, Response.Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
     //================================================================================
     //  Self Adaptation Methods

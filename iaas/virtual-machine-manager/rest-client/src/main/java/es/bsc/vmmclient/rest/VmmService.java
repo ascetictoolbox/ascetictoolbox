@@ -94,4 +94,7 @@ public interface VmmService {
     
     @GET("/slots")
     List<Slot> getSlots();
+    
+    @POST("/slots")
+    List<Slot> getSlots(@Body VmRequirements vm);
 }

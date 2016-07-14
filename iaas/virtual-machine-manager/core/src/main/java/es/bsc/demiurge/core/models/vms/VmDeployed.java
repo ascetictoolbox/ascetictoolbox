@@ -33,6 +33,7 @@ public class VmDeployed extends Vm {
     private final String state;
     private final Date created;
     private String hostName;
+    private String ipAddressInternal;
 
     public VmDeployed(String name, String image, int cpus, int ramMb,
             int diskGb, int swapMb, String initScript, String applicationId, String id,
@@ -77,6 +78,20 @@ public class VmDeployed extends Vm {
 
     public void setHostName(String hostname) {
         this.hostName = hostname;
+    }
+
+    /**
+     * @return the ipAddressInternal
+     */
+    public String getIpAddressInternal() {
+        return ipAddressInternal;
+    }
+
+    /**
+     * @param ipAddressInternal the ipAddressInternal to set
+     */
+    public void setIpAddressInternal(String ipAddressInternal) {
+        this.ipAddressInternal = ipAddressInternal;
     }
 
 }

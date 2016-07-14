@@ -65,8 +65,8 @@ public class IaaSPricingModellerTest
 
 	@Test
     public void testIaaSPricingModeller() throws InterruptedException {
-        IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
-        System.out.println("Initialize VM");
+        //IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
+        //System.out.println("Initialize VM");
      //  prModeller.initializeVM("sm", 2);        
       // Thread.sleep(10000);
       // System.out.println("current charges = " + prModeller.getVMCurrentCharges("sm"));

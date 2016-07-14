@@ -117,4 +117,8 @@ public class VmManagerClient implements VmManager {
     public List<Slot> getSlots() {
         return vmmRestClient.getVmmService().getSlots();
     }
+    
+    public List<Slot> getSlots(VmRequirements vm) {
+        return vmmRestClient.getVmmService().getSlots(vm);
+    }
 }

@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import es.bsc.demiurge.core.models.scheduling.RecommendedPlanRequest;
 import es.bsc.demiurge.core.models.scheduling.VmPlacement;
 import es.bsc.demiurge.core.models.vms.Vm;
+import es.bsc.demiurge.core.models.vms.VmRequirements;
 import es.bsc.demiurge.core.cloudmiddleware.CloudMiddlewareException;
 import es.bsc.demiurge.core.manager.VmManager;
 import es.bsc.demiurge.core.models.scheduling.SelfAdaptationAction;
@@ -70,5 +71,24 @@ public class VmPlacementCallsManager {
         }
         return slots;
     }
-
+    
+    public List<Slot> getSlots(String vmReq) throws CloudMiddlewareException {
+        List<Slot> slots = new ArrayList<>();
+        VmRequirements vm1 = gson.fromJson(vmReq, VmRequirements.class);
+        for(Host host : vmManager.getHosts()){
+            double freeCpus = host.getFreeCpus();
+            double freeMem = host.getFreeMemoryMb();
+            double freeDisk = host.getFreeDiskGb();
+            
+            //TODO: Add swap checks. Not implemented in Host object
+            while(vm1.getRamMb() <= freeMem && vm1.getDiskGb() <= freeDisk && vm1.getCpus() <= freeCpus){
+                slots.add(new Slot(host.getHostname(), vm1.getCpus(), vm1.getDiskGb(), vm1.getRamMb()));
+                freeMem -= vm1.getRamMb();
+                freeDisk -= vm1.getDiskGb();
+                freeCpus -= vm1.getCpus();
+            }
+        }
+        
+        return slots;
+    }
 }

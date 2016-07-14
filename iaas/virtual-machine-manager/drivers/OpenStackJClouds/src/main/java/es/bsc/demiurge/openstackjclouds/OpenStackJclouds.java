@@ -277,6 +277,7 @@ public class OpenStackJclouds implements CloudMiddleware {
             if (!vmIsBeingDeleted) {
                 Flavor flavor = openStackJcloudsApis.getFlavorApi().get(server.getFlavor().getId());
                 String vmIp = getVmIp(server);
+                String vmIpInternal = getVmIpInternal(server);
                 int swapMb = 0;
                 if (flavor.getSwap().isPresent() && !flavor.getSwap().get().equals("")) {
                     swapMb = Integer.parseInt(flavor.getSwap().get());
@@ -288,6 +289,7 @@ public class OpenStackJclouds implements CloudMiddleware {
                         flavor.getDisk(), swapMb, null, null, vmId,
                         vmIp, status == null ? null : status.toString(), server.getCreated(),
                         server.getExtendedAttributes().get().getHostName());
+                vm.setIpAddressInternal(vmIpInternal);
             }
         }
         return vm;
@@ -664,6 +666,21 @@ public class OpenStackJclouds implements CloudMiddleware {
         List<Address> addresses = new ArrayList<>(server.getAddresses().values());
         return addresses.isEmpty() ? "" : addresses.get(addresses.size() - 1).getAddr();
     }
+    
+    /**
+     * Returns the internal IP of a VM. Usually 10.0.0.X
+     *
+     * @param server the VM
+     * @return the IP of the VM
+     */
+    private String getVmIpInternal(Server server) throws CloudMiddlewareException {
+		assertHostName(server.getExtendedAttributes().get().getHostName());
+        // IMPORTANT: this returns only 1 IP, but VMs can have more than 1.
+        // For now, I return just 1 to avoid breaking VMM clients.
+        // Also, when a VM is scheduled but not deployed, it might not have an IP.ç
+        List<Address> addresses = new ArrayList<>(server.getAddresses().values());
+        return addresses.isEmpty() ? "" : addresses.get(0).getAddr();
+    }
 
     /**
      * Blocks the thread execution until a specific VM is deployed.
@@ -820,5 +837,10 @@ public class OpenStackJclouds implements CloudMiddleware {
             }
         }        
         return result;
+    }
+
+    @Override
+    public es.bsc.demiurge.core.monitoring.hosts.Host createHost(String hostname) {
+        return new HostOpenStack(hostname, this);
     }
 }
