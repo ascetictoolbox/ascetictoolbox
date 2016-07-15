@@ -40,4 +40,4 @@ Bundle-ClassPath: .,
  lib/commons-codec-1.8.jar,
  lib/jsch-0.1.42.jar,
  lib/hibernate-jpa-2.1-api-1.0.0.Final.jar,
- lib/application-manager-datamodel-0.25-SNAPSHOT.jar
+ lib/application-manager-datamodel-0.29-SNAPSHOT.jar
