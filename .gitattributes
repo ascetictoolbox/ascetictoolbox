@@ -6471,6 +6471,14 @@ saas/saas-modelling/ascetic-deployment-profile/model.profile.di -text
 saas/saas-modelling/ascetic-deployment-profile/model.profile.notation -text
 saas/saas-modelling/ascetic-deployment-profile/model.profile.uml -text
 saas/saas-modelling/eclipse-dependencies.p2f -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/.classpath -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/META-INF/MANIFEST.MF -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/build.properties -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/src/eu/ascetic/acceleo/deploymentprofileextractor/Activator.java -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/src/eu/ascetic/acceleo/deploymentprofileextractor/main/Generate.java -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/src/eu/ascetic/acceleo/deploymentprofileextractor/main/generate.mtl -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/tasks/generate.xml -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/tasks/generateTarget.xml -text
 saas/saas-modelling/kpispecsgen/.classpath -text
 saas/saas-modelling/kpispecsgen/.project -text
 saas/saas-modelling/kpispecsgen/META-INF/MANIFEST.MF -text

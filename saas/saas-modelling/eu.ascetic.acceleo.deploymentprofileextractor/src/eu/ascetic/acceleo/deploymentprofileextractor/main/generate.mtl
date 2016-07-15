@@ -1,0 +1,158 @@
+[comment encoding = UTF-8 /]
+[**
+ * The documentation of the module generate.
+ */]
+[module generate('http://www.eclipse.org/uml2/5.0.0/UML')]
+
+
+[**
+ * The documentation of the template generateElement.
+ * @param aNode
+*/]
+[template public generateDeploymentSpecs(aModel : Model)]
+[comment @main/]
+[file (aModel.name.concat('.xml'), false, 'UTF-8')]
+[let adaptationStereotype : uml::Stereotype = aModel.getAppliedStereotype('Profile::ASCETICGlobalApplicationDeploymentSpecification')]
+<application-config applicationName="[aModel.getValue(adaptationStereotype, 'applicationName')/]" deploymentName="[aModel.getValue(adaptationStereotype, 'deploymentName')/]" deploymentMode="[aModel.getValue(adaptationStereotype, 'deploymentMode').eGet('name')/]" >
+	[getApplicationSLA(aModel)/]
+[comment extract data from each Node = VM-type/]
+[for (n:uml::Node | aModel.eAllContents(uml::Node) )]
+	[if ( n.getValue(n.getAppliedStereotype('Profile::ASCETICDeploymentScope'), 'isInDeploymentScope').oclAsType(Boolean) and 
+			not (n.getValue(n.getAppliedStereotype('Profile::ASCETICDeploymentScope'), 'isAlreadyDeployed').oclAsType(Boolean)) )]
+	[processNode(n)/]
+	[/if]
+[/for]
+</application-config>
+[/let]
+[/file]
+[/template]
+
+[template public getApplicationSLA(aModel : Model)]
+<applicationSLAInfo>
+[for (e:OclAny | aModel.getValue(aModel.getAppliedStereotype('Profile::ASCETIC_IaaS_GlobalApplicationSLA'), 'GlobalApplication_IaaSSLAConditions') )] 
+	[if (e.eGet('theSLATerm').toString().equalsIgnoreCase('chargesPerHourInEuro') )]
+		<SLATarget SLATerm="charges_per_app" SLAMetricUnit="Euro" comparator="[e.eGet('theSLAComparisonOperator').eGet('name')/]" boundaryValue="[e.eGet('theSLABoundaryValue')/]" SLAType="[e.eGet('theSLANotificationType').eGet('name')/]" />	
+	[/if]
+	[if (e.eGet('theSLATerm').toString().equalsIgnoreCase('energyPerHourInWattHour') )]
+		<SLATarget SLATerm="energy_usage_per_app" SLAMetricUnit="WattHour" comparator="[e.eGet('theSLAComparisonOperator').eGet('name')/]" boundaryValue="[e.eGet('theSLABoundaryValue')/]" SLAType="[e.eGet('theSLANotificationType').eGet('name')/]" />	
+	[/if]		
+[/for]
+</applicationSLAInfo>
+[/template]
+
+[template public processNode(aNode : uml::Node)]
+<node type="vm" name="[aNode.name/]" [getVMInstances(aNode)/] [getVMCharacteristics(aNode)/]>
+	[getChefMultiCookbookConfiguration(aNode)/]
+	[getVmSLA(aNode)/]
+	[getAdaptationRules(aNode)/]
+</node>
+[/template]
+
+[template public getVMInstances(aNode : uml::Node)]
+[let s : Stereotype = aNode.getAppliedStereotype('Profile::ASCETIC_IaaS_ApplicationVMSLA')] minInstance="[aNode.getValue(s, 'minVMInstances')/]" maxInstance="[aNode.getValue(s, 'maxVMInstances')/]" prefInstance="[aNode.getValue(s, 'prefVMInstances')/]"[/let]
+[/template]
+
+[template public getVMCharacteristics(aNode : uml::Node)]
+[for (e : OclAny | aNode.getValue(aNode.getAppliedStereotype('Profile::ASCETIC_IaaS_ApplicationVMSLA'), 'ApplicationVMCharacteristic_SLAConditions') )] minNumCore="[e.eGet('minNumCPUs')/]" maxNumCore="[e.eGet('maxNumCPUs')/]" prefNumCore="[e.eGet('prefNumCPUs')/]" minCPUfreq="[e.eGet('minCPUFreqInMHz')/]MHz" maxCPUfreq="[e.eGet('maxCPUFreqInMHz')/]MHz" prefCPUfreq="[e.eGet('prefCPUFreqInMHz')/]MHz" minMemSize="[e.eGet('minMemSizeInMB')/]MB" maxMemSize="[e.eGet('maxMemSizeInMB')/]MB" prefMemSize="[e.eGet('prefMemSizeInMB')/]MB" minDiskSize="[e.eGet('minDiskSizeInGB')/]GB" maxDiskSize="[e.eGet('maxDiskSizeInGB')/]GB" prefDiskSize="[e.eGet('prefDiskSizeInGB')/]GB"  [/for]
+[/template]
+
+[template public getChefMultiCookbookConfiguration(aNode : uml::Node)]
+<base-dependency  OS="[aNode.getValue(aNode.getAppliedStereotype('Profile::ChefMultiCookbookConfiguration'), 'baseOS')/]" OSVersion="[aNode.getValue(aNode.getAppliedStereotype('Profile::ChefMultiCookbookConfiguration'), 'baseOSVersion')/]" />
+[for (e:OclAny | aNode.getValue(aNode.getAppliedStereotype('Profile::ChefMultiCookbookConfiguration'), 'CookbookList') )]
+<software_install name="[e.eGet('name')/]" chefURI="[e.eGet('CookbookURI')/]">
+	[if (e.eGet('parametersOfCookbook').toString().equalsIgnoreCase(''))]
+	<attribute/> 
+	[else]
+	[for (p:OclAny | e.eGet('parametersOfCookbook') )]
+	<attribute name="[p.eGet('name')/]" value="[p.eGet('value')/]" />
+	[/for]
+	[/if]
+</software_install>
+[/for]
+[/template]
+
+[template public getVmSLA(aNode : uml::Node)]
+<vmSLAInfo>
+[for (e:OclAny | aNode.getValue(aNode.getAppliedStereotype('Profile::ASCETIC_IaaS_ApplicationVMSLA'), 'ApplicationVM_IaaSSLAConditions') )] 
+	[if (e.eGet('theSLATerm').toString().equalsIgnoreCase('VMPricePerHourInEuro') )]
+		<SLATarget SLATerm="price_per_vm" SLAMetricUnit="EuroPerHour" comparator="[e.eGet('theSLAComparisonOperator').eGet('name')/]" boundaryValue="[e.eGet('theSLABoundaryValue')/]" SLAType="[e.eGet('theSLANotificationType').eGet('name')/]" />
+	[/if]
+	[if (e.eGet('theSLATerm').toString().equalsIgnoreCase('VMPowerInWatt') )]
+		<SLATarget SLATerm="power_usage_per_vm" SLAMetricUnit="Watt" comparator="[e.eGet('theSLAComparisonOperator').eGet('name')/]" boundaryValue="[e.eGet('theSLABoundaryValue')/]" SLAType="[e.eGet('theSLANotificationType').eGet('name')/]" />
+	[/if]
+[/for]
+</vmSLAInfo>
+[/template]
+
+[template public getAdaptationRules(aNode : uml::Node)]
+[if (aNode.getAppliedStereotype('Profile::ASCETIC_ApplicationVMType_Adaptation') <> null )]
+<vmAdaptationRules>
+[for (e:OclAny | aNode.getValue(aNode.getAppliedStereotype('Profile::ASCETIC_ApplicationVMType_Adaptation'), 'theScalingAdaptationRules_ApplicationSpecific_VMType') )  separator('\n')]
+	<adaptation-rule id="[e.eGet('id_forAdaptationRule')/]" description="[e.eGet('description_of_AdaptationRule')/]"> 
+		[processScalingAdaptationTrigger(e)/]
+		[processScalingAdaptationActionList(e)/]
+	</adaptation-rule>
+[/for]
+[for (e:OclAny | aNode.getValue(aNode.getAppliedStereotype('Profile::ASCETIC_ApplicationVMType_Adaptation'), 'theResetAdaptationRules_ApplicationSpecific_VMType') )  separator('\n')]
+	<adaptation-rule id="[e.eGet('id_forAdaptationRule')/]" description="[e.eGet('description_of_AdaptationRule')/]">
+		[processResetAdaptationTrigger(e)/]
+		[processResetAdaptationActionList(e)/]
+	</adaptation-rule>
+[/for]
+</vmAdaptationRules>
+[/if]
+[/template]
+
+[template public processScalingAdaptationTrigger(anAdaptationRule : OclAny) post (replaceAll('\n', '').replaceAll('\t', ' ').trim())]
+[let anAdaptationTrigger : OclAny = anAdaptationRule.eGet('trigger_forAdaptation')]
+<SLATarget 
+	SLATerm="aggregated_event_metric_over_period" 
+	applicationEvent="[anAdaptationTrigger.eGet('theTriggerEventType')/]" 
+	applicationMetric="[anAdaptationTrigger.eGet('theTriggerMetricName')/]"
+	[if ( anAdaptationTrigger.eGet('requiresAggregation').toString().toBoolean() )]
+	aggregator="[anAdaptationTrigger.eGet('theTriggerAggregation').eGet('AggregationFunction').eGet('name')/]"
+	period="[(anAdaptationTrigger.eGet('theTriggerAggregation').eGet('PeriodInMinutes').toString().toInteger())/]"
+	[if ( anAdaptationTrigger.eGet('theTriggerAggregation').eGet('requiresParamaters').toString().toBoolean() )]
+	aggregatorParams="[anAdaptationTrigger.eGet('theTriggerAggregation').eGet('AggregationParameter')/]"
+	[/if]	
+	[/if]
+	[comment logic of trigger is reversed compared to SLA monitoring thus the comparison operator given by user must be reversed/]
+	comparator="[comparatorReverseLogic(anAdaptationTrigger.eGet('theTriggerComparisonOperator').eGet('name').toString())/]"
+	boundaryValue="[anAdaptationTrigger.eGet('theTriggerThresholdValue')/]"
+	SLAType="[anAdaptationTrigger.eGet('theTriggerNotificationType').eGet('name')/]"
+	/>
+[/let]
+[/template]
+
+[template public processScalingAdaptationActionList(anAdaptationRule : OclAny)]
+[for (anAdaptationAction:OclAny | anAdaptationRule.eGet('scalingActions') )]
+<adapt triggerBreachDistancePercentageMin="[anAdaptationAction.eGet('triggerLowerBreachPercentage')/]" triggerBreachDistancePercentageMax="[anAdaptationAction.eGet('triggerUpperBreachPercentage')/]" type="[anAdaptationAction.eGet('theAdaptationType').eGet('name')/]" direction="[anAdaptationAction.eGet('theAdaptationDirection').eGet('name')/]" /> 
+[/for]
+[/template]
+
+
+[template public comparatorReverseLogic(aComparator : String)]
+[if ( aComparator.equalsIgnoreCase('less_than') )]
+greater_than_or_equals[elseif ( aComparator.equalsIgnoreCase('less_than_or_equals') )]
+greater_than[elseif ( aComparator.equalsIgnoreCase('greater_than') )]
+less_than_or_equals[elseif ( aComparator.equalsIgnoreCase('greater_than_or_equals') )]
+less_than[else]
+[aComparator/][/if]	
+[/template]
+
+[template public processResetAdaptationTrigger(anAdaptationRule : OclAny) post (replaceAll('\n', '').replaceAll('\t', ' ').trim())]
+<SLATarget 
+	SLATerm="aggregated_event_metric_over_period" 
+	applicationEvent="[anAdaptationRule.eGet('theTriggerEventType')/]" 
+	applicationMetric="[anAdaptationRule.eGet('theTriggerMetricName')/]" 
+	aggregator="last" 
+	comparator="less_than_or_equals" 
+	boundaryValue="0.0" 
+	SLAType="information" />
+[/template]
+
+[template public processResetAdaptationActionList(anAdaptationRule : OclAny)]
+[for (anAdaptationAction:OclAny | anAdaptationRule.eGet('resetActions') )]
+<adapt resetLevel="[anAdaptationAction.eGet('resetLevel')/]" minimalNumOfVMs="[anAdaptationAction.eGet('numberOfVMs')/]" />
+[/for]
+[/template]
