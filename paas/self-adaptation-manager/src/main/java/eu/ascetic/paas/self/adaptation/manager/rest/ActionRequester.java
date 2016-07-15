@@ -486,6 +486,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             case SCALE_TO_N_VMS:
                 horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
                 break;
+            default:
+                Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
+                break;                
         }
         response.setPerformed(true);
     }

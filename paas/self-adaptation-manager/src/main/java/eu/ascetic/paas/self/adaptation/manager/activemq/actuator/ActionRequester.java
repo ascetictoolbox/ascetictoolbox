@@ -144,6 +144,12 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
             case INFLATE_VM:
                 scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
+            case SCALE_TO_N_VMS:
+                horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
+                break;
+            default:
+                Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
+                break;
         }
         response.setPerformed(true);
     }

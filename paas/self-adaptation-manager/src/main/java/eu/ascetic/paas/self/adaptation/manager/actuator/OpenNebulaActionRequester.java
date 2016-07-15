@@ -311,7 +311,7 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
         VirtualMachine vm = new VirtualMachine(Integer.parseInt(vmID), client);
         //TODO, complete the code here - Need to find next template name!!!!        
         OneResponse rc = vm.resize("", false);
-    }
+    }   
 
     @Override
     public double getPowerUsageVM(String application, String deployment, String vmID) {
@@ -402,6 +402,12 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
             case INFLATE_VM:
                 scaleUpVM(response.getApplicationId(), response.getDeploymentId(), response.getVmId());
                 break;
+            case SCALE_TO_N_VMS:
+                horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
+                break;
+            default:
+                Logger.getLogger(OpenNebulaActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
+                break; 
         }
         response.setPerformed(true);
     }
