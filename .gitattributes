@@ -6467,6 +6467,9 @@ saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/events.
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/experiments.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/kpis.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/scopes.xml -text
+saas/saas-modelling/ascetic-deployment-profile/model.profile.di -text
+saas/saas-modelling/ascetic-deployment-profile/model.profile.notation -text
+saas/saas-modelling/ascetic-deployment-profile/model.profile.uml -text
 saas/saas-modelling/eclipse-dependencies.p2f -text
 saas/saas-modelling/kpispecsgen/.classpath -text
 saas/saas-modelling/kpispecsgen/.project -text
