@@ -148,6 +148,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     	energyProvider.updateEnergyPrice();
     }
     
+    public void getEnergyPrice(){
+    	energyProvider.getNewDynamicEnergyPrice();
+    }
 ///////////////////////////////QUEUE//////////////////////////////////////////////////////////////////////
   /*  
     public void publishToQueue(GenericPricingMessage msg) throws Exception{

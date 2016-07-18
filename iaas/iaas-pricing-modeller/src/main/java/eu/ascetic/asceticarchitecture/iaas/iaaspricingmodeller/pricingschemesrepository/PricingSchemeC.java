@@ -43,7 +43,7 @@ public class PricingSchemeC extends IaaSPricingModellerPricingScheme implements 
 	
 	public PricingSchemeC(int id, int IaaSID) {
 		super(id);
-		price = new StaticResourcePrice(IaaSID);
+		price = new StaticResourcePrice(IaaSID,id);
 		
 	}
 
