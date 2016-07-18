@@ -10,7 +10,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jenkins.project.name>ASCETiC Reference Architecture</jenkins.project.name>
-    <jenkins.project.default.emails>david.garciaperez@atos.net R.E.Kavanagh@leeds.ac.uk scsdja@leeds.ac.uk</jenkins.project.default.emails>
+    <jenkins.project.default.emails>david.garciaperez@atos.net R.E.Kavanagh@leeds.ac.uk</jenkins.project.default.emails>
   </properties>
   <ciManagement>
     <system>hudson</system>
