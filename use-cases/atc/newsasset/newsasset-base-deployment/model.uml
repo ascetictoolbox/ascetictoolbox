@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Profile="http:///schemas/Profile/_X3kBwD-dEeaq7pIyX5VI_g/12" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http:///schemas/Profile/_X3kBwD-dEeaq7pIyX5VI_g/12 ../ascetic-deployment-profile-2/model.profile.uml#_X3qIYD-dEeaq7pIyX5VI_g">
+  <uml:Model xmi:id="_nkUKYDeNEeazoeikTimtuw" name="model">
+    <packagedElement xmi:type="uml:Node" xmi:id="_A27WwDeREeazoeikTimtuw" name="NA-HAProxy"/>
+    <packagedElement xmi:type="uml:Node" xmi:id="_GvIDwDeSEeazoeikTimtuw" name="NA-Server"/>
+    <packagedElement xmi:type="uml:Node" xmi:id="_Hcdq4DeSEeazoeikTimtuw" name="NA-Oracle"/>
+    <packagedElement xmi:type="uml:Node" xmi:id="_H_L9cDeSEeazoeikTimtuw" name="NA-Files"/>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_QKIcAD0sEeazoeikTimtuw">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_zMkEAD-dEeaq7pIyX5VI_g" source="PapyrusVersion">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_zMkrED-dEeaq7pIyX5VI_g" key="Version" value="0.0.13"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_zMkrET-dEeaq7pIyX5VI_g" key="Comment" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_zMkrEj-dEeaq7pIyX5VI_g" key="Copyright" value="LGPL v3"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_zMkrEz-dEeaq7pIyX5VI_g" key="Date" value="2016-07-01"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_zMkrFD-dEeaq7pIyX5VI_g" key="Author" value="jcd"/>
+      </eAnnotations>
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_QKzKYD0sEeazoeikTimtuw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="../ascetic-deployment-profile-2/model.profile.uml#_X3qIYD-dEeaq7pIyX5VI_g"/>
+      </eAnnotations>
+      <appliedProfile xmi:type="uml:Profile" href="../ascetic-deployment-profile-2/model.profile.uml#_KhU_4C4XEea7torVFKB7Ow"/>
+    </profileApplication>
+  </uml:Model>
+  <Profile:ASCETICGlobalApplicationDeploymentSpecification xmi:id="_U3dGwD0sEeazoeikTimtuw" applicationName="newsasset" deploymentName="multitenant_small_and_medium_customers" base_Model="_nkUKYDeNEeazoeikTimtuw"/>
+  <Profile:ASCETIC_IaaS_GlobalApplicationSLA xmi:id="_o7SBcD0sEeazoeikTimtuw" SLAEvaluationFrequencyInMinutes="5" base_Model="_nkUKYDeNEeazoeikTimtuw">
+    <GlobalApplication_IaaSSLAConditions xmi:type="Profile:GlobalApplicationGenericKPI" xmi:id="_1qjwcD0sEeazoeikTimtuw" theSLAComparisonOperator="less_than_or_equals" theSLABoundaryValue="1.0"/>
+    <GlobalApplication_IaaSSLAConditions xmi:type="Profile:GlobalApplicationGenericKPI" xmi:id="_JtdeED0tEeazoeikTimtuw" theSLATerm="energyPerHourInWattHour" theSLAComparisonOperator="less_than_or_equals" theSLABoundaryValue="500.0"/>
+  </Profile:ASCETIC_IaaS_GlobalApplicationSLA>
+  <Profile:ChefMultiCookbookConfiguration xmi:id="_p1sl0D0tEeazoeikTimtuw" base_Node="_A27WwDeREeazoeikTimtuw" baseOS="Linux" baseOSVersion="debian-7">
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_rdfkEEmkEeajIP68nxqPWg" name="CPU" CookbookURI="http://localhost:8080/cpu.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_4ZaA4EmkEeajIP68nxqPWg" name="default['cpu']['test1']" value="'value1'"/>
+    </CookbookList>
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_-V5NcEmkEeajIP68nxqPWg" name="BuildEssential" CookbookURI="http://localhost:8080/build-essential.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_EXzFgEmlEeajIP68nxqPWg" name="default['build-essential']['test1']" value="'value1'"/>
+    </CookbookList>
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_JiwugEmlEeajIP68nxqPWg" name="HAProxy" CookbookURI="http://localhost:8080/haproxy.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_Ouw5UEmlEeajIP68nxqPWg" name="default['haproxy']['member_port']" value="8080"/>
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_VVIwYEmlEeajIP68nxqPWg" name="default['haproxy']['members']" value="[{ &amp;quot;hostname&amp;quot; =&amp;gt; &amp;quot;localhost&amp;quot;, &amp;quot;ipaddress&amp;quot; =&amp;gt; &amp;quot;127.0.0.1&amp;quot; }]"/>
+    </CookbookList>
+  </Profile:ChefMultiCookbookConfiguration>
+  <Profile:ASCETICDeploymentScope xmi:id="_p1-5sD0tEeazoeikTimtuw" base_Node="_A27WwDeREeazoeikTimtuw" isInDeploymentScope="true"/>
+  <Profile:ASCETIC_IaaS_ApplicationVMSLA xmi:id="_p2LG8D0tEeazoeikTimtuw" base_Node="_A27WwDeREeazoeikTimtuw">
+    <ApplicationVMCharacteristic_SLAConditions xmi:type="Profile:ApplicationVMGenericCharacteristicBound" xmi:id="_11p5ED-QEeazoeikTimtuw" maxNumCPUs="2" prefNumCPUs="4" minCPUFreqInMHz="1800" maxCPUFreqInMHz="3000" minMemSizeInMB="2000"/>
+    <ApplicationVM_IaaSSLAConditions xmi:type="Profile:ApplicationVMGenericKPI" xmi:id="_tOxIgD0vEeazoeikTimtuw" theSLAComparisonOperator="less_than_or_equals" theSLABoundaryValue="80.0"/>
+    <ApplicationVM_IaaSSLAConditions xmi:type="Profile:ApplicationVMGenericKPI" xmi:id="_vN0PID0vEeazoeikTimtuw" theSLATerm="VMPricePerHourInEuro" theSLAComparisonOperator="less_than_or_equals" theSLABoundaryValue="0.3"/>
+  </Profile:ASCETIC_IaaS_ApplicationVMSLA>
+  <Profile:ChefMultiCookbookConfiguration xmi:id="_XWeKED0wEeazoeikTimtuw" base_Node="_GvIDwDeSEeazoeikTimtuw" baseOS="WindowsServer" baseOSVersion="2003">
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_eXFSAEmlEeajIP68nxqPWg" name="ChefHandler" CookbookURI="http://localhost:8080/chef_handler.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_lM7vgEmlEeajIP68nxqPWg" name="default['chef_handler']['test1']" value="'value1'"/>
+    </CookbookList>
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_16FCQEmlEeajIP68nxqPWg" name="Windows" CookbookURI="http://localhost:8080/windows.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_7OEEYEmlEeajIP68nxqPWg" name="default['windows']['test1']" value="'value1'"/>
+    </CookbookList>
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_Cyp3MEmmEeajIP68nxqPWg" name="NewsAssetServer" CookbookURI="http://localhost:8080/na-server.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_LL6oMEmmEeajIP68nxqPWg" name="default['na-server']['test1']" value="'value1'"/>
+    </CookbookList>
+  </Profile:ChefMultiCookbookConfiguration>
+  <Profile:ASCETICDeploymentScope xmi:id="_XWqXUD0wEeazoeikTimtuw" base_Node="_GvIDwDeSEeazoeikTimtuw" isInDeploymentScope="true"/>
+  <Profile:ASCETIC_IaaS_ApplicationVMSLA xmi:id="_XWwd-D0wEeazoeikTimtuw" base_Node="_GvIDwDeSEeazoeikTimtuw" maxVMInstances="10" prefVMInstances="2">
+    <ApplicationVMCharacteristic_SLAConditions xmi:type="Profile:ApplicationVMGenericCharacteristicBound" xmi:id="_OXi6gD-REeazoeikTimtuw" minNumCPUs="2" maxNumCPUs="4" prefNumCPUs="2" minCPUFreqInMHz="1800" minMemSizeInMB="2000"/>
+    <ApplicationVM_IaaSSLAConditions xmi:type="Profile:ApplicationVMGenericKPI" xmi:id="_Pvn4AD0xEeazoeikTimtuw" theSLAComparisonOperator="less_than" theSLABoundaryValue="50.0"/>
+    <ApplicationVM_IaaSSLAConditions xmi:type="Profile:ApplicationVMGenericKPI" xmi:id="_SPYfAD0xEeazoeikTimtuw" theSLATerm="VMPricePerHourInEuro" theSLAComparisonOperator="less_than" theSLABoundaryValue="0.25"/>
+  </Profile:ASCETIC_IaaS_ApplicationVMSLA>
+  <Profile:ASCETIC_ApplicationVMType_Adaptation xmi:id="_jmvMYD0xEeazoeikTimtuw" base_Node="_GvIDwDeSEeazoeikTimtuw">
+    <theScalingAdaptationRules_ApplicationSpecific_VMType xmi:type="Profile:ScalingAdaptationRule_ApplicationSpecific_VMType" xmi:id="_mnPI8D0xEeazoeikTimtuw" id_forAdaptationRule="NAServerScaleUp" description_of_AdaptationRule="scale up NA servers if search news items is too slow">
+      <trigger_forAdaptation xmi:type="Profile:ApplicationSpecificTrigger" xmi:id="_n04AwD0xEeazoeikTimtuw" theTriggerEventType="searchForNewsItems" theTriggerMetricName="duration" requiresAggregation="true" theTriggerComparisonOperator="greater_than" theTriggerThresholdValue="0.7">
+        <theTriggerAggregation xmi:type="Profile:AggregationInfo" xmi:id="_rZG8gD0xEeazoeikTimtuw" PeriodInMinutes="15" requiresParamaters="true" AggregationParameter="90"/>
+      </trigger_forAdaptation>
+      <scalingActions xmi:type="Profile:ScalingAdaptationAction" xmi:id="_ELkJgD0yEeazoeikTimtuw" triggerUpperBreachPercentage="50" theAdaptationType="vmVertical"/>
+      <scalingActions xmi:type="Profile:ScalingAdaptationAction" xmi:id="_HorJkD0yEeazoeikTimtuw" triggerLowerBreachPercentage="50" triggerUpperBreachPercentage="10000"/>
+    </theScalingAdaptationRules_ApplicationSpecific_VMType>
+    <theResetAdaptationRules_ApplicationSpecific_VMType xmi:type="Profile:ResetAdaptationRule_ApplicationSpecific_VMType" xmi:id="_8HxrgD-dEeaq7pIyX5VI_g" id_forAdaptationRule="NAServerPeriodicalResets" description_of_AdaptationRule="Adapt num of NA servers VMs according to anticipated workload" theTriggerEventType="anticipatedWorkload" theTriggerMetricName="degree">
+      <resetActions xmi:type="Profile:ResetAdaptationAction" xmi:id="_DPYAUD-eEeaq7pIyX5VI_g" resetLevel="1" numberOfVMs="1"/>
+      <resetActions xmi:type="Profile:ResetAdaptationAction" xmi:id="_I_MC0D-eEeaq7pIyX5VI_g" resetLevel="5" numberOfVMs="2"/>
+      <resetActions xmi:type="Profile:ResetAdaptationAction" xmi:id="_LJkPsD-eEeaq7pIyX5VI_g" resetLevel="10" numberOfVMs="6"/>
+    </theResetAdaptationRules_ApplicationSpecific_VMType>
+  </Profile:ASCETIC_ApplicationVMType_Adaptation>
+  <Profile:ChefMultiCookbookConfiguration xmi:id="_9uT8wD0yEeazoeikTimtuw" base_Node="_Hcdq4DeSEeazoeikTimtuw" baseOS="WindowsServer" baseOSVersion="2003">
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_f8VjIEmmEeajIP68nxqPWg" name="ChefHandler" CookbookURI="http://localhost:8080/chef_handler.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_lStx8EmmEeajIP68nxqPWg" name="default['chef_handler']['test1']" value="'value1'"/>
+    </CookbookList>
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_sr_FkEmmEeajIP68nxqPWg" name="Windows" CookbookURI="http://localhost:8080/windows.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_N6IsgEmnEeajIP68nxqPWg" name="default['windows']['test1']" value="'value1'"/>
+    </CookbookList>
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_UvxuoEmnEeajIP68nxqPWg" name="NewsAssetOracleExpress_configure" CookbookURI="http://localhost:8080/na-oracle.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_Y_3q0EmnEeajIP68nxqPWg" name="default['na-oracle']['test1']" value="'value1'"/>
+    </CookbookList>
+  </Profile:ChefMultiCookbookConfiguration>
+  <Profile:ASCETICDeploymentScope xmi:id="_9ugKAD0yEeazoeikTimtuw" base_Node="_Hcdq4DeSEeazoeikTimtuw" isInDeploymentScope="true"/>
+  <Profile:ASCETIC_IaaS_ApplicationVMSLA xmi:id="_BHsTYD0zEeazoeikTimtuw" base_Node="_Hcdq4DeSEeazoeikTimtuw">
+    <ApplicationVMCharacteristic_SLAConditions xmi:type="Profile:ApplicationVMGenericCharacteristicBound" xmi:id="_syMfED-REeazoeikTimtuw" maxNumCPUs="2" minCPUFreqInMHz="1200" minMemSizeInMB="4000" maxMemSizeInMB="8000" prefMemSizeInMB="4000" minDiskSizeInGB="80" maxDiskSizeInGB="120" prefDiskSizeInGB="80"/>
+  </Profile:ASCETIC_IaaS_ApplicationVMSLA>
+  <Profile:ChefMultiCookbookConfiguration xmi:id="_65MUUD0zEeazoeikTimtuw" base_Node="_H_L9cDeSEeazoeikTimtuw" baseOS="WindowsServer" baseOSVersion="2003">
+    <CookbookList xmi:type="Profile:CookbookInfo" xmi:id="_ifQaQD7OEeazoeikTimtuw" name="NewsAssetFiles" CookbookURI="http://localhost:8080/na-files.tar.gz">
+      <parametersOfCookbook xmi:type="Profile:CookbookAttribute" xmi:id="_oPPYAEmnEeajIP68nxqPWg" name="default['na-files']['test1']" value="'value1'"/>
+    </CookbookList>
+  </Profile:ChefMultiCookbookConfiguration>
+  <Profile:ASCETICDeploymentScope xmi:id="_65YhkD0zEeazoeikTimtuw" base_Node="_H_L9cDeSEeazoeikTimtuw" isInDeploymentScope="true"/>
+  <Profile:ASCETIC_IaaS_ApplicationVMSLA xmi:id="_65ku0D0zEeazoeikTimtuw" base_Node="_H_L9cDeSEeazoeikTimtuw">
+    <ApplicationVMCharacteristic_SLAConditions xmi:type="Profile:ApplicationVMGenericCharacteristicBound" xmi:id="_0zfcAD-REeazoeikTimtuw" maxCPUFreqInMHz="1200" prefCPUFreqInMHz="500" minDiskSizeInGB="120" maxDiskSizeInGB="500" prefDiskSizeInGB="200"/>
+  </Profile:ASCETIC_IaaS_ApplicationVMSLA>
+</xmi:XMI>

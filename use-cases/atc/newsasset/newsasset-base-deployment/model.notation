@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/viewpoints/policy/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_nkyrgDeNEeazoeikTimtuw" type="PapyrusUMLDeploymentDiagram" name="NewsAssetBaseDeployment" measurementUnit="Pixel">
+  <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_U3jNYD0sEeazoeikTimtuw" source="Stereotype_Annotation">
+    <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_o7kVUD0sEeazoeikTimtuw" key="StereotypeWithQualifiedNameList" value=""/>
+    <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_o7kVUT0sEeazoeikTimtuw" key="StereotypeList" value="Profile::ASCETICGlobalApplicationDeploymentSpecification,Profile::ASCETIC_IaaS_GlobalApplicationSLA"/>
+    <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_o7kVUj0sEeazoeikTimtuw" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+    <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_o7kVUz0sEeazoeikTimtuw" key="PropStereoDisplay" value=""/>
+    <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_o7kVVD0sEeazoeikTimtuw" key="StereotypePropertyLocation" value="Compartment"/>
+  </eAnnotations>
+  <children xmi:type="notation:Shape" xmi:id="_A27WwTeREeazoeikTimtuw" type="2008">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_tmE0UDeUEeazoeikTimtuw" source="Stereotype_Annotation">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_p2RNkD0tEeazoeikTimtuw" key="StereotypeWithQualifiedNameList" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_p2RNkT0tEeazoeikTimtuw" key="StereotypeList" value="Profile::ChefMultiCookbookConfiguration,Profile::ASCETICDeploymentScope,Profile::ASCETIC_IaaS_ApplicationVMSLA"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_p2RNkj0tEeazoeikTimtuw" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_p2RNkz0tEeazoeikTimtuw" key="PropStereoDisplay" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_p2RNlD0tEeazoeikTimtuw" key="StereotypePropertyLocation" value="Compartment"/>
+    </eAnnotations>
+    <children xmi:type="notation:DecorationNode" xmi:id="_A27WwzeREeazoeikTimtuw" type="9"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_A27WxDeREeazoeikTimtuw" type="19">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_A27WxTeREeazoeikTimtuw"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_A27WxjeREeazoeikTimtuw"/>
+    </children>
+    <element xmi:type="uml:Node" href="model.uml#_A27WwDeREeazoeikTimtuw"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_A27WwjeREeazoeikTimtuw" x="338" y="62" width="697" height="129"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_GvIDwTeSEeazoeikTimtuw" type="2008">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="__GfhoDeVEeazoeikTimtuw" source="Stereotype_Annotation">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_jnZ6wD0xEeazoeikTimtuw" key="StereotypeWithQualifiedNameList" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_jnZ6wT0xEeazoeikTimtuw" key="StereotypeList" value="Profile::ChefMultiCookbookConfiguration,Profile::ASCETICDeploymentScope,Profile::ASCETIC_IaaS_ApplicationVMSLA,Profile::ASCETIC_ApplicationVMType_Adaptation"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_jnZ6wj0xEeazoeikTimtuw" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_jnZ6wz0xEeazoeikTimtuw" key="PropStereoDisplay" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_jnZ6xD0xEeazoeikTimtuw" key="StereotypePropertyLocation" value="Compartment"/>
+    </eAnnotations>
+    <children xmi:type="notation:DecorationNode" xmi:id="_GvIDwzeSEeazoeikTimtuw" type="9"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_GvIDxDeSEeazoeikTimtuw" type="19">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_GvIDxTeSEeazoeikTimtuw"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GvIDxjeSEeazoeikTimtuw"/>
+    </children>
+    <element xmi:type="uml:Node" href="model.uml#_GvIDwDeSEeazoeikTimtuw"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_GvIDwjeSEeazoeikTimtuw" x="162" y="235" width="1012" height="136"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_Hcdq4TeSEeazoeikTimtuw" type="2008">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_9uaDYD0yEeazoeikTimtuw" source="Stereotype_Annotation">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_BHyaAD0zEeazoeikTimtuw" key="StereotypeWithQualifiedNameList" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_BHyaAT0zEeazoeikTimtuw" key="StereotypeList" value="Profile::ChefMultiCookbookConfiguration,Profile::ASCETICDeploymentScope,Profile::ASCETIC_IaaS_ApplicationVMSLA"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_BHyaAj0zEeazoeikTimtuw" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_BHyaAz0zEeazoeikTimtuw" key="PropStereoDisplay" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_BHyaBD0zEeazoeikTimtuw" key="StereotypePropertyLocation" value="Compartment"/>
+    </eAnnotations>
+    <children xmi:type="notation:DecorationNode" xmi:id="_Hcdq4zeSEeazoeikTimtuw" type="9"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_Hcdq5DeSEeazoeikTimtuw" type="19">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_Hcdq5TeSEeazoeikTimtuw"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Hcdq5jeSEeazoeikTimtuw"/>
+    </children>
+    <element xmi:type="uml:Node" href="model.uml#_Hcdq4DeSEeazoeikTimtuw"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Hcdq4jeSEeazoeikTimtuw" x="162" y="401" width="779"/>
+  </children>
+  <children xmi:type="notation:Shape" xmi:id="_H_L9cTeSEeazoeikTimtuw" type="2008">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_65Sa8D0zEeazoeikTimtuw" source="Stereotype_Annotation">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_65q1cD0zEeazoeikTimtuw" key="StereotypeWithQualifiedNameList" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_65q1cT0zEeazoeikTimtuw" key="StereotypeList" value="Profile::ChefMultiCookbookConfiguration,Profile::ASCETICDeploymentScope,Profile::ASCETIC_IaaS_ApplicationVMSLA"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_65q1cj0zEeazoeikTimtuw" key="Stereotype_Presentation_Kind" value="HorizontalStereo"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_65q1cz0zEeazoeikTimtuw" key="PropStereoDisplay" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_65q1dD0zEeazoeikTimtuw" key="StereotypePropertyLocation" value="Compartment"/>
+    </eAnnotations>
+    <children xmi:type="notation:DecorationNode" xmi:id="_H_L9czeSEeazoeikTimtuw" type="9"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_H_L9dDeSEeazoeikTimtuw" type="19">
+      <styles xmi:type="notation:TitleStyle" xmi:id="_H_L9dTeSEeazoeikTimtuw"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_H_L9djeSEeazoeikTimtuw"/>
+    </children>
+    <element xmi:type="uml:Node" href="model.uml#_H_L9cDeSEeazoeikTimtuw"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_H_L9cjeSEeazoeikTimtuw" x="161" y="577" width="1012"/>
+  </children>
+  <styles xmi:type="notation:StringValueStyle" xmi:id="_nkyrgTeNEeazoeikTimtuw" name="diagram_compatibility_version" stringValue="1.0.0"/>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_nkyrgjeNEeazoeikTimtuw"/>
+  <styles xmi:type="style:PapyrusViewStyle" xmi:id="_nkyrgzeNEeazoeikTimtuw">
+    <owner xmi:type="uml:Model" href="model.uml#_nkUKYDeNEeazoeikTimtuw"/>
+  </styles>
+  <element xmi:type="uml:Model" href="model.uml#_nkUKYDeNEeazoeikTimtuw"/>
+</notation:Diagram>

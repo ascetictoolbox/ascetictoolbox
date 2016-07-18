@@ -6549,6 +6549,10 @@ use-cases/atc/newsasset/kpi-modelling/LICENSE.TXT -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.di -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.notation -text
 use-cases/atc/newsasset/kpi-modelling/NewsAsset-model.uml -text
+use-cases/atc/newsasset/newsasset-base-deployment/LICENSE.TXT -text
+use-cases/atc/newsasset/newsasset-base-deployment/model.di -text
+use-cases/atc/newsasset/newsasset-base-deployment/model.notation -text
+use-cases/atc/newsasset/newsasset-base-deployment/model.uml -text
 utils/JFuzzyLogic/fcl/Fcl.g -text
 utils/JFuzzyLogic/fcl/QoS/LarsenQoSFewRules.fcl -text
 utils/JFuzzyLogic/fcl/QoS/LarsenQoSManyRules.fcl -text
