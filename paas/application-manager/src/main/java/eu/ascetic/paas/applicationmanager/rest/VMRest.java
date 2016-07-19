@@ -17,9 +17,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -576,8 +579,9 @@ public class VMRest extends AbstractRest {
 			                             @PathParam("deployment_id") String deploymentId,
 			                             @PathParam("vm_id") String vmId,
 			                             @PathParam("event_id") String eventId,
-			                             @DefaultValue("0") @QueryParam("startTime") long startTime,
-			                             @DefaultValue("0") @QueryParam("endTime") long endTime) {
+			                             @QueryParam("startTime") long startTime,
+			                             @QueryParam("endTime") long endTime,
+			                             @Context UriInfo uriInfo) {
 		
 		logger.info("GET request to path: /applications/" + applicationName 
 				                            + "/deployments/" + deploymentId 
@@ -631,7 +635,8 @@ public class VMRest extends AbstractRest {
 										@PathParam("deployment_id") String deploymentId,
 										@PathParam("vm_id") String vmId,
 										@DefaultValue("0") @QueryParam("startTime") long startTime,
-										@DefaultValue("0") @QueryParam("endTime") long endTime) {
+										@DefaultValue("0") @QueryParam("endTime") long endTime,
+										@Context UriInfo uriInfo) {
 		
 		logger.info("GET request to path: /applications/" + applicationName 
                 + "/deployments/" + deploymentId 
@@ -639,6 +644,16 @@ public class VMRest extends AbstractRest {
                 + "/energy-consumption?"
                 + "startTime=" + startTime
                 + "&endTime=" + endTime);
+		
+		logger.info("######### 1");
+		logger.info("URI Info: " +  uriInfo);
+		if(uriInfo != null) {
+			logger.info("###################");
+			MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters(); 
+		    String startTime2 = queryParams.getFirst("startTime");
+		    String endTime2 = queryParams.getFirst("endTime");
+		    logger.info("Start Time: " + startTime2 + "End Time:  " + endTime2);
+		}
 		
 		return getPowerComsumptionForVM(applicationName, deploymentId, vmId, null, startTime, endTime);
 	}

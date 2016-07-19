@@ -638,7 +638,7 @@ public class VMRestTest extends AbstractTest {
 		ids.add("3");
 		when(energyModeller.measure(null, "111", "333", ids, "eventX",  Unit.POWER, null, null)).thenReturn(22.0);
 		
-		Response response = vmRest.getEventPowerConsumption("111", "333", "444", "eventX", 0, 0);
+		Response response = vmRest.getEventPowerConsumption("111", "333", "444", "eventX", 0, 0, null);
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -720,7 +720,7 @@ public class VMRestTest extends AbstractTest {
 		ids.add("3");
 		when(energyModeller.measure("xx1", "111", "333", ids, null,  Unit.POWER, null, null)).thenReturn(22.0);
 		
-		Response response = vmRest.getPowerConsumption("111", "333", "444", 0, 0);
+		Response response = vmRest.getPowerConsumption("111", "333", "444", 0, 0, null);
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -802,7 +802,7 @@ public class VMRestTest extends AbstractTest {
 		
 		when(energyModeller.measure(any(String.class), eq("111"), eq("333"), eq(ids), eq("eventX"), eq(Unit.POWER), eq(new Timestamp(20l)), any(Timestamp.class))).thenReturn(33.0);
 		
-		Response response = vmRest.getEventPowerConsumption("111", "333", "444", "eventX", 20l, 0l);
+		Response response = vmRest.getEventPowerConsumption("111", "333", "444", "eventX", 20l, 0l, null);
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
