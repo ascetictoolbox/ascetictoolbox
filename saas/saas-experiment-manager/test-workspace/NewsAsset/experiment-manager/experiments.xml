@@ -13,7 +13,7 @@
    <import resource="kpis.xml"/>
    
 	<bean id="Experiment" class="eu.ascetic.saas.experimentmanager.models.Experiment">
-		<constructor-arg type="java.lang.String" value="Experiment 2"/>
+		<constructor-arg type="java.lang.String" value="Experiment COST vs Energy"/>
 		<constructor-arg type="java.lang.String" value="NewsAsset"/>
 		<constructor-arg type="java.lang.String" value="News Asset"/>
 		<constructor-arg type="java.lang.String" value="Experiment to improve NewsAsset energy consumption"/>

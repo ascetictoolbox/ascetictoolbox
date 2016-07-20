@@ -8,12 +8,22 @@
     	">
 
 	<util:map id="Scopes" map-class="java.util.HashMap">
-		<entry key="duration-estimation-avg">
+		<entry key="duration-estimation-deployment">
 			<list>
 				<ref bean="DurationScope" />
 			</list>
 		</entry>
-		<entry key="energy-consumption">
+		<entry key="energy-consumption-deployment">
+			<list>
+				<ref bean="deployment" />
+			</list>
+		</entry>
+		<entry key="cost-estimation-deployment">
+			<list>
+				<ref bean="deployment" />
+			</list>
+		</entry>
+		<entry key="energy-consumption-event">
 			<list>
 				<ref bean="get_news_items"/>
 				<ref bean="search_for_news_items"/>
@@ -23,11 +33,11 @@
 				<ref bean="Simple-Search-Light-Load-8"/>
 				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
 				<ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/>
-				<ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/>
+				<!--   ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/ -->
 				<ref bean="anticipated_workload"/>
-				<ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/>
+				<!--  ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/-->
 				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/>
+				<!--  ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/-->
 				<ref bean="GROUP-Simple-Editor-Small-Image-Light-Load-7"/>
 				<ref bean="GROUP-Simple-Editor-Medium-Video-Light-Load-7"/>
 				<ref bean="Create-Object-Light-Load-8"/>
@@ -49,7 +59,7 @@
 				<ref bean="Create-Object-Light-Load-1"/>
 			</list>
 		</entry>
-		<entry key="duration-estimation">
+		<entry key="duration-estimation-event">
 			<list>
 				<ref bean="get_news_items"/>
 				<ref bean="search_for_news_items"/>
@@ -58,12 +68,48 @@
 				<ref bean="Get-Attachment-Contents-Light-Load-8"/>
 				<ref bean="Simple-Search-Light-Load-8"/>
 				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
-				<ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/>
-				<ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/>
+				<!--  ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/ -->
+				<!--  ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/ -->
 				<ref bean="anticipated_workload"/>
-				<ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/>
+				<!--  ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/ -->
 				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-7"/>
-				<ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/>
+				<!--  ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/ -->
+				<ref bean="GROUP-Simple-Editor-Small-Image-Light-Load-7"/>
+				<ref bean="GROUP-Simple-Editor-Medium-Video-Light-Load-7"/>
+				<ref bean="Create-Object-Light-Load-8"/>
+				<ref bean="Update-Object-Light-Load-7"/>
+				<ref bean="Group-External-User-Light-Load-7"/>
+				<ref bean="GROUP-Simple-Editor-Medium-Image-Light-Load-7"/>
+				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-7"/>
+				<ref bean="Get-Object-Light-Load-8"/>
+				<ref bean="GROUP-Simple-Editor-Large-Image-Light-Load-7"/>
+				<ref bean="Get-Object-Light-Load-7"/>
+				<ref bean="Get-Attachment-FileNames-Light-Load-7"/>
+				<ref bean="Simple-Search-Light-Load-7"/>
+				<ref bean="Get-Attachment-Contents-Light-Load-7"/>
+				<ref bean="Advanced-Search-Light-Load-7"/>
+				<ref bean="Store-Object-Light-Load-7"/>
+				<ref bean="GROUP-Advanced-Editor-Medium-Image-Light-Load-7"/>
+				<ref bean="Create-Object-Light-Load-7"/>
+				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-8"/>
+				<ref bean="Create-Object-Light-Load-1"/>
+			</list>
+		</entry>
+		<entry key="cost-estimation-event">
+			<list>
+				<ref bean="get_news_items"/>
+				<ref bean="search_for_news_items"/>
+				<ref bean="Create-Object-Light-Load-9"/>
+				<ref bean="Update-Object-Light-Load-8"/>
+				<ref bean="Get-Attachment-Contents-Light-Load-8"/>
+				<ref bean="Simple-Search-Light-Load-8"/>
+				<ref bean="GROUP-Advanced-Editor-Medium-Video-Light-Load-8"/>
+				<!--  ref bean="GROUP-Advanced-Editor-Large-Video-Light-Load-7"/ -->
+				<!--  ref bean="Group-Advanced-Editor-Large-Image-Light-Load-7"/ -->
+				<ref bean="anticipated_workload"/>
+				<!--  ref bean="GROUP-Simple-Editor-Small-Video-Light-Load-7"/ -->
+				<ref bean="GROUP-Advanced-Editor-Small-Image-Light-Load-7"/>
+				<!--  ref bean="GROUP-Simple-Editor-Large-Video-Light-Load-7"/ -->
 				<ref bean="GROUP-Simple-Editor-Small-Image-Light-Load-7"/>
 				<ref bean="GROUP-Simple-Editor-Medium-Video-Light-Load-7"/>
 				<ref bean="Create-Object-Light-Load-8"/>
@@ -94,6 +140,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -114,6 +163,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -134,6 +186,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -154,6 +209,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -174,6 +232,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -194,6 +255,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -214,6 +278,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -234,6 +301,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -254,6 +324,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -274,6 +347,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -294,6 +370,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -314,6 +393,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -334,6 +416,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -354,6 +439,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -374,6 +462,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -394,6 +485,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -414,6 +508,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -434,6 +531,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -454,6 +554,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -474,6 +577,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -494,6 +600,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -514,6 +623,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -534,6 +646,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -554,6 +669,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -574,6 +692,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -594,6 +715,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -614,6 +738,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -634,6 +761,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -654,6 +784,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -674,6 +807,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -694,6 +830,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -714,6 +853,9 @@
 		<constructor-arg>
 			<list>
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -737,6 +879,9 @@
 			<list>
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -748,6 +893,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -759,6 +907,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -770,6 +921,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -781,6 +935,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -792,6 +949,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -803,6 +963,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -814,7 +977,10 @@
 				</bean>
 
 
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+				<!--  bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -822,10 +988,13 @@
 							<entry key="event" value="GROUP-Advanced-Editor-Large-Video-Light-Load-7" />
 						</util:map>
 					</constructor-arg>
-				</bean>
+				</bean -->
 
 
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+				<!--  bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -833,10 +1002,13 @@
 							<entry key="event" value="Group-Advanced-Editor-Large-Image-Light-Load-7" />
 						</util:map>
 					</constructor-arg>
-				</bean>
+				</bean-->
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -847,7 +1019,10 @@
 				</bean>
 
 
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+				<!--  bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -855,10 +1030,13 @@
 							<entry key="event" value="GROUP-Simple-Editor-Small-Video-Light-Load-7" />
 						</util:map>
 					</constructor-arg>
-				</bean>
+				</bean-->
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -869,7 +1047,10 @@
 				</bean>
 
 
-				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+				<!--  bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -877,10 +1058,13 @@
 							<entry key="event" value="GROUP-Simple-Editor-Large-Video-Light-Load-7" />
 						</util:map>
 					</constructor-arg>
-				</bean>
+				</bean -->
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -892,6 +1076,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -903,6 +1090,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -914,6 +1104,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -925,6 +1118,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -936,6 +1132,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -947,6 +1146,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -959,6 +1161,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -970,6 +1175,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -981,6 +1189,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -992,6 +1203,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1003,6 +1217,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1014,6 +1231,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1025,6 +1245,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1036,6 +1259,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1047,6 +1273,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1059,6 +1288,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1070,6 +1302,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1081,6 +1316,9 @@
 
 
 				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
 					<constructor-arg type="java.util.Map">
 						<util:map map-class="java.util.HashMap">
 							<entry key="appId" value="newsAsset" />
@@ -1089,16 +1327,30 @@
 						</util:map>
 					</constructor-arg>
 				</bean>
-
-
-
-
-
-
-
 			</list>
 		</constructor-arg>
 		<constructor-arg type="java.lang.String" value="aggregated" />
+	</bean>
+	
+	<bean id="deployment" class="eu.ascetic.saas.experimentmanager.models.Scope">
+		<constructor-arg type="java.lang.String" value="deployment" />
+		<constructor-arg type="java.lang.String" value="Scope corresponding to the whole deployment" />
+		<constructor-arg>
+			<list>
+				<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
+					<constructor-arg type="java.util.List">
+						<list/>
+					</constructor-arg>
+					<constructor-arg type="java.util.Map">
+						<util:map map-class="java.util.HashMap">
+							<entry key="appId" value="newsAsset" />
+							<entry key="deplId" value="490" />
+						</util:map>
+					</constructor-arg>
+				</bean>
+			</list>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String" value="deployment" />
 	</bean>
 
 </beans>
