@@ -1,7 +1,9 @@
 package es.bsc.paas;
 
+import es.bsc.paas.modellers.PaasEnergyModeller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class InitiateMonitoringListener {
 
+	@Autowired
+	PaasEnergyModeller energyModeller;
 
     private Logger logger = LoggerFactory.getLogger(InitiateMonitoringListener.class);
     public InitiateMonitoringListener() {
@@ -28,5 +32,8 @@ public class InitiateMonitoringListener {
     @JmsListener(destination = "${topic.name}")
     private void processTopicMessage(String content) {
         logger.debug("Received from Topic: " + content);
+		logger.debug("hello EM: " + energyModeller.hello());
     }
+
+
 }

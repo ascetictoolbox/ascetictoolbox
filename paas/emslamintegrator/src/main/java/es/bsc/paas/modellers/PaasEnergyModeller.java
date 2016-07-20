@@ -1,4 +1,4 @@
-package es.bsc.paas;
+package es.bsc.paas.modellers;
 
 import org.springframework.stereotype.Component;
 
@@ -7,5 +7,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PaasEnergyModeller {
-
+	public String hello() {
+		return "hello";
+	}
 }
