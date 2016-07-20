@@ -1144,6 +1144,9 @@ paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Link.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/PowerMeasurement.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Root.java -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/SLALimits.java -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/SLALimitsAbstract.java -text
+paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/SLAVMLimits.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/VM.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/adapter/TimestampAdapter.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverter.java -text
@@ -1163,6 +1166,8 @@ paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/LinkTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/PowerMeasurementTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/RootTest.java -text
+paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/SLALimitsTest.java -text
+paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/SLAVMLimitsTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/VMTest.java -text
 paas/application-manager-datamodel/src/test/java/eu/ascetic/paas/applicationmanager/model/converter/ModelConverterTest.java -text
 paas/application-manager-datamodel/src/test/resources/log4j.properties -text
