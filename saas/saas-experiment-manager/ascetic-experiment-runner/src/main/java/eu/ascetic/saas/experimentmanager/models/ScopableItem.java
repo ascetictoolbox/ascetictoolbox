@@ -14,6 +14,10 @@ public class ScopableItem {
 	
 	private Map<String,Object> location;
 	
+	public ScopableItem(){
+		
+	}
+	
 	public ScopableItem(List<String> tags, Map<String,Object> location) {
 		super();
 		this.location = location;

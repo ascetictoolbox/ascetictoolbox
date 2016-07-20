@@ -7,6 +7,10 @@ public class KPI {
 	private String level;
 	private Metric metric;
 
+	public KPI(){
+		
+	}
+	
 	public KPI(String name, String level, String description, Metric metric) {
 		super();
 		this.name = name;

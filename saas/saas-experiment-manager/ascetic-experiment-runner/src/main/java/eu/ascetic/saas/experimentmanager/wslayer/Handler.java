@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import eu.ascetic.saas.experimentmanager.wslayer.exception.ResponseParsingException;
-import eu.ascetic.saas.experimentmanager.wslayer.exception.WSBaseException;
 import eu.ascetic.saas.experimentmanager.wslayer.exception.WSException;
 
 public interface Handler {

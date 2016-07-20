@@ -5,6 +5,10 @@ public abstract class Component {
 	private Deployment depl;
 	private String name;
 	private String description;
+	
+	public Component(){
+		
+	}
 
 	public Component(String name){
 		this.name = name;

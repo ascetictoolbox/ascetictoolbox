@@ -1,7 +1,5 @@
 package eu.ascetic.saas.experimentmanager.models;
 
-import java.util.Map;
-
 import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
 import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 

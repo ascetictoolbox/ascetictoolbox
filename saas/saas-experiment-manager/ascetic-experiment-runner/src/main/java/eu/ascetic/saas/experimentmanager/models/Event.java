@@ -6,6 +6,10 @@ public class Event {
 	private String name;
 	private String launchCmd;
 	
+	public Event(){
+		
+	}
+	
 	public Event(String name, String launchCmd) {
 		this.name = name;
 		this.launchCmd = launchCmd;

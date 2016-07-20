@@ -14,7 +14,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import eu.ascetic.saas.experimentmanager.wslayer.exception.ResponseParsingException;
-import eu.ascetic.saas.experimentmanager.wslayer.exception.WSBaseException;
 import eu.ascetic.saas.experimentmanager.wslayer.exception.WSException;
 
 public class XMLHandler implements Handler {

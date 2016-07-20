@@ -1,9 +1,5 @@
 package eu.ascetic.saas.experimentmanager.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
 import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 
@@ -12,6 +8,10 @@ public class AggregatedMetric extends Metric {
 	
 	private String name;
 	private Metric metric;
+	
+	public AggregatedMetric(){
+		
+	}
 	
 	public AggregatedMetric(String id, Metric m){
 		this.name = id;

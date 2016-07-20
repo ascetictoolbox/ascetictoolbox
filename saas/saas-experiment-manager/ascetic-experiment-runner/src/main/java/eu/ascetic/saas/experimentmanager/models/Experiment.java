@@ -1,6 +1,5 @@
 package eu.ascetic.saas.experimentmanager.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Experiment {
@@ -14,6 +13,9 @@ public class Experiment {
 	private List<Deployment> deployments;
 	private List<KPI> kpis;
 	
+	public Experiment(){
+		
+	}
 	
 	public Experiment(String name, String applicationId, String applicationName, String description, List<Event> event, List<Deployment> deployments, List<KPI> kpis) {
 		this.name = name;

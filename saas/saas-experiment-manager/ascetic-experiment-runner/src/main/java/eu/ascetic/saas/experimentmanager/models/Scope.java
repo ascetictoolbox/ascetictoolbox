@@ -13,6 +13,9 @@ public class Scope {
 	private List<ScopableItem> scopableItems;
 	private String category;
 	
+	public Scope(){
+		
+	}
 
 	public Scope(String name, String description, List<ScopableItem> scopableItems, String category) {
 		super();

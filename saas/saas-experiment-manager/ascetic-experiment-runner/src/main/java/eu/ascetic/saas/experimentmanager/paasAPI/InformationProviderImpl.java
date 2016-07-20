@@ -2,8 +2,8 @@ package eu.ascetic.saas.experimentmanager.paasAPI;
 
 import java.util.List;
 
-import eu.ascetic.saas.experimentmanager.wslayer.WSBasic;
 import eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT;
+import eu.ascetic.saas.experimentmanager.wslayer.WSBasic;
 
 public class InformationProviderImpl implements InformationProvider {
 	

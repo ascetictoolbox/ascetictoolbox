@@ -6346,6 +6346,7 @@ saas/saas-experiment-manager/ascetic-experiment-dashboard/package.json -text
 saas/saas-experiment-manager/ascetic-experiment-dashboard/tests/svgtest.html -text
 saas/saas-experiment-manager/ascetic-experiment-runner/LICENSE -text
 saas/saas-experiment-manager/ascetic-experiment-runner/README.txt -text
+saas/saas-experiment-manager/ascetic-experiment-runner/dependency-reduced-pom.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/deployments.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/events.xml -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/experiment_configuration_sample/kpis.xml -text svneol=unset#text/plain

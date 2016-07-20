@@ -1,17 +1,15 @@
 package eu.ascetic.saas.experimentmanager.models;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import eu.ascetic.saas.experimentmanager.wslayer.WSBasic;
-import eu.ascetic.saas.experimentmanager.wslayer.exception.IncorrectRessourceFormatException;
-import eu.ascetic.saas.experimentmanager.wslayer.exception.ResponseParsingException;
-import eu.ascetic.saas.experimentmanager.wslayer.exception.WSBaseException;
-import eu.ascetic.saas.experimentmanager.wslayer.exception.WSException;
 import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
 import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 import eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT;
+import eu.ascetic.saas.experimentmanager.wslayer.WSBasic;
+import eu.ascetic.saas.experimentmanager.wslayer.exception.IncorrectRessourceFormatException;
+import eu.ascetic.saas.experimentmanager.wslayer.exception.ResponseParsingException;
+import eu.ascetic.saas.experimentmanager.wslayer.exception.WSException;
 
 public class WebserviceValue extends Metric {
 	
@@ -23,6 +21,10 @@ public class WebserviceValue extends Metric {
 	private RESSOURCEFORMAT format;
 	
 	private static String mark=":";
+	
+	public WebserviceValue(){
+		
+	}
 	
 	public WebserviceValue(String id, String urlPattern, RESSOURCEFORMAT format, String query){
 		this.name = id;

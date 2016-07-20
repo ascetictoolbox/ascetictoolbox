@@ -2,6 +2,9 @@ package eu.ascetic.saas.experimentmanager.models;
 
 public class LogicalComponent extends Component {
 
+	public LogicalComponent(){
+		
+	}
 	
 	public LogicalComponent(String name, String installationscript){
 		super(name);

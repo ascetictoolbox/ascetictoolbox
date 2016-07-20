@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.sun.javafx.binding.Logging;
-
 public class Generator<T> {
 
 	public class Pivot{
