@@ -518,6 +518,56 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	@GET
+	@Path("{deployment_id}//energy-estimation")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getEnergyEstimation(@PathParam("application_name") String applicationName, 
+										@PathParam("deployment_id") String deploymentId,
+										@QueryParam("duration") String durationQuery) {
+		
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-estimation");
+		
+		long duration = 0l;
+		
+		if(durationQuery != null) {
+			duration = Long.parseLong(durationQuery);
+		}
+
+		double energyConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, null, Unit.ENERGY, duration);
+		
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(energyConsumed);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getEnergyEstimationForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId, null);
+				
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{deployment_id}/power-estimation")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getPowerEstimation(@PathParam("application_name") String applicationName, 
+									   @PathParam("deployment_id") String deploymentId,
+										@QueryParam("duration") String durationQuery) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/power-estimation");
+
+		long duration = 0l;
+		
+		if(durationQuery != null) {
+			duration = Long.parseLong(durationQuery);
+		}
+		
+		double powerConsumed = getPowerOrEnergyEstimationPerEvent(applicationName, deploymentId, null, Unit.POWER, duration);
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(powerConsumed);
+		
+		// We create the XMl response
+		String xml = XMLBuilder.getPowerEstimationForDeploymentXMLInfo(powerMeasurement, applicationName, deploymentId, null);
+				
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
 	@Path("{deployment_id}/events/{event_id}/energy-estimation")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getEnergyEstimationForEvent(@PathParam("application_name") String applicationName, 

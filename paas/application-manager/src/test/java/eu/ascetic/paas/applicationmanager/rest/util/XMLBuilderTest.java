@@ -717,7 +717,7 @@ public class XMLBuilderTest {
 	}
 	
 	@Test
-	public void addEnergyEstimationForDeploymentXMLInfoTest() {
+	public void addEnergyEstimationForDeploymentWithEventXMLInfoTest() {
 		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
 		energyMeasurement.setValue(22.0);
 		
@@ -736,7 +736,26 @@ public class XMLBuilderTest {
 	}
 	
 	@Test
-	public void addPowerEstimationForDeploymentXMLInfoTest() {
+	public void addEnergyEstimationForDeploymentXMLInfoTest() {
+		EnergyMeasurement energyMeasurement = new EnergyMeasurement();
+		energyMeasurement.setValue(22.0);
+		
+		energyMeasurement = XMLBuilder.addEnergyEstimationForDeploymentXMLInfo(energyMeasurement, "111", "333",null);
+		
+		assertEquals("/applications/111/deployments/333/energy-estimation", energyMeasurement.getHref());
+		assertEquals(22.0, energyMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated energy estimation for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals(2, energyMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333", energyMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", energyMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/energy-estimation", energyMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",energyMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, energyMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void addPowerEstimationForDeploymentWithEventXMLInfoTest() {
 		PowerMeasurement powerMeasurement = new PowerMeasurement();
 		powerMeasurement.setValue(22.0);
 		
@@ -750,6 +769,25 @@ public class XMLBuilderTest {
 		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
 		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
 		assertEquals("/applications/111/deployments/333/events/eventX/power-estimation", powerMeasurement.getLinks().get(1).getHref());
+		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void addPowerEstimationForDeploymentXMLInfoTest() {
+		PowerMeasurement powerMeasurement = new PowerMeasurement();
+		powerMeasurement.setValue(22.0);
+		
+		powerMeasurement = XMLBuilder.addPowerEstimationForDeploymentXMLInfo(powerMeasurement, "111", "333",null);
+		
+		assertEquals("/applications/111/deployments/333/power-estimation", powerMeasurement.getHref());
+		assertEquals(22.0, powerMeasurement.getValue(), 0.00001);
+		assertEquals("Aggregated power estimation for this aplication deployment", powerMeasurement.getDescription());
+		assertEquals(2, powerMeasurement.getLinks().size());
+		assertEquals("/applications/111/deployments/333", powerMeasurement.getLinks().get(0).getHref());
+		assertEquals("parent", powerMeasurement.getLinks().get(0).getRel());
+		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(0).getType());
+		assertEquals("/applications/111/deployments/333/power-estimation", powerMeasurement.getLinks().get(1).getHref());
 		assertEquals("self",powerMeasurement.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, powerMeasurement.getLinks().get(1).getType());
 	}

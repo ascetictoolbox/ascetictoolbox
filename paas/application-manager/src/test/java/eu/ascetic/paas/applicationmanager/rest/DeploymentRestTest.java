@@ -1096,6 +1096,130 @@ public class DeploymentRestTest extends AbstractTest {
 	
 	@Test
 	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getEnergyEstimationTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setProviderId("33");
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+				
+		when(energyModeller.estimate(eq("33"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), isNull(String.class), eq(Unit.ENERGY), eq(0l))).thenReturn(22.0);
+		
+		
+		Response response = deploymentRest.getEnergyEstimation("111", "1", null);
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(EnergyMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		EnergyMeasurement energyMeasurement = (EnergyMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, energyMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated energy estimation for this aplication deployment", energyMeasurement.getDescription());
+		assertEquals("/applications/111/deployments/1/energy-estimation", energyMeasurement.getHref());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
+	public void getPowerEstimationTest() throws JAXBException {
+		Deployment deployment = new Deployment();
+		deployment.setId(1);
+		deployment.setProviderId("33");
+		
+		VM vm1 = new VM();
+		vm1.setId(1);
+		vm1.setProviderVmId("X1");
+		deployment.addVM(vm1);
+		
+		VM vm2 = new VM();
+		vm2.setId(2);
+		vm2.setProviderVmId("X2");
+		deployment.addVM(vm2);
+		
+		PaaSEnergyModeller energyModeller = mock(PaaSEnergyModeller.class);
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		deploymentRest.energyModeller = energyModeller;
+		
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		when(deploymentDAO.getById(1)).thenReturn(deployment);
+				
+		when(energyModeller.estimate(eq("33"),  eq("111"), eq("1"),  argThat(new BaseMatcher<List<String>>() {
+			 
+			@Override
+			public boolean matches(Object arg0) {
+				
+				List<String> ids = (List<String>) arg0;
+				
+				boolean isTheList = true;
+				
+				if(!(ids.size() == 2)) isTheList = false; 
+				
+				if(!(ids.get(0).equals("1"))) isTheList = false;
+				
+				if(!(ids.get(1).equals("2"))) isTheList = false;
+
+				return isTheList;
+			}
+
+			@Override
+			public void describeTo(Description arg0) {}
+		
+		}), isNull(String.class), eq(Unit.POWER), eq(0l))).thenReturn(22.0);
+		
+		
+		Response response = deploymentRest.getPowerEstimation("111", "1", null);
+		
+		String xml = (String) response.getEntity();
+		JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		PowerMeasurement powerMeasurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(22.0, powerMeasurement.getValue(), 0.000001);
+		assertEquals("Aggregated power estimation for this aplication deployment", powerMeasurement.getDescription());
+		assertEquals("/applications/111/deployments/1/power-estimation", powerMeasurement.getHref());
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access", "unchecked" }) 
 	public void getPowerEstimationForEventTest() throws JAXBException {
 		Deployment deployment = new Deployment();
 		deployment.setId(1);

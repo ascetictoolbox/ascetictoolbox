@@ -539,20 +539,30 @@ public class XMLBuilder {
 			 																  String deploymentId, 
 			 																  String eventId,
 			 																  String endUrl) {
-		energyMeasurement.setDescription("Aggregated energy " + endUrl + " for this aplication deployment and specific event");
-		energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-" + endUrl);
 		
 		Link linkParent = new Link();
-		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId);
+		
+		if(eventId != null) {
+			energyMeasurement.setDescription("Aggregated energy " + endUrl + " for this aplication deployment and specific event");
+			energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/energy-" + endUrl);
+		
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId);
+		} else {
+			energyMeasurement.setDescription("Aggregated energy " + endUrl + " for this aplication deployment");
+			energyMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/energy-" + endUrl);
+		
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId);
+		}
+			
+		
 		linkParent.setRel("parent");
 		linkParent.setType(MediaType.APPLICATION_XML);
 		energyMeasurement.addLink(linkParent);
-		
 		Link linkSelf = new Link();
-		linkSelf.setHref(energyMeasurement.getHref());
 		linkSelf.setRel("self");
 		linkSelf.setType(MediaType.APPLICATION_XML);
 		energyMeasurement.addLink(linkSelf);
+		linkSelf.setHref(energyMeasurement.getHref());
 		
 		return energyMeasurement;
 	}
@@ -592,12 +602,20 @@ public class XMLBuilder {
 																						String deploymentId, 
 																						String eventId,
 																						String endUrl) {
-		
-		powerMeasurement.setDescription("Aggregated power " + endUrl + " for this aplication deployment and specific event");
-		powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/power-" + endUrl);
-		
 		Link linkParent = new Link();
-		linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId);
+		
+		if(eventId != null) {
+			powerMeasurement.setDescription("Aggregated power " + endUrl + " for this aplication deployment and specific event");
+			powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId + "/power-" + endUrl);
+		
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/events/" + eventId);
+		} else {
+			powerMeasurement.setDescription("Aggregated power " + endUrl + " for this aplication deployment");
+			powerMeasurement.setHref("/applications/" + applicationId + "/deployments/" + deploymentId + "/power-" + endUrl);
+		
+			linkParent.setHref("/applications/" + applicationId + "/deployments/" + deploymentId);
+		}
+		
 		linkParent.setRel("parent");
 		linkParent.setType(MediaType.APPLICATION_XML);
 		powerMeasurement.addLink(linkParent);
