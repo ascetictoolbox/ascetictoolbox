@@ -4,11 +4,16 @@ import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MA
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -32,6 +37,8 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.Root;
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
+import eu.ascetic.paas.applicationmanager.model.SLAVMLimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -1321,5 +1328,86 @@ public class ModelConverterTest {
 		assertEquals(3.0d, cost.getPowerValue().doubleValue(), 0.001);
 		assertEquals(1, cost.getLinks().size());
 		assertEquals("/href", cost.getHref());
+	}
+	
+	@Test
+	public void fromToSLALimits() throws JAXBException {
+		SLALimits slaLimits = new SLALimits();
+		slaLimits.setCost("cost");
+		slaLimits.setCostUnit("costUnit");
+		slaLimits.setEnergy("energy");
+		slaLimits.setEnergyUnit("energyUnit");
+		slaLimits.setPower("power");
+		slaLimits.setPowerUnit("powerUnit");
+		
+		SLAVMLimits slavMLimits1 = new SLAVMLimits();
+		slavMLimits1.setMax("max1");
+		slavMLimits1.setMin("min1");
+		slavMLimits1.setCost("cost1");
+		slavMLimits1.setCostUnit("costUnit1");
+		slavMLimits1.setEnergy("energy1");
+		slavMLimits1.setEnergyUnit("energyUnit1");
+		slavMLimits1.setPower("power1");
+		slavMLimits1.setPowerUnit("powerUnit1");
+		slavMLimits1.setVmId("id1");
+		
+		SLAVMLimits slavMLimits2 = new SLAVMLimits();
+		slavMLimits2.setMax("max2");
+		slavMLimits2.setMin("min2");
+		slavMLimits2.setCost("cost2");
+		slavMLimits2.setCostUnit("costUnit2");
+		slavMLimits2.setEnergy("energy2");
+		slavMLimits2.setEnergyUnit("energyUnit2");
+		slavMLimits2.setPower("power2");
+		slavMLimits2.setPowerUnit("powerUnit2");
+		slavMLimits2.setVmId("id2");
+		
+		List<SLAVMLimits> limits = new ArrayList<SLAVMLimits>();
+		limits.add(slavMLimits1);
+		limits.add(slavMLimits2);
+		
+		slaLimits.setVmLimits(limits);
+		
+		String xml = ModelConverter.slaLitmitsToXML(slaLimits);
+		
+        JAXBContext jaxbContext = JAXBContext.newInstance(SLALimits.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		marshaller.marshal(slaLimits, out);
+		String output = out.toString();
+		
+		System.out.println("###############################################");
+		System.out.println("###############################################");
+		System.out.println(xml);
+		System.out.println("output:");
+		System.out.println(output);
+		
+		slaLimits = ModelConverter.xmlSLALimitsToObject(xml);
+		
+		assertEquals("cost", slaLimits.getCost());
+		assertEquals("costUnit", slaLimits.getCostUnit());
+		assertEquals("energy", slaLimits.getEnergy());
+		assertEquals("energyUnit", slaLimits.getEnergyUnit());
+		assertEquals("power", slaLimits.getPower());
+		assertEquals("powerUnit", slaLimits.getPowerUnit());
+		
+		List<SLAVMLimits> limits2 = slaLimits.getVmLimits();
+		assertEquals(2, limits2.size());
+		
+		for(int i = 0; i < limits.size(); i++) {
+			SLAVMLimits original = limits.get(i);
+			SLAVMLimits parsed = limits2.get(i);
+			
+			assertEquals(original.getCost(), parsed.getCost());
+			assertEquals(original.getCostUnit(), parsed.getCostUnit());
+			assertEquals(original.getEnergy(), parsed.getEnergy());
+			assertEquals(original.getEnergyUnit(), parsed.getEnergyUnit());
+			assertEquals(original.getMax(), parsed.getMax());
+			assertEquals(original.getMin(), parsed.getMin());
+			assertEquals(original.getPowerUnit(), parsed.getPowerUnit());
+			assertEquals(original.getVmId(), parsed.getVmId());
+		}
 	}
 }

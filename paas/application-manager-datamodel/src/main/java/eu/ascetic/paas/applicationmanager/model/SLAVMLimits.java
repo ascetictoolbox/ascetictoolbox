@@ -32,13 +32,62 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "ovf", namespace = APPLICATION_MANAGER_NAMESPACE)
-public class SLAVMLimits extends SLALimitsAbstract {
+public class SLAVMLimits  {
 	@XmlAttribute(name = "vm_id")
 	private String vmId;
 	@XmlElement(name ="max", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String max;
 	@XmlElement(name ="min", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private String min;
+	@XmlElement(name ="power", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String power;
+	@XmlElement(name ="power_units", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String powerUnit;
+	@XmlElement(name ="energy", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String energy;
+	@XmlElement(name ="energy_units", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String energyUnit;
+	@XmlElement(name ="cost", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String cost;
+	@XmlElement(name ="cost_units", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String costUnit;
+	
+	public String getPower() {
+		return power;
+	}
+	public void setPower(String power) {
+		this.power = power;
+	}
+	public String getPowerUnit() {
+		return powerUnit;
+	}
+	public void setPowerUnit(String powerUnit) {
+		this.powerUnit = powerUnit;
+	}
+	public String getEnergy() {
+		return energy;
+	}
+	public void setEnergy(String energy) {
+		this.energy = energy;
+	}
+	public String getEnergyUnit() {
+		return energyUnit;
+	}
+	public void setEnergyUnit(String energyUnit) {
+		this.energyUnit = energyUnit;
+	}
+	public String getCost() {
+		return cost;
+	}
+	public void setCost(String cost) {
+		this.cost = cost;
+	}
+	public String getCostUnit() {
+		return costUnit;
+	}
+	public void setCostUnit(String costUnit) {
+		this.costUnit = costUnit;
+	}
 	
 	public String getVmId() {
 		return vmId;

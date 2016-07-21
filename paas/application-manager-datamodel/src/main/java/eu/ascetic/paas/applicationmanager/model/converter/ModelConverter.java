@@ -22,6 +22,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Root;
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
 /**
@@ -120,6 +121,24 @@ public class ModelConverter {
 	 */
 	public static Application jsonApplicationToObject(String jsonString) {
 		return fromJSONToObject(Application.class, jsonString);
+	}
+	
+	/**
+	 * Converts an SLALimtis object to XML
+	 * @param slaLimits
+	 * @return
+	 */
+	public static String slaLitmitsToXML(SLALimits slaLimits) {
+		return toXML(SLALimits.class, slaLimits);
+	}
+	
+	/**
+	 * Converts an XML string to SLA Limits object
+	 * @param xml
+	 * @return
+	 */
+	public static SLALimits xmlSLALimitsToObject(String xml) {
+		return toObject(SLALimits.class, xml);
 	}
 	
 	/**

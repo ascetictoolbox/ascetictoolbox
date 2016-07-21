@@ -1145,7 +1145,6 @@ paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmana
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/PowerMeasurement.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/Root.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/SLALimits.java -text
-paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/SLALimitsAbstract.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/SLAVMLimits.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/VM.java -text
 paas/application-manager-datamodel/src/main/java/eu/ascetic/paas/applicationmanager/model/adapter/TimestampAdapter.java -text
