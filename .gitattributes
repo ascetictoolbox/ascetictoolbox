@@ -1708,6 +1708,7 @@ paas/provider-registry/pom.xml -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/Dictionary.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/rest/ProviderAPI.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/rest/ProviderHostInfo.java -text
+paas/provider-registry/src/main/java/eu/ascetic/providerregistry/rest/ProviderSlot.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/rest/RestAbstract.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/service/DAO.java -text
 paas/provider-registry/src/main/java/eu/ascetic/providerregistry/service/ProviderDAO.java -text
@@ -1721,6 +1722,7 @@ paas/provider-registry/src/main/webapp/WEB-INF/web.xml -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/rest/MockWebServer.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/rest/ProviderAPITest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/rest/ProviderHostInfoTest.java -text
+paas/provider-registry/src/test/java/eu/ascetic/providerregistry/rest/ProviderSlotTest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/service/jpa/ProviderDAOJpaTest.java -text
 paas/provider-registry/src/test/java/eu/ascetic/providerregistry/xml/ConverterTest.java -text
 paas/provider-registry/src/test/resources/META-INF/persistence.test.xml -text
