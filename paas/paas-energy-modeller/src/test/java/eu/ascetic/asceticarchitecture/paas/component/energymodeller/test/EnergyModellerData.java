@@ -87,7 +87,7 @@ public class EnergyModellerData {
 	private static String DEP = "843";
 	*/
 	
-	/* Test 7 */
+	/* Test 7 - 7bis */
 	private static String HOST = "1765";
 	private static String PROVIDER = "1";
 	private static String EVENT = "ciao";	
@@ -152,38 +152,57 @@ public class EnergyModellerData {
 		};
 		*/
 		
-		/*
-		long[] TimeValues = new long[] {
+		/* TEST 7
+		long[] TimeValues1 = new long[] {
 		 		0,   496,   991,  1478,  1974,  2480,
   				3178,  3512,  3997,  4493,  4989,  5474,
   				5970,  6465,  7123,  7629,  8124,  8620
 		};
-		*/
 		
-		/*
-		long[] TimeValues = new long[] {
+		long[] TimeValues2 = new long[] {
   				9116,  9601, 10107, 10775, 11270, 11776,
  				12272, 12778, 13273, 13769, 14265, 14943,
  				15438, 15944, 16440, 16935, 17431, 17937
 				};
-				*/
+		*/
 				
 		
-		// long[] TimeValues = new long[] {0};
-        
+		/* TEST 7bis */
+		long[] TimeValues1 = new long[] {
+				    0,  564, 1060, 1566, 2075, 2592,
+				 3173, 3729, 4170, 4669, 5173, 5674,
+				 6165, 6653, 7170, 7766, 8269, 8788				 
+		};
+		
+		long[] TimeValues2 = new long[] {				 
+				 9300, 9801,10303,10805,11364,11867,
+				12376,12878,13378,13879,14375,14976,
+				15491,15987,16490,16987,17501,18003
+		};
+		/* */		
+     
 		List<String> vmids = new Vector<String>();
 		vmids.add(HOST);		
 		EVENT=null;
 		
-		/*
-		for (int i = 0; i < TimeValues.length; i++) { 
+		/* TEST 4 
+		double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));
+		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),null);
+		// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,new Timestamp(endlong));
+		System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" measured is:  "+result);
+		*/
+		
+		/* TEST 7-7bis */
+		for (int i = 0; i < TimeValues2.length; i++) { 
+		// for (int i = 0; i < 1; i++) {
 			// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,null,null);
 			// double result = serviceEM.measure(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,new Timestamp(beginlong),new Timestamp(endlong));		      	
-			double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,TimeValues[i]);
-			// double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,TimeValues[i]);
+			double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,TimeValues2[i]);
+			// double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.ENERGY,TimeValues1[i]);
 			System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
 		}
-		*/
+		/* */
+		
 		
 		/*
 		for (int i = 0; i < 100; i++) { 
@@ -194,9 +213,11 @@ public class EnergyModellerData {
 		}
 		*/
 		
-		double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,0);
+		/* TEST 8 
+		 double result = serviceEM.estimate(PROVIDER, APP, DEP, vmids, EVENT, Unit.POWER,495); // MAXIM 495
 		
 		System.out.println("################################ HOST "+HOST+" Average Power "+EVENT+" estimated is:  "+result);
+		*/
 				
 		/*
 		long beginlong = 1444147613000L;

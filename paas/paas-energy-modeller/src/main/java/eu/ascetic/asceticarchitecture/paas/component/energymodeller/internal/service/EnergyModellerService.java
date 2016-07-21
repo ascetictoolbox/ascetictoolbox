@@ -114,15 +114,23 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 				CallString = CallString+vm;
 		}
 		
-		long startLong = 0l;
-		if (start!=null)
-			startLong=start.getTime();
-		long endLong = 0l;
-		if (end!=null)
-			startLong=end.getTime();
-				
-		CallString = CallString+"}, eventid="+eventid+", unit="+unit+", start="+startLong+", stop="+endLong;
-					
+		CallString = CallString+"}, eventid="+eventid+", unit="+unit;
+		
+		long timeLong = 0l;
+		
+		if (start==null) {
+			CallString = CallString+", start=null";
+		} else {
+			timeLong=start.getTime();
+			CallString = CallString+", start="+timeLong;
+		}
+		if (end==null) {
+			CallString = CallString+", end=null";
+		} else {
+			timeLong=end.getTime();
+			CallString = CallString+", end="+timeLong;
+		}		
+		
 		LOGGER.info(CallString);
 	
 		if (providerid==null) providerid=emsettings.getProviderIdDefault();
@@ -230,6 +238,7 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		// endDate = 1461739092000L; //test #3
 		// endDate = 1467058574000L; //test #5	
 		// endDate = 1467077766000L; //test #7
+		// endDate = 1467077225000L; //test #7bis (only power metric)
 		// endDate = 1467736793000L; //test #8
 	
 		// add after millisec conversion the time of the forecast
