@@ -520,4 +520,17 @@ public class OVFUtils {
 		
 		return termMeasurements;
 	}
+
+	public static List<String> getOVFVMIds(OvfDefinition ovfDocument) {
+		List<String> ids = new ArrayList<String>();
+		
+		VirtualSystemCollection vsc = ovfDocument.getVirtualSystemCollection();
+
+		for(int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
+			VirtualSystem virtualSystem = vsc.getVirtualSystemAtIndex(i);
+			ids.add(virtualSystem.getId());
+		}
+		
+		return ids;
+	}
 }

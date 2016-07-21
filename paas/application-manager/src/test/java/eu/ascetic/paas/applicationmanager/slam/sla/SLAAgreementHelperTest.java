@@ -82,6 +82,32 @@ public class SLAAgreementHelperTest {
 	}
 	
 	@Test
+	public void getPowerUsagePerAppUnits() {
+		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreement2Text);
+		String units = helper.getPowerUsagePerAppUnits();
+		
+		assertEquals("Watt", units);
+		
+		helper = new SLAAgreementHelper(slaAgreementText);
+		units = helper.getPowerUsagePerAppUnits();
+		
+		assertNull(units);
+	}
+	
+	@Test
+	public void getPowerUnitsPerOVFId() {
+		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreement2Text);
+	
+		String units = helper.getPowerUnitsPerOVFId("jboss");
+		assertEquals("Watt", units);
+		
+		helper = new SLAAgreementHelper(slaAgreementText);
+		
+		units = helper.getPowerUnitsPerOVFId("jboss");
+		assertNull(units);
+	}
+	
+	@Test
 	public void getPowerUsagePerOVFId() {
 		SLAAgreementHelper helper = new SLAAgreementHelper(slaAgreement2Text);
 	

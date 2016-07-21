@@ -85,6 +85,18 @@ public class OVFUtilsTest {
 	}
 	
 	@Test
+	public void getOVFVMIds() {
+		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
+		List<String> ids = OVFUtils.getOVFVMIds(ovfDocument);
+		
+		assertTrue(ids.contains("jmeter"));
+		assertTrue(ids.contains("haproxy"));
+		assertTrue(ids.contains("jboss"));
+		assertTrue(ids.contains("mysql"));
+		assertEquals(4, ids.size());
+	}
+	
+	@Test
 	public void getVMSlaTerms() {
 		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
 		AsceticSLAInfo info = OVFUtils.getVMSlaInfo(ovfDocument, "power_usage_per_vm", "NA-HAProxy");

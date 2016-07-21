@@ -40,6 +40,7 @@ import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -47,13 +48,20 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
+import eu.ascetic.paas.applicationmanager.model.SLAVMLimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
+import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
+import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
+import eu.ascetic.paas.applicationmanager.ovf.VMLimits;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
+import eu.ascetic.paas.applicationmanager.slam.sla.SLAAgreementHelper;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
+import eu.ascetic.utils.ovf.api.OvfDefinition;
 
 /**
  * 
@@ -752,6 +760,63 @@ public class DeploymentRest extends AbstractRest {
 		// We create the XMl response
 		String xml = XMLBuilder.getCostEstimationForAnEventInADeploymentXMLInfo(cost, applicationName, deploymentId, eventId);
 				
+		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("/sla-limits")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getSLALimits(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/sla-limits");
+		
+		int deploymentIdInt = Integer.parseInt(deploymentId);
+		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+		
+		Agreement agreement = agreementDAO.getAcceptedAgreement(deployment);
+		
+		SLALimits slaLimits = new SLALimits();
+		String xml;
+		
+		if(agreement != null) {
+			// We need to looks for the guarantees of the Application
+			SLAAgreementHelper helper = new SLAAgreementHelper(agreement.getSlaAgreement());
+			
+			// Power Usage per App
+			double powerUsagePerApp = helper.getPowerUsagePerApp();
+			if(powerUsagePerApp > 0.0) {
+				slaLimits.setPower("" + powerUsagePerApp);
+				String units = helper.getPowerUsagePerAppUnits();
+				slaLimits.setPowerUnit(units);
+			}
+			
+			// Now we get the ides of the VMs
+			List<SLAVMLimits> vmLimits = new ArrayList<SLAVMLimits>();
+			slaLimits.setVmLimits(vmLimits);
+			
+			OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(deployment.getOvf());
+			List<String> ids = OVFUtils.getOVFVMIds(ovfDocument);
+			for(String id : ids) {
+				SLAVMLimits vmLimit = new SLAVMLimits();
+				vmLimit.setVmId(id);
+				
+				//Power
+				double vmPower = helper.getPowerUsagePerOVFId(id);
+				if(vmPower >= 0.0) {
+					vmLimit.setPower("" + vmPower);
+					vmLimit.setPowerUnit(helper.getPowerUnitsPerOVFId(id));
+				}
+				
+				//VMLimits
+				VMLimits maxMin = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getProductionSectionForOvfID(deployment.getOvf(), id));
+				
+				vmLimit.setMax("" + maxMin.getUpperNumberOfVMs());
+				vmLimit.setMin("" + maxMin.getLowerNumberOfVMs());
+				
+				vmLimits.add(vmLimit);
+			}
+		}
+		
+		xml = ModelConverter.slaLitmitsToXML(slaLimits);
 		return buildResponse(Status.OK, xml);
 	}
 }

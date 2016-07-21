@@ -1,5 +1,7 @@
 package eu.ascetic.paas.applicationmanager.slam.sla;
 
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.INVERSE_METRIC_UNITS;
+
 import java.io.StringReader;
 import java.util.List;
 
@@ -72,6 +74,32 @@ public class SLAAgreementHelper {
 		return getPowerUsage(powerUsagePerApp);
 	}
 	
+	/**
+	 * @return the units of the power usage per App
+	 */
+	public String getPowerUsagePerAppUnits() {
+		return getUnits(powerUsagePerApp);
+	}
+	
+	private String getUnits(String searchId) {
+		List<AgreementTerm> agreementTerms = sla.getAgreementTerms();
+		
+		String units = null;
+		
+		for(AgreementTerm agreementTerm : agreementTerms) {
+			State state = agreementTerm.getGuaranteed().getState();
+			
+			if(state != null && state.getId().equals(searchId)) {
+				units = state.getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype();
+				// We need to make sure no white spaces comes from the SLA Agreement
+				units = units.replaceAll("\\s+","");
+				units = INVERSE_METRIC_UNITS.get(units);
+			}
+		}
+		
+		return units;
+	}
+	
 	private double getPowerUsage(String searchId) {
 		List<AgreementTerm> agreementTerms = sla.getAgreementTerms();
 		
@@ -79,7 +107,7 @@ public class SLAAgreementHelper {
 		
 		for(AgreementTerm agreementTerm : agreementTerms) {
 			State state = agreementTerm.getGuaranteed().getState();
-			System.out.println("AgreementTerm " + agreementTerm.getId());
+			
 			if(state != null && state.getId().equals(searchId)) {
 				powerUsage = Double.parseDouble(state.getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
 				break;
@@ -96,5 +124,14 @@ public class SLAAgreementHelper {
 	 */
 	public double getPowerUsagePerOVFId(String ovfId) {
 		return getPowerUsage("Power_Usage_for_" + ovfId);
+	}
+
+	/**
+	 * Returns the units of the power usage for the VM with that OVF ID
+	 * @param ovfId
+	 * @return
+	 */
+	public String getPowerUnitsPerOVFId(String ovfId) {
+		return getUnits("Power_Usage_for_" + ovfId);
 	}
 }

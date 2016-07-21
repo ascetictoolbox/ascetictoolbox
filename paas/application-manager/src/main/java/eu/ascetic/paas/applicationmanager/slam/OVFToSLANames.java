@@ -53,9 +53,15 @@ public class OVFToSLANames {
 	public static final String DATATYPE_DECIMAL = "http://www.w3.org/2001/XMLSchema#decimal";
 	
 	// Metric Units
-	public static final Map<String, String> METRIC_UNITS = ImmutableMap.of(
+	public static final Map<String, String> METRIC_UNITS = ImmutableMap.of(  
 				"WattHour", "http://www.w3.org/2001/XMLSchema#watt",
 				"Watt", "http://www.w3.org/2001/XMLSchema#watt"
+			);
+	
+	// Metric Units
+	public static final Map<String, String> INVERSE_METRIC_UNITS = ImmutableMap.of(
+				"http://www.w3.org/2001/XMLSchema#watt", "Watt",
+				"http://www.slaatsoi.org/coremodel/units#W", "Watt"
 			);
 	
 	// Comparators

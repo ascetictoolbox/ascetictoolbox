@@ -2,6 +2,7 @@ package eu.ascetic.paas.applicationmanager.rest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -47,13 +48,14 @@ import eu.ascetic.paas.applicationmanager.amonitor.model.EnergyCosumed;
 import eu.ascetic.paas.applicationmanager.amqp.AbstractTest;
 import eu.ascetic.paas.applicationmanager.amqp.AmqpListListener;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.dao.AgreementDAO;
 import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
-import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.DeploymentEventService;
+import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Collection;
 import eu.ascetic.paas.applicationmanager.model.Cost;
@@ -62,6 +64,8 @@ import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
+import eu.ascetic.paas.applicationmanager.model.SLAVMLimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
@@ -96,6 +100,8 @@ public class DeploymentRestTest extends AbstractTest {
 	private String threeTierWebAppOvfString;
 	private String ovfFile = "saas.ovf";
 	private String ovfFileString;
+	private String slaAgreement2File = "sla-agreement-2.xml";
+	private String slaAgreement2Text;
 	
 	/**
 	 * We just read an ovf example... 
@@ -108,6 +114,8 @@ public class DeploymentRestTest extends AbstractTest {
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		file = new File(this.getClass().getResource( "/" + ovfFile ).toURI());		
 		ovfFileString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		file = new File(this.getClass().getResource( "/" + slaAgreement2File ).toURI());		
+		slaAgreement2Text = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
@@ -1693,6 +1701,125 @@ public class DeploymentRestTest extends AbstractTest {
 		assertEquals("/applications/app-name/deployments/2/events/loquesea/cost-estimation", cost.getLinks().get(1).getHref());
 		assertEquals("self", cost.getLinks().get(1).getRel());
 		assertEquals(MediaType.APPLICATION_XML, cost.getLinks().get(1).getType());
+	}
+	
+	@Test
+	public void getSLAAgreementLimitsNoAgreement() throws JAXBException {
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		// Creating mocks
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		deploymentRest.agreementDAO = agreementDAO;
+	
+		Deployment deployment = new Deployment();
+		deployment.setSchema(2);
+		
+		// Mock workflow
+		when(deploymentDAO.getById(2)).thenReturn(deployment);
+		// If no accepted agreement, the method should return null
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(null);
+		
+		Response response = deploymentRest.getSLALimits("app-name", "2");
+
+		assertEquals(200, response.getStatus());
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(SLALimits.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		SLALimits slaLimits = (SLALimits) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertEquals(0, slaLimits.getVmLimits().size());
+		assertNull(slaLimits.getCost());
+		assertNull(slaLimits.getCostUnit());
+		assertNull(slaLimits.getEnergy());
+		assertNull(slaLimits.getEnergyUnit());
+		assertNull(slaLimits.getPower());
+		assertNull(slaLimits.getPowerUnit());
+	}
+	
+	@Test
+	public void getSLAAgreementLimitsWithAgreement() throws JAXBException {
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		// Creating mocks
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		deploymentRest.agreementDAO = agreementDAO;
+	
+		Deployment deployment = new Deployment();
+		deployment.setSchema(2);
+		deployment.setOvf(threeTierWebAppOvfString);
+		
+		Agreement agreement = new Agreement();
+		agreement.setAccepted(true);
+		agreement.setSlaAgreement(slaAgreement2Text);
+		
+		// Mock workflow
+		when(deploymentDAO.getById(2)).thenReturn(deployment);
+		// If no accepted agreement, the method should return null
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(agreement);
+		
+		Response response = deploymentRest.getSLALimits("app-name", "2");
+
+		assertEquals(200, response.getStatus());
+		String xml = (String) response.getEntity();
+		
+		JAXBContext jaxbContext = JAXBContext.newInstance(SLALimits.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		SLALimits slaLimits = (SLALimits) jaxbUnmarshaller.unmarshal(new StringReader(xml));
+		
+		assertNull(slaLimits.getCost());
+		assertNull(slaLimits.getCostUnit());
+		assertNull(slaLimits.getEnergy());
+		assertNull(slaLimits.getEnergyUnit());
+		assertEquals("21.0", slaLimits.getPower());
+		assertEquals("Watt", slaLimits.getPowerUnit());
+		assertEquals(4, slaLimits.getVmLimits().size());
+		
+		for(SLAVMLimits vmLimits : slaLimits.getVmLimits()) {
+			if(vmLimits.getVmId().equals("jmeter")) {
+				assertNull(vmLimits.getCost());
+				assertNull(vmLimits.getCostUnit());
+				assertNull(vmLimits.getEnergy());
+				assertNull(vmLimits.getEnergyUnit());
+				assertEquals("10.0", vmLimits.getPower());
+				assertEquals("Watt", vmLimits.getPowerUnit());
+				assertEquals("1", vmLimits.getMin());
+				assertEquals("1", vmLimits.getMax());
+			} else if(vmLimits.getVmId().equals("haproxy")) {
+				assertNull(vmLimits.getCost());
+				assertNull(vmLimits.getCostUnit());
+				assertNull(vmLimits.getEnergy());
+				assertNull(vmLimits.getEnergyUnit());
+				assertEquals("12.3", vmLimits.getPower());
+				assertEquals("Watt", vmLimits.getPowerUnit());
+				assertEquals("1", vmLimits.getMin());
+				assertEquals("1", vmLimits.getMax());
+			} else if(vmLimits.getVmId().equals("jboss")) {
+				assertNull(vmLimits.getCost());
+				assertNull(vmLimits.getCostUnit());
+				assertNull(vmLimits.getEnergy());
+				assertNull(vmLimits.getEnergyUnit());
+				assertEquals("10.0", vmLimits.getPower());
+				assertEquals("Watt", vmLimits.getPowerUnit());
+				assertEquals("1", vmLimits.getMin());
+				assertEquals("1", vmLimits.getMax());
+			} else if(vmLimits.getVmId().equals("mysql")) {
+				assertNull(vmLimits.getCost());
+				assertNull(vmLimits.getCostUnit());
+				assertNull(vmLimits.getEnergy());
+				assertNull(vmLimits.getEnergyUnit());
+				assertEquals("10.0", vmLimits.getPower());
+				assertEquals("Watt", vmLimits.getPowerUnit());
+				assertEquals("1", vmLimits.getMin());
+				assertEquals("1", vmLimits.getMax());
+			} else {
+				fail("No VM with id " + vmLimits.getVmId() + " in the SLa Agreement or OVF");
+			}
+		}
 	}
 	
 	/**
