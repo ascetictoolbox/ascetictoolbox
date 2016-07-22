@@ -77,8 +77,14 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getPowerConsumption(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+    public <T> T getPowerConsumption(Class<T> responseType, String deployment_id, String startTime, String endTime) throws UniformInterfaceException {
         WebResource resource = webResource;
+        if (startTime != null) {
+            resource = resource.queryParam("startTime", startTime);
+        }
+        if (endTime != null) {
+            resource = resource.queryParam("endTime", endTime);
+        }
         resource = resource.path(java.text.MessageFormat.format("{0}/power-consumption", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
@@ -107,8 +113,11 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getPowerEstimationForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+    public <T> T getPowerEstimationForEvent(Class<T> responseType, String deployment_id, String event_id, String duration) throws UniformInterfaceException {
         WebResource resource = webResource;
+        if (duration != null) {
+            resource = resource.queryParam("duration", duration);
+        }
         resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/power-estimation", new Object[]{deployment_id, event_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
@@ -119,8 +128,14 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getPowerConsumptionForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+    public <T> T getPowerConsumptionForEvent(Class<T> responseType, String deployment_id, String event_id, String startTime, String endTime) throws UniformInterfaceException {
         WebResource resource = webResource;
+        if (startTime != null) {
+            resource = resource.queryParam("startTime", startTime);
+        }
+        if (endTime != null) {
+            resource = resource.queryParam("endTime", endTime);
+        }
         resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/power-consumption", new Object[]{deployment_id, event_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
@@ -139,6 +154,15 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
+    public <T> T getEnergyEstimation(Class<T> responseType, String deployment_id, String duration) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        if (duration != null) {
+            resource = resource.queryParam("duration", duration);
+        }
+        resource = resource.path(java.text.MessageFormat.format("{0}//energy-estimation", new Object[]{deployment_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
     public <T> T getDeploymentsJSON(Class<T> responseType, String status) throws UniformInterfaceException {
         WebResource resource = webResource;
         if (status != null) {
@@ -147,13 +171,31 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T getSLALimits(Class<T> responseType) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path("sla-limits");
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
     public ClientResponse postDeploymentJSON(Object requestEntity) throws UniformInterfaceException {
         return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_XML).post(ClientResponse.class, requestEntity);
     }
 
-    public <T> T getEnergyEstimationForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+    public <T> T getEnergyEstimationForEvent(Class<T> responseType, String deployment_id, String event_id, String duration) throws UniformInterfaceException {
         WebResource resource = webResource;
+        if (duration != null) {
+            resource = resource.queryParam("duration", duration);
+        }
         resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-estimation", new Object[]{deployment_id, event_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T getPowerEstimation(Class<T> responseType, String deployment_id, String duration) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        if (duration != null) {
+            resource = resource.queryParam("duration", duration);
+        }
+        resource = resource.path(java.text.MessageFormat.format("{0}/power-estimation", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
@@ -161,14 +203,26 @@ public class RestDeploymentClient {
         return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_XML).post(ClientResponse.class, requestEntity);
     }
 
-    public <T> T getEnergyConsumption(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
+    public <T> T getEnergyConsumption(Class<T> responseType, String deployment_id, String startTime, String endTime) throws UniformInterfaceException {
         WebResource resource = webResource;
+        if (startTime != null) {
+            resource = resource.queryParam("startTime", startTime);
+        }
+        if (endTime != null) {
+            resource = resource.queryParam("endTime", endTime);
+        }
         resource = resource.path(java.text.MessageFormat.format("{0}/energy-consumption", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T getEnergyMeasurementForEvent(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+    public <T> T getEnergyMeasurementForEvent(Class<T> responseType, String deployment_id, String event_id, String startTime, String endTime) throws UniformInterfaceException {
         WebResource resource = webResource;
+        if (startTime != null) {
+            resource = resource.queryParam("startTime", startTime);
+        }
+        if (endTime != null) {
+            resource = resource.queryParam("endTime", endTime);
+        }
         resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/energy-consumption", new Object[]{deployment_id, event_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
