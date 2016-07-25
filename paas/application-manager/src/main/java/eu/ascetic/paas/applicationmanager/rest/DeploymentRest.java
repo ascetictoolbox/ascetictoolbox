@@ -701,7 +701,7 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	@GET
-	@Path("/events/{event_id}/cost-estimation")
+	@Path("{deployment_id}/events/{event_id}/cost-estimation")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getCostEstimation(@PathParam("application_name") String applicationName, 
 			                          @PathParam("deployment_id") String deploymentId,
