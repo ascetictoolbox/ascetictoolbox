@@ -68,7 +68,7 @@ public class OVFToSLANames {
 	public static final Map<String, String> COMPARATORS = ImmutableMap.of(
 				"LT", "http://www.slaatsoi.org/coremodel#less_than",
 				"LTE", "http://www.slaatsoi.org/coremodel#less_than_or_equals",
-				"EQ", "http://www.slaatsoi.org/coremodel#less_than_or_equals",
+				"EQ", "http://www.slaatsoi.org/coremodel#equals",
 				"GT", "http://www.slaatsoi.org/coremodel#greater_than",
 				"GTE", "http://www.slaatsoi.org/coremodel#greater_than_or_equals"
 			);
