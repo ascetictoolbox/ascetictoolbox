@@ -17,9 +17,11 @@ package eu.ascetic.paas.self.adaptation.manager.rest;
 
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
+import eu.ascetic.paas.self.adaptation.manager.rest.generated.ProviderSlotClient;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestDeploymentClient;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestVMClient;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
@@ -67,6 +69,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             return deployment.getOvf();
         } catch (JAXBException ex) {
             Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            client.close();
         }
         return null;
     }
@@ -92,6 +96,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             return (VM) jaxbUnmarshaller.unmarshal(new StringReader(response));
         } catch (JAXBException ex) {
             Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            client.close();
         }
         return null;
     }
@@ -200,6 +206,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             return deployment.getVms();
         } catch (JAXBException ex) {
             Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            client.close();
         }
         return null;
     }
@@ -225,6 +233,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         System.out.println("VM: " + vm);
         System.out.println("Post CONV: " + ModelConverter.objectVMToXML(vm));
         client.postVM(ModelConverter.objectVMToXML(vm));
+        client.close();
     }
 
     /**
@@ -287,6 +296,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     public void deleteVM(String application, String deployment, String vmID) {
         RestVMClient client = new RestVMClient(application, deployment);
         client.deleteVM(vmID);
+        client.close();
     }
 
     /**
@@ -339,6 +349,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             return measurement.getValue();
         } catch (JAXBException ex) {
             Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            client.close();
         }
         return 0.0;
     }
@@ -369,6 +381,30 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             answer = answer + getPowerUsageVM(applicationId, deploymentId, vm.getId() + "");
         }
         return answer;
+    }
+
+    @Override
+    public SLALimits getSlaLimits(String applicationId, String deploymentId) {
+        RestDeploymentClient client = new RestDeploymentClient(applicationId);
+        try {
+            String response = client.getSLALimits(String.class, deploymentId);
+            JAXBContext jaxbContext = JAXBContext.newInstance(SLALimits.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            SLALimits slaLimits = (SLALimits) jaxbUnmarshaller.unmarshal(new StringReader(response));
+            return slaLimits;
+        } catch (JAXBException ex) {
+            Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            client.close();
+        }
+        return null;
+    }
+
+    public void getSlots() {
+        ProviderSlotClient client = new ProviderSlotClient("id");
+        Object response = client.getSlot(null);
+         // do whatever with response
+         client.close();
     }
 
     /**
@@ -407,6 +443,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         for (VM vm : vms) {
             client.deleteVM(vm.getId() + "");
         }
+        client.close();
     }
 
     /**
@@ -488,7 +525,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                 break;
             default:
                 Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
-                break;                
+                break;
         }
         response.setPerformed(true);
     }

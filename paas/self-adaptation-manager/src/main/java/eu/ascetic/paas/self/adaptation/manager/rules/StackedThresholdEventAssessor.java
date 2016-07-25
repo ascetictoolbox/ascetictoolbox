@@ -207,12 +207,13 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         ArrayList<FiringCriteria> answer = new ArrayList<>();
         for (FiringCriteria rule : getFiringCriteriaFromOVF(event)) {
             if (rule.shouldFire(event)) {
+                
                 answer.add(rule);
             }
         }
         for (FiringCriteria rule : rules) {
             if (rule.shouldFire(event)) {
-                 Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "A rule has been matched" + rule.toString());
+                 Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "A rule has been matched " + rule.toString());
                 answer.add(rule);
             }
         }

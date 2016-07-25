@@ -15,7 +15,9 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
+import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestDeploymentClient;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
 
@@ -53,6 +55,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
     /**
      * This tests to see if the power consumption limit will be breached or not
      * as well as the OVF boundaries.
+     *
      * @param response The response type to check
      * @param vmOvfType The OVF type to add to
      * @return If the VM is permissible to add.
@@ -63,15 +66,21 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         double averagePower = actuator.getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(), vmOvfType);
         double totalMeasuredPower = actuator.getTotalPowerUsage(response.getApplicationId(), response.getDeploymentId());
-        List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), 
+        List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(),
                 response.getDeploymentId());
         if (!vmOvfTypes.contains(vmOvfType)) {
             return false;
         }
-        //TODO compare to the guaranteed term for power.
-        if (totalMeasuredPower + averagePower > Double.MAX_VALUE) {
-            return false;
+        String applicationID = response.getApplicationId();
+        String deploymentID = response.getDeploymentId();
+        SLALimits limits = actuator.getSlaLimits(applicationID, deploymentID);
+        if (limits != null) {
+            if (totalMeasuredPower + averagePower > Double.parseDouble(limits.getPower())) {
+                return false;
+            }
         }
+        //TODO compare any further standard gurantees here that make sense
+        //TODO cost??
         return true;
     }
 

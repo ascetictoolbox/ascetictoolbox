@@ -16,6 +16,7 @@
 package eu.ascetic.paas.self.adaptation.manager.activemq.actuator;
 
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
@@ -313,6 +314,11 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     @Override
     public double getTotalPowerUsage(String applicationId, String deploymentId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }    
+    }
     
+    @Override
+    public SLALimits getSlaLimits(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }    
+
 }

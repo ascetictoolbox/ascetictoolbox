@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager;
 
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
 
@@ -100,9 +101,18 @@ public interface ActuatorInvoker {
      *
      * @param applicationId The application the VM is part of
      * @param deploymentId The id of the deployment instance of the VM
-     * @return The power usage of a named VM. 
+     * @return The power usage of the named application. 
      */
     public double getTotalPowerUsage(String applicationId, String deploymentId);      
+    
+    /**
+     *  This obtains information regarding the SLA limits of an application
+     * that is to be actuated against
+     * @param applicationId The application id
+     * @param deploymentId The deployment id
+     * @return 
+     */
+    public SLALimits getSlaLimits(String applicationId, String deploymentId);
     
     /**
      * This adds a vm of a given ovf type to named deployment.

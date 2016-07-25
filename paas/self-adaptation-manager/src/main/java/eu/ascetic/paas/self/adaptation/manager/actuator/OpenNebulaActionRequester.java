@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.actuator;
 
+import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
@@ -327,6 +328,11 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
     public double getTotalPowerUsage(String applicationId, String deploymentId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }        
+
+    @Override
+    public SLALimits getSlaLimits(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     /**
      * The things that are needed to invoke an action are:
