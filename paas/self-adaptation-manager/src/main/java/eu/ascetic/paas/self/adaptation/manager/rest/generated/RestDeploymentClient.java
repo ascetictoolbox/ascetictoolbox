@@ -171,9 +171,9 @@ public class RestDeploymentClient {
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public <T> T getSLALimits(Class<T> responseType) throws UniformInterfaceException {
+    public <T> T getSLALimits(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path("sla-limits");
+        resource = resource.path(java.text.MessageFormat.format("{0}/sla-limits", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
