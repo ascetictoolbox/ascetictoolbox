@@ -764,7 +764,7 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	@GET
-	@Path("/sla-limits")
+	@Path("{deployment_id}/sla-limits")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getSLALimits(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/sla-limits");
