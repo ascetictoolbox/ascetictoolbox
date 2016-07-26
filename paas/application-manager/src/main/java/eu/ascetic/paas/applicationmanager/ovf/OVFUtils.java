@@ -449,7 +449,11 @@ public class OVFUtils {
 			for(int i = 0; i < count; i++) {
 				ProductProperty property = productSection.getPropertyByKey("asceticSlaInfoSlaTerm_" + i);
 				
+				System.out.println("####################################");
+				System.out.println(property.getValue());
+				
 				if(slaInfoTerm.equals(property.getValue())) {
+					System.out.println(property.getValue() + " " + slaInfoTerm);
 					AsceticSLAInfo slaInfo = new AsceticSLAInfo();
 					slaInfo.setTerm(slaInfoTerm);
 					slaInfo.setBoundaryValue(productSection.getPropertyByKey("asceticSlaInfoBoundaryValue_"+ i).getValue());

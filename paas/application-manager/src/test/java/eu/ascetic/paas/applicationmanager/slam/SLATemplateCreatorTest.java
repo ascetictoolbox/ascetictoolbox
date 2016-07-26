@@ -1,7 +1,6 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +24,6 @@ import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
-import eu.ascetic.paas.applicationmanager.ovf.OVFThingsIT;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.slam.sla.model.AgreementTerm;
 import eu.ascetic.paas.applicationmanager.slam.sla.model.FuncExpr;
@@ -82,6 +80,7 @@ public class SLATemplateCreatorTest {
 		mServer.start();
 		mBaseURL = "http://localhost:";
 		mBaseURL = mBaseURL + mServer.getPort();
+		System.out.println(ovfSelfAdaptationString);
 	}
 	
 	@Test
@@ -147,7 +146,7 @@ public class SLATemplateCreatorTest {
 		assertEquals("OVFAppliance", slat.getInterfaceDeclrs().get(0).getIntf().getInterfaceResourceType().getName());
 		
 		// We have to have 4 Agreement Terms
-		assertEquals(4, slat.getAgreemenTerms().size());
+		assertEquals(5, slat.getAgreemenTerms().size());
 		
 		// We verify the application guarantees
 		assertEquals("App Guarantees", slat.getAgreemenTerms().get(0).getId());

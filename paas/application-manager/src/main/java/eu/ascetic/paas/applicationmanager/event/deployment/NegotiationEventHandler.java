@@ -21,7 +21,6 @@ import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
 import eu.ascetic.paas.applicationmanager.slam.SLATemplateCreator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
-import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import reactor.event.Event;
 import reactor.spring.annotation.Consumer;
@@ -94,6 +93,7 @@ public class NegotiationEventHandler {
 				logger.info("Initial SLA Template document: " + slaTemplate);
 				SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
 				String xmlRetSlat = rend.renderSLATemplate(slaTemplate);
+				
 				logger.info("####### SLAT TO START NEGOTIATION....");
 				logger.info(xmlRetSlat);
 
@@ -122,6 +122,7 @@ public class NegotiationEventHandler {
 				logger.info("SLA Template: " + slaTemplate.toString());
 				SLASOITemplateRenderer rend2 = new SLASOITemplateRenderer();
 				String xmlRetSlat2 = rend2.renderSLATemplate(slaTemplate);
+				
 				logger.info("SLA Template: " + xmlRetSlat2);
 				
 				SLATemplate[] slats = client.negotiate(Configuration.slamURL, slaTemplate, negId);

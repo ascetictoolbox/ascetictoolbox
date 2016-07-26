@@ -114,6 +114,11 @@ public class NegotiationWsClient implements NegotiationClient {
 	@Override
 	public SLA createAgreement(String endpoint, SLATemplate slaTemplate, String negotiationId) {
 		
+		logger.info("Creating agreement");
+		logger.info("EndPoint: " + endpoint);
+		logger.info("SLA Template: " + slaTemplate);
+		logger.info("NegotiationId: " + negotiationId);
+		
 		SLA sla = null;
 		try { 
 			BZNegotiationStub stub = new BZNegotiationStub(endpoint);

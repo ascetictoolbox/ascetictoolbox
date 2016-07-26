@@ -3,7 +3,6 @@ package eu.ascetic.paas.applicationmanager.event.deployment;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.slasoi.gslam.syntaxconverter.SLASOIRenderer;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateParser;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.beans.factory.annotation.Autowired;

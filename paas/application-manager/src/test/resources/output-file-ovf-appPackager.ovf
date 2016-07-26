@@ -60,12 +60,17 @@
         <ovf:Property ovf:key="asceticSlaInfoComparator_0" ovf:type="string" ovf:value="LT"/>
         <ovf:Property ovf:key="asceticSlaInfoBoundaryValue_0" ovf:type="string" ovf:value="50"/>
         <ovf:Property ovf:key="asceticSlaInfoSlaType_0" ovf:type="string" ovf:value="violation"/>
-        <ovf:Property ovf:key="asceticSlaInfoNumber" ovf:type="uint32" ovf:value="2"/>
+        <ovf:Property ovf:key="asceticSlaInfoNumber" ovf:type="uint32" ovf:value="3"/>
         <ovf:Property ovf:key="asceticSlaInfoSlaTerm_1" ovf:type="string" ovf:value="price_per_vm"/>
         <ovf:Property ovf:key="asceticSlaInfoMetricUnit_1" ovf:type="string" ovf:value="EuroPerHour"/>
         <ovf:Property ovf:key="asceticSlaInfoComparator_1" ovf:type="string" ovf:value="LT"/>
         <ovf:Property ovf:key="asceticSlaInfoBoundaryValue_1" ovf:type="string" ovf:value="0.25"/>
         <ovf:Property ovf:key="asceticSlaInfoSlaType_1" ovf:type="string" ovf:value="violation"/>
+        <ovf:Property ovf:key="asceticSlaInfoSlaTerm_2" ovf:type="string" ovf:value="energy_usage_per_vm"/>
+        <ovf:Property ovf:key="asceticSlaInfoMetricUnit_2" ovf:type="string" ovf:value="WattHour"/>
+        <ovf:Property ovf:key="asceticSlaInfoComparator_2" ovf:type="string" ovf:value="LT"/>
+        <ovf:Property ovf:key="asceticSlaInfoBoundaryValue_2" ovf:type="string" ovf:value="50"/>
+        <ovf:Property ovf:key="asceticSlaInfoSlaType_0" ovf:type="string" ovf:value="violation"/>
         <ovf:Property ovf:key="asceticTermMeasurementApplicationEvent_0" ovf:type="string" ovf:value="searchForNewsItems"/>
         <ovf:Property ovf:key="asceticTermMeasurementApplicationMetric_0" ovf:type="string" ovf:value="duration"/>
         <ovf:Property ovf:key="asceticTermMeasurementPeriod_0" ovf:type="string" ovf:value="15"/>
