@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>es.bsc.paas</groupId>
-	<artifactId>emslamintegrator</artifactId>
+	<artifactId>slam-em-pm-integrator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>emslamintegrator</name>
-	<description>Demo project for Spring Boot</description>
+	<name>slam-em-pm-integrator</name>
+	<description>Integrates the communication between SLAM, EM and PM</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -30,6 +30,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
 		</dependency>
 		<dependency>
@@ -40,6 +44,11 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.4</version>
 		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.apache.qpid</groupId>-->

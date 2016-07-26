@@ -34,3 +34,9 @@ Next are enumerated the configurable options that could vary depending on each d
 * `application.manager.url`
 	- URL of the REST endpoint for the Application Manager
 	- Default: `http://localhost/application-manager`
+
+### Other options
+
+* `min.reporting.rate`
+	- Minimum rate (in milliseconds), between each reporting from the modellers, for the same application/deployment
+	- Default: 1000 ms.
