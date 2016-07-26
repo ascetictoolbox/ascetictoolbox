@@ -1,0 +1,52 @@
+2016-07-26 09:10:47,156 - [INFO] - from play in pool-4-thread-3 
+Listening for HTTP on /0:0:0:0:0:0:0:0:9000
+
+2016-07-26 09:11:00,489 - [INFO] - from application in play-internal-execution-context-1 
+Connecting to mongodb://localhost:27017/applicationmonitor
+
+2016-07-26 09:11:01,117 - [INFO] - from application in play-internal-execution-context-1 
+Initiating Message Queue Manager...
+
+2016-07-26 09:11:02,215 - [DEBUG] - from application in Thread-4 
+Starting PeriodicNotificationSender thread
+
+2016-07-26 09:11:02,217 - [INFO] - from application in play-internal-execution-context-1 
+Message Queue Manager Sucessfully created...
+
+2016-07-26 09:11:02,231 - [INFO] - from application in Thread-5 
+Initializing Estimations Reader thread
+
+2016-07-26 09:11:02,302 - [INFO] - from org.apache.qpid.jms.JmsConnection in AmqpProvider:(2):[amqp://localhost:5672] 
+Connection ID::90e1dd2d-5e46-4fc5-a898-b80d0cdee2f2:1 connected to remote Broker: amqp://localhost:5672
+
+2016-07-26 09:11:02,874 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2016-07-26 09:11:03,242 - [INFO] - from akka.event.slf4j.Slf4jLogger in play-akka.actor.default-dispatcher-4 
+Slf4jLogger started
+
+2016-07-26 09:11:04,231 - [INFO] - from application in play-akka.actor.default-dispatcher-7 
+Creating collection 'appdeployments'...
+
+2016-07-26 09:11:04,264 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-7 
+Opened connection [connectionId{localValue:2, serverValue:2}] to localhost:27017
+
+2016-07-26 09:11:04,478 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-3 
+Opened connection [connectionId{localValue:3, serverValue:3}] to localhost:27017
+
+2016-07-26 09:11:23,511 - [DEBUG] - from application in Thread-3 
+received message: asdfasdfasdfdsafdsa
+
+2016-07-26 09:11:23,522 - [WARN] - from application in Thread-3 
+Error dispatching messages: com.fasterxml.jackson.core.JsonParseException: Unrecognized token 'asdfasdfasdfdsafdsa': was expecting ('true', 'false' or 'null')
+ at [Source: asdfasdfasdfdsafdsa; line: 1, column: 39]
+
+2016-07-26 09:11:23,523 - [WARN] - from application in Thread-3 
+Reconnecting to the MQ
+
+2016-07-26 09:11:23,567 - [INFO] - from org.apache.qpid.jms.sasl.SaslMechanismFinder in AmqpProvider:(3):[amqp://localhost:5672] 
+Best match for SASL auth was: SASL-ANONYMOUS
+
+2016-07-26 09:11:23,614 - [INFO] - from org.apache.qpid.jms.JmsConnection in AmqpProvider:(3):[amqp://localhost:5672] 
+Connection ID::d006db0e-ef06-47e6-a7ac-924aabb672ef:2 connected to remote Broker: amqp://localhost:5672
+
