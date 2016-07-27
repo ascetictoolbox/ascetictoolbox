@@ -35,6 +35,8 @@ import org.neuroph.core.learning.SupervisedLearning;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.nnet.learning.MomentumBackpropagation;
+import org.neuroph.nnet.learning.ResilientPropagation;
+import org.neuroph.util.TransferFunctionType;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.Unit;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
@@ -48,10 +50,6 @@ public class EMNeuralPredictor implements PredictorInterface{
 	
 	private long lastSampleTimestamp = 0;
 	private long sampleIntervalAverage = 0;
-	private double maxCPU = 0;
-	private double minCPU = Double.MAX_VALUE;
-	private double maxMemory = 0;
-	private double minMemory = Double.MAX_VALUE;
 	private double maxPower = 0;
 	private double minPower = Double.MAX_VALUE;
 	
@@ -93,10 +91,13 @@ public class EMNeuralPredictor implements PredictorInterface{
 	public double estimate(String providerid, String applicationid,	String deploymentid, String vm, String eventid, Unit unit, long forecasttime, boolean enablePowerFromIaas) {
 		
 		// Neuroph parameters
-		int maxIterations = 1000;
-		double maxError = 0.007;// (0.007) or (0.003)
-        double learningRate = 0.1;// (0.1) or (0.5) or (0.7)
-        int slidingWindowSize = 9; // 9 = 3 * 3(CPU, Memory, Power)
+		double maxError = 0.001;	// Resilient = 0.001,	BackPropagation=0.007
+        double learningRate = 0.01;	// Resilient = 0.01,		BackPropagation=0.1
+        int maxIterations = 500;	// Resilient = 500
+        int	inputNeurons = 10;		// Resilient = 10
+        int	hiddenNeurons = 23;		// Resilient = 23
+        int	outputNeurons = 1;		// Do not change !
+        
 		double estimation=0;
 		forecasttime = forecasttime/1000;
 		
@@ -119,7 +120,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 		}
 		
 		defineNormalizationParam(valuesRow);
-		LOGGER.debug("minCPU=" + this.minCPU + " maxCPU=" + this.maxCPU + " minMemory=" + this.minMemory + " maxMemory=" + this.maxMemory + " minPower=" + this.minPower + " maxPower=" + this.maxPower);
+		LOGGER.debug("minPower=" + this.minPower + " maxPower=" + this.maxPower);
 		
 		// Cycles Number
 		int cyclesNumber = (int )((forecasttime - this.lastSampleTimestamp) / this.sampleIntervalAverage);
@@ -129,9 +130,10 @@ public class EMNeuralPredictor implements PredictorInterface{
 		LOGGER.info("Cycles Number : " + cyclesNumber);
 		
 		int counter, counterInput;
-				
-		// CPU, Memory, Power: Training and setup for first estimations
-		NeuralNetwork<BackPropagation> neuralNetwork = new MultiLayerPerceptron(slidingWindowSize, 2 * slidingWindowSize + 1, 3);
+		
+		/* Begin 
+		// Power: Training and setup for first estimations
+		NeuralNetwork<BackPropagation> neuralNetwork = new MultiLayerPerceptron(inputNeurons, hiddenNeurons, outputNeurons);
 		SupervisedLearning learningRule = neuralNetwork.getLearningRule();
 		learningRule.setMaxError(maxError);
 		learningRule.setLearningRate(learningRate);
@@ -139,112 +141,96 @@ public class EMNeuralPredictor implements PredictorInterface{
 		learningRule.addListener(new LearningEventListener() {			
 			public void handleLearningEvent(LearningEvent learningEvent) {
 				SupervisedLearning rule = (SupervisedLearning) learningEvent.getSource();
-				LOGGER.debug("CPU, Memory, Power - Network error for interation " + rule.getCurrentIteration() + ": " + rule.getTotalNetworkError());
+				LOGGER.debug("Power - Network error for interation " + rule.getCurrentIteration() + ": " + rule.getTotalNetworkError());
 			}
 		});
+		   End */
 		
-		DataSet trainingSet = trainingImportObjectFromMatrix(valuesRow, slidingWindowSize, 3);
+		
+		/* Begin */
+		MultiLayerPerceptron neuralNetwork = new MultiLayerPerceptron(TransferFunctionType.SIGMOID, inputNeurons, hiddenNeurons, outputNeurons);
+
+	    ResilientPropagation learningRule = new ResilientPropagation();
+	    learningRule.setNeuralNetwork(neuralNetwork);
+	    neuralNetwork.setLearningRule(learningRule);
+
+	    learningRule.setMaxError(maxError);
+	    learningRule.setMaxIterations(maxIterations);
+	    learningRule.setLearningRate(learningRate);	    
+	    learningRule.addListener(new LearningEventListener() {			
+			public void handleLearningEvent(LearningEvent learningEvent) {
+				SupervisedLearning rule = (SupervisedLearning) learningEvent.getSource();
+				LOGGER.debug("Power - Network error for interation " + rule.getCurrentIteration() + ": " + rule.getTotalNetworkError());
+			}
+		});			    
+	    /* End */
+		
+		DataSet trainingSet = trainingImportObjectFromMatrix(valuesRow, inputNeurons, outputNeurons);
 		// LOGGER.info("BEFORE TRAINING"); //MAXIM
 		neuralNetwork.learn(trainingSet);
 		// LOGGER.info("AFTER  TRAINING"); //MAXIM
+		LOGGER.info("Power - Network iteration =" + learningRule.getCurrentIteration());
 		// neuralNetwork.save(neuralNetworkModelFilePath);
 		// trainingSet.saveAsTxt("/temp/CPU_Memory_Power.txt","|");
 		
-		double [] input = new double[slidingWindowSize];
-		double [] inputDenorm = new double[slidingWindowSize];
-		double prevOutputCPU = 0.0;
-		double currOutputCPU = 0.0;
-		double calcOutputCPU = 0.0;
-		double prevOutputMemory = 0.0;
-		double currOutputMemory = 0.0;
-		double calcOutputMemory = 0.0;
+		double [] input = new double[inputNeurons];
+		double [] inputDenorm = new double[inputNeurons];		
 		double prevOutputPower = 0.0;
 		double currOutputPower = 0.0;
 		double calcOutputPower = 0.0;
 						
-		inputDenorm = lastTrainingRow(valuesRow, slidingWindowSize, 3);
-		for (counterInput = 0; counterInput < slidingWindowSize; counterInput++) {
-			switch (counterInput % 3) {
-				case 0: //CPU
-					input[counterInput] = normalizeValue(inputDenorm[counterInput], PredictorObject.CPU);
-					break;
-				case 1: //Memory
-					input[counterInput] = normalizeValue(inputDenorm[counterInput], PredictorObject.MEMORY);
-					break;
-				case 2: //Power
-					input[counterInput] = normalizeValue(inputDenorm[counterInput], PredictorObject.POWER);
-					break;
-			}
-		}
+		inputDenorm = lastTrainingRow(valuesRow, inputNeurons, outputNeurons);
+		for (counterInput = 0; counterInput < inputNeurons; counterInput++)
+				input[counterInput] = normalizeValue(inputDenorm[counterInput]);
 		
-		currOutputCPU    = normalizeValue(inputDenorm[slidingWindowSize-3], PredictorObject.CPU);
-		currOutputMemory = normalizeValue(inputDenorm[slidingWindowSize-2], PredictorObject.MEMORY);
-		currOutputPower  = normalizeValue(inputDenorm[slidingWindowSize-1], PredictorObject.POWER);
+		currOutputPower  = normalizeValue(inputDenorm[inputNeurons-1]);
 		
 		LOGGER.info("LAST SAMPLE - Timestamp: " + this.lastSampleTimestamp +
-					" CPU:"    + inputDenorm[slidingWindowSize-3] +
-					" Memory:" + inputDenorm[slidingWindowSize-2] +
-					" Power:"  + inputDenorm[slidingWindowSize-1]);
+					" Power:"  + inputDenorm[inputNeurons-1]);
         
 		double[] networkOutput;
 		
 		for (counter = 0; counter < cyclesNumber; counter++) {
 			
-			// CPU, Memory, Power: estimation
+			// Power: estimation
 			// NeuralNetwork neuralNetGlobalPower = NeuralNetwork.createFromFile(neuralNetGlobalPowerModelFilePath);
-			prevOutputCPU    = currOutputCPU;
-			prevOutputMemory = currOutputMemory;
 			prevOutputPower  = currOutputPower;
 			neuralNetwork.setInput(input);
 			neuralNetwork.calculate();
 			networkOutput = neuralNetwork.getOutput();
-			currOutputCPU    = networkOutput[0];
-			currOutputMemory = networkOutput[1];
-			currOutputPower  = networkOutput[2];			
+			currOutputPower  = networkOutput[0];			
 			
 			LOGGER.debug("FORECAST - Timestamp: " + (this.lastSampleTimestamp + (this.sampleIntervalAverage * (counter + 1))) +
-						" CPU:"    + deNormalizeValue(currOutputCPU, PredictorObject.CPU) +
-						" Memory:" + deNormalizeValue(currOutputMemory, PredictorObject.MEMORY) +
-						" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));				
+						" Power:"  + deNormalizeValue(currOutputPower));			
 								
-			// CPU, Memory, Power: setup for next estimations
+			// Power: setup for next estimations
 			// input array update: 
 			// e.g.
-			// from: "valCPU1, valMemory1, ValPower1, valCPU2, valMemory2, ValPower2, ..., valCPUX, valMemoryX, ValPowerX" 
-			// to:   "valCPU2, valMemory2, ValPower2, ..., valCPUX, valMemoryX, ValPowerX, ,currOutputGlobalCPU, currOutputGlobalMemory, currOutputGlobalPower"			
+			// from: "ValPower1, ValPower2, ..., ValPowerX" 
+			// to:   "ValPower2, ..., ValPowerX, currOutputGlobalPower"			
 				
-			for (counterInput = 0; counterInput < (slidingWindowSize-3); counterInput++) {				
-				input[counterInput] = input[counterInput+3];
-				inputDenorm[counterInput] = inputDenorm[counterInput+3];				
+			for (counterInput = 0; counterInput < (inputNeurons-1); counterInput++) {		
+				input[counterInput] = input[counterInput+1];
+				inputDenorm[counterInput] = inputDenorm[counterInput+1];				
 			}
-			input[slidingWindowSize-3] = currOutputCPU;
-			input[slidingWindowSize-2] = currOutputMemory;
-			input[slidingWindowSize-1] = currOutputPower;
-			inputDenorm[slidingWindowSize-3] = deNormalizeValue(currOutputCPU,    PredictorObject.CPU);
-			inputDenorm[slidingWindowSize-2] = deNormalizeValue(currOutputMemory, PredictorObject.MEMORY);
-			inputDenorm[slidingWindowSize-1] = deNormalizeValue(currOutputPower,  PredictorObject.POWER);
+			input[inputNeurons-1] = currOutputPower;			
+			inputDenorm[inputNeurons-1] = deNormalizeValue(currOutputPower);
 		}
 				
 		// adjusting value if timelater is not a multiple of the sampling period
 		if (cyclesNumberReminder != 0) {
 			
-			calcOutputCPU    = prevOutputCPU    + ((currOutputCPU    - prevOutputCPU)    * ((double )cyclesNumberReminder / (double )this.sampleIntervalAverage));
-			calcOutputMemory = prevOutputMemory + ((currOutputMemory - prevOutputMemory) * ((double )cyclesNumberReminder / (double )this.sampleIntervalAverage));
 			calcOutputPower  = prevOutputPower  + ((currOutputPower  - prevOutputPower)  * ((double )cyclesNumberReminder / (double )this.sampleIntervalAverage));
-			estimation = deNormalizeValue(calcOutputPower, PredictorObject.POWER);
-			LOGGER.debug("FORECAST Adjusting - Timestamp: " + forecasttime +
-						" CPU:"    + deNormalizeValue(calcOutputCPU, PredictorObject.CPU) +
-						" Memory:" + deNormalizeValue(calcOutputMemory, PredictorObject.MEMORY) +
-						" Power:"  + deNormalizeValue(calcOutputPower, PredictorObject.POWER));
+			estimation = deNormalizeValue(calcOutputPower);
+			LOGGER.debug("FORECAST Adjusting - Timestamp: " + forecasttime +						
+						" Power:"  + deNormalizeValue(calcOutputPower));
 		} else {
-			estimation = deNormalizeValue(currOutputPower, PredictorObject.POWER);
+			estimation = deNormalizeValue(currOutputPower);
 			
-			/* MAXIM 
-			LOGGER.info("FORECAST NoAdjusting - Timestamp: " + forecasttime +
-					" CPU:"    + deNormalizeValue(currOutputCPU, PredictorObject.CPU) +
-					" Memory:" + deNormalizeValue(currOutputMemory, PredictorObject.MEMORY) +
-					" Power:"  + deNormalizeValue(currOutputPower, PredictorObject.POWER));	
-			MAXIM */			
+			/* MAXIM
+			LOGGER.info("FORECAST NoAdjusting - Timestamp: " + forecasttime +					
+					" Power:"  + deNormalizeValue(currOutputPower));	
+			   MAXIM */			
 		}
 		
 		LOGGER.info("############ Forecasting TERMINATED POWER WILL BE "+estimation + " at "+forecasttime+ "############");
@@ -257,138 +243,25 @@ public class EMNeuralPredictor implements PredictorInterface{
 	public double[][] dataAggregation(String providerid, String applicationid, String deploymentid, String vm, String eventid, int maxIterations, boolean enablePowerFromIaas) {
 		
 		int counter;
-		boolean isnull = false;
 		double value;
 		long timestamp;
 		int counterALL = 0;
 		
-		List<DataConsumption> cpuSample = service.sampleCPU(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
-		List<DataConsumption> memSample = service.sampleMemory(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
 		List<DataConsumption> powerSample = service.samplePower(providerid, applicationid, deploymentid, vm, enablePowerFromIaas);
 		
-		LOGGER.debug("Samples for the analysis ");
-		
-		if (memSample == null) {
-			isnull = true;
-			LOGGER.debug("Samples for mem 0");
-			
+		if (powerSample == null) {			
+			LOGGER.info("Power samples for the analysis 0");
+			double [][] valuesRow = new double[0][2];
+			return(valuesRow);			
 		}
-		else
-			LOGGER.info("Samples for mem "+memSample.size());
-		
-		if (cpuSample == null) {
-			isnull = true;
-			LOGGER.debug("Samples for cpu 0");			
-		}
-		else
-			LOGGER.info("Samples for cpu "+cpuSample.size());		
-				
-		if (powerSample == null) {
-			isnull = true;
-			LOGGER.debug("Samples for power 0");
-			
-		}
-		else
-			LOGGER.info("Samples for power "+powerSample.size());
-		
-		if (isnull == true) {
-			double [][] valuesRow = new double[0][4];
-			return(valuesRow);
-		}		
-		
-		// CPU
-		HashMap<Long, Double> hmapCPU = new HashMap<Long, Double>();
-				
-		for (counter = 0; counter<cpuSample.size();counter++) {
-			
-			value = cpuSample.get(counter).getVmcpu();
-			timestamp=cpuSample.get(counter).getTime();
-			hmapCPU.put(timestamp, value);
+		else {
+			LOGGER.info("Power samples for the analysis "+powerSample.size());
+			if (powerSample.size() < 2) {
+				double [][] valuesRow = new double[0][2];
+				return(valuesRow);
+			}
 		}
 		
-		LOGGER.debug("CPU Before Sorting: ");
-		Set<Map.Entry<Long, Double>> setCPUBeforeSort = hmapCPU.entrySet();
-		Iterator<Entry<Long, Double>> iteratorCPUBeforeSort = setCPUBeforeSort.iterator();
-		counter = 0;
-		while(iteratorCPUBeforeSort.hasNext()) {
-			Map.Entry<Long, Double> meCPUBeforeSort = (Map.Entry<Long, Double>)iteratorCPUBeforeSort.next();
-			timestamp = (long) meCPUBeforeSort.getKey();
-            value = (double) meCPUBeforeSort.getValue();
-            if (counter < 10)
-            	LOGGER.debug("Key " + timestamp + ": " + value);
-			counter++;			
-        }
-        
-        
-        Map<Long, Double> mapCPU = new TreeMap<Long, Double>(hmapCPU);
-        
-        Set<Map.Entry<Long, Double>> setCPUSort = mapCPU.entrySet();
-        Iterator<Entry<Long, Double>> iteratorCPUSort = setCPUSort.iterator();
-        
-        LOGGER.debug("CPU After Sorting: ");
-        
-        long [] timestampsCPU = new long[counter];
-		double [] valuesCPU = new double[counter];
-		int counterCPU = 0;
-        while(iteratorCPUSort.hasNext()) {
-            Map.Entry<Long, Double> meCPUSort = (Map.Entry<Long, Double>)iteratorCPUSort.next();
-            timestamp = (long) meCPUSort.getKey();
-            value = (double) meCPUSort.getValue();
-            timestampsCPU[counterCPU] = timestamp;
-			valuesCPU[counterCPU] = value;
-			if (counterCPU < 10)
-				LOGGER.debug("Key " + timestamp + ": " + value);
-			counterCPU++;
-		}
-                
- 
-		// Memory
-		HashMap<Long, Double> hmapMemory = new HashMap<Long, Double>();
-						
-		for (counter = 0; counter<memSample.size();counter++) {
-			
-			value = memSample.get(counter).getVmmemory();
-			timestamp=memSample.get(counter).getTime();
-			hmapMemory.put(timestamp, value);
-		}
-		
-		LOGGER.debug("Memory Before Sorting: ");
-		Set<Map.Entry<Long, Double>> setMemoryBeforeSort = hmapMemory.entrySet();
-		Iterator<Entry<Long, Double>> iteratorMemoryBeforeSort = setMemoryBeforeSort.iterator();
-		counter = 0;
-		while(iteratorMemoryBeforeSort.hasNext()) {
-			Map.Entry<Long, Double> meMemoryBeforeSort = (Map.Entry<Long, Double>)iteratorMemoryBeforeSort.next();
-			timestamp = (long) meMemoryBeforeSort.getKey();
-            value = (double) meMemoryBeforeSort.getValue();
-            if (counter < 10)
-            	LOGGER.debug("Key " + timestamp + ": " + value);
-			counter++;			
-        }
-        
-        
-        Map<Long, Double> mapMemory = new TreeMap<Long, Double>(hmapMemory);
-        
-        Set<Entry<Long, Double>> setMemorySort = mapMemory.entrySet();
-        Iterator<Entry<Long, Double>> iteratorMemorySort = setMemorySort.iterator();
-        
-        LOGGER.debug("Memory After Sorting: ");
-        
-        long [] timestampsMemory = new long[counter];
-		double [] valuesMemory = new double[counter];
-		int counterMemory = 0;
-        while(iteratorMemorySort.hasNext()) {
-            Map.Entry<Long, Double> meMemorySort = (Map.Entry<Long, Double>)iteratorMemorySort.next();
-            timestamp = (long) meMemorySort.getKey();
-            value = (double) meMemorySort.getValue();
-			timestampsMemory[counterMemory] = timestamp;
-			valuesMemory[counterMemory] = value;			
-			if (counterMemory < 10)
-				LOGGER.debug("Key " + timestamp + ": " + value);
-			counterMemory++;
-		}
-
-		
-		// Power
 		HashMap<Long, Double> hmapPower = new HashMap<Long, Double>();
 				
 		for (counter = 0; counter<powerSample.size();counter++) {
@@ -398,7 +271,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 			hmapPower.put(timestamp, value);
 		}
 		
-		LOGGER.debug("Power Before Sorting: ");
+		LOGGER.debug("Power Before Sorting: "); 
 		Set<Map.Entry<Long, Double>> setPowerBeforeSort = hmapPower.entrySet();
 		Iterator<Entry<Long, Double>> iteratorPowerBeforeSort = setPowerBeforeSort.iterator();
 		counter = 0;
@@ -407,7 +280,7 @@ public class EMNeuralPredictor implements PredictorInterface{
 			timestamp = (long) mePowerBeforeSort.getKey();
             value = (double) mePowerBeforeSort.getValue();
             if (counter < 10)
-            	LOGGER.debug("Key " + timestamp + ": " + value);
+            	LOGGER.debug("Key " + timestamp + ": " + value); 
 			counter++;			
         }
         
@@ -417,131 +290,51 @@ public class EMNeuralPredictor implements PredictorInterface{
         Set<Entry<Long, Double>> setPowerSort = mapPower.entrySet();
         Iterator<Entry<Long, Double>> iteratorPowerSort = setPowerSort.iterator();
         
-        LOGGER.debug("Power After Sorting: ");
-        
-		long [] timestampsPower = new long[counter];
-		double [] valuesPower = new double[counter];
+        LOGGER.debug("Power After Sorting: ");       
+		
+		double [][] valuesRowTmp = new double[counter][2];	
 		int counterPower = 0;
         while(iteratorPowerSort.hasNext()) {
             Map.Entry<Long, Double> mePowerSort = (Map.Entry<Long, Double>)iteratorPowerSort.next();
             timestamp = (long) mePowerSort.getKey();
-            value = (double) mePowerSort.getValue();
-			timestampsPower[counterPower] = timestamp;
-			valuesPower[counterPower] = value;			
+            value = (double) mePowerSort.getValue();			
+			valuesRowTmp[counterPower][0] = (double )timestamp;			
+			valuesRowTmp[counterPower][1] = value;			
 			if (counterPower < 10)
-				LOGGER.debug("Key " + timestamp + ": " + value);
+				LOGGER.debug("Key " + timestamp + ": " + value); 
 			counterPower++;
-		}
-		
-		
-		// Aggregation
-		int counterTmp;
-		if (counterCPU > counterMemory) 
-			if (counterCPU > counterPower)
-				counterTmp = counterCPU;
-			else
-				counterTmp = counterPower;
-		else
-			if (counterMemory > counterPower)
-				counterTmp = counterMemory;
-			else
-				counterTmp = counterPower;		
-		
-		double [][] valuesRowTmp = new double[counterTmp][4];   
-		
-		counter=0;
-		int counter1=0;
-		int counter2=0;
-		int counter3=0;
-		
-		/*
-		for (counter1=0; counter1<counterCPU; counter1++) {
+		}		
 			
-			for (; counter2<counterMemory && timestampsMemory[counter2] <=timestampsCPU[counter1] ; counter2++) {
-				
-				if (timestampsMemory[counter2] == timestampsCPU[counter1]) {
-					
-					for (; counter3<counterPower && timestampsPower[counter3] <=timestampsCPU[counter1] ; counter3++) {
-						
-						if (timestampsPower[counter3] == timestampsCPU[counter1]) {
-							valuesRowTmp[counter][0] = (double )timestampsCPU[counter1];
-							valuesRowTmp[counter][1] = valuesCPU[counter1]; 
-							valuesRowTmp[counter][2] = valuesMemory[counter2]; 
-							valuesRowTmp[counter][3] = valuesPower[counter3];
-							counter++;
-						}
-					}
-				}
-			}
-			
-		} 
-		 */
-		
-		long intervalStartCPU = 0L;
-		long intervalStopCPU = 0L;
-				
-		for (counter1=0; counter1 < counterCPU; counter1++) {
-			
-			intervalStartCPU = timestampsCPU[counter1];
-			if (counter1 < (counterCPU-1))
-				intervalStopCPU = timestampsCPU[counter1+1];
-			else
-				intervalStopCPU = timestampsCPU[counter1] + timestampsCPU[counter1] - timestampsCPU[counter1-1];
-			
-			for (; counter2 < counterMemory && timestampsMemory[counter2] < intervalStopCPU; counter2++) {				
-								
-				if (timestampsMemory[counter2] >= intervalStartCPU) {
-					
-					for (; counter3<counterPower && timestampsPower[counter3] < intervalStopCPU ; counter3++) {
-						
-						if (timestampsPower[counter3] >= intervalStartCPU) {
-							valuesRowTmp[counter][0] = (double )intervalStartCPU;
-							valuesRowTmp[counter][1] = valuesCPU[counter1]; 
-							valuesRowTmp[counter][2] = valuesMemory[counter2]; 
-							valuesRowTmp[counter][3] = valuesPower[counter3];
-							counter++;
-							break;
-						}
-					}
-					
-					break;
-				}
-			}
-			
-		}
-				
 		int firstRow = 0;
 		
-		if (counter >= maxIterations) {
+		if (counterPower >= maxIterations) {
 			counterALL = maxIterations;
-			firstRow = counter - maxIterations;
+			firstRow = counterPower - maxIterations;
 		}
 		else {
-			counterALL = counter;
+			counterALL = counterPower;
 			firstRow = 0;
 		}
 		
 		double [][] valuesRow = new double[counterALL][4];
-		LOGGER.debug("Aggregated data: ");
+		LOGGER.debug("Used data: ");
 		
-		for (counter1=0; counter1<counterALL; counter1++) {
+		for (counter=0; counter<counterALL; counter++) {
 			
-			valuesRow[counter1][0] = valuesRowTmp[counter1 + firstRow][0];
-			valuesRow[counter1][1] = valuesRowTmp[counter1 + firstRow][1]; 
-			valuesRow[counter1][2] = valuesRowTmp[counter1 + firstRow][2]; 
-			valuesRow[counter1][3] = valuesRowTmp[counter1 + firstRow][3];
-				
-			if (counter1 < 10)
-				LOGGER.debug("#" + (counter1) + ": " + ((long )valuesRow[counter1][0]) + " "+ valuesRow[counter1][1] + " "+ valuesRow[counter1][2] + " "+ valuesRow[counter1][3]);
+			valuesRow[counter][0] = valuesRowTmp[counter + firstRow][0];
+			valuesRow[counter][1] = valuesRowTmp[counter + firstRow][1]; 
+							
+			if (counter < 10)
+				LOGGER.debug("#" + (counter) + ": " + ((long )valuesRow[counter][0]) + " "+ valuesRow[counter][1]);
 			
-			/* MAXIM
-			if (counter1 < 10000) //MAXIM
-				LOGGER.info((counter1) + "|" + ((long )valuesRow[counter1][0]) + "|"+ valuesRow[counter1][1] + "|"+ valuesRow[counter1][2] + "|"+ valuesRow[counter1][3]); //MAXIM
-			MAXIM */
+			/* MAXIM 
+			if (counter < 10000) //MAXIM
+				LOGGER.info((counter) + "|" + ((long )valuesRow[counter][0]) + "|"+ valuesRow[counter][1]); //MAXIM
+			   MAXIM */
 		}
 		
 		
-		LOGGER.debug("Number of aggregated rows: " + counterALL);
+		LOGGER.debug("Number of used rows: " + counterALL);
 		
 		if (counterALL > 0) {		
 			
@@ -559,26 +352,15 @@ public class EMNeuralPredictor implements PredictorInterface{
 
 	}
 	
+	
 	public void defineNormalizationParam(double [][] valueRow) {
 		
 		int counter;
-		double valueCPU, valueMemory, valuePower;
+		double valuePower;
 		
-		for (counter=0; counter < valueRow.length; counter++) {
+		for (counter=0; counter < valueRow.length; counter++) {			
 			
-			valueCPU = valueRow[counter][1];
-			valueMemory = valueRow[counter][2];
-			valuePower = valueRow[counter][3];
-			
-			if (valueCPU > this.maxCPU)
-				this.maxCPU = valueCPU;
-			if (valueCPU < this.minCPU)
-				this.minCPU = valueCPU;
-			
-			if (valueMemory > this.maxMemory)
-				this.maxMemory = valueMemory;
-			if (valueMemory < this.minMemory)
-				this.minMemory = valueMemory;
+			valuePower = valueRow[counter][1];			
 			
 			if (valuePower > this.maxPower)
 				this.maxPower = valuePower;
@@ -587,69 +369,65 @@ public class EMNeuralPredictor implements PredictorInterface{
 		}	
 		
 	}
-
 	
 
 	public DataSet trainingImportObjectFromMatrix(double[][] valuesRow, int inputsCount, int outputsCount) {		
 		
-		int inputsTriple = inputsCount / 3;
-		int outputsTriple = outputsCount / 3;
+		int	TrainingRows = 0;
 		
         DataSet trainingSet = new DataSet(inputsCount, outputsCount);
 		
         LOGGER.debug("Global Training Set: ");
         
-        for (int i = 0; i < valuesRow.length - inputsTriple; i++) {
+        for (int i = 0; i < valuesRow.length - inputsCount; i++) {
             ArrayList<Double> inputs = new ArrayList<Double>();
-            for (int j = i; j < i + inputsTriple; j++) {
-            	if (i < 10)
-    				LOGGER.debug("Row #" + i + " Input #" + (j-i+1) + ": CPU=" + valuesRow[j][1] + " Memory=" + valuesRow[j][2] + " Power=" + valuesRow[j][3]); 
-            	inputs.add(normalizeValue(valuesRow[j][1],PredictorObject.CPU));
-            	inputs.add(normalizeValue(valuesRow[j][2],PredictorObject.MEMORY));
-            	inputs.add(normalizeValue(valuesRow[j][3],PredictorObject.POWER));
+            for (int j = i; j < i + inputsCount; j++) {
+            	
+            	if (i < 100)
+    				LOGGER.debug("Row #" + i + " Input #" + (j-i+1) + " Power=" + valuesRow[j][1] + " Normalize=" + normalizeValue(valuesRow[j][1]));
+            	
+            	inputs.add(normalizeValue(valuesRow[j][1]));
             }
+            
             ArrayList<Double> outputs = new ArrayList<Double>();
-            if (outputsTriple > 0 && i + inputsTriple + outputsTriple <= valuesRow.length) {
-                for (int j = i + inputsTriple; j < i + inputsTriple + outputsTriple; j++) {
-                	if (i < 10) {
-        				LOGGER.debug("Row #" + i + " Output #" + (j-(i+inputsTriple)+1) + ": CPU=" + valuesRow[j][1] + " Memory=" + valuesRow[j][2] + " Power=" + valuesRow[j][3]);
-                	}
-                	outputs.add(normalizeValue(valuesRow[j][1],PredictorObject.CPU));
-                	outputs.add(normalizeValue(valuesRow[j][2],PredictorObject.MEMORY));
-                	outputs.add(normalizeValue(valuesRow[j][3],PredictorObject.POWER));
+            if (outputsCount > 0 && i + inputsCount + outputsCount <= valuesRow.length) {
+                for (int j = i + inputsCount; j < i + inputsCount + outputsCount; j++) {
+                
+                	if (i < 100)
+        				LOGGER.debug("Row #" + i + " Output #" + (j-(i+inputsCount)+1) + " Power=" + valuesRow[j][1] + " Normalize=" + normalizeValue(valuesRow[j][1]));                	     	
+                	
+                	outputs.add(normalizeValue(valuesRow[j][1]));
                 }
+                
                 if (outputsCount > 0) {
+                	TrainingRows++;
                     trainingSet.addRow(new DataSetRow(inputs, outputs));
                 } else {
-                    trainingSet.addRow(new DataSetRow(inputs));
+                    trainingSet.addRow(new DataSetRow(inputs)); 
                 }
             }
         }
+        LOGGER.debug("Number of Global Training Rows: "+TrainingRows);
         return trainingSet;
     }
 	
 	
 	public double[] lastTrainingRow(double[][] valuesRow, int inputsCount, int outputsCount) {		
 		
-		int inputsTriple = inputsCount / 3;
-		int outputsTriple = outputsCount / 3;
-		
 		double [] inputsRow = new double[inputsCount];
 		double [] outputsRow = new double[outputsCount];
 		double [] returnRow = new double[inputsCount];		
 	
-		for (int i = 0; i < valuesRow.length - inputsTriple; i++) {		                
-			for (int j = i; j < i + inputsTriple; j++) {           	
-            	for (int x = 0; x < 3; x++) {            		
-            		inputsRow[((j-i)*3)+x] = valuesRow[j][x+1];
-               	}
+		for (int i = 0; i < valuesRow.length - inputsCount; i++) {		                
+			for (int j = i; j < i + inputsCount; j++) {           	
+            	           		
+            		inputsRow[j-i] = valuesRow[j][1];               	
             }
             
-			if (outputsTriple > 0 && i + inputsTriple + outputsTriple <= valuesRow.length) {
-                for (int j = i + inputsTriple; j < i + inputsTriple + outputsTriple; j++) {                        
-                    for (int x = 0; x < 3; x++) {                		
-                    	outputsRow[((j-(i+ inputsTriple))*3)+x] = valuesRow[j][x+1];
-                   	}
+			if (outputsCount > 0 && i + inputsCount + outputsCount <= valuesRow.length) {
+                for (int j = i + inputsCount; j < i + inputsCount + outputsCount; j++) {                        
+                                  		
+                    	outputsRow[j-(i+inputsCount)] = valuesRow[j][1];                   	
                 }
             }
         }
@@ -669,72 +447,76 @@ public class EMNeuralPredictor implements PredictorInterface{
     }
 	
 
-	double normalizeValue(double input,	PredictorObject objectType) {
-		
-		double min = 0.0;
-		double max = 0.0;
+	double normalizeValue(double input) {
+				
 		double value = 0.0;
 		
-		switch (objectType) {
-			case CPU:
-				min = this.minCPU;
-				max = this.maxCPU;
-				break;
-			case MEMORY:
-				min = this.minMemory;
-				max = this.maxMemory;
-				break;
-			case POWER:
-				min = this.minPower;
-				max = this.maxPower;
-				break;
-		}
+		/* method #1: 
+		value = (input - this.minPower) / (this.maxPower - this.minPower) * 0.8 + 0.1;
+		if (input < this.minPower)
+			LOGGER.debug("ERROR in Normalize: Input=" + input + "Output=" + value);
+		*/
 		
-		// method #1: 
-		// value = (input - min) / (max - min) * 0.8 + 0.1;
-		// if (input < min)
-		//	LOGGER.debug("Normalize " + objectType + ": Input=" + input + "Output=" + value);
+		/* method #2: */
+		value = (input - (0.8 * this.minPower)) / ((1.2 * this.maxPower) - (0.8 * this.minPower));
+		if (input < (0.8 * this.minPower))
+			LOGGER.debug("**********MIN Normalize: Input=" + input + "Output=" + value);
+		/**/
 		
-		// method #2:
-		value = (input - (0.8 * min)) / ((1.2 * max) - (0.8 * min));
+		/* method #3:
+		double inputPlus1 = input + 1.0;
+		double minPowerPlus1 = this.minPower + 1.0;
+		double maxPowerPlus1 = this.maxPower + 1.0;
+		value = (inputPlus1 - (0.8 * minPowerPlus1)) / ((1.2 * maxPowerPlus1) - (0.8 * minPowerPlus1));
 		
-		if (input < (0.8 * min))
-			LOGGER.debug("**********MIN Normalize " + objectType + ": Input=" + input + "Output=" + value);		
+		if (inputPlus1 < (0.8 * minPowerPlus1))
+			LOGGER.debug("**********MIN Normalize: Input=" + input + "Output=" + value);	
+		*/
+		
+		/* method #4:
+		double inputFor10 = input * 10.0;
+		double minPowerFor10 = this.minPower * 10.0;
+		double maxPowerFor10 = this.maxPower * 10.0;
+		value = (inputFor10 - (0.8 * minPowerFor10)) / ((1.2 * maxPowerFor10) - (0.8 * minPowerFor10));
+		
+		if (inputFor10 < (0.8 * minPowerFor10))
+			LOGGER.debug("**********MIN Normalize: Input=" + input + "Output=" + value);	
+		*/
 		
 		return value;
 	}
 
-	double deNormalizeValue(double input, PredictorObject objectType) {
+	double deNormalizeValue(double input) {
 		
-		double min = 0.0;
-		double max = 0.0;
 		double value = 0.0;
 		
-		switch (objectType) {
-			case CPU:
-				min = this.minCPU;
-				max = this.maxCPU;
-				break;
-			case MEMORY:
-				min = this.minMemory;
-				max = this.maxMemory;
-				break;
-			case POWER:
-				min = this.minPower;
-				max = this.maxPower;
-				break;
-		}
-		
-		// method #1:
-		// value =  min + (input - 0.1) * (max - min) / 0.8;
-		// if (value < 0.0)
-		//	LOGGER.debug("Denormalize " + objectType + ": Input=" + input + "Output=" + value);
-		
-		// method #2:
-		value =  (0.8 * min) + (input * ((1.2 * max) - (0.8 * min)));
-		
+		/* method #1:
+		value =  this.minPower + (input - 0.1) * (this.maxPower - this.minPower) / 0.8;
 		if (value < 0.0)
-			LOGGER.debug("Denormalize " + objectType + ": Input=" + input + "Output=" + value);
+			LOGGER.debug("ERROR in Denormalize: Input=" + input + "Output=" + value);
+		*/
+		
+		/* method #2: */ 
+		value =  (0.8 * this.minPower) + (input * ((1.2 * this.maxPower) - (0.8 * this.minPower)));
+		if (value < 0.0)
+			LOGGER.debug("Denormalize: Input=" + input + "Output=" + value);
+		/* */
+		
+		/* method #3:
+		double minPowerPlus1 = this.minPower + 1.0;
+		double maxPowerPlus1 = this.maxPower + 1.0;
+		value =  (0.8 * minPowerPlus1) + (input * ((1.2 * maxPowerPlus1) - (0.8 * minPowerPlus1))) - 1.0;
+		if (value < 0.0)
+			LOGGER.debug("Denormalize: Input=" + input + "Output=" + value);
+		*/
+		
+		/* method #4:
+		double minPowerFor10 = this.minPower * 10.0;
+		double maxPowerFor10 = this.maxPower * 10.0;
+		value =  ((0.8 * minPowerFor10) + (input * ((1.2 * maxPowerFor10) - (0.8 * minPowerFor10)))) / 10.0;
+		if (value < 0.0)
+			LOGGER.debug("Denormalize: Input=" + input + "Output=" + value);
+		*/
 		
 		return value;
 	}
