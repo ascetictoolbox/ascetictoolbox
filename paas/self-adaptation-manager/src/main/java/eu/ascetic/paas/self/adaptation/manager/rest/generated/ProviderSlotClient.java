@@ -38,13 +38,14 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * @author Richard Kavanagh
  */
 public class ProviderSlotClient {
+
     private WebResource webResource;
     private Client client;
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
     private static String baseUri = "http://192.168.3.16/provider-registry/";
 
     public ProviderSlotClient(String id) {
-try {
+        try {
             PropertiesConfiguration config;
             if (new File(CONFIG_FILE).exists()) {
                 config = new PropertiesConfiguration(CONFIG_FILE);
@@ -57,7 +58,7 @@ try {
             config.setProperty("paas.self.adaptation.manager.provider.registry.rest.uri", baseUri);
         } catch (ConfigurationException ex) {
             Logger.getLogger(ProviderSlotClient.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
-        }        
+        }
         com.sun.jersey.api.client.config.ClientConfig config = new com.sun.jersey.api.client.config.DefaultClientConfig();
         client = Client.create(config);
         String resourcePath = java.text.MessageFormat.format("{0}/slots", new Object[]{id});
@@ -81,5 +82,5 @@ try {
     public void close() {
         client.destroy();
     }
-    
+
 }

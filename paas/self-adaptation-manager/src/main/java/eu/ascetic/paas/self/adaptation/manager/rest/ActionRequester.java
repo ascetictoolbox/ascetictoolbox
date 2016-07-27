@@ -15,6 +15,11 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rest;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.sun.jersey.api.client.ClientResponse;
+import es.bsc.vmmclient.models.Slot;
+import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
@@ -26,6 +31,7 @@ import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestDeploymentClie
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestVMClient;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.io.StringReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -400,11 +406,17 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         return null;
     }
 
-    public void getSlots() {
-        ProviderSlotClient client = new ProviderSlotClient("id");
-        Object response = client.getSlot(null);
-         // do whatever with response
-         client.close();
+    @Override
+    public List<Slot> getSlots(VmRequirements requirements) {
+        ProviderSlotClient client = new ProviderSlotClient("1"); //TODO fix this
+        Gson gson = new Gson();
+        String reqs = gson.toJson(requirements);
+        ClientResponse clientResponse = client.postSlots(reqs);
+        String response = clientResponse.getEntity(String.class);
+        Type listType = new TypeToken<ArrayList<Slot>>() {
+        }.getType();
+        ArrayList<Slot> output = gson.fromJson(response, listType);
+        return output;
     }
 
     /**

@@ -15,9 +15,12 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
+import es.bsc.vmmclient.models.Slot;
+import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
-import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestDeploymentClient;
+import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
 
@@ -81,6 +84,25 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         //TODO compare any further standard gurantees here that make sense
         //TODO cost??
+
+        return enoughSpaceForVM(response, vmOvfType);
+    }
+
+    /**
+     * This determines if the provider has enough space to create the new VM.
+     * @param response The response type to check
+     * @param vmOvfType The OVF type to add to
+     * @return If there is enough space for the new  VM.
+     */
+    public boolean enoughSpaceForVM(Response response, String vmOvfType) {
+        VmRequirements requirements = OVFUtils.getVMRequirementsFromOvfType(response.getCause().getOvf(), vmOvfType);
+        if (requirements == null) {
+            return true;
+        }
+        List<Slot> slots = actuator.getSlots(requirements);
+        if (slots.isEmpty()) {
+            return false;
+        }
         return true;
     }
 

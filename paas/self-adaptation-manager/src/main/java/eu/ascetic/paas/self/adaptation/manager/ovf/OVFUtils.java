@@ -16,6 +16,7 @@
 
 package eu.ascetic.paas.self.adaptation.manager.ovf;
 
+import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
@@ -83,7 +84,6 @@ public class OVFUtils {
         if (ovf == null || ovfId == null) {
             return null;
         }
-
         try {
             VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
             for (int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
@@ -100,7 +100,42 @@ public class OVFUtils {
             ex.printStackTrace();
         }
         return null;
-    }  
+    }
+    
+    /**
+     * This gets the VirtualSystem object representation for an specific ovf VM 
+     * type.
+     *
+     * @param ovf The ovf definition to be checked
+     * @param ovfId The ovf id/ VM type to extract from the OVF
+     * @return The Virtual System for the given VM type, otherwise null if it does
+     * not exist.
+     */
+    public static VmRequirements getVMRequirementsFromOvfType(OvfDefinition ovf, String ovfId) {
+
+        if (ovf == null || ovfId == null) {
+            return null;
+        }
+        try {
+            VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
+            for (int i = 0; i < vsc.getVirtualSystemArray().length; i++) {
+                VirtualSystem virtualSystem = vsc.getVirtualSystemAtIndex(i);
+                String ovfVirtualSystemID = virtualSystem.getId();
+
+                if (ovfId.equals(ovfVirtualSystemID)) {
+                    int cpu = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+                    int ram = virtualSystem.getVirtualHardwareSection().getMemorySize();
+                    int disk = 0; //TODO
+                    int swap = 0; //TODO
+                    return new VmRequirements(cpu, ram, disk, swap);
+                }
+            }
+        } catch (OvfRuntimeException ex) {
+            Logger.getLogger(OVFUtils.class.getName()).info("Error parsing OVF file: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        return null;
+    }    
     
     /**
      * Returns the ProductSection for an specific ovfID

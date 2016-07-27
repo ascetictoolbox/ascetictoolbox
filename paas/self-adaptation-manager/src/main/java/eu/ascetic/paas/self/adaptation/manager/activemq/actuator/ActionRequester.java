@@ -15,6 +15,8 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.activemq.actuator;
 
+import es.bsc.vmmclient.models.Slot;
+import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -319,6 +321,11 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     @Override
     public SLALimits getSlaLimits(String applicationId, String deploymentId) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }    
-
+    }
+    
+    @Override
+    public List<Slot> getSlots(VmRequirements requirements) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

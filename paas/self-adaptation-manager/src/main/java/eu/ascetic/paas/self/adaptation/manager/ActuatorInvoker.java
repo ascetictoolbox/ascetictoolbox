@@ -14,7 +14,8 @@
  * the License.
  */
 package eu.ascetic.paas.self.adaptation.manager;
-
+import es.bsc.vmmclient.models.Slot;
+import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
@@ -113,6 +114,14 @@ public interface ActuatorInvoker {
      * @return 
      */
     public SLALimits getSlaLimits(String applicationId, String deploymentId);
+    
+    /**
+     * This checks to see how many free slots are available for a VM of a given
+     * size.
+     * @param requirements The VMs requirements
+     * @return The amount of free slots available.
+     */
+    public List<Slot> getSlots(VmRequirements requirements);
     
     /**
      * This adds a vm of a given ovf type to named deployment.
