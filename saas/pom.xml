@@ -20,7 +20,7 @@
 		<module>virtual-machine-image-constructor</module>
 		<module>application-uploader</module>
 		<module>compss-plugin</module>
-		<module>programming_modelY3</module>
+		<module>programming_model</module>
 		<module>ascetic-eclipse-site</module>
 		<module>ascetic-application-packager</module>
 	</modules>
