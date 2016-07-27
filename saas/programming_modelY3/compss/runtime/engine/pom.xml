@@ -4,7 +4,7 @@
 	
 	<!-- GENERAL INFORMATION -->
 	<groupId>eu.ascetic.saas.programming-model.runtime</groupId>
-	<artifactId>engine</artifactId>
+	<artifactId>compss-engine</artifactId>
 	<packaging>jar</packaging>
 	<parent>
 		<groupId>eu.ascetic.saas.programming-model</groupId>
@@ -42,12 +42,7 @@
 			<groupId>eu.ascetic.saas.programming-model.runtime.scheduler</groupId>
 			<artifactId>commons</artifactId>
 			<version>${project.version}</version>
-		</dependency>   
-		<!--dependency>
-			<groupId>eu.ascetic.saas.programming-model.runtime</groupId>
-			<artifactId>interaction</artifactId>
-			<version>${project.version}</version>
-		</dependency-->   
+		</dependency>    
                 <dependency>
 			<groupId>eu.ascetic.saas.programming-model.runtime.resources</groupId>
 			<artifactId>commons</artifactId>
@@ -60,8 +55,6 @@
 			<artifactId>storage</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-		<!-- Engine dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

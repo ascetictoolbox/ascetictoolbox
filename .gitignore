@@ -58,6 +58,15 @@ saas/programming_model/compss/runtime/loader/target
 saas/programming_model/compss/runtime/resources/commons/target
 saas/programming_model/compss/runtime/toolkit-interaction/target
 saas/programming_model/compss/tools/monitor/target
+saas/programming_modelY3/compss/runtime/.pom.xml.kate-swp
+saas/programming_modelY3/compss/runtime/adaptors/commons/target
+saas/programming_modelY3/compss/runtime/adaptors/nio/commons/target
+saas/programming_modelY3/compss/runtime/adaptors/nio/master/target
+saas/programming_modelY3/compss/runtime/commons/target
+saas/programming_modelY3/compss/runtime/engine/target
+saas/programming_modelY3/compss/runtime/loader/target
+saas/programming_modelY3/compss/runtime/resources/commons/target
+saas/programming_modelY3/compss/runtime/scheduler/commons/target
 saas/virtual-machine-image-constructor/logs
 saas/virtual-machine-image-constructor/runtime/virtual-machine-image-constructor.jar
 tests/vmic/logs

@@ -14,6 +14,7 @@ import integratedtoolkit.components.ResourceUser.WorkloadStatus;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.connectors.ConnectorException;
 import integratedtoolkit.exceptions.NoResourceAvailableException;
+import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.ResourcesState;
 import integratedtoolkit.types.resources.CloudMethodWorker;
@@ -182,11 +183,11 @@ public class ResourceManager {
         // Stop static workers - Order its destruction from runtime and transfer files
         // Physical worker (COMM) is erased now - because of cloud
         if (pool != null && !pool.getStaticResources().isEmpty()) {
-        	resourcesLogger.debug("DEBUG_MSG = [Resource Manager retreiving data from workers...]");
+            resourcesLogger.debug("DEBUG_MSG = [Resource Manager retreiving data from workers...]");
             for (Worker<?> r : pool.getStaticResources()) {
                 r.retrieveData(false);
             }
-        	Semaphore sem = new Semaphore(0);
+            Semaphore sem = new Semaphore(0);
             ShutdownListener sl = new ShutdownListener(sem);
             resourcesLogger.debug("DEBUG_MSG = [Resource Manager stopping workers...]");
             for (Worker<?> r : pool.getStaticResources()) {
@@ -233,13 +234,13 @@ public class ResourceManager {
      * @param sharedDisks Shared Disk descriptions (diskName->mountpoint)
      */
     public static void updateMasterConfiguration(HashMap<String, String> sharedDisks) {
-    	Comm.appHost.updateSharedDisk(sharedDisks);
-       	try {
-			Comm.appHost.start();
-		} catch (Exception e) {
-			ErrorManager.error("Error updating master configuration",e);
-			
-		}
+        Comm.appHost.updateSharedDisk(sharedDisks);
+        try {
+            Comm.appHost.start();
+        } catch (Exception e) {
+            ErrorManager.error("Error updating master configuration", e);
+
+        }
     }
 
     /**
@@ -251,7 +252,7 @@ public class ResourceManager {
      * @param mc
      */
     public static void newMethodWorker(String name, MethodResourceDescription rd,
-            HashMap<String, String> sharedDisks, MethodConfiguration mc) {
+            HashMap<String, String> sharedDisks, MethodConfiguration mc, LinkedList<Implementation> compatibleImpls) {
         // Compute task count
         int taskCount;
         int limitOfTasks = mc.getLimitOfTasks();
@@ -263,7 +264,7 @@ public class ResourceManager {
         }
         mc.setLimitOfTasks(taskCount);
         MethodWorker newResource = new MethodWorker(name, rd, mc, sharedDisks);
-        addStaticResource(newResource);
+        addStaticResource(newResource, compatibleImpls);
     }
 
     /**
@@ -274,14 +275,14 @@ public class ResourceManager {
      * @param sd
      * @param sc
      */
-    public static void newServiceWorker(String wsdl, ServiceResourceDescription sd, ServiceConfiguration sc) {
+    public static void newServiceWorker(String wsdl, ServiceResourceDescription sd, ServiceConfiguration sc, LinkedList<Implementation> compatibleImpls) {
         ServiceWorker newResource = new ServiceWorker(wsdl, sd, sc);
-        addStaticResource(newResource);
+        addStaticResource(newResource, compatibleImpls);
     }
 
-    private static void addStaticResource(Worker<?> worker) {
+    private static void addStaticResource(Worker<?> worker, LinkedList<Implementation> compatibleImpls) {
         synchronized (pool) {
-            worker.updatedFeatures();
+            worker.updatedFeatures(compatibleImpls);
             pool.addStaticResource(worker);
             pool.defineCriticalSet();
 
@@ -327,10 +328,10 @@ public class ResourceManager {
      * @param origin
      * @param worker
      */
-    public static void addCloudWorker(ResourceCreationRequest origin, CloudMethodWorker worker) {
+    public static void addCloudWorker(ResourceCreationRequest origin, CloudMethodWorker worker, LinkedList<Implementation> compatibleImpls) {
         synchronized (pool) {
             CloudManager.confirmedRequest(origin, worker);
-            worker.updatedFeatures();
+            worker.updatedFeatures(compatibleImpls);
             pool.addDynamicResource(worker);
             pool.defineCriticalSet();
 
@@ -355,14 +356,14 @@ public class ResourceManager {
      * @param worker
      * @param extension
      */
-    public static void increasedCloudWorker(ResourceCreationRequest origin, CloudMethodWorker worker, CloudMethodResourceDescription extension) {
+    public static void increasedCloudWorker(ResourceCreationRequest origin, CloudMethodWorker worker, CloudMethodResourceDescription extension, LinkedList<Implementation> compatibleImpls) {
         synchronized (pool) {
             CloudManager.confirmedRequest(origin, worker);
             int[] maxTaskCount = worker.getSimultaneousTasks();
             for (int coreId = 0; coreId < maxTaskCount.length; coreId++) {
                 poolCoreMaxConcurrentTasks[coreId] -= maxTaskCount[coreId];
             }
-            worker.increaseFeatures(extension);
+            worker.increaseFeatures(extension, compatibleImpls);
             maxTaskCount = worker.getSimultaneousTasks();
             for (int coreId = 0; coreId < maxTaskCount.length; coreId++) {
                 poolCoreMaxConcurrentTasks[coreId] += maxTaskCount[coreId];
@@ -384,14 +385,14 @@ public class ResourceManager {
      * @param reduction
      * @return
      */
-    public static Semaphore reduceCloudWorker(CloudMethodWorker worker, CloudMethodResourceDescription reduction) {
+    public static Semaphore reduceCloudWorker(CloudMethodWorker worker, CloudMethodResourceDescription reduction, LinkedList<Implementation> compatibleImpls) {
         Semaphore sem;
         synchronized (pool) {
             int[] maxTaskCount = worker.getSimultaneousTasks();
             for (int coreId = 0; coreId < maxTaskCount.length; coreId++) {
                 poolCoreMaxConcurrentTasks[coreId] -= maxTaskCount[coreId];
             }
-            sem = worker.reduceFeatures(reduction);
+            sem = worker.reduceFeatures(reduction, compatibleImpls);
             maxTaskCount = worker.getSimultaneousTasks();
             for (int coreId = 0; coreId < maxTaskCount.length; coreId++) {
                 poolCoreMaxConcurrentTasks[coreId] += maxTaskCount[coreId];

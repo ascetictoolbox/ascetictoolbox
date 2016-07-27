@@ -160,30 +160,35 @@ public abstract class Worker<T extends WorkerResourceDescription> extends Resour
         this.idealSimultaneousTasks = idealSimultaneousTasks;
     }
 
-    public void updatedFeatures() {
+    public void updatedFeatures(LinkedList<Implementation> compatibleImpls) {
         int coreCount = CoreManager.getCoreCount();
         executableCores.clear();
+
         executableImpls = new LinkedList[coreCount];
         implSimultaneousTasks = new int[coreCount][];
         coreSimultaneousTasks = new int[coreCount];
         idealSimultaneousTasks = new int[coreCount];
         for (int coreId = 0; coreId < coreCount; coreId++) {
-            boolean executableCore = false;
-            Implementation<T>[] impls = (Implementation<T>[]) CoreManager.getCoreImplementations(coreId);
-            implSimultaneousTasks[coreId] = new int[impls.length];
             executableImpls[coreId] = new LinkedList<Implementation<T>>();
-            for (Implementation<T> impl : impls) {
-                if (canRun(impl)) {
-                    int simultaneousCapacity = simultaneousCapacity(impl);
-                    idealSimultaneousTasks[coreId] = Math.max(idealSimultaneousTasks[coreId], simultaneousCapacity);
-                    implSimultaneousTasks[coreId][impl.getImplementationId()] = simultaneousCapacity;
-                    if (simultaneousCapacity > 0) {
-                        executableImpls[coreId].add(impl);
-                        executableCore = true;
-                    }
+            implSimultaneousTasks[coreId] = new int[CoreManager.getCoreImplementations(coreId).length];
+            executableImpls[coreId] = new LinkedList<Implementation<T>>();
+        }
+
+        for (Implementation impl : compatibleImpls) {
+            int coreId = impl.getCoreId();
+            int implId = impl.getImplementationId();
+            if (canRun(impl)) {
+                int simultaneousCapacity = simultaneousCapacity(impl);
+                idealSimultaneousTasks[coreId] = Math.max(idealSimultaneousTasks[coreId], simultaneousCapacity);
+                implSimultaneousTasks[coreId][implId] = simultaneousCapacity;
+                if (simultaneousCapacity > 0) {
+                    executableImpls[coreId].add(impl);
                 }
             }
-            if (executableCore) {
+        }
+
+        for (int coreId = 0; coreId < coreCount; coreId++) {
+            if (executableImpls[coreId].size() > 0) {
                 coreSimultaneousTasks[coreId] = Math.min(this.getMaxTaskCount(), idealSimultaneousTasks[coreId]);
                 executableCores.add(coreId);
             }

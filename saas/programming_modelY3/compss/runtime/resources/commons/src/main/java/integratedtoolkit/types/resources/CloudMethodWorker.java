@@ -1,6 +1,7 @@
 package integratedtoolkit.types.resources;
 
 import integratedtoolkit.types.COMPSsWorker;
+import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.resources.configuration.MethodConfiguration;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 
@@ -64,14 +65,14 @@ public class CloudMethodWorker extends MethodWorker {
         return sb.toString();
     }
 
-    public void increaseFeatures(CloudMethodResourceDescription increment) {
+    public void increaseFeatures(CloudMethodResourceDescription increment, LinkedList<Implementation> compatibleImpls) {
         synchronized (available) {
             available.increase(increment);
         }
         synchronized (description) {
             description.increase(increment);
         }
-        updatedFeatures();
+        updatedFeatures(compatibleImpls);
     }
 
     @Override
@@ -115,7 +116,7 @@ public class CloudMethodWorker extends MethodWorker {
         }
     }
 
-    public synchronized Semaphore reduceFeatures(CloudMethodResourceDescription reduction) {
+    public synchronized Semaphore reduceFeatures(CloudMethodResourceDescription reduction, LinkedList<Implementation> compatibleImpls) {
         synchronized (description) {
             description.reduce(reduction);
         }
@@ -140,7 +141,7 @@ public class CloudMethodWorker extends MethodWorker {
                 // Resource is not executing tasks. We can erase it, nothing to do
             }
         }
-        updatedFeatures();
+        updatedFeatures(compatibleImpls);
 
         return sem;
     }

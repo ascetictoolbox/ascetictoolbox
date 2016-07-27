@@ -12,6 +12,7 @@ import integratedtoolkit.comm.Comm;
 import integratedtoolkit.exceptions.NoResourceAvailableException;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.CloudImageDescription;
+import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.project.ProjectFile;
 import integratedtoolkit.types.project.exceptions.ProjectFileValidationException;
 import integratedtoolkit.types.project.jaxb.*;
@@ -28,7 +29,6 @@ import integratedtoolkit.types.resources.jaxb.ProcessorPropertyType;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-
 
 public class ResourceLoader {
 
@@ -296,7 +296,7 @@ public class ResourceLoader {
 
         /* Pass all the information to the ResourceManager to insert it into the Runtime ***/
         LOGGER.debug("Adding method worker " + name);
-        ResourceManager.newMethodWorker(name, mrd, sharedDisks, config);
+        ResourceManager.newMethodWorker(name, mrd, sharedDisks, config, new LinkedList<Implementation>());
 
         // If we have reached this point the method worker has been correctly created
         return true;
@@ -337,7 +337,7 @@ public class ResourceLoader {
 
         /* Pass all the information to the ResourceManager to insert it into the Runtime ***/
         LOGGER.debug("Adding service worker " + wsdl);
-        ResourceManager.newServiceWorker(wsdl, srd, config);
+        ResourceManager.newServiceWorker(wsdl, srd, config, new LinkedList<Implementation>());
         return true;
     }
 

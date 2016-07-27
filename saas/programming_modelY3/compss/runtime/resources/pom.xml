@@ -55,5 +55,6 @@
 	<!-- SUB-MODULES -->
 	<modules>
 		<module>commons</module>
+		<module>ascetic</module>
 	</modules>
 </project>

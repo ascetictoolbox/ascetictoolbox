@@ -25,6 +25,16 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
     protected static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
     protected static final boolean debug = logger.isDebugEnabled();
 
+    private String eventId;
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getEventId() {
+        return this.eventId;
+    }
+
     public static interface ActionOrchestrator {
 
         public void actionCompletion(AllocatableAction<?, ?> action);
@@ -33,6 +43,7 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
     }
 
     private enum State {
+
         RUNNABLE,
         WAITING,
         RUNNING,

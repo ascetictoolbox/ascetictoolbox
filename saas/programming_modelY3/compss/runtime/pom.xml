@@ -9,7 +9,7 @@
 	
 	<parent>
 		<groupId>eu.ascetic.saas</groupId>
-		<artifactId>compss-framework</artifactId>
+		<artifactId>programming-model</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
@@ -41,5 +41,6 @@
 		<module>resources</module>
 		<module>scheduler</module>
 		<module>engine</module>
+		<module>toolkit-interaction</module>
 	</modules>
 </project>

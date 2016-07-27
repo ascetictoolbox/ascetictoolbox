@@ -2,10 +2,12 @@ package integratedtoolkit.connectors.utils;
 
 import integratedtoolkit.connectors.VM;
 import integratedtoolkit.log.Loggers;
+import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.ShutdownListener;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.util.ResourceManager;
+import java.util.LinkedList;
 
 import java.util.concurrent.Semaphore;
 
@@ -51,7 +53,7 @@ public class DeletionThread extends Thread {
 
     public void run() {
         if (reduction != null) {
-            Semaphore sem = ResourceManager.reduceCloudWorker(worker, reduction);
+            Semaphore sem = null;/*ResourceManager.reduceCloudWorker(worker, reduction, LinkedList<Implementation> compatibleImpls);*/
             try {
                 if (sem != null) {
                     if (debug) {

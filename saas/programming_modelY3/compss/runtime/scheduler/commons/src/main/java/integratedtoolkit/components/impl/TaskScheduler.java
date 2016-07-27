@@ -218,14 +218,20 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     }
 
     public final void updatedWorker(Worker<T> worker) {
+
+        System.out.println("UPDATING WORKER " + worker.getName());
+        System.out.println("Description: " + worker.getDescription());
         ResourceScheduler<P, T> ui = workers.get(worker);
         if (ui == null) {
             //Register worker if it's the first time it is useful.
             ui = generateSchedulerForResource(worker);
+            System.out.println("\t Generated ResourceScheduler" + ui.hashCode() + " for worker " + worker.getName());
             synchronized (workers) {
                 workers.put(worker, ui);
             }
+
             StartWorkerAction action = new StartWorkerAction(generateSchedulingInformation(), ui, this);
+            System.out.println("Created " + action + " to initialize " + ui.hashCode());
             try {
                 action.schedule(ui, (Score) null);
                 action.tryToLaunch();
@@ -378,7 +384,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                     Integer coreId = running.getImplementations()[0].getCoreId();
                     // CoreId can be null for Actions that are not tasks
                     if (coreId != null) {
-                    	response.registerRunning(coreId, now - running.getStartTime());
+                        response.registerRunning(coreId, now - running.getStartTime());
                     }
                 }
             }

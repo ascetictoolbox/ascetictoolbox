@@ -18,6 +18,7 @@ public class CoreManager {
     private static ITConstants.Lang lang = ITConstants.Lang.JAVA;
 
     public static final LinkedHashMap<String, Integer> SIGNATURE_TO_ID = new LinkedHashMap<String, Integer>();
+    public static final LinkedHashMap<String, Implementation> SIGNATURE_TO_IMPL = new LinkedHashMap<String, Implementation>();
     private static int coreCount = 0;
     private static int nextId = 0;
 
@@ -62,8 +63,15 @@ public class CoreManager {
         coreCount = newCoreCount;
     }
 
-    public static void registerImplementations(int coreId, Implementation<?>[] impls) {
+    public static void registerImplementations(int coreId, Implementation<?>[] impls, String[] signatures) {
         implementations[coreId] = impls;
+        for (int i = 0; i < impls.length; i++) {
+            SIGNATURE_TO_IMPL.put(signatures[i], impls[i]);
+        }
+    }
+
+    public static Implementation getImplementation(String signature) {
+        return SIGNATURE_TO_IMPL.get(signature);
     }
 
     public static Integer getCoreId(String declaringClass, String methodName, boolean hasTarget, boolean hasReturn, integratedtoolkit.types.parameter.Parameter[] parameters) {

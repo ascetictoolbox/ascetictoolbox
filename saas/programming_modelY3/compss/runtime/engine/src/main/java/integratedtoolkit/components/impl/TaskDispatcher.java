@@ -65,7 +65,7 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
 
         // Parse interface
         CEIParser.parse();
-
+        
         // Load resources
         ResourceManager.load(this);
 

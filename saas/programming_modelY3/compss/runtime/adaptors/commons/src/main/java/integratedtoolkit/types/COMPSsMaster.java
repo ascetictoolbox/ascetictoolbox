@@ -18,8 +18,6 @@ import integratedtoolkit.util.Serializer;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
@@ -36,13 +34,7 @@ public class COMPSsMaster extends COMPSsNode {
     public COMPSsMaster() {
         super();
         // Initializing host attributes
-        String hostName = "";
-        try {
-            InetAddress localHost = InetAddress.getLocalHost();
-            hostName = localHost.getCanonicalHostName();
-        } catch (UnknownHostException e) {
-            ErrorManager.error("ERROR_UNKNOWN_HOST: " + e.getLocalizedMessage());
-        }
+        String hostName = "master";
         name = hostName;
 
     }

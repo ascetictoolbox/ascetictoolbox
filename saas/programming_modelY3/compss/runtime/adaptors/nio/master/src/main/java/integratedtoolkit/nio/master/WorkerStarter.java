@@ -85,7 +85,6 @@ public class WorkerStarter {
         int maxPort = nw.getConfiguration().getMaxPort();
         int port = minPort;
         
-        
         NIONode n = null;
         int pid = -1;
         while (port <= maxPort){

@@ -56,7 +56,7 @@ public class CERegistration<P extends Profile, T extends WorkerResourceDescripti
         MethodImplementation me = new MethodImplementation(declaringClass, coreId, implementationId, mrd);
         Implementation<?>[] impls = new Implementation[]{me};
         
-        CoreManager.registerImplementations (coreId, impls);
+        CoreManager.registerImplementations (coreId, impls, new String[]{signature});
         
         LinkedList<Integer> newCores = new LinkedList<Integer>();
         newCores.add(coreId);

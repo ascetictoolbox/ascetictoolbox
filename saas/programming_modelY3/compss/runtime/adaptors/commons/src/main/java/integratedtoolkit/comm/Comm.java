@@ -37,7 +37,7 @@ public class Comm {
 
     private static final String STORAGE_CONF = System.getProperty(ITConstants.IT_STORAGE_CONF);
     private static final String ADAPTORS_REL_PATH = File.separator + "Runtime" + File.separator + "adaptors";
-    
+
     // Tracing
     protected static final boolean tracing = System.getProperty(ITConstants.IT_TRACING) != null
             && Integer.parseInt(System.getProperty(ITConstants.IT_TRACING)) > 0;
@@ -78,8 +78,7 @@ public class Comm {
         }
     }
 
-    public static synchronized Configuration constructConfiguration(String adaptorName,
-            Object project_properties, Object resources_properties) throws Exception {
+    public static synchronized Configuration constructConfiguration(String adaptorName, Object project_properties, Object resources_properties) throws Exception {
 
         // Init adaptor
         CommAdaptor adaptor = adaptors.get(adaptorName);

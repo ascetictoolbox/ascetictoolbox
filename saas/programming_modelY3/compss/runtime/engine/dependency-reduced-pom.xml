@@ -7,7 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>eu.ascetic.saas.programming-model.runtime</groupId>
-  <artifactId>engine</artifactId>
+  <artifactId>compss-engine</artifactId>
   <name>COMPSs Engine</name>
   <description>COMPSs Runtime Engine</description>
   <url>http://www.bsc.es</url>

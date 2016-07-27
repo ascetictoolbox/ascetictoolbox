@@ -96,7 +96,7 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
         rd.reduce(rd);
 
         //Update the CE and Implementations that can run (none)
-        worker.getResource().updatedFeatures();
+        worker.getResource().updatedFeatures(new LinkedList());
 
         ts.updatedWorker(wNode);
     }

@@ -21,7 +21,6 @@ import java.util.PriorityQueue;
 
 import org.apache.log4j.Logger;
 
-
 public class ResourceOptimizer extends Thread {
 
     private final Object alarmClock = new Object();
@@ -79,10 +78,10 @@ public class ResourceOptimizer extends Thread {
 
     public void run() {
         running = true;
-        if (ResourceManager.useCloud()) {
-            initialCreations();
+        try {
+            Thread.sleep(20_000l);
+        } catch (Exception e) {
         }
-
         WorkloadStatus workload;
         while (running) {
             try {
@@ -142,15 +141,15 @@ public class ResourceOptimizer extends Thread {
                     //Retries limit not reached. Warn the user...
                     int retriesLeft = EVERYTHING_BLOCKED_MAX_RETRIES - everythingBlockedRetryCount;
                     ErrorManager.warn(
-                        "No task could be scheduled to any of the available resources.\n"
-                        + "This could end up blocking COMPSs. Will check it again in " + (SLEEP_TIME / 1_000) + " seconds.\n"
-                        + "Possible causes: \n"
-                        + "    -Network problems: non-reachable nodes, sshd service not started, etc.\n"
-                        + "    -There isn't any computing resource that fits the defined tasks constraints.\n"
-                        + "If this happens " + retriesLeft + " more time" + (retriesLeft > 1 ? "s" : "") + ", the runtime will shutdown."
+                            "No task could be scheduled to any of the available resources.\n"
+                            + "This could end up blocking COMPSs. Will check it again in " + (SLEEP_TIME / 1_000) + " seconds.\n"
+                            + "Possible causes: \n"
+                            + "    -Network problems: non-reachable nodes, sshd service not started, etc.\n"
+                            + "    -There isn't any computing resource that fits the defined tasks constraints.\n"
+                            + "If this happens " + retriesLeft + " more time" + (retriesLeft > 1 ? "s" : "") + ", the runtime will shutdown."
                     );
-                } else { 
-                	//Retry limit reached. Error and shutdown.
+                } else {
+                    //Retry limit reached. Error and shutdown.
                     ErrorManager.error(PERSISTENT_BLOCK_ERR);
                 }
             }
@@ -291,7 +290,7 @@ public class ResourceOptimizer extends Thread {
     // Removes from the list all the Constraints fullfilled by existing resources
     private static LinkedList<ConstraintsCore>[] getUnfulfilledConstraints() {
         int coreCount = CoreManager.getCoreCount();
-		LinkedList<ConstraintsCore>[] unfulfilledConstraints = new LinkedList[coreCount];
+        LinkedList<ConstraintsCore>[] unfulfilledConstraints = new LinkedList[coreCount];
         int[] maxSimTasks = ResourceManager.getTotalSlots();
         for (int coreId = 0; coreId < coreCount; coreId++) {
             unfulfilledConstraints[coreId] = new LinkedList<ConstraintsCore>();
@@ -312,8 +311,9 @@ public class ResourceOptimizer extends Thread {
     }
 
     /**
-     * Classifies the constraints depending on their architecture and leaves it on coreResourceList
-     * 
+     * Classifies the constraints depending on their architecture and leaves it
+     * on coreResourceList
+     *
      * @param constraints
      * @return list with all the architectures' names
      */
@@ -564,7 +564,7 @@ public class ResourceOptimizer extends Thread {
             creationTime = 120000l;
         }
 
-	int coreCount = workload.getCoreCount();
+        int coreCount = workload.getCoreCount();
         int noResourceCount = workload.getNoResourceCount();
         int[] noResourceCounts = workload.getNoResourceCounts();
 
@@ -681,21 +681,21 @@ public class ResourceOptimizer extends Thread {
         }
     }
 
-    private void mandatoryIncrease(float[] creationRecommendations, LinkedList<Integer> requiredVMs) {        
+    private void mandatoryIncrease(float[] creationRecommendations, LinkedList<Integer> requiredVMs) {
         PriorityQueue<ValueResourceDescription> pq = new PriorityQueue<ValueResourceDescription>();
-        
+
         boolean[] required = new boolean[creationRecommendations.length];
         for (int coreId : requiredVMs) {
             required[coreId] = true;
         }
-        
+
         for (int coreId = 0; coreId < creationRecommendations.length; coreId++) {
             Implementation<?>[] impls = CoreManager.getCoreImplementations(coreId);
             for (Implementation<?> impl : impls) {
                 if (impl.getType() == Implementation.Type.SERVICE) {
                     continue;
                 }
-                
+
                 MethodResourceDescription constraints = ((MethodImplementation) impl).getRequirements();
                 ValueResourceDescription v = new ValueResourceDescription(constraints, creationRecommendations[coreId], false);
                 pq.add(v);
@@ -720,7 +720,7 @@ public class ResourceOptimizer extends Thread {
                 }
             }
         }
-        
+
         ResourceCreationRequest rcr = requestOneCreation(pq, false);
         return (rcr != null);
     }
@@ -990,12 +990,12 @@ public class ResourceOptimizer extends Thread {
         }
         return destructions;
     }
-    
+
     private static class ConstraintsCore {
 
         private CloudMethodResourceDescription desc;
         private LinkedList<ConstraintsCore>[] cores;
-        
+
         public ConstraintsCore(CloudMethodResourceDescription desc, int core, LinkedList<ConstraintsCore> coreList) {
             this.desc = desc;
             this.cores = new LinkedList[CoreManager.getCoreCount()];
@@ -1041,14 +1041,14 @@ public class ResourceOptimizer extends Thread {
 
     private static class ValueResourceDescription implements Comparable<ValueResourceDescription> {
 
-    	private final MethodResourceDescription constraints;
-    	private final float value;
+        private final MethodResourceDescription constraints;
+        private final float value;
         private final boolean prioritary;
-        
+
         public ValueResourceDescription(MethodResourceDescription constraints, float value, boolean prioritary) {
-        	this.constraints = constraints;
-        	this.value = value;
-        	this.prioritary = prioritary;
+            this.constraints = constraints;
+            this.value = value;
+            this.prioritary = prioritary;
         }
 
         @Override
@@ -1056,11 +1056,11 @@ public class ResourceOptimizer extends Thread {
             if (this.prioritary && !o.prioritary) {
                 return 1;
             }
-            
+
             if (!this.prioritary && o.prioritary) {
                 return -1;
             }
-            
+
             float dif = value - o.value;
             if (dif > 0) {
                 return 1;
