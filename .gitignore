@@ -48,16 +48,6 @@ saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/jvmmonitor-ui.jar
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/*.jar
 saas/compss-plugin/ascetic-deployer/.classpath
 saas/compss-plugin/ascetic-deployer/lib/ant-antlr.jar
-saas/programming_model/compss/programming_model/annotations/target
-saas/programming_model/compss/runtime/.pom.xml.kate-swp
-saas/programming_model/compss/runtime/adaptors/commons/target
-saas/programming_model/compss/runtime/commons/target
-saas/programming_model/compss/runtime/engine/.pom.xml.kate-swp
-saas/programming_model/compss/runtime/engine/target
-saas/programming_model/compss/runtime/loader/target
-saas/programming_model/compss/runtime/resources/commons/target
-saas/programming_model/compss/runtime/toolkit-interaction/target
-saas/programming_model/compss/tools/monitor/target
 saas/programming_modelY3/compss/runtime/.pom.xml.kate-swp
 saas/programming_modelY3/compss/runtime/adaptors/commons/target
 saas/programming_modelY3/compss/runtime/adaptors/nio/commons/target
