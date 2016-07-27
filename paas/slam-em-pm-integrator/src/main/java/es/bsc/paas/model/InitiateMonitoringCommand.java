@@ -9,6 +9,9 @@ import java.io.IOException;
  * @author Mario Macias (http://github.com/mariomac)
  */
 public class InitiateMonitoringCommand {
+/*
+{"ApplicationId":"JEPlus","DeploymentId":"893","Frequency":6000}
+ */
 	public static final String COMMAND_NAME = "initiateMonitoring";
 
 	public static final String FIELD_APP_ID = "ApplicationId";

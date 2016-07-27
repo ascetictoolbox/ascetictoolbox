@@ -18,25 +18,29 @@ Next are enumerated the configurable options that could vary depending on each d
 ### Message Queue (ActiveMQ) properties
 
 * `topic.name`
-	- Name of the topic to listen for the *initiateMonitoring* commands
-	- Default: `appmon`
+    - Name of the topic to listen for the *initiateMonitoring* commands
+    - Default: `appmon`
 
 * `spring.activemq.broker-url`
-	- URL of the ActiveMQ broker.
-	- Default value: `tcp://localhost:61616`
+    - URL of the ActiveMQ broker.
+    - Default value: `tcp://localhost:61616`
 
 * `spring.activemq.user` and `spring.activemq.password`
-	- User and password of the ActiveMQ broker, if any
-	- Default: *undefined*
+    - User and password of the ActiveMQ broker, if any
+    - Default: *undefined*
 
 ### Application Manager integration
 
 * `application.manager.url`
-	- URL of the REST endpoint for the Application Manager
-	- Default: `http://localhost/application-manager`
+    - URL of the REST endpoint for the Application Manager
+    - Default: `http://localhost/application-manager`
 
 ### Other options
 
 * `min.reporting.rate`
-	- Minimum rate (in milliseconds), between each reporting from the modellers, for the same application/deployment
-	- Default: 1000 ms.
+    - Minimum rate (in milliseconds), between each reporting from the modellers, for the same application/deployment
+    - Default: 1000 ms.
+	
+* `logging.level.es.bsc`
+    - Log level for package `es.bsc`
+    - Default value: `debug`

@@ -1,5 +1,6 @@
 package es.bsc.paas.scheduling;
 
+import es.bsc.paas.components.PaasEnergyModeller;
 import es.bsc.paas.components.SLAManager;
 import es.bsc.paas.model.InitiateMonitoringCommand;
 import org.slf4j.Logger;
@@ -18,41 +19,52 @@ import java.util.TreeSet;
 @Component
 public class SchedulingReporter {
 
-	@Autowired
-	private SLAManager slam;
+    @Autowired
+    PaasEnergyModeller em;
 
-	// stop reporting metrics for an app/deployment/sla after 24 hours
-	// TO DO: - Enable a "endTime" field in the initiateMonitoring command, or
-	//        - Enable a "stopMonitoring" command
-	private static final long REMOVE_REPORTING_AFTER_MS = 24 * 3600 * 1000;
+    @Autowired
+    private SLAManager slam;
 
-	private Logger log = LoggerFactory.getLogger(SchedulingReporter.class);
+    // stop reporting metrics for an app/deployment/sla after 24 hours
+    // TO DO: - Enable a "endTime" field in the initiateMonitoring command, or
+    //        - Enable a "stopMonitoring" command
+    private static final long REMOVE_REPORTING_AFTER_MS = 24 * 3600 * 1000;
 
-	private TreeSet<MonitoringInfo> monitoringEntries = new TreeSet<>();
+    private Logger log = LoggerFactory.getLogger(SchedulingReporter.class);
 
-	public void onInitiateMonitoringCommandInfo(InitiateMonitoringCommand imc) {
-		monitoringEntries.add(new MonitoringInfo(imc));
-	}
+    private TreeSet<MonitoringInfo> monitoringEntries = new TreeSet<>();
 
-	@Scheduled(fixedRateString = "${min.reporting.rate}")
-	public void reportValuesToSLAM() {
-		long until = System.currentTimeMillis();
-		long latestNextTime = 0;
-		while(latestNextTime <= until && monitoringEntries.size() > 0) {
-			latestNextTime = monitoringEntries.first().getNextTime();
-			if(latestNextTime <= until) {
-				MonitoringInfo mi = monitoringEntries.pollFirst();
+    public void onInitiateMonitoringCommandInfo(InitiateMonitoringCommand imc) {
+        synchronized (monitoringEntries) {
+            monitoringEntries.add(new MonitoringInfo(imc));
+        }
+    }
 
+    @Scheduled(fixedRateString = "${min.reporting.rate}")
+    public void reportValuesToSLAM() {
+        try {
+            synchronized (monitoringEntries) {
+                if (monitoringEntries.size() > 0) {
+                    long until = System.currentTimeMillis();
+                    long latestNextTime = monitoringEntries.first().getNextTime();
+                    while (latestNextTime <= until && monitoringEntries.size() > 0) {
+                        MonitoringInfo mi = monitoringEntries.pollFirst();
 
-			}
-		}
+                        slam.reportEstimation(
+                                mi.getApplicationId(),
+                                mi.getDeploymentId(),
+                                until,
+                                em.getEnergyEstimation(mi.getApplicationId(), mi.getDeploymentId(), mi.getFrequency()),
+                                -1 // TODO: add a similar service and client for the Price Modeller
+                        );
 
-		for(MonitoringInfo mi : monitoringEntries) {
-			if(mi.getNextTime() > until) {
-				break;
-			}
-
-
-		}
-	}
+                        monitoringEntries.add(mi);
+                        latestNextTime = monitoringEntries.first().getNextTime();
+                    }
+                }
+            }
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+    }
 }
