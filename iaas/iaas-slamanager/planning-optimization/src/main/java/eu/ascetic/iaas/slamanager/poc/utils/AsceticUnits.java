@@ -120,8 +120,10 @@ public class AsceticUnits {
 			return CoreUnit.integer;
 		else if (unit.equals("W"))
 			return PowerUnits.W;
+		else if (unit.equals("Wh"))
+			return PowerUnits.Wh;
 		else
-			throw new NotSupportedUnitException("Unit not recognized. Allowable units are: KHz, MHz, GHz, KB, MB, GB, integer,W");
+			throw new NotSupportedUnitException("Unit "+unit+" not recognized. Allowable units are: KHz, MHz, GHz, KB, MB, GB, integer,W");
 	}
 
 	public static STND convertToSTND(String unit) throws NotSupportedUnitException {
@@ -151,7 +153,11 @@ public class AsceticUnits {
 			return units.W;
 		else if (unit.equals("xsd:watt"))
 			return units.W;
+		else if (unit.equals("Wh"))
+			return units.Wh;
+		else if (unit.equals("xsd:watthour"))
+			return units.Wh;
 		else
-			throw new NotSupportedUnitException("Unit not recognized. Allowable units are: KHz, MHz, GHz, KB, MB, GB, integer,string,W");
+			throw new NotSupportedUnitException("Unit "+unit+" not recognized. Allowable units are: KHz, MHz, GHz, KB, MB, GB, integer,string,W");
 	}
 }
