@@ -23,7 +23,6 @@ public class PaasEnergyModeller {
 	RestTemplate rest = new RestTemplate();
 
 	public double getEnergyEstimation(String applicationId, String deploymentId, long duration) {
-		try {
 			// GET /applications/{application_name}/deployments/{deployment_id}/energy-estimation?duration={duration_long}
 			// TODO: uncomment this
 			String estimationString = rest.getForObject(URI.create(applicationManagerUrl
@@ -38,9 +37,5 @@ public class PaasEnergyModeller {
 
 			log.trace("estimationVlueStr = " + estimationValueStr);
 			return new Double(estimationValueStr.trim());
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
-		return -1;
 	}
 }
