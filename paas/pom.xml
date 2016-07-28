@@ -27,7 +27,8 @@
                 <module>paas-pricing-modeller</module>
 		<module>application-manager</module>
 		<module>application-manager-datamodel</module>
-    <module>self-adaptation-manager</module>
+		<module>self-adaptation-manager</module>
+		<module>slam-em-pm-integrator</module>
   </modules>
 
         <url>http://www.ascetic.eu</url>

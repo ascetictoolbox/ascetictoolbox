@@ -3,15 +3,25 @@
 ## Build and run
 
 	mvn package
-	java -jar target/emslamintegrator-0.0.1-SNAPSHOT.jar
+	cd target
+	java -jar slam-em-pm-integrator-0.0.1-SNAPSHOT.jar
+
+During development, you can use maven:
+
+	mvn spring-boot:run
 
 ## Configuration
 
 The `resources/application.properties` file contains the default configuration options. However, you
 can override them as java system properties in the form:
 
-	java -Dpropertyname=value -jar target/emslamintegrator-0.0.1-SNAPSHOT.jar
+	java -Dpropertyname=value -jar slam-em-pm-integrator-0.0.1-SNAPSHOT.jar
 
+Example:
+
+	java -Dapplication.manager.url=http://123.45.67.89:8080/appman \
+	     -Dlogging.level.es.bsc=info \
+	     -jar slam-em-pm-integrator-0.0.1-SNAPSHOT.jar
 
 Next are enumerated the configurable options that could vary depending on each deployment.
 
@@ -19,7 +29,7 @@ Next are enumerated the configurable options that could vary depending on each d
 
 * `topic.name`
     - Name of the topic to listen for the *initiateMonitoring* commands
-    - Default: `appmon`
+    - Default: `appmonitoring`
 
 * `spring.activemq.broker-url`
     - URL of the ActiveMQ broker.
