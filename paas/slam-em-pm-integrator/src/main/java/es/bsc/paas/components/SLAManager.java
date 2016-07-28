@@ -13,6 +13,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 
 /**
+ * Client class to submit price and energy estimations to the SLAM
  * @author Mario Macias (http://github.com/mariomac)
  */
 @Component

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
+ * This application just listens for the "initiateMonitoring" command in the ActiveMQ topic that is
+ * specified by the "topic.name" property (default value: appmonitoring)
+ *
  * @author Mario Macias (http://github.com/mariomac)
  */
 @Component
@@ -26,9 +29,16 @@ public class InitiateMonitoringListener {
     }
 
 
-
-    @JmsListener(destination = "${topic.name}")
+	/**
+	 * This method is triggered each time the SLA Manager submits the "initiateMonitoring" command to the
+	 * appmonitoring queue
+	 * @param content the JSON document of the "initiateMonitoring" command
+	 */
+	@JmsListener(destination = "${topic.name}")
     private void processTopicMessage(String content) {
+
+		/* TODO: now it assumes all the messages are "initiateMonitoring". It would be interesting
+		   to create other commands, such as "stopMonitoring" */
         logger.debug("Received from Topic: " + content);
         try {
             schedulingReporter.onInitiateMonitoringCommandInfo(InitiateMonitoringCommand.fromJson(content));

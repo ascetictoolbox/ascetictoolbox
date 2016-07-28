@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 
 /**
+ * Client class to retrieve energy estimations from the PaaS energy modeller
  * @author Mario Macias (http://github.com/mariomac)
  */
 @Component

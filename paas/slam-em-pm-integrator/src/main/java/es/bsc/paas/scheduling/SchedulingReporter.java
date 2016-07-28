@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 /**
+ * This class checks, every second (or the value specified by the "min.reporting.rate" property), for those
+ * deployments
  * @author Mario Macias (http://github.com/mariomac)
  */
 @Component
@@ -40,7 +42,12 @@ public class SchedulingReporter {
         }
     }
 
-    @Scheduled(fixedRateString = "${min.reporting.rate}")
+	/**
+	 * This task is executed periodically. It retrieves the info from the Energy Modeller
+	 * (in the future, also from the Price Modeller) and resubmits the information to the SLA
+	 * Manager through an MQ topic
+	 */
+	@Scheduled(fixedRateString = "${min.reporting.rate}")
     public void reportValuesToSLAM() {
         try {
             synchronized (monitoringEntries) {
@@ -58,6 +65,7 @@ public class SchedulingReporter {
                                 -1 // TODO: add a similar service and client for the Price Modeller
                         );
 
+						mi.setNextTime(mi.getNextTime() + mi.getFrequency());
                         monitoringEntries.add(mi);
                         latestNextTime = monitoringEntries.first().getNextTime();
                     }

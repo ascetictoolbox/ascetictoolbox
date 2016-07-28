@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 
 /**
+ * Helper class that wraps the information related to an "initiateMonitoring" command as submitted by the SLAM
  * @author Mario Macias (http://github.com/mariomac)
  */
 public class InitiateMonitoringCommand {
