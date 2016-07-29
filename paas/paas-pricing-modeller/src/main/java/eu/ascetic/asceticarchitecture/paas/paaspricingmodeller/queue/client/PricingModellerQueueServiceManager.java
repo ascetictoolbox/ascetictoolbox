@@ -1,6 +1,8 @@
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client;
 
 import java.io.File; 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -14,6 +16,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModeller;
+import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
@@ -27,6 +30,7 @@ public class PricingModellerQueueServiceManager {
 	
 	private final static Logger logger = Logger.getLogger(PricingModellerQueueServiceManager.class.getName());
 	PaaSPricingModeller prmodeller;
+	static LinkedList<Integer> allAppIDs = new LinkedList<Integer> ();
 		
 	public PricingModellerQueueServiceManager(AmqpClientPM queuePublisher, PaaSPricingModeller prmodeller) {
 		
@@ -93,18 +97,38 @@ public class PricingModellerQueueServiceManager {
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
 	                    System.out.println("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
+	                    String payload = textMessage.getText();
+	                    String[] text = payload.split(",");
 	                    
 	                    int i =0;
 
 	                    int vmid = Integer.parseInt(topic[5]);
 	                    int depid = Integer.parseInt(topic[3]);
+	                    
 	                    if (topic[6].equals("DEPLOYED")){
 	                    	////HERE I SHOULD TAKE THE CHARS OF THE VM
-
+	                    //	String[] text2 = text[2].split(":");
+	                    	
+	                    	if (allAppIDs.contains(depid)){
+	                    	//-------------	VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
+	                    ///		prmodeller.addVM(depid, VM);
+	                    	}
+	                    	else {
+	                    	//==========	VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
+	                    		LinkedList<VMinfo> list = new LinkedList<>();
+	                   ///---         list.add(VM);
+	                    		prmodeller.initializeApp(topic[1], depid, list);
+	                    	}
+	                    		
+	                    	
 	                    }
 	                    if (topic[6].equals("TERMINATED")){
 	                    	prmodeller.removeVM(depid, vmid);
 
+	                    }
+	                    
+	                    if (topic[6].equals("RESIZE")){
+	                ///    	prmodeller.resizeVM(depid, vmid, CPU, RAM, storage);
 	                    }
 	                	 
 	                }

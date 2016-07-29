@@ -105,8 +105,8 @@ public class DeploymentInfo {
 	//	System.out.println("DeloymentInfo: new deployment with ID: " + deploymentId);
 		timer = new Timer();
 		
-		timer.scheduleAtFixedRate(new ChargesCalculator(this, billing), TimeUnit.SECONDS.toMillis(30), 30000);
-		timer.scheduleAtFixedRate(new ResetCharges(this, billing), TimeUnit.SECONDS.toMillis(90), 60000);
+	//	timer.scheduleAtFixedRate(new ChargesCalculator(this, billing), TimeUnit.SECONDS.toMillis(30), 30000);
+	//	timer.scheduleAtFixedRate(new ResetCharges(this, billing), TimeUnit.SECONDS.toMillis(90), 60000);
 		this.deploymentId=deploymentId;
 
 	}

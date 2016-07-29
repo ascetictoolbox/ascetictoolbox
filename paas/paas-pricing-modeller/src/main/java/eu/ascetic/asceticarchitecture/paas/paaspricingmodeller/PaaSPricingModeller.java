@@ -95,10 +95,10 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 			PMqueue.setup(null,  "guest", "guest",  "PRICING");
 			producer = new PricingModellerQueueServiceManager(PMqueue, this);
 			producer.createConsumers("APPLICATION.*.DEPLOYMENT.*.VM.*.*","vm.*.item.* ");
-			producer.createConsumers("PRICING","PMPREDICTION.DEPLOYMENTID.*.*");
-			producer.createConsumers("PRICING","PMBILLING.DEPLOYMENTID.*.*");
-			producer.createConsumers("PRICING","PMPREDICTION.DEPLOYMENTID.*.VMID.*.*");
-			producer.createConsumers("PRICING","PMBILLING.DEPLOYMENTID.*.VMID.*.*");
+		//	producer.createConsumers("PRICING","PMPREDICTION.DEPLOYMENTID.*.*");
+		//	producer.createConsumers("PRICING","PMBILLING.DEPLOYMENTID.*.*");
+		//	producer.createConsumers("PRICING","PMPREDICTION.DEPLOYMENTID.*.VMID.*.*");
+		//	producer.createConsumers("PRICING","PMBILLING.DEPLOYMENTID.*.VMID.*.*");
 			billing.setQueue(producer);
 		}catch(Exception ex){
 			//System.out.println("PM: The queue was not initiated");
@@ -150,9 +150,12 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return charges;
 	}
 	
+	public double predictPriceforNextPeriod(int depID, double duration){
+		return 0.0;
+		//TBD
+	}
 	
-	
-	public double getAppTotalPredictedCharges(int deplID, LinkedList<VMinfo> VMs){
+	public double getAppPredictedCharges(int deplID, int scheme, double IaaSCharges, LinkedList<VMinfo> VMs){
 		DeploymentInfo deployment = new DeploymentInfo(deplID);
 			deployment.setVMs(VMs);
 			double charges = billing.predictCharges(deployment, null);
@@ -172,8 +175,8 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	
 
 	
-	public double getAppAveragePredictedPrice(int deplID, LinkedList<VMinfo> VMs){
-		double charges = getAppTotalPredictedCharges(deplID, VMs);
+	public double getAppPredictedPrice(int deplID, int scheme, double IaaSCharges, double duration, LinkedList<VMinfo> VMs){
+		double charges = getAppPredictedCharges(deplID, scheme, IaaSCharges, VMs);
 		double totalDurationOfApp = 0;
 		List<Integer> vms = new ArrayList<>();
 				for (int i=0;i<VMs.size();i++){
