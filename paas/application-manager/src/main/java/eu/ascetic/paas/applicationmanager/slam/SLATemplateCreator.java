@@ -184,6 +184,8 @@ public class SLATemplateCreator {
 		// We estract the ASCETiC SLA Power VM info from OVF
 		AsceticSLAInfo info = OVFUtils.getVMSlaInfo(ovf, ENERGY_USAGE_PER_VM_OVF, ovfId);
 		
+		System.out.println("INFO: " + info);
+		
 		if(info != null) {
 			// ID for the agreement term
 			ID id = new ID(ovfId + VM_GUARANTEES);

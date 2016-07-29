@@ -444,7 +444,7 @@ public class OVFUtils {
 	
 	private static AsceticSLAInfo getSlaInfoInProductSection(ProductSection productSection, String slaInfoTerm) {
 		ProductProperty propertyCount = productSection.getPropertyByKey("asceticSlaInfoNumber");
-		logger.info("COUNT: " + propertyCount.getValue());
+		
 		if(propertyCount != null) {
 			int count = Integer.parseInt(propertyCount.getValue());
 			
