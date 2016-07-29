@@ -38,7 +38,7 @@ public class OVFToSLANames {
 	public static final String POWER_USAGE_PER_VM_SLA = "Power_Usage_for_";
 	public static final String POWER_USAGE_PER_VM_SLA_OPERATOR = "http://www.slaatsoi.org/resources#power_usage_per_vm";
 	public static final String ENERGY_USAGE_PER_VM_OVF = "energy_usage_per_vm";
-	public static final String ENERGY_USAGE_PER_VM_SLA = "Eower_Usage_for_";
+	public static final String ENERGY_USAGE_PER_VM_SLA = "Energy_Usage_for_";
 	public static final String ENERGY_USAGE_PER_VM_SLA_OPERATOR = "http://www.slaatsoi.org/resources#energy_usage_per_vm";
 	
 	// OVF SLA TERMS

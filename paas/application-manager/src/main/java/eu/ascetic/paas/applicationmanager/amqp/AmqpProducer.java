@@ -254,4 +254,32 @@ public class AmqpProducer {
                                  + DELETED,
                                  amMessage);
 	}
+	
+	/**
+	 * Sends the message that an application enters the RENEGOTIATING state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentRenegotiatingMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_RENEGOTIATING, 
+                                 amMessage);
+	}
+	
+	/**
+	 * Sends the message that an application enters the RENEGOTIATed state
+	 * @param applicationName
+	 * @param deployment
+	 */
+	public static void sendDeploymentRenegotiatedMessage(String applicationName, Deployment deployment) {
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
+                                 + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
+                                 + Dictionary.APPLICATION_STATUS_RENEGOTIATED, 
+                                 amMessage);
+	}
 }

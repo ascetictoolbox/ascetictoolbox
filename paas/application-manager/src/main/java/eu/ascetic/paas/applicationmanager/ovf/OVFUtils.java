@@ -431,8 +431,10 @@ public class OVFUtils {
 	 * @return null if the guarantee does not exists, if not the guarantee itself
 	 */
 	public static AsceticSLAInfo getVMSlaInfo(OvfDefinition ovfDocument, String slaInfoTerm, String ovfId) {
+		logger.info("SLA IFNO TERM: " + slaInfoTerm + " OVF ID: " + ovfId );
 		try {
 			ProductSection productSection = getVirtualSystemForOvfIdNotString(ovfDocument, ovfId).getProductSectionAtIndex(0);
+			//logger.info("PRODUCT SECTION " + productSection);
 			return getSlaInfoInProductSection(productSection, slaInfoTerm);
 		} catch(NullPointerException ex) {
 			logger.error("No Product section for vm with ID: " + ovfId);
@@ -442,7 +444,7 @@ public class OVFUtils {
 	
 	private static AsceticSLAInfo getSlaInfoInProductSection(ProductSection productSection, String slaInfoTerm) {
 		ProductProperty propertyCount = productSection.getPropertyByKey("asceticSlaInfoNumber");
-		
+		logger.info("COUNT: " + propertyCount.getValue());
 		if(propertyCount != null) {
 			int count = Integer.parseInt(propertyCount.getValue());
 			
@@ -453,13 +455,17 @@ public class OVFUtils {
 				System.out.println(property.getValue());
 				
 				if(slaInfoTerm.equals(property.getValue())) {
-					System.out.println(property.getValue() + " " + slaInfoTerm);
+					System.out.println(property.getValue() + " " + slaInfoTerm + " counter: " + i);
 					AsceticSLAInfo slaInfo = new AsceticSLAInfo();
 					slaInfo.setTerm(slaInfoTerm);
 					slaInfo.setBoundaryValue(productSection.getPropertyByKey("asceticSlaInfoBoundaryValue_"+ i).getValue());
+					logger.info("Boundary: " + slaInfo.getBoundaryValue());
 					slaInfo.setComparator(productSection.getPropertyByKey("asceticSlaInfoComparator_"+ i).getValue());
+					logger.info("Comparator " + slaInfo.getComparator());
 					slaInfo.setMetricUnit(productSection.getPropertyByKey("asceticSlaInfoMetricUnit_"+ i).getValue());
+					logger.info("Metric Units: " + slaInfo.getMetricUnit());
 					slaInfo.setType(productSection.getPropertyByKey("asceticSlaInfoSlaType_"+ i).getValue());
+					logger.info("Type: " + slaInfo.getType());
 					
 					return slaInfo;
 				}

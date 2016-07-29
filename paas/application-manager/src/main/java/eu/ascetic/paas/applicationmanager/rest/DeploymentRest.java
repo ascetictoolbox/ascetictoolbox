@@ -526,7 +526,7 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	@GET
-	@Path("{deployment_id}//energy-estimation")
+	@Path("{deployment_id}/energy-estimation")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getEnergyEstimation(@PathParam("application_name") String applicationName, 
 										@PathParam("deployment_id") String deploymentId,
@@ -818,5 +818,22 @@ public class DeploymentRest extends AbstractRest {
 		
 		xml = ModelConverter.slaLitmitsToXML(slaLimits);
 		return buildResponse(Status.OK, xml);
+	}
+	
+	@GET
+	@Path("{deployment_id}/renegotiate")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response renegotiate(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/renegotiate");
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		
+		if(deployment == null) {
+			return buildResponse(Status.NOT_FOUND, "Deployment not found!");
+		}
+		
+		AmqpProducer.sendDeploymentRenegotiatingMessage(applicationName, deployment);
+		
+		return null;
 	}
 }
