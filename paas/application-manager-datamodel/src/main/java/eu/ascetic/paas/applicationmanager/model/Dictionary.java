@@ -36,4 +36,6 @@ public class Dictionary {
 	public static String APPLICATION_STATUS_DEPLOYED = "DEPLOYED";
 	public static String APPLICATION_STATUS_TERMINATED = "TERMINATED";
 	public static String APPLICATION_STATUS_ERROR = "ERROR";
+	public static String APPLICATION_STATUS_RENEGOTIATING = "RENEGOTIATING";
+	public static String APPLICATION_STATUS_RENEGOTIATED = "RENEGOTIATED";
 }
