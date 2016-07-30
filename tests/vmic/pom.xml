@@ -21,7 +21,7 @@
       <notifier>
         <type>mail</type>
         <configuration>
-          <recipients>scsdja@leeds.ac.uk</recipients>
+          <recipients>R.E.Kavanagh@leeds.ac.uk</recipients>
         </configuration>
         <sendOnError>true</sendOnError>
         <sendOnFailure>true</sendOnFailure>
