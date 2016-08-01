@@ -138,7 +138,7 @@ public class Ascetic {
                 && (nextPower < Configuration.getEnergyBoundary()));
     }
 
-    public static void startEvent(Worker resource, AllocatableAction action, Implementation impl) {
+    public static void startEvent(Worker resource, Implementation impl, AllocatableAction action) {
         String IPv4 = resource.getName();
         VM vm = resources.get(IPv4);
         vm.startJob(action);
@@ -146,13 +146,13 @@ public class Ascetic {
         int implId = impl.getImplementationId();
         currentCost += vm.getPrice(coreId, implId);
         currentPower += vm.getPower(coreId, implId);
-        String eventType = "core" + coreId + "impl" + implId;
-        String eventId = ApplicationMonitor.startEvent(vm, eventType);
+        //String eventId = ApplicationMonitor.startEvent(vm, impl);
+        String eventId = java.util.UUID.randomUUID().toString();
         action.setEventId(eventId);
         changes = true;
     }
 
-    public static void stopEvent(Worker resource, AllocatableAction action, Implementation impl) {
+    public static void stopEvent(Worker resource, Implementation impl, AllocatableAction action) {
 
         String IPv4 = resource.getName();
         int coreId = impl.getCoreId();
@@ -161,7 +161,7 @@ public class Ascetic {
         vm.endJob(action);
         currentCost -= vm.getPrice(coreId, implId);
         currentPower -= vm.getPower(coreId, implId);
-        ApplicationMonitor.stopEvent(action.getEventId());
+        //ApplicationMonitor.stopEvent(action.getEventId());
         changes = true;
     }
 

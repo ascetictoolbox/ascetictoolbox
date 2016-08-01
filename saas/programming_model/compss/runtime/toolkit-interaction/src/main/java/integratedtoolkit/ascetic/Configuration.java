@@ -108,10 +108,8 @@ public class Configuration {
         }
         for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()) {
             String componentName = vs.getId();
-            System.out.println("Checking component " + componentName);
             Integer storageElemSize = diskSize.get(componentName + "-disk");
             CloudMethodResourceDescription rd = createComponentDescription(componentName, vs, storageElemSize);
-            System.out.println("Description " + rd);
             componentDescription.put(componentName, rd);
             float[][] eventWeights = new float[CoreManager.getCoreCount()][];
             long[][] eventTimes = new long[CoreManager.getCoreCount()][];
@@ -155,11 +153,8 @@ public class Configuration {
             conf.setAppDir(propertyValue);
             conf.setMinPort(43001);
             conf.setMaxPort(43001);
-            System.out.println("Configuration " + conf);
             componentProperties.put(componentName, conf);
-            System.out.println("Implementation " + impls);
             componentImplementations.put(componentName, impls);
-
         }
     }
 
@@ -225,6 +220,10 @@ public class Configuration {
 
     public static long getDiscoveryPeriod() {
         return DISCOVERY_PERIOD;
+    }
+
+    public static float[][] getEventWeights(String component) {
+        return componentWeights.get(component);
     }
 
     public static long[][] getComponentTimes(String component) {

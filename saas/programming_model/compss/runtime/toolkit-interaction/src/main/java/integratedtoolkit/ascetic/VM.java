@@ -41,6 +41,7 @@ public class VM {
     private final LinkedList<Implementation> compatibleImpls;
     private double[][] power;
     private double[][] price;
+    private float[][] eventWeights;
     private long[][] times;
     private double coresEnergy;
     private double coresCost;
@@ -48,31 +49,28 @@ public class VM {
     public VM(eu.ascetic.paas.applicationmanager.model.VM vm) {
         logger.info("Creating a new VM");
         this.vm = vm;
-        MethodResourceDescription rd = Configuration.getComponentDescriptions(vm.getOvfId());
+        String ovfId = vm.getOvfId();
+        MethodResourceDescription rd = Configuration.getComponentDescriptions(ovfId);
         description = new CloudMethodResourceDescription(rd);
-        configuration = new NIOConfiguration(Configuration.getComponentProperties(vm.getOvfId()));
+        configuration = new NIOConfiguration(Configuration.getComponentProperties(ovfId));
         configuration.setLimitOfTasks(rd.getProcessors().get(0).getComputingUnits());
         configuration.setTotalComputingUnits(rd.getProcessors().get(0).getComputingUnits());
         configuration.setHost(vm.getIp());
-        System.out.println("Configured ...");
-        compatibleImpls = Configuration.getComponentImplementations(vm.getOvfId());
-        System.out.println("Implementations set");
+        compatibleImpls = Configuration.getComponentImplementations(ovfId);
         power = new double[CoreManager.getCoreCount()][];
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             power[coreId] = new double[implCount[coreId]];
         }
-        System.out.println("power set");
         price = new double[CoreManager.getCoreCount()][];
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             price[coreId] = new double[implCount[coreId]];
         }
-        System.out.println("Price set");
         /*energy = new double[CoreManager.getCoreCount()][];
          for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
          energy[coreId] = new double[implCount[coreId]];
          }*/
-        times = Configuration.getComponentTimes(vm.getOvfId());
-        System.out.println("Times set");
+        times = Configuration.getComponentTimes(ovfId);
+        eventWeights = Configuration.getEventWeights(ovfId);
         coresEnergy = 0;
         coresCost = 0;
     }
@@ -233,6 +231,10 @@ public class VM {
         } else {
             return pw;
         }
+    }
+
+    public float getEventWeight(int coreId, int implId) {
+        return this.eventWeights[coreId][implId];
     }
 
     public void setWorker(MethodWorker worker) {

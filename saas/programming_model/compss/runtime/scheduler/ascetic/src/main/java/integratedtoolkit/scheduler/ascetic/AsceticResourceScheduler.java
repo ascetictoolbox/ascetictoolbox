@@ -370,7 +370,11 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         LinkedList<Gap> newGaps = rescheduleTasks(updateId, readyActions, selectableActions, runningActions, actions);
         System.out.println(this.getName() + " is running: ");
         for (AllocatableAction aa : runningActions) {
-            System.out.println(aa + " running implementation " + aa.getAssignedImplementation().getImplementationId() + " started " + (System.currentTimeMillis() - aa.getStartTime()));
+            System.out.println("\t" + aa + " with"
+                    + " implementation " + ((aa.getAssignedImplementation() == null) ? "null" : aa.getAssignedImplementation().getImplementationId())
+                    + " started " + ((aa.getStartTime() == null) ? "-" : (System.currentTimeMillis() - aa.getStartTime()))
+            );
+
         }
         //Schedules all the pending scheduligns and unblocks the scheduling of new actions
         synchronized (gaps) {
@@ -823,7 +827,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     }
 
     @Override
-    public P generateProfileForAllocatable() {
-        return (P) new AsceticProfile();
+    public P generateProfileForAllocatable(AllocatableAction action) {
+        return (P) new AsceticProfile(myWorker, action.getAssignedImplementation(), action);
     }
 }

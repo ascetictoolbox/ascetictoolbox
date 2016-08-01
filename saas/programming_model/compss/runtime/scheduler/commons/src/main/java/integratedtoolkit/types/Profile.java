@@ -1,5 +1,7 @@
 package integratedtoolkit.types;
 
+import integratedtoolkit.scheduler.types.AllocatableAction;
+
 public class Profile {
 
     private long executions;
@@ -20,7 +22,7 @@ public class Profile {
     }
 
     public void end() {
-    	++executions;
+        ++executions;
         averageTime = System.currentTimeMillis() - startTime;
         minTime = averageTime;
         maxTime = averageTime;
@@ -29,7 +31,7 @@ public class Profile {
     public long getExecutionCount() {
         return executions;
     }
-    
+
     public long getStartTime() {
         return startTime;
     }

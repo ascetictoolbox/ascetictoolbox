@@ -260,7 +260,7 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         // Allow other threads to execute the task (complete and error executor)
         lock.unlock();
         reserveResources();
-        profile = selectedResource.generateProfileForAllocatable();
+        profile = selectedResource.generateProfileForAllocatable(this);
         selectedResource.hostAction(this);
         doAction();
     }

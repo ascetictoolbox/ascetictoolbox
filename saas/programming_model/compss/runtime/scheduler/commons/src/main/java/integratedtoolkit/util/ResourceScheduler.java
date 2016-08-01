@@ -107,11 +107,20 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
         return (P) new Profile();
     }
 
+    /**
+     * Generates a Profile for an action.
+     *
+     * @return a profile object for an action.
+     */
+    public P generateProfileForAllocatable(AllocatableAction action) {
+        return (P) new Profile();
+    }
     /* ------------------------------------------------
      * ------------------------------------------------
      * --------- RUNNING ACTIONS MANAGEMENT -----------
      * ------------------------------------------------
      * ----------------------------------------------*/
+
     public final void hostAction(AllocatableAction<P, T> action) {
         running.add(action);
     }
