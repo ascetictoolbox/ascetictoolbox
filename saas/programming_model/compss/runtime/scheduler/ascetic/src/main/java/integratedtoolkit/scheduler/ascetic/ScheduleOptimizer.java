@@ -185,7 +185,6 @@ public class ScheduleOptimizer extends Thread {
     }
 
     private boolean move(AllocatableAction action, OptimizationWorker donor, OptimizationWorker receiver) {
-        System.out.println("Trying to move " + action + " from " + donor.getName() + " to " + receiver.getName());
         LinkedList<AllocatableAction> dataPreds = action.getDataPredecessors();
         long dataAvailable = 0;
         try {
@@ -215,6 +214,7 @@ public class ScheduleOptimizer extends Thread {
         long currentEnd = dsi.getExpectedEnd();
 
         if (bestImpl != null && currentEnd > receiver.getResource().getLastGapExpectedStart() + bestTime) {
+            System.out.println("Moving " + action + " from " + donor.getName() + " to " + receiver.getName());
             unschedule(action);
             schedule(action, bestImpl, receiver);
             return true;

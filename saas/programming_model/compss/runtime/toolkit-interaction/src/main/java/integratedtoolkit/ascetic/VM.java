@@ -41,8 +41,7 @@ public class VM {
     private final LinkedList<Implementation> compatibleImpls;
     private double[][] power;
     private double[][] price;
-    //private double[][] energy;
-    private boolean[][] executed;
+    private long[][] times;
     private double coresEnergy;
     private double coresCost;
 
@@ -55,26 +54,25 @@ public class VM {
         configuration.setLimitOfTasks(rd.getProcessors().get(0).getComputingUnits());
         configuration.setTotalComputingUnits(rd.getProcessors().get(0).getComputingUnits());
         configuration.setHost(vm.getIp());
+        System.out.println("Configured ...");
         compatibleImpls = Configuration.getComponentImplementations(vm.getOvfId());
+        System.out.println("Implementations set");
         power = new double[CoreManager.getCoreCount()][];
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             power[coreId] = new double[implCount[coreId]];
         }
+        System.out.println("power set");
         price = new double[CoreManager.getCoreCount()][];
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             price[coreId] = new double[implCount[coreId]];
         }
+        System.out.println("Price set");
         /*energy = new double[CoreManager.getCoreCount()][];
          for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
          energy[coreId] = new double[implCount[coreId]];
          }*/
-        executed = new boolean[CoreManager.getCoreCount()][];
-        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
-            executed[coreId] = new boolean[implCount[coreId]];
-            for (int implId = 0; implId < implCount[coreId]; implId++) {
-                executed[coreId][implId] = false;
-            }
-        }
+        times = Configuration.getComponentTimes(vm.getOvfId());
+        System.out.println("Times set");
         coresEnergy = 0;
         coresCost = 0;
     }
@@ -145,7 +143,6 @@ public class VM {
     public void startJob(AllocatableAction action) {
         Implementation impl = action.getAssignedImplementation();
         runningJobs.put(action, new JobExecution(action, impl));
-        executed[impl.getCoreId()][impl.getImplementationId()] = true;
     }
 
     public void endJob(AllocatableAction action) {
@@ -208,6 +205,10 @@ public class VM {
         return this.coresEnergy;
     }
 
+    public long getExecutionTime(int coreId, int implId) {
+        return times[coreId][implId];
+    }
+
     public double[] getPrice(int coreId) {
         return price[coreId];
     }
@@ -240,10 +241,6 @@ public class VM {
 
     public Worker getWorker() {
         return this.worker;
-    }
-
-    public boolean isRunning(int coreId, int implId) {
-        return executed[coreId][implId];
     }
 
     public LinkedList<Implementation> getCompatibleImplementations() {

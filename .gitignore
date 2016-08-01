@@ -56,7 +56,9 @@ saas/programming_model/compss/runtime/commons/target
 saas/programming_model/compss/runtime/engine/target
 saas/programming_model/compss/runtime/loader/target
 saas/programming_model/compss/runtime/resources/commons/target
+saas/programming_model/compss/runtime/scheduler/ascetic/target
 saas/programming_model/compss/runtime/scheduler/commons/target
+saas/programming_model/compss/runtime/toolkit-interaction/target
 saas/virtual-machine-image-constructor/logs
 saas/virtual-machine-image-constructor/runtime/virtual-machine-image-constructor.jar
 tests/vmic/logs

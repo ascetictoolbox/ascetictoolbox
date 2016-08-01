@@ -4426,6 +4426,7 @@ saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integrated
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticScheduler.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticSchedulingInformation.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/ScheduleOptimizer.java -text
+saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/types/AsceticProfile.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/types/AsceticScore.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/types/Gap.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/types/LocalOptimizationState.java -text

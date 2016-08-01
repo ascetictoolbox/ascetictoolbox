@@ -25,6 +25,7 @@ public class AppManager {
     }
 
     public Collection<VM> getNewResources() throws ApplicationUploaderException {
+
         LinkedList<VM> newResources = new LinkedList<VM>();
         try {
             List<eu.ascetic.paas.applicationmanager.model.VM> vms = uploader.getDeploymentVMDescriptions(applicationId, deploymentId);
@@ -33,15 +34,20 @@ public class AppManager {
                 String IPv4 = rvm.getIp();
                 VM vm = detectedVMs.get(IPv4);
                 if (vm == null) {
+                    System.out.println("Discovered new VM " + IPv4);
                     vm = new VM(rvm);
+                    System.out.println("VM Created");
                     vm.updateConsumptions(this);
+                    System.out.println("updated VM consumptions");
                     detectedVMs.put(IPv4, vm);
                     newResources.add(vm);
+                    System.out.println("Registered new VM");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("Returning " + newResources.size() + " new resources");
         return newResources;
     }
 
@@ -57,15 +63,16 @@ public class AppManager {
 
     public Cost getEstimations(String id, int coreId, int implId) throws ApplicationUploaderException {
         String eventType = generateEventType(coreId, implId);
+        System.out.println("Querying estimations for Core " + coreId + " Implementation " + implId);
         Cost c = null;
-        try {
+        /*try {
             c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
         } catch (Exception e) {
-
-        }
+            e.printStackTrace();
+        }*/
         if (c == null) {
             c = new Cost();
-            c.setPowerValue(0d);
+            c.setPowerValue(3d);
             c.setCharges(0d);
         }
         return c;

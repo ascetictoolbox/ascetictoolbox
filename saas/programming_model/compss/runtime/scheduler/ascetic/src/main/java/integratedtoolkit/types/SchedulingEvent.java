@@ -89,8 +89,8 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                     if (gapAction != null) {
                         AsceticSchedulingInformation gapActionDSI = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
                         gapActionDSI.addSuccessor(action);
-                        dsi.addPredecessor(gapAction);
-                        System.out.println(gapAction + "->" + action);
+                        dsi.addPredecessor(tmpGap);
+                        //System.out.println(gapAction + "->" + action);
                         state.removeTmpGap(tmpGap);
                     }
                 } else {
@@ -100,8 +100,8 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                         if (pred != null) {
                             AsceticSchedulingInformation predDSI = (AsceticSchedulingInformation) pred.getSchedulingInfo();
                             predDSI.addSuccessor(action);
-                            dsi.addPredecessor(pred);
-                            System.out.println(gapAction + "->" + action);
+                            dsi.addPredecessor(outGap);
+                            //System.out.println(gapAction + "->" + action);
                         }
                         state.removeTmpGap(outGap);
                     }
@@ -158,9 +158,9 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                     AllocatableAction peekAction = peekGap.getOrigin();
                     if (peekAction != null) {
                         AsceticSchedulingInformation predActionDSI = (AsceticSchedulingInformation) peekAction.getSchedulingInfo();
-                        gapActionDSI.addPredecessor(peekAction);
+                        gapActionDSI.addPredecessor(peekGap);
                         predActionDSI.addSuccessor(gapAction);
-                        System.out.println(peekAction + "->" + gapAction);
+                        //System.out.println(peekAction + "->" + gapAction);
                     }
                     ResourceDescription.reduceCommonDynamics(desc, peekGap.getResources());
                     if (peekGap.getResources().isDynamicUseless()) {

@@ -47,25 +47,26 @@ public class LocalOptimizationState {
         AllocatableAction gapAction = g.getOrigin();
         ResourceDescription rd = g.getResources();
         ResourceDescription reduction = ResourceDescription.reduceCommonDynamics(rd, requirements);
-        Gap tmpGap = new Gap(g.getInitialTime(), reserveStart, g.getOrigin(), reduction, 0);
-        previousGaps.add(tmpGap);
+        if (!reduction.isDynamicUseless()) {
+            Gap tmpGap = new Gap(g.getInitialTime(), reserveStart, g.getOrigin(), reduction, 0);
+            previousGaps.add(tmpGap);
 
-        if (gapAction != null) {
-            AsceticSchedulingInformation gapDSI = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
-            //Remove resources from the first gap
-            gapDSI.addGap();
-        }
-
-        //If the gap has been fully used
-        if (rd.isDynamicUseless()) {
-            //Remove the gap
-            remove = true;
             if (gapAction != null) {
                 AsceticSchedulingInformation gapDSI = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
-                gapDSI.removeGap();
+                //Remove resources from the first gap
+                gapDSI.addGap();
+            }
+
+            //If the gap has been fully used
+            if (rd.isDynamicUseless()) {
+                //Remove the gap
+                remove = true;
+                if (gapAction != null) {
+                    AsceticSchedulingInformation gapDSI = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
+                    gapDSI.removeGap();
+                }
             }
         }
-
         return remove;
     }
 
@@ -105,11 +106,11 @@ public class LocalOptimizationState {
         AsceticSchedulingInformation gapDSI = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
         gapDSI.addGap();
     }
-    
+
     public void replaceTmpGap(Gap gap, Gap previousGap) {
-        
+
     }
-    
+
     public void removeTmpGap(Gap g) {
         AllocatableAction gapAction = g.getOrigin();
         if (gapAction != null) {
@@ -164,7 +165,5 @@ public class LocalOptimizationState {
         sb.append("\tExpected Start:").append(topStartTime).append("\n");
         return sb.toString();
     }
-
-
 
 }

@@ -36,6 +36,7 @@ public class WorkerStarter extends Thread {
     }
 
     public void run() {
+        System.out.println("Worker Starter for " + vm.getIPv4() + " is on");
         NIOConfiguration conf = vm.getConfiguration();
         String user = conf.getUser();
         while (!connectionAvailable(vm.getIPv4(), user)) {
@@ -61,6 +62,7 @@ public class WorkerStarter extends Thread {
         }
         vm.setWorker(worker);
         ResourceCreationRequest rcr = new ResourceCreationRequest(desc, new int[CoreManager.getCoreCount()][0], "Ascetic");
+        System.out.println("ADDING CLOUD WORKER " + vm.getIPv4());
         ResourceManager.addCloudWorker(rcr, worker, vm.getCompatibleImplementations());
 
     }

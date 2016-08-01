@@ -27,6 +27,8 @@ public class Configuration {
     private final static HashMap<String, NIOConfiguration> componentProperties;
     private final static HashMap<String, CloudMethodResourceDescription> componentDescription;
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
+    private final static HashMap<String, long[][]> componentTimes;
+    private final static HashMap<String, float[][]> componentWeights;
     private final static float energyBoundary;
     private final static float economicalBoundary;
     private final static String optimizationParameter;
@@ -62,11 +64,14 @@ public class Configuration {
         System.out.println("Deployment ID is " + deploymentId);
         ProductProperty pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppManagerURL");
         applicationManagerEndpoint = pp.getValue();
+        System.out.println("AppMan EP:" + applicationManagerEndpoint);
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppMonitorURL");
         applicationMonitorEndpoint = pp.getValue();
         componentDescription = new HashMap<String, CloudMethodResourceDescription>();
         componentImplementations = new HashMap<String, LinkedList<Implementation>>();
         componentProperties = new HashMap<String, NIOConfiguration>();
+        componentWeights = new HashMap<String, float[][]>();
+        componentTimes = new HashMap<String, long[][]>();
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticEnergyOptimizationBoundary");
         energyBoundary = Float.parseFloat(pp.getValue());
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticCostOptimizationBoundary");
@@ -108,14 +113,34 @@ public class Configuration {
             CloudMethodResourceDescription rd = createComponentDescription(componentName, vs, storageElemSize);
             System.out.println("Description " + rd);
             componentDescription.put(componentName, rd);
-
+            float[][] eventWeights = new float[CoreManager.getCoreCount()][];
+            long[][] eventTimes = new long[CoreManager.getCoreCount()][];
+            for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+                int implCount = CoreManager.getCoreImplementations(coreId).length;
+                eventWeights[coreId] = new float[implCount];
+                eventTimes[coreId] = new long[implCount];
+                for (int implId = 0; implId < implCount; implId++) {
+                    eventWeights[coreId][implId] = 0f;
+                    eventTimes[coreId][implId] = Long.MAX_VALUE;
+                }
+            }
+            componentWeights.put(componentName, eventWeights);
+            componentTimes.put(componentName, eventTimes);
             LinkedList<Implementation> impls = new LinkedList<Implementation>();
             String implList = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMElements").getValue();
             if (implList.length() > 0) {
-                for (String signature : implList.split(";")) {
+                for (String implementationString : implList.split(";")) {
+                    String[] implementation = implementationString.split("@");
+                    String signature = implementation[0];
+                    float eventWeight = Float.parseFloat(implementation[1]);
+                    long time = Long.parseLong(implementation[2]);
                     Implementation impl = CoreManager.getImplementation(signature);
                     if (impl != null) {
                         impls.add(impl);
+                        int coreId = impl.getCoreId();
+                        int implId = impl.getImplementationId();
+                        eventWeights[coreId][implId] = eventWeight;
+                        eventTimes[coreId][implId] = time;
                     }
                 }
             }
@@ -200,5 +225,9 @@ public class Configuration {
 
     public static long getDiscoveryPeriod() {
         return DISCOVERY_PERIOD;
+    }
+
+    public static long[][] getComponentTimes(String component) {
+        return componentTimes.get(component);
     }
 }

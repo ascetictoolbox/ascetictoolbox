@@ -56,6 +56,7 @@ public class Ascetic {
     }
 
     public static void discoverNewResources() {
+        System.out.println("Discovering new Resources");
         try {
             for (VM vm : APP_MANAGER.getNewResources()) {
                 resources.put(vm.getIPv4(), vm);
@@ -194,6 +195,14 @@ public class Ascetic {
         int implId = impl.getImplementationId();
         VM vm = resources.get(IPv4);
         return vm.getPower(coreId, implId);
+    }
+
+    public static long getExecutionTime(Worker w, Implementation impl) {
+        String IPv4 = w.getName();
+        int coreId = impl.getCoreId();
+        int implId = impl.getImplementationId();
+        VM vm = resources.get(IPv4);
+        return vm.getExecutionTime(coreId, implId);
     }
 
     private static class AsceticMonitor extends Thread {

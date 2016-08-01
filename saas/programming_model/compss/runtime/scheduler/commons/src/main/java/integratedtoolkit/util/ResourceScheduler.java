@@ -24,18 +24,10 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
     protected final Worker<T> myWorker;
 
     public ResourceScheduler(Worker<T> w) {
-        int coreCount = CoreManager.getCoreCount();
-        profiles = new Profile[coreCount][];
-        for (int coreId = 0; coreId < coreCount; ++coreId) {
-            int implCount = CoreManager.getCoreImplementations(coreId).length;
-            profiles[coreId] = new Profile[implCount];
-            for (int implId = 0; implId < implCount; implId++) {
-                profiles[coreId][implId] = generateProfileForAllocatable();
-            }
-        }
+        myWorker = w;
+        profiles = loadProfiles();
         running = new LinkedList<AllocatableAction<P, T>>();
         blocked = new LinkedList<AllocatableAction<P, T>>();
-        myWorker = w;
     }
 
     public final String getName() {
@@ -98,6 +90,7 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
 
     public final void profiledExecution(Implementation<T> impl, Profile profile) {
         if (impl != null) {
+            System.out.println(this.getName() + " run Implementation " + impl.getImplementationId() + " for core " + impl.getCoreId() + " and took " + profile.getAverageExecutionTime());
             int coreId = impl.getCoreId();
             int implId = impl.getImplementationId();
             profiles[coreId][implId].accumulate(profile);
@@ -198,5 +191,19 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
         running.clear();
         blocked.clear();
         myWorker.releaseAllResources();
+    }
+
+    protected Profile[][] loadProfiles() {
+        Profile[][] profiles;
+        int coreCount = CoreManager.getCoreCount();
+        profiles = new Profile[coreCount][];
+        for (int coreId = 0; coreId < coreCount; ++coreId) {
+            int implCount = CoreManager.getCoreImplementations(coreId).length;
+            profiles[coreId] = new Profile[implCount];
+            for (int implId = 0; implId < implCount; implId++) {
+                profiles[coreId][implId] = generateProfileForAllocatable();
+            }
+        }
+        return profiles;
     }
 }

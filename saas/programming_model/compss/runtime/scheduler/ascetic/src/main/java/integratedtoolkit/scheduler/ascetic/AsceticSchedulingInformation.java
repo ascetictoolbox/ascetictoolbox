@@ -1,9 +1,11 @@
 package integratedtoolkit.scheduler.ascetic;
 
 import integratedtoolkit.scheduler.types.AllocatableAction;
+import integratedtoolkit.types.Gap;
 import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.SchedulingInformation;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
+import java.util.Iterator;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -22,7 +24,7 @@ public class AsceticSchedulingInformation<P extends Profile, T extends WorkerRes
     private int openGaps = 0;
 
     //Allocatable actions that the action depends on due to resource availability
-    private final LinkedList<AllocatableAction<P, T>> resourcePredecessors;
+    private final LinkedList<Gap> resourcePredecessors;
 
     //Allocatable actions depending on the allocatable action due to resource availability
     private LinkedList<AllocatableAction<P, T>> resourceSuccessors;
@@ -33,7 +35,7 @@ public class AsceticSchedulingInformation<P extends Profile, T extends WorkerRes
     private final LinkedList<AllocatableAction<P, T>> optimizingSuccessors;
 
     public AsceticSchedulingInformation() {
-        resourcePredecessors = new LinkedList<AllocatableAction<P, T>>();
+        resourcePredecessors = new LinkedList<Gap>();
         resourceSuccessors = new LinkedList<AllocatableAction<P, T>>();
 
         lastUpdate = System.currentTimeMillis();
@@ -43,7 +45,7 @@ public class AsceticSchedulingInformation<P extends Profile, T extends WorkerRes
         optimizingSuccessors = new LinkedList<AllocatableAction<P, T>>();
     }
 
-    public void addPredecessor(AllocatableAction<P, T> predecessor) {
+    public void addPredecessor(Gap predecessor) {
         resourcePredecessors.add(predecessor);
     }
 
@@ -60,12 +62,20 @@ public class AsceticSchedulingInformation<P extends Profile, T extends WorkerRes
         return b;
     }
 
-    public LinkedList<AllocatableAction<P, T>> getPredecessors() {
+    public LinkedList<Gap> getPredecessors() {
         return resourcePredecessors;
     }
 
-    public void removePredecessor(AllocatableAction<P, T> successor) {
-        resourcePredecessors.remove(successor);
+    public Gap removePredecessor(AllocatableAction<P, T> successor) {
+        Iterator<Gap> it = resourcePredecessors.iterator();
+        Gap g = null;
+        while (it.hasNext()) {
+            g = it.next();
+            if (g.getOrigin() == successor) {
+                it.remove();
+            }
+        }
+        return g;
     }
 
     public void clearPredecessors() {
@@ -124,8 +134,8 @@ public class AsceticSchedulingInformation<P extends Profile, T extends WorkerRes
                 + "\texpectedStart: " + expectedStart + "\n"
                 + "\texpectedEnd:" + expectedEnd + "\n");
         sb.append("\t").append("schedPredecessors: ");
-        for (AllocatableAction<P, T> aa : getPredecessors()) {
-            sb.append(" ").append(aa);
+        for (Gap g : getPredecessors()) {
+            sb.append(" ").append(g.getOrigin());
         }
         sb.append("\n");
         sb.append("\t").append("schedSuccessors: ");
