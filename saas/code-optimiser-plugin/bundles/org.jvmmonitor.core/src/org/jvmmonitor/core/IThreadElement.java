@@ -92,4 +92,10 @@ public interface IThreadElement extends IStackTraceProvider {
      * @return The CPU usage in percentage
      */
     double getCpuUsage();
+    
+    /**
+     * This gets the power usage of a given thread in Watts
+     * @return The power usage in Watts
+     */
+    double getPower();
 }

@@ -23,6 +23,8 @@ public enum ThreadColumn {
     /** The CPU usage. */
     CPU(Messages.cpuColumnLabel, 70, SWT.LEFT, Messages.cpuColumnToolTip),
 
+    POWER(Messages.powerColumnLabel, 130, SWT.LEFT, Messages.powerColumnToolTip), 
+    
     /** The blocked time. */
     BLOCKED_TIME(Messages.blockedTimeColumnLabel, 100, SWT.LEFT,
             Messages.blockedTimeColumnToolTip),

@@ -152,6 +152,8 @@ public class ThreadLabelProvider extends LabelProvider implements
             return state;
         } else if (columnIndex == getColumnIndex(ThreadColumn.CPU)) {
             return String.format(" %.1f", element.getCpuUsage()) + "%"; //$NON-NLS-1$ //$NON-NLS-2$
+        } else if (columnIndex == getColumnIndex(ThreadColumn.POWER)) {
+                return String.format(" %.0f", element.getPower()); //$NON-NLS-1$ //$NON-NLS-2$            
         } else if (columnIndex == getColumnIndex(ThreadColumn.BLOCKED_TIME)) {
             return IFormat.MILLISEC_FORMAT.format(element.getBlockedTime());
         } else if (columnIndex == getColumnIndex(ThreadColumn.BLOCKED_COUNT)) {

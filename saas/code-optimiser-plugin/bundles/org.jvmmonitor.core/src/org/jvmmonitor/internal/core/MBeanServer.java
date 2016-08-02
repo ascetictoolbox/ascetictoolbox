@@ -412,6 +412,7 @@ public class MBeanServer implements IMBeanServer {
         }
 
         ThreadMXBean threadMXBean;
+//        PowerMXBean powerMXBean;
         try {
             threadMXBean = (ThreadMXBean) getMXBean(ThreadMXBean.class,
                     ManagementFactory.THREAD_MXBEAN_NAME);
@@ -455,10 +456,13 @@ public class MBeanServer implements IMBeanServer {
             long processCpuTime = threadMXBean.getThreadCpuTime(threadId);
             Long previousCpuTime = previousThreadProcessCpuTime.get(threadId);
             double cpuUsage = 0;
+            double power = 0;
             previousThreadProcessCpuTime.put(threadId, processCpuTime);
             if (previousCpuTime != null) {
                 cpuUsage = Math.min(
                         (processCpuTime - previousCpuTime) / 10000000d, 100);
+                //TODO - ACTUAL - Get MBeanThread and update so it contains Power
+                power = 5; //TODO get MODEL HERE AND APPLY CALCULATION
             }
             previousThreadProcessCpuTime.put(threadId, processCpuTime);
             if (oldElement == null) {
@@ -468,6 +472,7 @@ public class MBeanServer implements IMBeanServer {
                 oldElement.setThreadInfo(threadInfo);
                 oldElement.setDeadlocked(isDeadlocked);
                 oldElement.setCpuUsage(cpuUsage);
+                oldElement.setPower(power);
                 newThreadListElements.put(threadName, oldElement);
             }
         }

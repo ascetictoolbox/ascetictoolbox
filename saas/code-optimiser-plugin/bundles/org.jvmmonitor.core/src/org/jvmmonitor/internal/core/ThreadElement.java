@@ -51,6 +51,8 @@ public class ThreadElement implements IThreadElement {
 
     /** The CPU usage in percentage. */
     private double cpuUsage;
+    
+    private double power;
 
     /**
      * The constructor.
@@ -66,6 +68,7 @@ public class ThreadElement implements IThreadElement {
             double cpuUsage) {
         this.isDeadlocked = isDeadlocked;
         this.cpuUsage = cpuUsage;
+        //TODO add power usage here
         setThreadInfo(threadInfo);
     }
 
@@ -110,6 +113,7 @@ public class ThreadElement implements IThreadElement {
         this.isSuspended = isSuspended;
         this.isDeadlocked = isDeadlocked;
         this.cpuUsage = cpuUsage;
+        //TODO add power here
     }
 
     /*
@@ -205,7 +209,17 @@ public class ThreadElement implements IThreadElement {
      */
     @Override
     public double getCpuUsage() {
+//        System.out.println("RK HERE");
+//        Thread.dumpStack();
         return cpuUsage;
+    }
+    
+    /*
+     * @see IThreadListElement#getPower()
+     */
+    @Override
+    public double getPower() {
+        return power;
     }
 
     /**
@@ -256,6 +270,16 @@ public class ThreadElement implements IThreadElement {
     public void setCpuUsage(double cpuUsage) {
         this.cpuUsage = cpuUsage;
     }
+    
+    /**
+     * Sets the power usage in Watts.
+     * 
+     * @param powerUsage
+     *            The CPU usage in Watts
+     */
+    public void setPower(double powerUsage) {
+        this.power = powerUsage;
+    }    
 
     /**
      * Dumps the thread data to given string buffer.
@@ -276,7 +300,8 @@ public class ThreadElement implements IThreadElement {
         buffer.append("suspended=\"").append(isSuspended).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append("deadlocked=\"").append(isDeadlocked).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append("cpuUsage=\"").append(cpuUsage).append("\">\n"); //$NON-NLS-1$ //$NON-NLS-2$
-
+        buffer.append("powerUsage=\"").append(getPower()).append("\">\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        
         for (StackTraceElement element : stackTraceElements) {
             buffer.append("\t\t<frame "); //$NON-NLS-1$
             buffer.append("class=\"").append(element.getClassName()).append( //$NON-NLS-1$
@@ -301,6 +326,7 @@ public class ThreadElement implements IThreadElement {
         buffer.append(threadName).append('\t');
         buffer.append(getThreadState().toString()).append('\t');
         buffer.append(getCpuUsage()).append('\t');
+        buffer.append(getPower()).append('\t');
         buffer.append(getBlockedTime()).append('\t');
         buffer.append(getBlockedCount()).append('\t');
         buffer.append(getWaitedTime()).append('\t');

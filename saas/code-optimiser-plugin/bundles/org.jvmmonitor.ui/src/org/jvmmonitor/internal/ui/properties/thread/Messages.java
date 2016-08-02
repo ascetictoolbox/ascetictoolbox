@@ -37,6 +37,9 @@ public final class Messages extends NLS {
 
     /** */
     public static String cpuColumnLabel;
+    
+    /** */
+    public static String powerColumnLabel;   
 
     /** */
     public static String blockedTimeColumnLabel;
@@ -65,6 +68,9 @@ public final class Messages extends NLS {
     /** */
     public static String cpuColumnToolTip;
 
+    /** */
+    public static String powerColumnToolTip;   
+    
     /** */
     public static String blockedCountColumnToolTip;
 
