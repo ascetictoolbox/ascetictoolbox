@@ -186,10 +186,10 @@ public class MessageCreatorTest {
 	}
 	
 	public void fromDeploymentWithNullValuesTest() {
-		ApplicationManagerMessage message = MessageCreator.fromDeployment("aaa", null);
+		ApplicationManagerMessage message = MessageCreator.fromDeployment("aaa", null, null);
 		assertEquals(null, message);
 		
-		message = MessageCreator.fromDeployment(null, new Deployment());
+		message = MessageCreator.fromDeployment(null, new Deployment(), null);
 		assertEquals(null, message);
 	}
 	
@@ -230,7 +230,7 @@ public class MessageCreatorTest {
 		
 		vms.add(vm2);
 		
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment("name", deployment1);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment("name", deployment1, null);
 		
 		assertEquals("name", amMessage.getApplicationId());
 		assertEquals("11", amMessage.getDeploymentId());
@@ -245,6 +245,24 @@ public class MessageCreatorTest {
 		assertEquals("ovfId2", amMessage.getVms().get(1).getOvfId());
 		assertEquals("XXX2", amMessage.getVms().get(1).getStatus());
 		assertEquals("22", amMessage.getVms().get(1).getVmId());
+	}
+	
+	@Test
+	public void fromDeploymentWithOtherStateTest() {
+		
+		Deployment deployment1 = new Deployment();
+		deployment1.setId(11);
+		deployment1.setHref("href");
+		deployment1.setPrice("provider-id");
+		deployment1.setStatus("STATUS");
+		deployment1.setStartDate("aaa");
+		deployment1.setEndDate("bbb");
+
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment("name", deployment1, "OTHER_STATE");
+		
+		assertEquals("name", amMessage.getApplicationId());
+		assertEquals("11", amMessage.getDeploymentId());
+		assertEquals("OTHER_STATE", amMessage.getStatus());
 	}
 	
 	@Test

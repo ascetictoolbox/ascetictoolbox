@@ -55,7 +55,7 @@ public class AmqpProducerTest extends AbstractTest {
 		AmqpProducer.sendMessage("application.111.deployment.222", messageToBeSent);
 		
 		// We wait one second just in case
-		Thread.sleep(1000l);
+		Thread.sleep(700l);
 		
 		// We verify the results
 		assertEquals("application.111.deployment.222", listener.getDestination());
@@ -83,7 +83,7 @@ public class AmqpProducerTest extends AbstractTest {
 		AmqpProducer.sendNewApplicationMessage(application);
 		
 		// We wait one second just in case
-		Thread.sleep(1000l);
+		Thread.sleep(700l);
 		
 		// We verify the results
 		assertEquals("APPLICATION.pepito.ADDED", listener.getDestination());
@@ -118,7 +118,7 @@ public class AmqpProducerTest extends AbstractTest {
 		AmqpProducer.sendDeploymentSubmittedMessage(application);
 		
 		// We wait one second just in case
-		Thread.sleep(1000l);
+		Thread.sleep(700l);
 		
 		// We verify the results
 		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.SUBMITTED", listener.getDestination());
@@ -525,6 +525,70 @@ public class AmqpProducerTest extends AbstractTest {
 		assertEquals("ovfId4", amMessageReceived.getVms().get(0).getOvfId());
 		assertEquals("XXX4", amMessageReceived.getVms().get(0).getStatus());
 		assertEquals("44", amMessageReceived.getVms().get(0).getVmId());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentRenegotiatingMessageTest() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.RENEGOTIATING",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("DEPLOYING");
+
+		AmqpProducer.sendDeploymentRenegotiatingMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.RENEGOTIATING", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("RENEGOTIATING", amMessageReceived.getStatus());
+
+		receiver.close();
+	}
+	
+	@Test
+	public void sendDeploymentRenegotiatedMessageTest() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, 
+				Configuration.amqpUsername, 
+				Configuration.amqpPassword,
+				"APPLICATION.pepito.DEPLOYMENT.23.RENEGOTIATED",
+				true);
+		AmqpBasicListener listener = new AmqpBasicListener();
+		receiver.setMessageConsumer(listener);
+
+		Deployment deployment = new Deployment();
+		deployment.setId(23);
+		deployment.setStatus("DEPLOYING");
+
+		AmqpProducer.sendDeploymentRenegotiatedMessage("pepito", deployment);
+
+		// We wait one second just in case
+		Thread.sleep(700l);
+
+		// We verify the results
+		assertEquals("APPLICATION.pepito.DEPLOYMENT.23.RENEGOTIATED", listener.getDestination());
+
+		// We parse the received message and verify its values
+		ApplicationManagerMessage amMessageReceived = ModelConverter.jsonToApplicationManagerMessage(listener.getMessage());
+		assertEquals("pepito", amMessageReceived.getApplicationId());
+		assertEquals("23", amMessageReceived.getDeploymentId());
+		assertEquals("RENEGOTIATED", amMessageReceived.getStatus());
 
 		receiver.close();
 	}

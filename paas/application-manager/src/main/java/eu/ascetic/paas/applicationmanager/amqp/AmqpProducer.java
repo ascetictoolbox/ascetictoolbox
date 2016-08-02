@@ -101,7 +101,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentNegotiatingMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -115,7 +115,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentNegotiatedMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -129,7 +129,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentContextualizingMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -143,7 +143,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentContextualizedMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -157,7 +157,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentDeployingMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -171,7 +171,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentDeployedMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -185,7 +185,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentDeletedMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -199,7 +199,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentErrorMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, null);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -261,7 +261,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentRenegotiatingMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, Dictionary.APPLICATION_STATUS_RENEGOTIATING);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
@@ -275,7 +275,7 @@ public class AmqpProducer {
 	 * @param deployment
 	 */
 	public static void sendDeploymentRenegotiatedMessage(String applicationName, Deployment deployment) {
-		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment);
+		ApplicationManagerMessage amMessage = MessageCreator.fromDeployment(applicationName, deployment, Dictionary.APPLICATION_STATUS_RENEGOTIATED);
 		
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 

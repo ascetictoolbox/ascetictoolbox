@@ -45,15 +45,20 @@ public class MessageCreator {
 		message.setApplicationId(application.getName());
 		
 		if(application.getDeployments() != null && application.getDeployments().size() > 0) {
-			completeMessage(message, application.getDeployments().get(0));
+			completeMessage(message, application.getDeployments().get(0), null);
 		}
 		
 		return message;
 	}
 	
-	private static void completeMessage(ApplicationManagerMessage message, Deployment deployment) {
+	private static void completeMessage(ApplicationManagerMessage message, Deployment deployment, String status) {
 		message.setDeploymentId("" + deployment.getId());
-		message.setStatus(deployment.getStatus());
+		
+		if(status == null) {
+			message.setStatus(deployment.getStatus());
+		} else {
+			message.setStatus(status);
+		}
 
 		if(deployment.getVms() != null ) {
 			for(VM vm : deployment.getVms()) {
@@ -68,7 +73,7 @@ public class MessageCreator {
 	 * @param deployment from which to extract the information
 	 * @return the JSON representation of the message
 	 */
-	public static ApplicationManagerMessage fromDeployment(String applicationName, Deployment deployment) {
+	public static ApplicationManagerMessage fromDeployment(String applicationName, Deployment deployment, String status) {
 		if(applicationName == null || deployment == null) {
 			return null;
 		}
@@ -76,7 +81,7 @@ public class MessageCreator {
 		ApplicationManagerMessage message = new ApplicationManagerMessage();
 		message.setApplicationId(applicationName);
 		
-		completeMessage(message, deployment);
+		completeMessage(message, deployment, status);
 		
 		return message;
 	}
