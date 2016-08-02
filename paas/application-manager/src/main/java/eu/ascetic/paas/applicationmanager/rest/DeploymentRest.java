@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
+import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +41,7 @@ import eu.ascetic.paas.applicationmanager.amqp.AmqpProducer;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerMessage;
 import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
+import eu.ascetic.paas.applicationmanager.event.deployment.NegotiationEventHandler;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Application;
 import eu.ascetic.paas.applicationmanager.model.Cost;
@@ -58,7 +60,10 @@ import eu.ascetic.paas.applicationmanager.pm.PriceModellerClient;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
+import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
 import eu.ascetic.paas.applicationmanager.slam.sla.SLAAgreementHelper;
+import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
+import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClientBSSC;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
@@ -830,9 +835,39 @@ public class DeploymentRest extends AbstractRest {
 		
 		if(deployment == null) {
 			return buildResponse(Status.NOT_FOUND, "Deployment not found!");
-		}
+		} 
 		
 		AmqpProducer.sendDeploymentRenegotiatingMessage(applicationName, deployment);
+		
+		Agreement agreement = agreementDAO.getAcceptedAgreement(deployment);
+		
+		if(agreement == null) {
+			AmqpProducer.sendDeploymentRenegotiatedMessage(applicationName, deployment);
+			return buildResponse(Status.OK, "No renegotiation possible!");
+		} else if(!Configuration.enableSLAM.equals("yes")) {
+			AmqpProducer.sendDeploymentRenegotiatedMessage(applicationName, deployment);
+			return buildResponse(Status.OK, "PaaS SLAM disabled!!!");
+		}
+
+		String agreementId = agreement.getSlaAgreementId();
+
+		// We create a client to the SLAM
+		NegotiationWsClient client = new NegotiationWsClient();
+		SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
+		client.setSlaTranslator(slaTranslator);
+		
+		agreementId = client.renegotiate(Configuration.slamURL, agreementId);
+		
+		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(deployment.getOvf());
+		
+		try {
+			SLATemplate[] slats = NegotiationEventHandler.negiotate(agreementId, ovfDefinition, applicationName, deployment.getId(), client);
+			
+		} catch(Exception ex) {
+			logger.error("Error during the renegotiation process");
+			logger.error(ex.getMessage());
+			logger.error(ex.getStackTrace());
+		}
 		
 		return null;
 	}

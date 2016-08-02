@@ -1857,12 +1857,16 @@ public class DeploymentRestTest extends AbstractTest {
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
 		deploymentRest.deploymentDAO = deploymentDAO;
 		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		deploymentRest.agreementDAO = agreementDAO;
+		
 		Deployment deployment = new Deployment();
 		deployment.setSchema(1);
 		deployment.setId(22);
 		
 		// Mock workflow
 		when(deploymentDAO.getById(22)).thenReturn(deployment);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(null);
 		
 		// Test procedure starts here *********************************
 		Response response = deploymentRest.renegotiate("threeTierWebApp", "22");
@@ -1873,12 +1877,74 @@ public class DeploymentRestTest extends AbstractTest {
 		Thread.sleep(1000l);
 		
 		// First we need to see if we enter in renegotiate state.
-		assertEquals(1, listener.getTextMessages().size());
+		assertEquals(200, response.getStatus());
+		assertEquals("No renegotiation possible!", (String) response.getEntity());
+		
+		assertEquals(2, listener.getTextMessages().size());
 		
 		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.RENEGOTIATING", listener.getTextMessages().get(0).getJMSDestination().toString());
 		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
 		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
 		assertEquals("RENEGOTIATING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.RENEGOTIATED", listener.getTextMessages().get(1).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getDeploymentId());
+		assertEquals("RENEGOTIATED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
+		
+		receiver.close();
+	}
+	
+	@Test
+	public void renegotiateSLANoActived() throws Exception {
+		// Setup *****************************************
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		Configuration.enableSLAM = "no";
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		// Creating mocks
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		AgreementDAO agreementDAO = mock(AgreementDAO.class);
+		deploymentRest.agreementDAO = agreementDAO;
+		
+		Deployment deployment = new Deployment();
+		deployment.setSchema(1);
+		deployment.setId(22);
+		
+		// Mock workflow
+		when(deploymentDAO.getById(22)).thenReturn(deployment);
+		when(agreementDAO.getAcceptedAgreement(deployment)).thenReturn(new Agreement());
+		
+		// Test procedure starts here *********************************
+		Response response = deploymentRest.renegotiate("threeTierWebApp", "22");
+		
+		
+		// Verification starts here ***********************************
+		// Wait time for the messages to arrive
+		Thread.sleep(1000l);
+		
+		// First we need to see if we enter in renegotiate state.
+		assertEquals(200, response.getStatus());
+		assertEquals("PaaS SLAM disabled!!!", (String) response.getEntity());
+		
+		assertEquals(2, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.RENEGOTIATING", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("RENEGOTIATING", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.22.RENEGOTIATED", listener.getTextMessages().get(1).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getApplicationId());
+		assertEquals("22", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getDeploymentId());
+		assertEquals("RENEGOTIATED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
 		
 		receiver.close();
 	}

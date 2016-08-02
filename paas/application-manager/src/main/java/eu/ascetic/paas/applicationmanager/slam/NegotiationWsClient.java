@@ -20,6 +20,8 @@ import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.InitiateNegotia
 import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.InitiateNegotiationResponse;
 import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.Negotiate;
 import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.NegotiateResponse;
+import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.Renegotiate;
+import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.RenegotiateResponse;
 
 /**
  * 
@@ -74,6 +76,25 @@ public class NegotiationWsClient implements NegotiationClient {
 		}
 	}
 	
+	
+	@Override
+	public String renegotiate(String endpoint, String id) {
+		
+		try {
+			
+			BZNegotiationStub stub = new BZNegotiationStub(endpoint);
+			
+			Renegotiate doc = getRenegotiationDoc(id);
+			
+			RenegotiateResponse resp = stub.renegotiate(doc);
+			
+			return resp.get_return();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	
 	@Override
@@ -154,6 +175,13 @@ public class NegotiationWsClient implements NegotiationClient {
 		String xmlSlat = slaTranslator.renderSlaTemplate(slat);
 		
 		doc.setSlaTemplate(xmlSlat);
+		
+		return doc;
+	}
+	
+	public Renegotiate getRenegotiationDoc(String id) throws java.lang.Exception {
+		Renegotiate doc = new Renegotiate();
+		doc.setSlaID(id);
 		
 		return doc;
 	}

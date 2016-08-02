@@ -1,12 +1,15 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
-import org.slasoi.slamodel.sla.SLATemplate;
+import static org.junit.Assert.assertEquals;
 
-import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
+import org.junit.Test;
+
+import eu.ascetic.applicationmanager.slam.stub.BZNegotiationStub.Renegotiate;
+
 
 /**
  * 
- * Copyright 2014 ATOS SPAIN S.A. 
+ * Copyright 2016 ATOS SPAIN S.A. 
  * 
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -23,17 +26,16 @@ import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
  * @author David Garcia Perez. Atos Research and Innovation, Atos SPAIN SA
  * e-mail david.garciaperez@atos.net 
  * 
- * ASCETiC Interface to build a client to the SLAM
- *
+ * Unit test for the methods in the applicaton manager client
  */
-public interface NegotiationClient {
-	
-	public SLATemplate[] negotiate(String endpoint, SLATemplate slaTemplate, String negotiationId);
-	
-	public String initiateNegotiation(String endpoint, SLATemplate slaTemplate);
-	
-	public SLA createAgreement(String endpoint, SLATemplate slaTemplate, String negotiationId);
-	
-	public String renegotiate(String endpoint, String id);
-	
+public class NegotiationWSClientTest {
+
+	@Test
+	public void getRenegotiationDoc() throws Exception {
+		NegotiationWsClient client = new NegotiationWsClient();
+		
+		Renegotiate renegotiationDoc = client.getRenegotiationDoc("111");
+		
+		assertEquals("111", renegotiationDoc.getSlaID());
+	}
 }
