@@ -1,5 +1,10 @@
 package org.jvmmonitor.internal.agent;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+
 public interface PowerMXBean {
 
     /**
@@ -15,5 +20,18 @@ public interface PowerMXBean {
      * @return the value for power
      */
     public double getPower();
+    
+    /**
+     * This sets the host calibration data for this agent.
+     * @param datapoints The datapoints to use for estimating energy usage.
+     */
+    public void setHostCalibrationData(List<HostEnergyCalibrationData> datapoints);
+    
+    /**
+     * This gets the host calibration data for this agent.
+     * @return The datapoints to use for estimating energy usage.
+     */
+    public List<HostEnergyCalibrationData> getHostCalibrationData();
+    
 	
 }

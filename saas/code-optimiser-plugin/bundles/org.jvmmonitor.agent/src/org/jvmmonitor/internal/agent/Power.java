@@ -9,6 +9,7 @@ import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,10 +18,9 @@ public class Power implements PowerMXBean {
     /** The MXBean name. */
     public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
     private OperatingSystemMXBean operatingSystemMXBean;
-    //private String predictorName = "CpuOnlyBestFitEnergyPredictor";
+    // private String predictorName = "CpuOnlyBestFitEnergyPredictor";
     private EnergyPredictorInterface predictor = null; // getPredictor(predictorName);
     private static final String DEFAULT_PREDICTOR_PACKAGE = "eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor";
-    private ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
 
     private long nanoBefore = 0;
     private long cpuBefore = 0;
@@ -33,6 +33,8 @@ public class Power implements PowerMXBean {
         operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
         nanoBefore = System.nanoTime();
         cpuBefore = getProcessCpuTime();
+        //TODO set this host calibration data correctly
+        ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
         calibrationData.add(new HostEnergyCalibrationData(0, 0, 50));
         calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));
         calibrationData.add(new HostEnergyCalibrationData(25, 0, 65));
@@ -62,8 +64,20 @@ public class Power implements PowerMXBean {
         return true;
     }
 
-    public void setHostCalibrationData(ArrayList<HostEnergyCalibrationData> calibrationData) {
-        this.calibrationData = calibrationData;
+    @Override
+    public void setHostCalibrationData(List<HostEnergyCalibrationData> calibrationData) {
+        if (calibrationData instanceof ArrayList) {
+            host.setCalibrationData(((ArrayList) calibrationData));
+        } else {
+            ArrayList<HostEnergyCalibrationData> data = new ArrayList<>();
+            data.addAll(calibrationData);
+            host.setCalibrationData(data);
+        }
+    }
+
+    @Override
+    public List<HostEnergyCalibrationData> getHostCalibrationData() {
+        return host.getCalibrationData();
     }
 
     /**
@@ -87,7 +101,7 @@ public class Power implements PowerMXBean {
 
                 double power = 0.0;
                 if (!host.isCalibrated()) {
-                    host.setCalibrationData(calibrationData);
+                    host.setCalibrationData(((ArrayList)getHostCalibrationData()));
                 }
                 power = predictor.predictPowerUsed(host, cpuPercentage);
                 return power;
@@ -146,4 +160,5 @@ public class Power implements PowerMXBean {
             return 0;
         }
     }
+
 }
