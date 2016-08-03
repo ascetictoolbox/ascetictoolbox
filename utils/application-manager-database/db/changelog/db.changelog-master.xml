@@ -62,4 +62,5 @@
   <!-- Adding column deployname to deployments table -->
   <include file="db/changelog/db.changelog-5.0.xml"/>
   <include file="db/changelog/db.changelog-5.1.xml"/>
+  <include file="db/changelog/db.changelog-5.2.xml"/>
 </databaseChangeLog>
