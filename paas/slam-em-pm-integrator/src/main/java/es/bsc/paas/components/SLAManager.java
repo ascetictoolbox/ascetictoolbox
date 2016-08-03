@@ -22,16 +22,15 @@ public class SLAManager {
     @Autowired
     ApplicationContext context;
 
-    private static final String QUEUE_TEMPLATE = "application-monitor.monitoring.%s.%s.estimation";
+    private static final String QUEUE_ESTIMATIONS = "application-monitor.monitoring.%s.%s.estimation";
+    private static final String QUEUE_MEASUREMENTS = "application-monitor.monitoring.%s.measurement";
 
     private Logger log = LoggerFactory.getLogger(SLAManager.class);
 
     public void reportEstimation(String applicationId, String deploymentId, long referredtimestamp, 
-        double energyEstimation, double energyConsumption, 
-        double powerEstimation, double powerConsumption, 
-        double priceEstimation) {
+        double energyEstimation, double powerEstimation, double priceEstimation) {
         
-        String queueName = String.format(QUEUE_TEMPLATE,applicationId,deploymentId);
+        String queueName = String.format(QUEUE_ESTIMATIONS, applicationId, deploymentId);
         log.debug("Queue name: " + queueName);
         final String jsonDocument = new StringBuilder("{\"ApplicationId\":\"")
             .append(applicationId)
@@ -41,12 +40,8 @@ public class SLAManager {
             .append(System.currentTimeMillis())
             .append(",\"data\":{\"energyEstimation\":")
             .append(energyEstimation)
-            .append(",\"energyConsumption\":")
-            .append(energyConsumption)
             .append(",\"powerEstimation\":")
             .append(powerEstimation)
-            .append(",\"powerConsumption\":")
-            .append(powerConsumption)
             .append(",\"priceEstimation\":")
             .append(priceEstimation)
             .append("}}").toString();
@@ -58,6 +53,36 @@ public class SLAManager {
                 return session.createTextMessage(jsonDocument);
             }
         };
+        
+        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+        jmsTemplate.send(queueName, messageCreator);
+    }
+    
+    public void reportMeasurement(String applicationId, String deploymentId, long referredtimestamp, 
+        double energyConsumption, double powerConsumption) {
+        
+        String queueName = String.format(QUEUE_MEASUREMENTS, applicationId);
+        log.debug("Queue name: " + queueName);
+        final String jsonDocument = new StringBuilder("{\"ApplicationId\":\"")
+            .append(applicationId)
+            .append("\",\"DeploymentId\":\"")
+            .append(deploymentId)
+            .append("\",\"Timestamp\":")
+            .append(System.currentTimeMillis())
+            .append(",\"data\":{\"energyConsumption\":")
+            .append(energyConsumption)
+            .append(",\"powerConsumption\":")
+            .append(powerConsumption)
+            .append("}}").toString();
+
+        log.debug(jsonDocument);
+        MessageCreator messageCreator = new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                return session.createTextMessage(jsonDocument);
+            }
+        };
+        
         JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
         jmsTemplate.send(queueName, messageCreator);
     }

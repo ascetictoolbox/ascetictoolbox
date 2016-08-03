@@ -18,4 +18,3 @@ public class EmslamintegratorApplication {
         SpringApplication.run(EmslamintegratorApplication.class, args);
     }
 }
-
