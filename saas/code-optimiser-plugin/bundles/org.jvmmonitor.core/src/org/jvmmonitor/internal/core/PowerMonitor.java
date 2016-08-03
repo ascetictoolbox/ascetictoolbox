@@ -1,12 +1,19 @@
 package org.jvmmonitor.internal.core;
 
+import java.util.ArrayList;
+
 import javax.management.Attribute;
 import javax.management.ObjectName;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.eclipse.core.runtime.IStatus;
 import org.jvmmonitor.core.IPowerMonitor;
 import org.jvmmonitor.core.JvmCoreException;
 import org.jvmmonitor.core.JvmModel;
+
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyBestFitEnergyPredictor;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
 
 public class PowerMonitor implements IPowerMonitor {
 
@@ -16,6 +23,11 @@ public class PowerMonitor implements IPowerMonitor {
     /** The JVM. */
     private ActiveJvm jvm;
 
+    private EnergyPredictorInterface predictor = null;
+    
+    private eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host 
+        = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(0, "localhost");      
+    
     /**
      * The constructor.
      * 
@@ -24,6 +36,38 @@ public class PowerMonitor implements IPowerMonitor {
      */
     public PowerMonitor(ActiveJvm jvm) {
         this.jvm = jvm;
+        //TODO Set this calibration data correctly
+        ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
+        calibrationData.add(new HostEnergyCalibrationData(0, 0, 50));
+        calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));
+        calibrationData.add(new HostEnergyCalibrationData(25, 0, 65));
+        calibrationData.add(new HostEnergyCalibrationData(50, 0, 75));
+        calibrationData.add(new HostEnergyCalibrationData(85, 0, 90));
+        host.setAvailable(true);
+        host.setDiskGb(20);
+        host.setRamMb(2048);
+        host.setCalibrationData(calibrationData);
+        PropertiesConfiguration config = new PropertiesConfiguration();
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", 0);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.consider_idle_energy", true);
+        config.setProperty("iaas.energy.modeller.energy.predictor.overheadPerHostInWatts", 0);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDirectDbDataSourceAdaptor");
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", 0);
+        config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", 30);
+        predictor = new CpuOnlyBestFitEnergyPredictor(config);        
+    }    
+    
+    /**
+     * This calculates the power consumption based upon cpu usage
+     * 
+     * @param cpuUsage
+     *            The Utilisation of the CPU
+     * @return The power consumption of a given thread.
+     */
+    @Override
+    public double calculatePowerConsumption(double cpuUsage) {
+        return predictor.predictPowerUsed(host, cpuUsage) - host.getIdlePowerConsumption();
     }
 
     /*

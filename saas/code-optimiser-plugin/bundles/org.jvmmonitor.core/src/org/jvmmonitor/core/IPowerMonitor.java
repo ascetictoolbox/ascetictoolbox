@@ -5,6 +5,8 @@ public interface IPowerMonitor {
     /** The MXBean name. */
     public final static String POWER_MXBEAN_NAME = "org.jvmmonitor:type=Power";
     
+    public double calculatePowerConsumption(double cpuUsage);    
+    
     /**
      * Sets the tracking state.
      * 

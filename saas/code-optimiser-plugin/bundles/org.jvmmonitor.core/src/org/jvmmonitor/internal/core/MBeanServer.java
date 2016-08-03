@@ -412,7 +412,6 @@ public class MBeanServer implements IMBeanServer {
         }
 
         ThreadMXBean threadMXBean;
-//        PowerMXBean powerMXBean;
         try {
             threadMXBean = (ThreadMXBean) getMXBean(ThreadMXBean.class,
                     ManagementFactory.THREAD_MXBEAN_NAME);
@@ -454,20 +453,11 @@ public class MBeanServer implements IMBeanServer {
 
             ThreadElement oldElement = threadListElements.get(threadName);
             long processCpuTime = threadMXBean.getThreadCpuTime(threadId);
-            Long previousCpuTime = previousThreadProcessCpuTime.get(threadId);
-            double cpuUsage = 0;
-            double power = 0;
-            previousThreadProcessCpuTime.put(threadId, processCpuTime);
-            if (previousCpuTime != null) {
-                cpuUsage = Math.min(
-                        (processCpuTime - previousCpuTime) / 10000000d, 100);
-                //TODO - ACTUAL - Get MBeanThread and update so it contains Power
-                power = 5; //TODO get MODEL HERE AND APPLY CALCULATION
-            }
+            double cpuUsage = calculateCpuUtil(threadMXBean, threadId);
+            double power = calculatePowerConsumption(cpuUsage);
             previousThreadProcessCpuTime.put(threadId, processCpuTime);
             if (oldElement == null) {
-                newThreadListElements.put(threadName,
-                        new ThreadElement(threadInfo, isDeadlocked, cpuUsage));
+                newThreadListElements.put(threadName, new ThreadElement(threadInfo, isDeadlocked, cpuUsage, power));
             } else {
                 oldElement.setThreadInfo(threadInfo);
                 oldElement.setDeadlocked(isDeadlocked);
@@ -477,6 +467,36 @@ public class MBeanServer implements IMBeanServer {
             }
         }
         threadListElements = newThreadListElements;
+    }
+
+    /**
+     * This calculates the cpu utilisation of a given thread
+     * 
+     * @param threadMXBean
+     *            The Thread bean
+     * @param threadId
+     *            The id of the thread
+     * @return The CPU Utilisation
+     */
+    private double calculateCpuUtil(ThreadMXBean threadMXBean, long threadId) {
+        long processCpuTime = threadMXBean.getThreadCpuTime(threadId);
+        Long previousCpuTime = previousThreadProcessCpuTime.get(threadId);
+        previousThreadProcessCpuTime.put(threadId, processCpuTime);
+        if (previousCpuTime != null) {
+            return Math.min((processCpuTime - previousCpuTime) / 10000000d, 100);
+        }
+        return 0;
+    }
+
+    /**
+     * This calculates the power consumption based upon cpu usage
+     * 
+     * @param cpuUsage
+     *            The Utilisation of the CPU
+     * @return The power consumption of a given thread.
+     */
+    private double calculatePowerConsumption(double cpuUsage) {
+        return jvm.getPowerMonitor().calculatePowerConsumption(cpuUsage);
     }
 
     /*

@@ -65,10 +65,10 @@ public class ThreadElement implements IThreadElement {
      *            The CPU usage in percentage
      */
     public ThreadElement(ThreadInfo threadInfo, boolean isDeadlocked,
-            double cpuUsage) {
+            double cpuUsage, double power) {
         this.isDeadlocked = isDeadlocked;
         this.cpuUsage = cpuUsage;
-        //TODO add power usage here
+        this.power = power;
         setThreadInfo(threadInfo);
     }
 
@@ -113,7 +113,7 @@ public class ThreadElement implements IThreadElement {
         this.isSuspended = isSuspended;
         this.isDeadlocked = isDeadlocked;
         this.cpuUsage = cpuUsage;
-        //TODO add power here
+        this.power = power;
     }
 
     /*
