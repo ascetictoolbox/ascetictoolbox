@@ -3666,7 +3666,14 @@ saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/obj16/thread_wai
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/ovr16/write.gif -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/full/wizban/new_jvm_connection_wiz.png -text svneol=unset#image/png
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/icons/jvmmonitor32.png -text svneol=unset#image/png
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/energy-modeller-1.0-SNAPSHOT.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/io-utils-0.0.1-SNAPSHOT.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/org.jvmmonitor.core-3.8.1-SNAPSHOT.jar -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/org.swtchart_0.8.0.v20120301.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/ovf-xmlbeans-0.0.1-SNAPSHOT.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/ovf-xmlbeans-api-0.0.1-SNAPSHOT.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/wattsup-java-sdk-core-1.0.0-SNAPSHOT.jar -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.ui/lib/zabbix-api-0.1-SNAPSHOT.jar -text
 saas/compss-plugin/LICENSE.TXT -text
 saas/compss-plugin/ascetic-deployer-feature/.project -text
 saas/compss-plugin/ascetic-deployer-feature/.settings/org.eclipse.m2e.core.prefs -text
