@@ -61,9 +61,9 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
-import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.http.HttpEntity;
@@ -335,9 +335,9 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 						Session session = connection.createSession(false,
 								Session.AUTO_ACKNOWLEDGE);
 			
-						Queue queue = session.createQueue("appmon");
+						Topic topic = session.createTopic("appmonitoring");
 			
-						MessageProducer producer = session.createProducer(queue);
+						MessageProducer producer = session.createProducer(topic);
 			
 			
 			

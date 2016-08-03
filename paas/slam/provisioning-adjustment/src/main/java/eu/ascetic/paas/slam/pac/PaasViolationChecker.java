@@ -83,7 +83,7 @@ public class PaasViolationChecker implements Runnable {
 
 	public static final String FIELD_APP_ID = "ApplicationId";
 	public static final String FIELD_DEPLOYMENT_ID = "DeploymentId";
-	public static final String FIELD_TERMS = "Terms";
+	public static final String FIELD_TERMS = "data";
 	public static final String FIELD_TIMESTAMP = "Timestamp";
 	public static final String FIELD_SLA_ID = "SLAId";
 
@@ -356,6 +356,9 @@ public class PaasViolationChecker implements Runnable {
 								String fieldValue = termsJson.get(fieldName).asText();
 								logger.debug("Measurement --> "+fieldName+" : "+fieldValue);
 
+								if (fieldName.equalsIgnoreCase("powerConsumption")) fieldName = "power_usage_per_app";
+								else if (fieldName.equalsIgnoreCase("energyConsumption")) fieldName = "energy_usage_per_app";
+								
 								measuredTerms.put(fieldName, fieldValue);
 							}
 
@@ -880,6 +883,9 @@ public class PaasViolationChecker implements Runnable {
 								String fieldValue = termsJson.get(fieldName).asText();
 								logger.debug("Estimation --> "+fieldName+" : "+fieldValue);
 	
+								if (fieldName.equalsIgnoreCase("powerEstimation")) fieldName = "power_usage_per_app";
+								else if (fieldName.equalsIgnoreCase("energyEstimation")) fieldName = "energy_usage_per_app";
+								
 								measuredTerms.put(fieldName, fieldValue);
 							}
 	
