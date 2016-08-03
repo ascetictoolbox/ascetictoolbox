@@ -1,7 +1,10 @@
 package eu.ascetic.paas.applicationmanager.amqp.model;
 
+import static eu.ascetic.paas.applicationmanager.model.Dictionary.APPLICATION_MANAGER_NAMESPACE;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 
 /**
@@ -40,7 +43,42 @@ public class VM {
 	private double value;
 	private String units;
 	private long timestamp;
+	private int cpu;
+	private long ram;
+	private long swap;
+	private long disk;
+	private int priceSchema;
 	
+	public int getCpu() {
+		return cpu;
+	}
+	public void setCpu(int cpu) {
+		this.cpu = cpu;
+	}
+	public long getRam() {
+		return ram;
+	}
+	public void setRam(long ram) {
+		this.ram = ram;
+	}
+	public long getSwap() {
+		return swap;
+	}
+	public void setSwap(long swap) {
+		this.swap = swap;
+	}
+	public long getDisk() {
+		return disk;
+	}
+	public void setDisk(long disk) {
+		this.disk = disk;
+	}
+	public int getPriceSchema() {
+		return priceSchema;
+	}
+	public void setPriceSchema(int priceSchema) {
+		this.priceSchema = priceSchema;
+	}
 	public String getVmId() {
 		return vmId;
 	}

@@ -41,6 +41,11 @@ public class VMTest {
 		vm.setUnits("W");
 		vm.setTimestamp(111l);
 		vm.setProviderId("1111");
+		vm.setCpu(22);
+		vm.setRam(33l);
+		vm.setDisk(44l);
+		vm.setSwap(55l);
+		vm.setPriceSchema(66);
 		
 		assertEquals("aaa", vm.getIaasMonitoringVmId());
 		assertEquals("bbb", vm.getIaasVmId());
@@ -52,5 +57,10 @@ public class VMTest {
 		assertEquals(111l, vm.getTimestamp());
 		assertEquals("W", vm.getUnits());
 		assertEquals("1111", vm.getProviderId());
+		assertEquals(22, vm.getCpu());
+		assertEquals(33l, vm.getRam());
+		assertEquals(44l, vm.getDisk());
+		assertEquals(55l, vm.getSwap());
+		assertEquals(66, vm.getPriceSchema());
 	}
 }
