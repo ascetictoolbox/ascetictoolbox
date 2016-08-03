@@ -54,6 +54,7 @@ public class VMTest {
 		vm.setSwapActual(13);
 		vm.setSwapMax(14);
 		vm.setSwapMin(15);
+		vm.setPriceSchema(20l);
 		List<Image> images = new ArrayList<Image>();
 		vm.setImages(images);
 		List<Link> links = new ArrayList<Link>();
@@ -83,6 +84,7 @@ public class VMTest {
 		assertEquals(13, vm.getSwapActual());
 		assertEquals(14, vm.getSwapMax());
 		assertEquals(15, vm.getSwapMin());
+		assertEquals(20l, vm.getPriceSchema());
 	}
 	
 	@Test

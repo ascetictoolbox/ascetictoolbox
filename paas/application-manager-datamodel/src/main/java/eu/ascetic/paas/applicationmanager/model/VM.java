@@ -106,6 +106,8 @@ public class VM {
 	private long numberVMsMax;
 	@XmlElement(name = "number-vms-min", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private long numberVMsMin;
+	@XmlElement(name = "price-schema", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private long priceSchema;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	@XmlTransient
@@ -314,6 +316,14 @@ public class VM {
 	}
 	public void setNumberVMsMin(long numberVMsMin) {
 		this.numberVMsMin = numberVMsMin;
+	}
+	
+	@Column(name = "price_schema", nullable = true)
+	public long getPriceSchema() {
+		return priceSchema;
+	}
+	public void setPriceSchema(long priceSchema) {
+		this.priceSchema = priceSchema;
 	}
 	
 	@ManyToOne(fetch=FetchType.EAGER)
