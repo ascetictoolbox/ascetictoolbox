@@ -142,17 +142,30 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	
 //////////////////////BASED ON LAYER'S CALCULATION////////////////////////////
 
-	
-	public double getAppTotalChargesPaaSCalculated(int deplID) {
-		
-		double charges = billing.getAppCurrentTotalCharges(deplID);
-		
+	/* CALCULATION*/	
+	/**
+	 * This function returns the total charges of the application based on the IaaS Charges
+	 * @param deplID
+	 * @param schemeId: the pricing scheme followed
+	 * @throws Exception 
+	 */
+	public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges) throws Exception{
+		logger.info("ChargesCalculator calculation of charges");
+		double charges = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
 		return charges;
+		//System.out.println("ChargesCalculator calculation of charges");
+		
 	}
+
 	
 	public double predictPriceforNextPeriod(int depID, double duration){
-		return 0.0;
-		//TBD
+		DeploymentInfo depl = billing.getApp(depID);
+		depl.resetCurrentCharges();
+		int allVMs = depl.getNumberOfVMs();
+		for (int x =0; x<allVMs; x++){
+			depl.getVM(x).resetCurrentCharges();
+		}
+		return billing.predictPriceofNextHour(depl);
 	}
 	
 	public double getAppPredictedCharges(int deplID, int scheme, double IaaSCharges, LinkedList<VMinfo> VMs){
@@ -311,18 +324,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	}
 	
 		
-	/* CALCULATION*/	
-	/**
-	 * This function returns the total charges of the application based on the IaaS Charges
-	 * @param deplID
-	 * @param schemeId: the pricing scheme followed
-	 * @throws Exception 
-	 */
-	public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges) throws Exception{
-		double charges = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
-		return charges;
-	}
-
+	
 	/*	public double getAppAveragePredictedPrice(int deplID, LinkedList<VMinfo> VMs, int IaaSProviderID, HashMap<Integer, Double> energy){
 	double charges = getAppTotalPredictedCharges(deplID, VMs, IaaSProviderID, energy);
 	double totalDurationOfApp = 0;

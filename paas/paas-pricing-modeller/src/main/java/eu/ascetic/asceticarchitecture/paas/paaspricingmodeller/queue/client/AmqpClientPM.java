@@ -44,10 +44,10 @@ public class AmqpClientPM {
 	
 	private final static Logger logger = Logger.getLogger(AmqpClientPM.class.getName());
 	
-	//the URL ---------------------- to be checked...
-	//private String url = "10.15.5.55:61616";
-	private String url = "localhost:5672";
-	//private String url = "localhost:5673";
+	//Local
+	//private String url = "localhost:5672";
+	//AM
+	private String url = "localhost:5673";
 	
 	//setting up the queue
 	public void setup(String url, String username, String password,  String pmQueueTopic) throws Exception {
