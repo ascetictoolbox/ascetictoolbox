@@ -13,8 +13,6 @@ import integratedtoolkit.types.resources.WorkerResourceDescription;
 
 public class AsceticScheduler<P extends Profile, T extends WorkerResourceDescription> extends TaskScheduler<P, T> {
 
-    public static final String OPTIM_PARAM = Ascetic.getSchedulerOptimization();
-
     private final AsceticScore<P, T> dummyScore = new AsceticScore<P, T>(0, 0, 0, 0, 0, 0);
     private final ScheduleOptimizer optimizer = new ScheduleOptimizer(this);
 

@@ -46,29 +46,15 @@ public class AppManager {
         return newResources;
     }
 
-    public double getPower(String id, int coreId, int implId) throws ApplicationUploaderException {
-        String eventType = generateEventType(coreId, implId);
-        return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventType, id);
-    }
-
-    public double getPrice(String id, int coreId, int implId) throws ApplicationUploaderException {
-        String eventType = generateEventType(coreId, implId);
-        return uploader.getEventEnergyEstimationInVM(applicationId, deploymentId, eventType, id) * 1.2;
-    }
-
     public Cost getEstimations(String id, int coreId, int implId) throws ApplicationUploaderException {
         String eventType = generateEventType(coreId, implId);
         Cost c = null;
         /*try {
-            c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-        if (c == null) {
-            c = new Cost();
-            c.setPowerValue(3d);
-            c.setCharges(0d);
-        }
+         c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
+         } catch (Exception e) {
+         e.printStackTrace();
+         c=null;
+         }*/
         return c;
     }
 

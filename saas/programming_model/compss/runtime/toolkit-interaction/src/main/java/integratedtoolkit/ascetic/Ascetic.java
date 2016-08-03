@@ -15,6 +15,12 @@ import integratedtoolkit.scheduler.types.AllocatableAction;
 
 public class Ascetic {
 
+    public enum OptimizationParameter {
+
+        TIME,
+        COST,
+        ENERGY
+    }
     private final static AsceticMonitor monitor;
     public static boolean changes = false;
 
@@ -169,7 +175,7 @@ public class Ascetic {
         monitor.stop = true;
     }
 
-    public static String getSchedulerOptimization() {
+    public static OptimizationParameter getSchedulerOptimization() {
         return Configuration.getOptimizationParameter();
     }
 

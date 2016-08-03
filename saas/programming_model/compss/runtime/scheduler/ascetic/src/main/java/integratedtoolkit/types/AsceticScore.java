@@ -1,5 +1,7 @@
 package integratedtoolkit.types;
 
+import integratedtoolkit.ascetic.Ascetic;
+import integratedtoolkit.ascetic.Ascetic.OptimizationParameter;
 import integratedtoolkit.scheduler.ascetic.AsceticSchedulingInformation;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
@@ -8,6 +10,7 @@ import java.util.LinkedList;
 
 public class AsceticScore<P extends Profile, T extends WorkerResourceDescription> extends Score {
 
+    private static final OptimizationParameter opParam = Ascetic.getSchedulerOptimization();
     /*
      * ActionScore -> task Priority
      * expectedDataAvailable -> expected time when data dependencies will be ready (take into account transfers)
@@ -41,9 +44,17 @@ public class AsceticScore<P extends Profile, T extends WorkerResourceDescription
         if (actionScore != other.actionScore) {
             return actionScore > other.actionScore;
         }
-        long ownEnd = expectedStart + implementationScore;
-        long otherEnd = otherDS.expectedStart + other.implementationScore;
-        return ownEnd < otherEnd;
+
+        switch (opParam) {
+            case COST:
+                return expectedCost < otherDS.expectedCost;
+            case ENERGY:
+                return expectedEnergy < otherDS.expectedEnergy;
+            default:
+                long ownEnd = expectedStart + implementationScore;
+                long otherEnd = otherDS.expectedStart + otherDS.implementationScore;
+                return ownEnd < otherEnd;
+        }
     }
 
     public static long getActionScore(AllocatableAction action) {

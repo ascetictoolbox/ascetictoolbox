@@ -1,10 +1,12 @@
 package integratedtoolkit.ascetic;
 
+import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductProperty;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import integratedtoolkit.ITConstants;
+import integratedtoolkit.ascetic.Ascetic.OptimizationParameter;
 import integratedtoolkit.nio.master.configuration.NIOConfiguration;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.resources.MethodResourceDescription;
@@ -27,11 +29,12 @@ public class Configuration {
     private final static HashMap<String, NIOConfiguration> componentProperties;
     private final static HashMap<String, CloudMethodResourceDescription> componentDescription;
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
+    private final static HashMap<String, Cost[][]> componentCosts;
     private final static HashMap<String, long[][]> componentTimes;
     private final static HashMap<String, float[][]> componentWeights;
     private final static float energyBoundary;
     private final static float economicalBoundary;
-    private final static String optimizationParameter;
+    private final static OptimizationParameter optimizationParameter;
     private final static boolean FAKE_AM;
     private final static long DISCOVERY_PERIOD;
 
@@ -72,12 +75,20 @@ public class Configuration {
         componentProperties = new HashMap<String, NIOConfiguration>();
         componentWeights = new HashMap<String, float[][]>();
         componentTimes = new HashMap<String, long[][]>();
+        componentCosts = new HashMap<String, Cost[][]>();
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticEnergyOptimizationBoundary");
         energyBoundary = Float.parseFloat(pp.getValue());
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticCostOptimizationBoundary");
         economicalBoundary = Float.parseFloat(pp.getValue());
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticOptimizationParameter");
-        optimizationParameter = pp.getValue();
+        String opParam = pp.getValue().toLowerCase();
+        if (opParam.equals("energy")) {
+            optimizationParameter = OptimizationParameter.ENERGY;
+        } else if (opParam.equals("cost")) {
+            optimizationParameter = OptimizationParameter.COST;
+        } else {
+            optimizationParameter = OptimizationParameter.TIME;
+        }
         parseComponents(ovf);
     }
 
@@ -113,17 +124,21 @@ public class Configuration {
             componentDescription.put(componentName, rd);
             float[][] eventWeights = new float[CoreManager.getCoreCount()][];
             long[][] eventTimes = new long[CoreManager.getCoreCount()][];
+            Cost[][] eventCosts = new Cost[CoreManager.getCoreCount()][];
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 int implCount = CoreManager.getCoreImplementations(coreId).length;
                 eventWeights[coreId] = new float[implCount];
                 eventTimes[coreId] = new long[implCount];
+                eventCosts[coreId] = new Cost[implCount];
                 for (int implId = 0; implId < implCount; implId++) {
                     eventWeights[coreId][implId] = 0f;
                     eventTimes[coreId][implId] = Long.MAX_VALUE;
+                    eventCosts[coreId][implId] = new Cost();
                 }
             }
             componentWeights.put(componentName, eventWeights);
             componentTimes.put(componentName, eventTimes);
+            componentCosts.put(componentName, eventCosts);
             LinkedList<Implementation> impls = new LinkedList<Implementation>();
             String implList = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMElements").getValue();
             if (implList.length() > 0) {
@@ -132,6 +147,8 @@ public class Configuration {
                     String signature = implementation[0];
                     float eventWeight = Float.parseFloat(implementation[1]);
                     long time = Long.parseLong(implementation[2]);
+                    double charges = Math.random() /* Double.parseLong(implementation[3])*/;
+                    double energy = Math.random()/*  Double.parseLong(implementation[4])*/;
                     Implementation impl = CoreManager.getImplementation(signature);
                     if (impl != null) {
                         impls.add(impl);
@@ -139,6 +156,8 @@ public class Configuration {
                         int implId = impl.getImplementationId();
                         eventWeights[coreId][implId] = eventWeight;
                         eventTimes[coreId][implId] = time;
+                        eventCosts[coreId][implId].setCharges(charges);
+                        eventCosts[coreId][implId].setEnergyValue(energy);
                     }
                 }
             }
@@ -210,7 +229,7 @@ public class Configuration {
         return economicalBoundary;
     }
 
-    public static String getOptimizationParameter() {
+    public static OptimizationParameter getOptimizationParameter() {
         return optimizationParameter;
     }
 
@@ -228,5 +247,9 @@ public class Configuration {
 
     public static long[][] getComponentTimes(String component) {
         return componentTimes.get(component);
+    }
+
+    public static Cost[][] getDefaultCosts(String component) {
+        return componentCosts.get(component);
     }
 }

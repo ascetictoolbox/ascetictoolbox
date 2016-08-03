@@ -55,6 +55,7 @@ saas/programming_model/compss/runtime/adaptors/nio/master/target
 saas/programming_model/compss/runtime/commons/target
 saas/programming_model/compss/runtime/engine/target
 saas/programming_model/compss/runtime/loader/target
+saas/programming_model/compss/runtime/resources/ascetic/target
 saas/programming_model/compss/runtime/resources/commons/target
 saas/programming_model/compss/runtime/scheduler/ascetic/target
 saas/programming_model/compss/runtime/scheduler/commons/target

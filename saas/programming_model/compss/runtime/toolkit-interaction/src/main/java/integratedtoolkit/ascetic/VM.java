@@ -58,12 +58,17 @@ public class VM {
         configuration.setHost(vm.getIp());
         compatibleImpls = Configuration.getComponentImplementations(ovfId);
         power = new double[CoreManager.getCoreCount()][];
+        price = new double[CoreManager.getCoreCount()][];
+        Cost[][] defaultCosts = Configuration.getDefaultCosts(ovfId);
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             power[coreId] = new double[implCount[coreId]];
-        }
-        price = new double[CoreManager.getCoreCount()][];
-        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             price[coreId] = new double[implCount[coreId]];
+            for (int implId = 0; implId < implCount[coreId]; implId++) {
+                if (defaultCosts[coreId][implId] != null) {
+                    power[coreId][implId] = defaultCosts[coreId][implId].getEnergyValue();
+                    price[coreId][implId] = defaultCosts[coreId][implId].getCharges();
+                }
+            }
         }
         /*energy = new double[CoreManager.getCoreCount()][];
          for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
@@ -73,6 +78,16 @@ public class VM {
         eventWeights = Configuration.getEventWeights(ovfId);
         coresEnergy = 0;
         coresCost = 0;
+        System.out.println("Detected VM " + vm.getIp());
+        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+            System.out.println("\tCore " + coreId);
+            for (int implId = 0; implId < implCount[coreId]; implId++) {
+                System.out.println("\t\tImplementation " + implId);
+                System.out.println("\t\t\t Time: " + times[coreId][implId]);
+                System.out.println("\t\t\t Power: " + power[coreId][implId]);
+                System.out.println("\t\t\t Price: " + price[coreId][implId]);
+            }
+        }
     }
 
     public String getIPv4() {
@@ -96,33 +111,22 @@ public class VM {
 
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
+                    Cost c = null;
                     try {
-                        Cost c = appManager.getEstimations("" + vm.getId(), coreId, implId);
+                        c = appManager.getEstimations("" + vm.getId(), coreId, implId);
+                    } catch (ApplicationUploaderException ex) {
+                        System.err.println("Could not update the energy consumtion for"
+                                + " core " + coreId + " implementation " + implId
+                                + " in " + vm.getIp());
+                        ex.printStackTrace(System.err);
+                    }
+                    if (c != null) {
                         if (price[coreId][implId] <= 0) {
                             price[coreId][implId] = c.getCharges();
                         }
                         if (power[coreId][implId] <= 0) {
                             power[coreId][implId] = c.getPowerValue();
                         }
-                        /*
-                         * if (energy[coreId][implId] <= 0){
-                         * energy[coreId][implId] = c.getEnergyValue(); }
-                         */
-                    } catch (ApplicationUploaderException ex) {
-                        if (power[coreId][implId] < 0) {
-                            power[coreId][implId] = 0;
-                        }
-                        if (price[coreId][implId] < 0) {
-                            price[coreId][implId] = 0;
-                        }
-                        /*
-                         * if (energy[coreId][implId] < 0){
-                         * energy[coreId][implId] = 0; }
-                         */
-                        System.err.println("Could not update the energy consumtion for"
-                                + " core " + coreId + " implementation " + implId
-                                + " in " + vm.getIp());
-                        ex.printStackTrace(System.err);
                     }
                     logger.debug("\t\t CURRENT VALUES for " + getIPv4()
                             + ": Core " + coreId + " impl " + implId

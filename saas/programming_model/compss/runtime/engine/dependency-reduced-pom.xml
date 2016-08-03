@@ -18,6 +18,11 @@
       <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
     </license>
   </licenses>
+  <scm>
+    <connection>scm:svn:https://ascetic-dev.cit.tu-berlin.de/svn/trunk/saas/programming_model/compss/runtime/engine</connection>
+    <developerConnection>scm:svn:https://ascetic-dev.cit.tu-berlin.de/svn/trunk/saas/programming_model/compss/runtime/engine</developerConnection>
+    <url>https://ascetic-dev.cit.tu-berlin.de/svn/trunk/saas/programming_model/compss/runtime/engine</url>
+  </scm>
   <organization>
     <name>BSC</name>
     <url>http://www.bsc.es</url>
@@ -59,6 +64,7 @@
             <item>timestamp</item>
             <item>scmVersion</item>
           </items>
+          <revisionOnScmFailure>none</revisionOnScmFailure>
         </configuration>
       </plugin>
       <plugin>
