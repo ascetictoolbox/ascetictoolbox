@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -50,36 +47,39 @@ public class SchedulingReporter {
 	 */
 	@Scheduled(fixedRateString = "${min.reporting.rate}")
 	public void reportValuesToSLAM() {
-		try {
-			synchronized (monitoringEntries) {
-				if (monitoringEntries.size() > 0) {
-					long until = System.currentTimeMillis();
-					long latestNextTime = monitoringEntries.first().getNextTime();
-					while (latestNextTime <= until && monitoringEntries.size() > 0) {
-						MonitoringInfo mi = monitoringEntries.pollFirst();
-						try {
-							slam.reportEstimation(
-									mi.getApplicationId(),
-									mi.getDeploymentId(),
-									until,
-									em.getEnergyEstimation(mi.getApplicationId(), mi.getDeploymentId(), mi.getFrequency()),
-									-1 // TODO: add a similar service and client for the Price Modeller
-							);
+            try {
+                synchronized (monitoringEntries) {
+                    if (monitoringEntries.size() > 0) {
+                        long until = System.currentTimeMillis();
+                        long latestNextTime = monitoringEntries.first().getNextTime();
+                        while (latestNextTime <= until && monitoringEntries.size() > 0) {
+                            MonitoringInfo mi = monitoringEntries.pollFirst();
+                            try {
+                                slam.reportEstimation(
+                                    mi.getApplicationId(),
+                                    mi.getDeploymentId(),
+                                    until,
+                                    em.getEnergyEstimation(mi.getApplicationId(), mi.getDeploymentId(), mi.getFrequency()),
+                                    em.getEnergyConsumption(mi.getApplicationId(), mi.getDeploymentId()),
+                                    em.getPowerEstimation(mi.getApplicationId(), mi.getDeploymentId(), mi.getFrequency()),
+                                    em.getPowerConsumption(mi.getApplicationId(), mi.getDeploymentId()),
+                                    -1 // TODO: add a similar service and client for the Price Modeller
+                                );
 
-							mi.setNextTime(mi.getNextTime() + mi.getFrequency());
-							monitoringEntries.add(mi);
-						} catch (Exception e) {
-							log.warn("Error retrieving energy estimations: " + e.getMessage() + ". Removing app/deployment from reporting scheduler");
-							log.debug("More detail: ", e);
-						}
-						if (monitoringEntries.size() > 0) {
-							latestNextTime = monitoringEntries.first().getNextTime();
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-		}
+                                mi.setNextTime(mi.getNextTime() + mi.getFrequency());
+                                monitoringEntries.add(mi);
+                            } catch (Exception e) {
+                                log.warn("Error retrieving energy estimations: " + e.getMessage() + ". Removing app/deployment from reporting scheduler");
+                                log.debug("More detail: ", e);
+                            }
+                            if (monitoringEntries.size() > 0) {
+                                latestNextTime = monitoringEntries.first().getNextTime();
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
 	}
 }

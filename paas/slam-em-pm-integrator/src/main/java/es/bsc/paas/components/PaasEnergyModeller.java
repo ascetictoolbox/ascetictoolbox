@@ -15,27 +15,53 @@ import java.net.URI;
 @Component
 public class PaasEnergyModeller {
 
-	Logger log = LoggerFactory.getLogger(PaasEnergyModeller.class);
+    Logger log = LoggerFactory.getLogger(PaasEnergyModeller.class);
 
-	@Value("${application.manager.url}")
-	private String applicationManagerUrl;
+    @Value("${application.manager.url}")
+    private String applicationManagerUrl;
 
-	RestTemplate rest = new RestTemplate();
+    RestTemplate rest = new RestTemplate();
+    
+    private double valueFromXml(String response){
+        log.trace(response);
+        String doubleStr = response.substring(
+            response.indexOf("<value>") + 7, 
+            response.indexOf("</value>")
+        );
 
-	public double getEnergyEstimation(String applicationId, String deploymentId, long duration) {
-			// GET /applications/{application_name}/deployments/{deployment_id}/energy-estimation?duration={duration_long}
-			// TODO: uncomment this
-			String estimationString = rest.getForObject(URI.create(applicationManagerUrl
-					+ "/applications/" + applicationId
-					+ "/deployments/" + deploymentId
-					+ "/energy-estimation?duration=" + duration), String.class);
-			log.trace(estimationString);
+        log.trace("douvleValueStr = " + doubleStr);
+        return Double.parseDouble(doubleStr.trim());
+    }
 
-			String estimationValueStr = estimationString.substring(
-					estimationString.indexOf("<value>") + 7,
-					estimationString.indexOf("</value>"));
+    public double getEnergyEstimation(String applicationId, String deploymentId, long duration) {
+        String energyEstimation = rest.getForObject(URI.create(applicationManagerUrl
+            + "/applications/" + applicationId
+            + "/deployments/" + deploymentId
+            + "/energy-estimation?duration=" + duration), String.class);
+        return valueFromXml(energyEstimation);
+    }
 
-			log.trace("estimationVlueStr = " + estimationValueStr);
-			return new Double(estimationValueStr.trim());
-	}
+    public double getEnergyConsumption(String applicationId, String deploymentId) {
+        String energyConsumption = rest.getForObject(URI.create(applicationManagerUrl
+            + "/applications/" + applicationId
+            + "/deployments/" + deploymentId
+            + "/energy-consumption"), String.class);
+        return valueFromXml(energyConsumption);
+    }
+    
+    public double getPowerEstimation(String applicationId, String deploymentId, long duration) {
+        String powerEstimation = rest.getForObject(URI.create(applicationManagerUrl
+            + "/applications/" + applicationId
+            + "/deployments/" + deploymentId
+            + "/power-estimation?duration=" + duration), String.class);
+        return valueFromXml(powerEstimation);
+    }
+
+    public double getPowerConsumption(String applicationId, String deploymentId) {
+        String powerConsumption = rest.getForObject(URI.create(applicationManagerUrl
+            + "/applications/" + applicationId
+            + "/deployments/" + deploymentId
+            + "/power-consumption"), String.class);
+        return valueFromXml(powerConsumption);
+    }
 }

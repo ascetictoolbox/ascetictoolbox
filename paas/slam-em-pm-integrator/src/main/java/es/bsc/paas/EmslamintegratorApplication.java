@@ -14,9 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJms
 @EnableScheduling
 public class EmslamintegratorApplication {
-
-	public static final void main(String[] args) {
-		SpringApplication.run(EmslamintegratorApplication.class, args);
+    public static final void main(String[] args) {
+        SpringApplication.run(EmslamintegratorApplication.class, args);
     }
 }
 

@@ -19,37 +19,46 @@ import javax.jms.Session;
 @Component
 public class SLAManager {
 
-	@Autowired
-	ApplicationContext context;
+    @Autowired
+    ApplicationContext context;
 
-	private static final String QUEUE_TEMPLATE = "application-monitor.monitoring.%s.%s.estimation";
+    private static final String QUEUE_TEMPLATE = "application-monitor.monitoring.%s.%s.estimation";
 
-	private Logger log = LoggerFactory.getLogger(SLAManager.class);
+    private Logger log = LoggerFactory.getLogger(SLAManager.class);
 
-	public void reportEstimation(String applicationId, String deploymentId, long referredtimestamp, double energyEstimation, double priceEstimation) {
-		String queueName = String.format(QUEUE_TEMPLATE,applicationId,deploymentId);
+    public void reportEstimation(String applicationId, String deploymentId, long referredtimestamp, 
+        double energyEstimation, double energyConsumption, 
+        double powerEstimation, double powerConsumption, 
+        double priceEstimation) {
+        
+        String queueName = String.format(QUEUE_TEMPLATE,applicationId,deploymentId);
+        log.debug("Queue name: " + queueName);
+        final String jsonDocument = new StringBuilder("{\"ApplicationId\":\"")
+            .append(applicationId)
+            .append("\",\"DeploymentId\":\"")
+            .append(deploymentId)
+            .append("\",\"Timestamp\":")
+            .append(System.currentTimeMillis())
+            .append(",\"data\":{\"energyEstimation\":")
+            .append(energyEstimation)
+            .append(",\"energyConsumption\":")
+            .append(energyConsumption)
+            .append(",\"powerEstimation\":")
+            .append(powerEstimation)
+            .append(",\"powerConsumption\":")
+            .append(powerConsumption)
+            .append(",\"priceEstimation\":")
+            .append(priceEstimation)
+            .append("}}").toString();
 
-		log.debug("Queue name: " + queueName);
-		final String jsonDocument = new StringBuilder("{\"ApplicationId\":\"")
-				.append(applicationId)
-				.append("\",\"DeploymentId\":\"")
-				.append(deploymentId)
-				.append("\",\"Timestamp\":")
-				.append(System.currentTimeMillis())
-				.append(",\"data\":{\"energyEstimation\":")
-				.append(energyEstimation)
-				.append(",\"priceEstimation\":")
-				.append(priceEstimation)
-				.append("}}").toString();
-
-		log.debug(jsonDocument);
-		MessageCreator messageCreator = new MessageCreator() {
-			@Override
-			public Message createMessage(Session session) throws JMSException {
-					return session.createTextMessage(jsonDocument);
-			}
-		};
-		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-		jmsTemplate.send(queueName, messageCreator);
-	}
+        log.debug(jsonDocument);
+        MessageCreator messageCreator = new MessageCreator() {
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                return session.createTextMessage(jsonDocument);
+            }
+        };
+        JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
+        jmsTemplate.send(queueName, messageCreator);
+    }
 }

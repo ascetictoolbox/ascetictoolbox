@@ -19,9 +19,8 @@ import java.io.IOException;
  */
 @Component
 public class InitiateMonitoringListener {
-
-	@Autowired
-	SchedulingReporter schedulingReporter;
+    @Autowired
+    SchedulingReporter schedulingReporter;
 
     private Logger logger = LoggerFactory.getLogger(InitiateMonitoringListener.class);
     public InitiateMonitoringListener() {
@@ -29,16 +28,15 @@ public class InitiateMonitoringListener {
     }
 
 
-	/**
-	 * This method is triggered each time the SLA Manager submits the "initiateMonitoring" command to the
-	 * appmonitoring queue
-	 * @param content the JSON document of the "initiateMonitoring" command
-	 */
-	@JmsListener(destination = "${topic.name}")
+    /**
+     * This method is triggered each time the SLA Manager submits the "initiateMonitoring" command to the
+     * appmonitoring queue
+     * @param content the JSON document of the "initiateMonitoring" command
+     */
+    @JmsListener(destination = "${topic.name}")
     private void processTopicMessage(String content) {
-
-		/* TODO: now it assumes all the messages are "initiateMonitoring". It would be interesting
-		   to create other commands, such as "stopMonitoring" */
+        /* TODO: now it assumes all the messages are "initiateMonitoring". It would be interesting
+           to create other commands, such as "stopMonitoring" */
         logger.debug("Received from Topic: " + content);
         try {
             schedulingReporter.onInitiateMonitoringCommandInfo(InitiateMonitoringCommand.fromJson(content));
@@ -46,6 +44,4 @@ public class InitiateMonitoringListener {
             logger.warn(e.getMessage(),e);
         }
     }
-
-
 }
