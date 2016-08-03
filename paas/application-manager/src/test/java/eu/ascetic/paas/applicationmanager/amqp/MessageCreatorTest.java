@@ -89,6 +89,7 @@ public class MessageCreatorTest {
 		vm1.setDiskActual(2l);
 		vm1.setRamActual(3l);
 		vm1.setSwapActual(4l);
+		vm1.setPriceSchema(20l);
 		
 		vms.add(vm1);
 		
@@ -119,6 +120,7 @@ public class MessageCreatorTest {
 		assertEquals(3l, amMessage.getVms().get(0).getRam());
 		assertEquals(2l, amMessage.getVms().get(0).getDisk());
 		assertEquals(4l, amMessage.getVms().get(0).getSwap());
+		assertEquals(20, amMessage.getVms().get(0).getPriceSchema());
 		
 		
 		assertEquals("provider-vm-id2", amMessage.getVms().get(1).getIaasVmId());

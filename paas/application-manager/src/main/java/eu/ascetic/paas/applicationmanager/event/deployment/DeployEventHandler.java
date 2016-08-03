@@ -137,6 +137,7 @@ public class DeployEventHandler {
 						VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem.getProductSectionAtIndex(0));
 						long minNumberVMs = vmLimits.getLowerNumberOfVMs();
 						long maxNumberVMs = vmLimits.getUpperNumberOfVMs();
+						int priceSchema = OVFUtils.getPriceSchema(virtualSystem.getProductSectionAtIndex(0));
 
 						//We determine if it needs a public IP/Floating IP
 						boolean publicIP = false;	
@@ -198,6 +199,9 @@ public class DeployEventHandler {
 								vmToDB.setSwapMax(0);
 								vmToDB.setSwapActual(0);
 								vmToDB.setSwapMin(0);
+								if(priceSchema != -1) {
+									vmToDB.setPriceSchema(priceSchema);
+								}
 								vmToDB.setProviderId("" + deploymentEvent.getProviderId());
 								vmDAO.save(vmToDB);
 

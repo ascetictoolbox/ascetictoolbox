@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,6 +95,23 @@ public class OVFUtilsTest {
 		assertTrue(ids.contains("jboss"));
 		assertTrue(ids.contains("mysql"));
 		assertEquals(4, ids.size());
+	}
+	
+	@Test
+	public void getPriceSchema() {
+		ProductSection productSectionHAProxy = OVFUtils.getProductionSectionForOvfID(threeTierWebAppOvfString, "haproxy");
+		if(productSectionHAProxy == null) {
+			fail();
+		}
+		
+		assertEquals(-1, OVFUtils.getPriceSchema(productSectionHAProxy));
+		
+		ProductSection productSectionJmeter = OVFUtils.getProductionSectionForOvfID(threeTierWebAppOvfString, "jmeter");
+		if(productSectionJmeter == null) {
+			fail();
+		}
+		
+		assertEquals(2, OVFUtils.getPriceSchema(productSectionJmeter));
 	}
 	
 	@Test

@@ -96,6 +96,7 @@ public class MessageCreator {
 		messageVM.setDisk(vm.getDiskActual());
 		messageVM.setRam(vm.getRamActual());
 		messageVM.setSwap(vm.getSwapActual());
+		messageVM.setPriceSchema((int) vm.getPriceSchema()); 
 		
 		if(vm.getProviderId() == null) {
 			messageVM.setProviderId("");

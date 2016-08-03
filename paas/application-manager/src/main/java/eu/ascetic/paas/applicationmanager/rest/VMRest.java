@@ -241,6 +241,8 @@ public class VMRest extends AbstractRest {
 		String iso = "";
 		if(isoPath != null) iso = isoPath + suffix;
 		
+		int priceSchema = OVFUtils.getPriceSchema(virtualSystem.getProductSectionAtIndex(0));
+		
 		// We create the VM to Deploy
 		Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), vm.getOvfId(), ""/*deployment.getSlaAgreement()*/ );
 		logger.debug("virtMachine: " + virtMachine);
@@ -277,6 +279,9 @@ public class VMRest extends AbstractRest {
 			vmToDB.setSwapActual(0);
 			vmToDB.setSwapMin(0);
 			vmToDB.setProviderId(deployment.getProviderId());
+			if(priceSchema != -1) {
+				vmToDB.setPriceSchema(priceSchema);
+			}
 			vmDAO.save(vmToDB);
 			
 			logger.info("IMAGE 3 " + image);

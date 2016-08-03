@@ -268,7 +268,7 @@ public class OVFUtils {
 	}
 	
 	public static VMLimits getUpperAndLowerVMlimits(ProductSection productSection) {
-		
+	
 		VMLimits vmLimits = new VMLimits();
 		
 		try {
@@ -280,6 +280,16 @@ public class OVFUtils {
 		}
 		
 		return vmLimits;
+	}
+	
+	public static int getPriceSchema(ProductSection productSection) {
+		String priceSchema = productSection.getPriceSchema();
+		
+		if(priceSchema == null) {
+			return -1;
+		}
+		
+		return Integer.parseInt(priceSchema);
 	}
 	
 	/**
