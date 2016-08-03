@@ -212,12 +212,7 @@ public class NegotiationEventHandler {
 				deployment.addAgreement(agreement);
 				
 				logger.info("Deployment Id: " + deployment.getId());
-				
-				System.out.println("#### <- 1");
 			}
-			
-			System.out.println("#### <- 2");
-			//deploymentDAO.update(deployment);
 		}
 	}
 }

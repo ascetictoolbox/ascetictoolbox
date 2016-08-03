@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
+import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -62,6 +63,7 @@ import eu.ascetic.paas.applicationmanager.rest.util.DateUtil;
 import eu.ascetic.paas.applicationmanager.rest.util.XMLBuilder;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
 import eu.ascetic.paas.applicationmanager.slam.sla.SLAAgreementHelper;
+import eu.ascetic.paas.applicationmanager.slam.sla.model.SLA;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslator;
 import eu.ascetic.paas.applicationmanager.slam.translator.SlaTranslatorImplNoOsgi;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
@@ -862,6 +864,43 @@ public class DeploymentRest extends AbstractRest {
 		
 		try {
 			SLATemplate[] slats = NegotiationEventHandler.negiotate(agreementId, ovfDefinition, applicationName, deployment.getId(), client);
+			
+			if(slats == null || slats.length == 0) {
+				AmqpProducer.sendDeploymentRenegotiatedMessage(applicationName, deployment);
+				return buildResponse(Status.OK, "No new agreement possible");
+			}
+			
+			SLATemplate slat = slats[0];
+			
+			SLA slaAgreement = client.createAgreement(Configuration.slamURL, slat, slat.getUuid().getValue());
+			
+			if(slaAgreement == null) {
+				AmqpProducer.sendDeploymentRenegotiatedMessage(applicationName, deployment);
+				return buildResponse(Status.OK, "Not possible to reach an agreement");
+			}
+			
+			// We set the old agreement to false
+			agreement.setAccepted(false);
+			agreementDAO.update(agreement);
+			
+			//We update the SLA ID for the deployment:
+			deployment = deploymentDAO.getById(deployment.getId());
+			deployment.setSlaUUID(slaAgreement.getUuid());
+			deploymentDAO.update(deployment);
+			
+			//We add the new agreement to the db
+			Agreement agreement2 = new Agreement(); 
+			agreement2.setAccepted(true);
+			agreement2.setDeployment(deployment);
+			SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
+			String xmlRetSlat = rend.renderSLATemplate(slat);
+			agreement2.setSlaAgreement(xmlRetSlat);
+			agreement2.setNegotiationId(agreementId);
+			agreement2.setSlaAgreementId(slat.getUuid().getValue());
+			agreement2.setOrderInArray(0);
+			
+			deployment.addAgreement(agreement);
+			deploymentDAO.update(deployment);
 			
 		} catch(Exception ex) {
 			logger.error("Error during the renegotiation process");
