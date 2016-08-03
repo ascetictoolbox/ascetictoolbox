@@ -29,6 +29,12 @@
 		<name>BSC</name>
 		<url>http://www.bsc.es</url>
 	</organization>
+	<!-- SOURCE CONTROL MANAGEMENT -->
+        <scm>
+                <connection>scm:svn:https://ascetic-dev.cit.tu-berlin.de/svn/trunk/saas/programming_model/compss/runtime/engine</connection>
+                <developerConnection>scm:svn:https://ascetic-dev.cit.tu-berlin.de/svn/trunk/saas/programming_model/compss/runtime/engine</developerConnection>
+                <url>https://ascetic-dev.cit.tu-berlin.de/svn/trunk/saas/programming_model/compss/runtime/engine</url>
+        </scm>
 
 	<!-- DEPENDENCIES -->
 	<dependencies>
@@ -121,6 +127,7 @@
 						<item>timestamp</item>
 						<item>scmVersion</item>
 					</items>
+					<revisionOnScmFailure>none</revisionOnScmFailure>
 				</configuration>
 			</plugin>
 
