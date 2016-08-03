@@ -92,6 +92,11 @@ public class MessageCreator {
 		messageVM.setOvfId(vm.getOvfId());
 		messageVM.setStatus(vm.getStatus());
 		messageVM.setVmId("" + vm.getId());
+		messageVM.setCpu(vm.getCpuActual());
+		messageVM.setDisk(vm.getDiskActual());
+		messageVM.setRam(vm.getRamActual());
+		messageVM.setSwap(vm.getSwapActual());
+		
 		if(vm.getProviderId() == null) {
 			messageVM.setProviderId("");
 		} else {

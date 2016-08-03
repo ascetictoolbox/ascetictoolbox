@@ -85,6 +85,10 @@ public class MessageCreatorTest {
 		vm1.setIp("172.0.0.1");
 		vm1.setSlaAgreement("slaAggrementId1");
 		vm1.setProviderId("111");
+		vm1.setCpuActual(1);
+		vm1.setDiskActual(2l);
+		vm1.setRamActual(3l);
+		vm1.setSwapActual(4l);
 		
 		vms.add(vm1);
 		
@@ -111,7 +115,11 @@ public class MessageCreatorTest {
 		assertEquals("ovfId1", amMessage.getVms().get(0).getOvfId());
 		assertEquals("XXX1", amMessage.getVms().get(0).getStatus());
 		assertEquals("12", amMessage.getVms().get(0).getVmId());
-		assertEquals("111", amMessage.getVms().get(0).getProviderId());
+		assertEquals(1, amMessage.getVms().get(0).getCpu());
+		assertEquals(3l, amMessage.getVms().get(0).getRam());
+		assertEquals(2l, amMessage.getVms().get(0).getDisk());
+		assertEquals(4l, amMessage.getVms().get(0).getSwap());
+		
 		
 		assertEquals("provider-vm-id2", amMessage.getVms().get(1).getIaasVmId());
 		assertEquals("ovfId2", amMessage.getVms().get(1).getOvfId());
