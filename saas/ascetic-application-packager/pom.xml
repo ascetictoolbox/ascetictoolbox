@@ -56,7 +56,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	<dependency>
 		<groupId>eu.ascetic.paas</groupId>
 		<artifactId>application-manager-datamodel</artifactId>
-		<version>0.26-SNAPSHOT</version>
+		<version>0.29-SNAPSHOT</version>
 	</dependency>
 	<!--  http client -->
 	<dependency>
