@@ -283,13 +283,7 @@ public class OVFUtils {
 	}
 	
 	public static int getPriceSchema(ProductSection productSection) {
-		String priceSchema = productSection.getPriceSchema();
-		
-		if(priceSchema == null) {
-			return -1;
-		}
-		
-		return Integer.parseInt(priceSchema);
+                return productSection.getPriceSchema();
 	}
 	
 	/**
