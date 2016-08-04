@@ -280,7 +280,7 @@ public class VMRest extends AbstractRest {
 			vmToDB.setSwapMin(0);
 			vmToDB.setProviderId(deployment.getProviderId());
 			if(priceSchema != -1) {
-				vmToDB.setPriceSchema(priceSchema);
+				vmToDB.setPriceSchema(new Long(priceSchema));
 			}
 			vmDAO.save(vmToDB);
 			

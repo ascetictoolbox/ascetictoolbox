@@ -200,7 +200,7 @@ public class DeployEventHandler {
 								vmToDB.setSwapActual(0);
 								vmToDB.setSwapMin(0);
 								if(priceSchema != -1) {
-									vmToDB.setPriceSchema(priceSchema);
+									vmToDB.setPriceSchema(new Long(priceSchema));
 								}
 								vmToDB.setProviderId("" + deploymentEvent.getProviderId());
 								vmDAO.save(vmToDB);
