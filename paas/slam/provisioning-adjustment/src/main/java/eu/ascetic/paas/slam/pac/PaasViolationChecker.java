@@ -346,6 +346,11 @@ public class PaasViolationChecker implements Runnable {
 									measuredSlaId = fieldValue;
 								}
 							}
+							
+							if (!measuredDeploymentId.equalsIgnoreCase(deploymentId)) {
+								logger.debug("Deployment Id is different, skipping...");
+								return;
+							}
 
 							JsonNode termsJson = msgBody.get(FIELD_TERMS);
 							Map<String,String> measuredTerms = new HashMap<String,String>();
