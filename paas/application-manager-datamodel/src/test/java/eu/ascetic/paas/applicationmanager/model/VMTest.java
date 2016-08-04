@@ -84,7 +84,7 @@ public class VMTest {
 		assertEquals(13, vm.getSwapActual());
 		assertEquals(14, vm.getSwapMax());
 		assertEquals(15, vm.getSwapMin());
-		assertEquals(20l, vm.getPriceSchema());
+		assertEquals(new Long(20l), vm.getPriceSchema());
 	}
 	
 	@Test

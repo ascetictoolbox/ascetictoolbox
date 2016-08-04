@@ -107,7 +107,7 @@ public class VM {
 	@XmlElement(name = "number-vms-min", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private long numberVMsMin;
 	@XmlElement(name = "price-schema", namespace = APPLICATION_MANAGER_NAMESPACE)
-	private long priceSchema;
+	private Long priceSchema;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	@XmlTransient
@@ -319,10 +319,10 @@ public class VM {
 	}
 	
 	@Column(name = "price_schema", nullable = true)
-	public long getPriceSchema() {
+	public Long getPriceSchema() {
 		return priceSchema;
 	}
-	public void setPriceSchema(long priceSchema) {
+	public void setPriceSchema(Long priceSchema) {
 		this.priceSchema = priceSchema;
 	}
 	
