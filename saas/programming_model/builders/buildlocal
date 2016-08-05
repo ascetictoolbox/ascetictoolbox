@@ -374,7 +374,7 @@ install() {
   #Engine
   echo "--- Copy engine"
   cp ${tmpDir}/compss/runtime/compss-engine.jar ${targetDir}/Runtime/
- 
+  cp ${tmpDir}/compss/runtime/interaction.jar ${targetDir}/Runtime/ 
   # TOOLS DEPLOYMENT
   if [ "$monitor" == "true" ]; then
     echo "- Deploying COMPSs Tools"
