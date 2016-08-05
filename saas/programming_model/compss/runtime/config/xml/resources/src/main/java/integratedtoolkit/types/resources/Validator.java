@@ -37,7 +37,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -124,7 +125,7 @@ public class Validator {
                 num = num + 1;
             }
         }
-        if (num != 1) {
+        if (num > 1) {
             // Shared disk already exists
             throw new InvalidElementException("SharedDisk", sd.getName(), "Name already in use");
         }
@@ -150,7 +151,7 @@ public class Validator {
                 num = num + 1;
             }
         }
-        if (num != 1) {
+        if (num > 1) {
             // DataNode already exists
             throw new InvalidElementException("DataNode", dn.getName(), "Name already in use");
         }
@@ -238,7 +239,7 @@ public class Validator {
                 num = num + 1;
             }
         }
-        if (num != 1) {
+        if (num > 1) {
             // ComputeNode already exists
             throw new InvalidElementException("ComputeNode", cn.getName(), "Name already in use");
         }
@@ -353,7 +354,7 @@ public class Validator {
                 num = num + 1;
             }
         }
-        if (num != 1) {
+        if (num > 1) {
             // Service already exists
             throw new InvalidElementException("Service", s.getWsdl(), "WSDL already in use");
         }
@@ -390,7 +391,7 @@ public class Validator {
                 num = num + 1;
             }
         }
-        if (num != 1) {
+        if (num > 1) {
             // CloudProvider already exists
             throw new InvalidElementException("CloudProvider", cp.getName(), "Name already in use");
         }
