@@ -4196,6 +4196,7 @@ saas/programming_model/compss/runtime/commons/src/main/java/integratedtoolkit/ut
 saas/programming_model/compss/runtime/config/log/COMPSsMaster-log4j -text
 saas/programming_model/compss/runtime/config/log/COMPSsMaster-log4j.debug -text
 saas/programming_model/compss/runtime/config/log/COMPSsMaster-log4j.info -text
+saas/programming_model/compss/runtime/config/log/COMPSsMaster-log4j.instrument -text svneol=unset#application/xml
 saas/programming_model/compss/runtime/config/log/COMPSsMaster-log4j.off -text
 saas/programming_model/compss/runtime/config/log/COMPSsWorker-log4j.debug -text
 saas/programming_model/compss/runtime/config/log/COMPSsWorker-log4j.off -text

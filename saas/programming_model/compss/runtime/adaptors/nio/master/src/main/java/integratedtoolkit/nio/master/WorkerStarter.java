@@ -204,8 +204,12 @@ public class WorkerStarter {
         }
 
         // Get JVM Flags
-        String workerJVMflags = (System.getProperty(ITConstants.IT_WORKER_JVM_OPTS) != null) ? System.getProperty(ITConstants.IT_WORKER_JVM_OPTS) : "";
-        String[] jvmFlags = workerJVMflags.split(",");
+     // Get JVM Flags
+        String workerJVMflags = System.getProperty(ITConstants.IT_WORKER_JVM_OPTS);
+        String[] jvmFlags = new String[0];
+        if (workerJVMflags!=null && !workerJVMflags.isEmpty()){
+        	jvmFlags =workerJVMflags.split(",");
+        }
         
         // Configure worker debug level
         String workerDebug = Boolean.toString(Logger.getLogger(Loggers.WORKER).isDebugEnabled());
