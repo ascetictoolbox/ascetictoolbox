@@ -4204,15 +4204,6 @@ saas/programming_model/compss/runtime/config/xml/monitor/monitor.xsl -text
 saas/programming_model/compss/runtime/config/xml/monitor/monitor_schema.xsd -text
 saas/programming_model/compss/runtime/config/xml/monitor/pom.xml -text
 saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/META-INF/sun-jaxb.episode -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/ActionsType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/ApplicationType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/COMPSsStateType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/CoreType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/CoresInfoType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/ObjectFactory.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/ResourceInfoType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/ResourceType.java -text
-saas/programming_model/compss/runtime/config/xml/monitor/src/main/java/integratedtoolkit/types/monitor/jaxb/TasksInfoType.java -text
 saas/programming_model/compss/runtime/config/xml/monitor/src/test/java/integratedtoolkit/types/monitor/test/MonitorFileTest.java -text
 saas/programming_model/compss/runtime/config/xml/monitor/src/test/resources/monitor.xml -text
 saas/programming_model/compss/runtime/config/xml/pom.xml -text
