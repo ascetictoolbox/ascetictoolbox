@@ -2,13 +2,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<!-- GENERAL INFORMATION -->
-	<artifactId>compss-resources-schema</artifactId>
-        <parent>
-                <groupId>eu.ascetic.saas.programming-model.runtime</groupId>
-                <artifactId>config</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <relativePath>../</relativePath>
-        </parent>	
+	<groupId>eu.ascetic.saas.programming-model.runtime.config</groupId>
+	<artifactId>compss-resources-schema</artifactId>	
+
+	<parent>
+		<groupId>eu.ascetic.saas.programming-model.runtime</groupId>
+		<artifactId>config</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	
 	<!-- PROJECT INFORMATION -->
 	<name>Resources Schema</name>
 	<description>Resources schema</description>
@@ -29,13 +33,13 @@
 	<dependencies>
 		<!-- Log4j -->
 		<dependency>
-	                <groupId>org.apache.logging.log4j</groupId>
-                        <artifactId>log4j-core</artifactId>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 		<!--  Apache Commons IO (FileUtils) -->
 		<dependency>
-                        <groupId>commons-io</groupId>
-                        <artifactId>commons-io</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
 	
