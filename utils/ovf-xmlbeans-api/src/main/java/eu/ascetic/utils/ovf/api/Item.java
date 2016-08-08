@@ -373,7 +373,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
      * URIs and are specified as follows:<br>
      * <br>
      * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
-     * {@link References}. &lt;id> is the value of the id attribute of the
+     * {@link References}. &lt;id&gt; is the value of the id attribute of the
      * {@link File} being referenced.<br>
      * <br>
      * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
@@ -399,7 +399,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
      * URIs and are specified as follows:<br>
      * <br>
      * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
-     * {@link References}. &lt;id> is the value of the id attribute of the
+     * {@link References}. &lt;id&gt; is the value of the id attribute of the
      * {@link File} being referenced.<br>
      * <br>
      * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
@@ -429,7 +429,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
      * OVF descriptor are formatted as URIs and are specified as follows:<br>
      * <br>
      * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
-     * {@link References}. &lt;id> is the value of the id attribute of the
+     * {@link References}. &lt;id&gt; is the value of the id attribute of the
      * {@link File} being referenced.<br>
      * <br>
      * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the
@@ -456,7 +456,7 @@ public class Item extends AbstractElement<XmlBeanRASDType> {
      * formatted as URIs and are specified as follows:<br>
      * <br>
      * ovf:/file/&lt;id&gt; - A reference to a file in the OVF, as specified in
-     * {@link References}. &lt;id> is the value of the id attribute of the
+     * {@link References}. &lt;id&gt; is the value of the id attribute of the
      * {@link File} being referenced.<br>
      * <br>
      * ovf:/disk/&lt;id&gt; - A reference to a virtual disk, as specified in the

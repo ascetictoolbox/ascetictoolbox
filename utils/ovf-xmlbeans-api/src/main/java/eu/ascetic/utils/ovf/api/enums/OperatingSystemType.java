@@ -24,9 +24,8 @@ import eu.ascetic.utils.ovf.api.OperatingSystem;
  * {@link OperatingSystem} from CIM_OperatingSystem.OsType<br>
  * <br>
  * 
- * (See <a
- * href="@link http://www.dmtf.org/standards/cim/cim_schema_v2191">http:/
- * /www.dmtf.org/standards/cim/cim_schema_v2191</a>)
+ * (See <a href="http://www.dmtf.org/standards/cim/cim_schema_v2191">
+ * http://www.dmtf.org/standards/cim/cim_schema_v2191</a>)
  * 
  * @author Django Armstrong (ULeeds)
  * 

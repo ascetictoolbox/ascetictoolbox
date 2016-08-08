@@ -29,10 +29,10 @@ import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
  * third-generation virtual hardware. The virtual system type identifiers
  * specified in vssd:VirtualSystemType elements are expected to be matched
  * against the values of property VirtualSystemTypesSupported of CIM class
- * CIM_VirtualSystemManagementCapabilities. (See <a
- * href="@link http://www.dmtf.org/standards/cim/cim_schema_v2191">http:/
- * /www.dmtf.org/standards/cim/cim_schema_v2191</a> and <a href=
- * "https://www.vmware.com/support/developer/cim-sdk/smash/u2/ga/apirefdoc/CIM_VirtualSystemSettingData.html"
+ * CIM_VirtualSystemManagementCapabilities. (See 
+ * <a href="http://www.dmtf.org/standards/cim/cim_schema_v2191">
+ * http://www.dmtf.org/standards/cim/cim_schema_v2191</a> and 
+ * <a href="https://www.vmware.com/support/developer/cim-sdk/smash/u2/ga/apirefdoc/CIM_VirtualSystemSettingData.html"
  * >https://www.vmware.com/support/developer/cim-sdk/smash/u2/ga/apirefdoc/
  * CIM_VirtualSystemSettingData.html</a>)<br>
  * <br>

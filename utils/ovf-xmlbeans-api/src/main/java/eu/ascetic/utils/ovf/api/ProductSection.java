@@ -1784,6 +1784,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * this {@link ProductSection}.
      *
      * @param softwareDependencyIndex
+     *            The index of the software dependency (not to be confused with
+     *            the index of a {@link ProductProperty}, see
+     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @return The number of attributes for a given software dependency
      */
     public int getSoftwareDependencyPackageAttributeNumber(
@@ -2374,6 +2377,15 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         decrementIndexPropertyNumber(ASCETIC_TERM_MEASUREMENT_NUMBER);
     }
 
+    /**
+     * This adds SLA info to the OVF
+     * @param slaTerm The SLA term
+     * @param unit The unit
+     * @param comparator The comparator for the sla term
+     * @param boundaryValue the boundary value
+     * @param slaType If its a warning or violation
+     * @return The index value of the new SLA info type
+     */
     public int addSlaInfo(String slaTerm, String unit,
             String comparator, String boundaryValue, String slaType) {
 
@@ -2398,13 +2410,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     *
-     * @param index
-     * @param slaTerm
-     * @param unit
-     * @param comparator
-     * @param boundaryValue
-     * @param slaType
+     * This sets SLA info to the OVF
+     * @param index The index of the sla info record to overwrite
+     * @param slaTerm The SLA term
+     * @param unit The unit
+     * @param comparator The comparator for the sla term
+     * @param boundaryValue the boundary value
+     * @param slaType If its a warning or violation
      */
     public void setSlaInfo(int index, String slaTerm, String unit,
             String comparator, String boundaryValue, String slaType) {
@@ -2520,8 +2532,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the price schema for a {@link VirtualSystemCollection}.
      *
-     * @param price schema
-     *            The deployment name to set
+     * @param priceSchema The deployment name to set
      */
     public void setPriceSchema(int priceSchema) {
         ProductProperty productProperty = getPropertyByKey(

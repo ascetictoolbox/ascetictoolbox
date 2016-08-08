@@ -287,7 +287,7 @@ public class VirtualSystemCollection extends
      * array. It describes virtual machine configuration including virtual
      * hardware requirements.
      * 
-     * @param virtualSystem
+     * @param virtualSystem The virtual system to add to the collection
      */
     public void addVirtualSystem(VirtualSystem virtualSystem) {
         XmlBeanContentType xmlBeanContentType = delegate.addNewContent();

@@ -15,10 +15,8 @@
  */
 package eu.ascetic.utils.ovf.api;
 
-import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualDiskDescType;
-
-import eu.ascetic.utils.ovf.api.AbstractElement;
 import eu.ascetic.utils.ovf.api.enums.DiskFormatType;
+import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualDiskDescType;
 
 /**
  * Provides access to the Disk elements of an OVF document. A Disk contained
@@ -162,7 +160,7 @@ public class Disk extends AbstractElement<XmlBeanVirtualDiskDescType> {
      * 1 MByte = "byte * 2^20"<br>
      * 1 KByte = "byte * 2^10"
      * 
-     * @param capacityAllocationUnits
+     * @param capacityAllocationUnits The unit type for the capacity of this disk.
      */
     public void setCapacityAllocationUnits(String capacityAllocationUnits) {
         delegate.setCapacityAllocationUnits(capacityAllocationUnits);

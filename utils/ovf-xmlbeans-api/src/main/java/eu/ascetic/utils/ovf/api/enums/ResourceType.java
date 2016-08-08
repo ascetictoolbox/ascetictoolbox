@@ -23,9 +23,8 @@ import eu.ascetic.utils.ovf.api.Item;
  * Enumeration containing predefined constants of virtual resource types used in
  * {@link Item} from CIM_ResourceAllocationSettingData.mof<br>
  * <br>
- * (See <a
- * href="@link http://www.dmtf.org/standards/cim/cim_schema_v2191">http:/
- * /www.dmtf.org/standards/cim/cim_schema_v2191</a>)
+ * (See <a href="http://www.dmtf.org/standards/cim/cim_schema_v2191">
+ * http://www.dmtf.org/standards/cim/cim_schema_v2191</a>)
  * 
  * @author Django Armstrong (ULeeds)
  * 
