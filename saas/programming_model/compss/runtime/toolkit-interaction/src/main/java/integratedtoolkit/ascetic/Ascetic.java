@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import integratedtoolkit.ascetic.fake.FakeAppManager;
 import integratedtoolkit.scheduler.types.AllocatableAction;
+import java.util.LinkedList;
 
 public class Ascetic {
 
@@ -61,6 +62,10 @@ public class Ascetic {
         monitor.start();
     }
 
+    public static LinkedList<String> getComponentNames() {
+        return Configuration.getComponentNames();
+    }
+
     public static void discoverNewResources() {
         System.out.println("Discovering new Resources");
         try {
@@ -99,31 +104,29 @@ public class Ascetic {
         return resources.values();
     }
 
-    public static String getAccumulatedCost() {
+    public static double getAccumulatedCost() {
         try {
             double accumulatedCost = APP_MANAGER.getAccumulatedCost();
-            return Double.toString(accumulatedCost - initCost);
+            return accumulatedCost - initCost;
         } catch (ApplicationUploaderException e) {
             logger.error("Error obtaining accumulated cost", e);
-            return "" + initCost;
+            return initCost;
         }
 
     }
 
-    public static String getAccumulatedEnergy() {
+    public static double getAccumulatedEnergy() {
         try {
             double accumulatedEnergy = APP_MANAGER.getAccumulatedEnergy();
-            return Double.toString(accumulatedEnergy - initEnergy);
+            return accumulatedEnergy - initEnergy;
         } catch (ApplicationUploaderException e) {
             logger.error("Error updating accumulated energy", e);
-            return "" + initEnergy;
+            return initEnergy;
         }
     }
 
-    public static String getAccumulatedTime() {
-        long time = (System.currentTimeMillis() - initTime) / 1000;
-        //return String.format("%.4g%n", time);
-        return Long.toString(time);
+    public static long getAccumulatedTime() {
+        return (System.currentTimeMillis() - initTime) / 1000;
     }
 
     public static boolean executionWithinBoundaries(Worker r, Implementation impl) {
@@ -183,6 +186,16 @@ public class Ascetic {
         return Configuration.getEconomicalBoundary();
     }
 
+    public static double getPrice(String componentName) {
+        return Configuration.getIdleCosts(componentName).getCharges();
+    }
+
+    public static double getPrice(Worker w) {
+        String IPv4 = w.getName();
+        VM vm = resources.get(IPv4);
+        return vm.getIdlePrice();
+    }
+
     public static double getPrice(Worker w, Implementation impl) {
         String IPv4 = w.getName();
         int coreId = impl.getCoreId();
@@ -195,6 +208,16 @@ public class Ascetic {
         return Configuration.getEnergyBoundary();
     }
 
+    public static double getPower(String componentName) {
+        return Configuration.getIdleCosts(componentName).getPowerValue();
+    }
+
+    public static double getPower(Worker w) {
+        String IPv4 = w.getName();
+        VM vm = resources.get(IPv4);
+        return vm.getIdlePower();
+    }
+
     public static double getPower(Worker w, Implementation impl) {
         String IPv4 = w.getName();
         int coreId = impl.getCoreId();
@@ -203,12 +226,29 @@ public class Ascetic {
         return vm.getPower(coreId, implId);
     }
 
+    public static long getTimeBoundary() {
+        return Configuration.getPerformanceBoundary();
+    }
+
     public static long getExecutionTime(Worker w, Implementation impl) {
         String IPv4 = w.getName();
         int coreId = impl.getCoreId();
         int implId = impl.getImplementationId();
         VM vm = resources.get(IPv4);
         return vm.getExecutionTime(coreId, implId);
+    }
+
+    public static boolean canReplicateComponent(String componentName) {
+        int currentVMs = VM.getComponentCount(componentName);
+        return Configuration.withinBoundaries(componentName, currentVMs + 1);
+    }
+
+    public static boolean canTerminateVM(Worker w) {
+        String IPv4 = w.getName();
+        VM vm = resources.get(IPv4);
+        String componentName = vm.getComponentId();
+        int currentVMs = VM.getComponentCount(componentName);
+        return Configuration.withinBoundaries(componentName, currentVMs - 1);
     }
 
     private static class AsceticMonitor extends Thread {

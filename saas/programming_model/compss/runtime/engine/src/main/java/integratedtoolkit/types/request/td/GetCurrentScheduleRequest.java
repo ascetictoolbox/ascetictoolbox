@@ -1,11 +1,10 @@
 package integratedtoolkit.types.request.td;
 
-import integratedtoolkit.components.ResourceUser.WorkloadStatus;
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.types.Profile;
+import integratedtoolkit.types.WorkloadState;
 import integratedtoolkit.types.request.exceptions.ShutdownException;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
-import integratedtoolkit.util.CoreManager;
 
 import java.util.concurrent.Semaphore;
 
@@ -14,12 +13,12 @@ import java.util.concurrent.Semaphore;
  * intermediate files of the execution from all the worker nodes of the resource
  * pool.
  */
-public class GetCurrentScheduleRequest<P extends Profile, T extends WorkerResourceDescription> extends TDRequest<P,T> {
+public class GetCurrentScheduleRequest<P extends Profile, T extends WorkerResourceDescription> extends TDRequest<P, T> {
 
     /**
      * Current Schedule representation
      */
-    private WorkloadStatus response;
+    private WorkloadState response;
     /**
      * Semaphore to synchronize until the representation is constructed
      */
@@ -42,7 +41,7 @@ public class GetCurrentScheduleRequest<P extends Profile, T extends WorkerResour
      * @result current schedule representation
      *
      */
-    public WorkloadStatus getResponse() {
+    public WorkloadState getResponse() {
         return response;
     }
 
@@ -70,14 +69,13 @@ public class GetCurrentScheduleRequest<P extends Profile, T extends WorkerResour
     }
 
     @Override
-    public void process(TaskScheduler<P,T> ts) throws ShutdownException {
-        response = new WorkloadStatus(CoreManager.getCoreCount());
-        ts.getWorkloadState(response);
+    public void process(TaskScheduler<P, T> ts) throws ShutdownException {
+        response = ts.getWorkload();
         sem.release();
     }
 
     @Override
-    public TDRequestType getType(){
+    public TDRequestType getType() {
         return TDRequestType.GET_CURRENT_SCHEDULE;
     }
 

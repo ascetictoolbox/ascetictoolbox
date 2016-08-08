@@ -1,11 +1,11 @@
 package integratedtoolkit.util;
 
-import integratedtoolkit.components.ResourceUser;
-import integratedtoolkit.components.ResourceUser.WorkloadStatus;
+import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.MethodImplementation;
 import integratedtoolkit.types.ResourceCreationRequest;
+import integratedtoolkit.types.WorkloadState;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.components.Processor;
@@ -23,11 +23,9 @@ import org.apache.log4j.Logger;
 
 public class ResourceOptimizer extends Thread {
 
+    protected final TaskScheduler ts;
     private final Object alarmClock = new Object();
     private boolean running;
-    private Integer maxNumberOfVMs;
-    private Integer minNumberOfVMs;
-    private ResourceUser resUser;
 
     private static boolean cleanUp;
     private static boolean redo;
@@ -55,48 +53,32 @@ public class ResourceOptimizer extends Thread {
     //That's why it's initialized to -1, to know when it's the first run.
     private int everythingBlockedRetryCount = -1;
 
-    ResourceOptimizer(ResourceUser resUser) {
+    public ResourceOptimizer(TaskScheduler ts) {
         if (debug) {
             logger.debug("Initializing Resource Optimizer");
         }
-        this.resUser = resUser;
-        redo = false;
         logger.info("Initialization finished");
+        this.setName("ResourceOptimizer");
+        this.ts = ts;
     }
 
-    public void shutdown(WorkloadStatus status) {
-        synchronized (alarmClock) {
-            // Stop
-            running = false;
-            alarmClock.notify();
-            cleanUp = true;
-        }
-
-        // Print status
-        resourcesLogger.info(status.toString());
-    }
-
-    public void run() {
+    public final void run() {
         running = true;
-        try {
-            Thread.sleep(20_000l);
-        } catch (Exception e) {
-        }
-        WorkloadStatus workload;
+        initialCreations();
+
+        WorkloadState workload;
         while (running) {
             try {
                 do {
                     redo = false;
-                    workload = resUser.getWorkload();
+                    workload = ts.getWorkload();
 
-                    //int runningTasks = workload.getRunningTaskCount();
                     int blockedTasks = workload.getNoResourceCount();
                     boolean potentialBlock = (blockedTasks > 0);
 
-                    //resourcesLogger.info(workload.toString());
+                    resourcesLogger.info(workload.toString());
                     if (ResourceManager.useCloud()) {
                         applyPolicies(workload);
-
                         // There is a potentialBlock in cloud only if all the possible VMs have been created
                         int VMsBeingCreated = CloudManager.getPendingRequests().size();
                         potentialBlock = potentialBlock && (VMsBeingCreated == 0);
@@ -122,18 +104,27 @@ public class ResourceOptimizer extends Thread {
         }
     }
 
-    public void optimizeNow() {
+    public final void optimizeNow() {
         synchronized (alarmClock) {
             alarmClock.notify();
             redo = true;
         }
     }
 
-    public void cleanUp() {
+    public final void cleanUp() {
         cleanUp = true;
     }
 
-    public void handlePotentialBlock(boolean potentialBlock) {
+    public final void shutdown() {
+        synchronized (alarmClock) {
+            // Stop
+            running = false;
+            alarmClock.notify();
+            cleanUp = true;
+        }
+    }
+
+    public final void handlePotentialBlock(boolean potentialBlock) {
         if (potentialBlock) { //All tasks are blocked, and there are no resources available...
             ++everythingBlockedRetryCount;
             if (everythingBlockedRetryCount > 0) { //First time not taken into account
@@ -172,7 +163,8 @@ public class ResourceOptimizer extends Thread {
      * ********************************************************
      * ********************************************************
      */
-    private void initialCreations() {
+    protected void initialCreations() {
+        System.out.println("RO initialCreations");
         int alreadyCreated = addBasicNodes();
         //Distributes the rest of the VM
         addExtraNodes(alreadyCreated);
@@ -552,10 +544,10 @@ public class ResourceOptimizer extends Thread {
      * ********************************************************
      * ********************************************************
      */
-    private void applyPolicies(WorkloadStatus workload) {
+    protected void applyPolicies(WorkloadState workload) {
         int currentCloudVMCount = CloudManager.getCurrentVMCount();
-        maxNumberOfVMs = (CloudManager.getMaxVMs() > 0) ? CloudManager.getMaxVMs() : null;
-        minNumberOfVMs = CloudManager.getMinVMs();
+        Integer maxNumberOfVMs = (CloudManager.getMaxVMs() > 0) ? CloudManager.getMaxVMs() : null;
+        Integer minNumberOfVMs = CloudManager.getMinVMs();
 
         long creationTime;
         try {
@@ -835,7 +827,6 @@ public class ResourceOptimizer extends Thread {
             }
             LinkedList<Integer> executableCores = resource.getExecutableCores();
             for (int coreId : executableCores) {
-
                 if (!aggressive && recommendations[coreId] < 1) {
                     if (debug) {
                         logger.debug("\t\tVM not removed because of not agressive and recomendations < 1 (" + recommendations[coreId] + ")");

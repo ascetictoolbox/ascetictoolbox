@@ -26,12 +26,16 @@ public class Configuration {
     private final static String deploymentId;
     private final static String applicationManagerEndpoint;
     private final static String applicationMonitorEndpoint;
+    private final static LinkedList<String> componentNames;
     private final static HashMap<String, NIOConfiguration> componentProperties;
     private final static HashMap<String, CloudMethodResourceDescription> componentDescription;
     private final static HashMap<String, LinkedList<Implementation>> componentImplementations;
+    private final static HashMap<String, Cost> componentIdleCost;
     private final static HashMap<String, Cost[][]> componentCosts;
     private final static HashMap<String, long[][]> componentTimes;
     private final static HashMap<String, float[][]> componentWeights;
+    private final static HashMap<String, int[]> componentBoundaries;
+    private final static long performanceBoundary;
     private final static float energyBoundary;
     private final static float economicalBoundary;
     private final static OptimizationParameter optimizationParameter;
@@ -70,18 +74,25 @@ public class Configuration {
         System.out.println("AppMan EP:" + applicationManagerEndpoint);
         pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticAppMonitorURL");
         applicationMonitorEndpoint = pp.getValue();
+
+        componentNames = new LinkedList<String>();
+        componentBoundaries = new HashMap<String, int[]>();
         componentDescription = new HashMap<String, CloudMethodResourceDescription>();
         componentImplementations = new HashMap<String, LinkedList<Implementation>>();
         componentProperties = new HashMap<String, NIOConfiguration>();
         componentWeights = new HashMap<String, float[][]>();
         componentTimes = new HashMap<String, long[][]>();
         componentCosts = new HashMap<String, Cost[][]>();
-        pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticEnergyOptimizationBoundary");
-        energyBoundary = Float.parseFloat(pp.getValue());
-        pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticCostOptimizationBoundary");
-        economicalBoundary = Float.parseFloat(pp.getValue());
-        pp = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPropertyByKey("asceticOptimizationParameter");
-        String opParam = pp.getValue().toLowerCase();
+        componentIdleCost = new HashMap<String, Cost>();
+
+        String ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPerformanceOptimizationBoundary();
+        performanceBoundary = Long.parseLong(ppString);
+        ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getEnergyOptimizationBoundary();
+        energyBoundary = Float.parseFloat(ppString);
+        ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getCostOptimizationBoundary();
+        economicalBoundary = Float.parseFloat(ppString);
+        ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getOptimizationParameter();
+        String opParam = ppString.toLowerCase();
         if (opParam.equals("energy")) {
             optimizationParameter = OptimizationParameter.ENERGY;
         } else if (opParam.equals("cost")) {
@@ -119,12 +130,17 @@ public class Configuration {
         }
         for (VirtualSystem vs : ovf.getVirtualSystemCollection().getVirtualSystemArray()) {
             String componentName = vs.getId();
+            componentNames.add(componentName);
+            System.out.println("Component " + componentName);
             Integer storageElemSize = diskSize.get(componentName + "-disk");
             CloudMethodResourceDescription rd = createComponentDescription(componentName, vs, storageElemSize);
-            componentDescription.put(componentName, rd);
+            int[] boundaries = new int[2];
             float[][] eventWeights = new float[CoreManager.getCoreCount()][];
             long[][] eventTimes = new long[CoreManager.getCoreCount()][];
             Cost[][] eventCosts = new Cost[CoreManager.getCoreCount()][];
+            Cost idleCost = new Cost();
+            LinkedList<Implementation> impls = new LinkedList<Implementation>();
+            NIOConfiguration conf = new NIOConfiguration("integratedtoolkit.nio.master.NIOAdaptor");
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 int implCount = CoreManager.getCoreImplementations(coreId).length;
                 eventWeights[coreId] = new float[implCount];
@@ -135,11 +151,20 @@ public class Configuration {
                     eventTimes[coreId][implId] = Long.MAX_VALUE;
                     eventCosts[coreId][implId] = new Cost();
                 }
+
             }
+            componentDescription.put(componentName, rd);
+            componentBoundaries.put(componentName, boundaries);
             componentWeights.put(componentName, eventWeights);
             componentTimes.put(componentName, eventTimes);
             componentCosts.put(componentName, eventCosts);
-            LinkedList<Implementation> impls = new LinkedList<Implementation>();
+            componentIdleCost.put(componentName, idleCost);
+            componentImplementations.put(componentName, impls);
+            componentProperties.put(componentName, conf);
+            String defaultsList = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMDefaultMetric").getValue();
+            String[] defaults = defaultsList.split("@");
+            idleCost.setCharges(Double.parseDouble(defaults[0]));
+            idleCost.setPowerValue(Double.parseDouble(defaults[1]));
             String implList = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMElements").getValue();
             if (implList.length() > 0) {
                 for (String implementationString : implList.split(";")) {
@@ -147,8 +172,8 @@ public class Configuration {
                     String signature = implementation[0];
                     float eventWeight = Float.parseFloat(implementation[1]);
                     long time = Long.parseLong(implementation[2]);
-                    double charges = Math.random() /* Double.parseLong(implementation[3])*/;
-                    double energy = Math.random()/*  Double.parseLong(implementation[4])*/;
+                    double charges = Double.parseDouble(implementation[3]);
+                    double energy = Double.parseDouble(implementation[4]);
                     Implementation impl = CoreManager.getImplementation(signature);
                     if (impl != null) {
                         impls.add(impl);
@@ -157,11 +182,33 @@ public class Configuration {
                         eventWeights[coreId][implId] = eventWeight;
                         eventTimes[coreId][implId] = time;
                         eventCosts[coreId][implId].setCharges(charges);
-                        eventCosts[coreId][implId].setEnergyValue(energy);
+                        eventCosts[coreId][implId].setPowerValue(energy);
                     }
                 }
             }
-            NIOConfiguration conf = new NIOConfiguration("integratedtoolkit.nio.master.NIOAdaptor");
+            System.out.println("Idle Power: " + (idleCost == null ? "-" : idleCost.getPowerValue()) + "W");
+            System.out.println("Idle Cost: " + (idleCost == null ? "-" : idleCost.getCharges()));
+            System.out.println("Events");
+            for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+                int implCount = CoreManager.getCoreImplementations(coreId).length;
+                System.out.println("\tCore " + coreId);
+                for (int implId = 0; implId < implCount; implId++) {
+                    System.out.println("\t\tImplementation " + implId);
+                    System.out.println("\t\t\t Weight: " + eventWeights[coreId][implId]);
+                    System.out.println("\t\t\t Time: " + eventTimes[coreId][implId]);
+                    Cost c = eventCosts[coreId][implId];
+                    if (c == null) {
+                        System.out.println("\t\t\t Power: -W");
+                        System.out.println("\t\t\t Energy: -J");
+                        System.out.println("\t\t\t Cost: -€");
+                    } else {
+                        System.out.println("\t\t\t Power: " + c.getPowerValue() + "W");
+                        System.out.println("\t\t\t Energy: " + c.getPowerValue() * eventTimes[coreId][implId] / 1000 + "J");
+                        System.out.println("\t\t\t Cost: " + c.getCharges() + "€");
+                    }
+                }
+            }
+
             String propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMUser").getValue();
             conf.setUser(propertyValue);
             propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMInstallDir").getValue();
@@ -172,8 +219,8 @@ public class Configuration {
             conf.setAppDir(propertyValue);
             conf.setMinPort(43001);
             conf.setMaxPort(43001);
-            componentProperties.put(componentName, conf);
-            componentImplementations.put(componentName, impls);
+            boundaries[0] = vs.getProductSectionArray()[0].getLowerBound();
+            boundaries[1] = vs.getProductSectionArray()[0].getUpperBound();
         }
     }
 
@@ -213,12 +260,20 @@ public class Configuration {
         return stringBuilder.toString();
     }
 
+    public static LinkedList<String> getComponentNames() {
+        return componentNames;
+    }
+
     public static MethodResourceDescription getComponentDescriptions(String component) {
         return componentDescription.get(component);
     }
 
     public static NIOConfiguration getComponentProperties(String component) {
         return componentProperties.get(component);
+    }
+
+    public static long getPerformanceBoundary() {
+        return performanceBoundary;
     }
 
     public static float getEnergyBoundary() {
@@ -251,5 +306,14 @@ public class Configuration {
 
     public static Cost[][] getDefaultCosts(String component) {
         return componentCosts.get(component);
+    }
+
+    public static Cost getIdleCosts(String component) {
+        return componentIdleCost.get(component);
+    }
+
+    public static boolean withinBoundaries(String components, int count) {
+        int[] boundaries = componentBoundaries.get(components);
+        return boundaries[0] <= count && count <= boundaries[1];
     }
 }

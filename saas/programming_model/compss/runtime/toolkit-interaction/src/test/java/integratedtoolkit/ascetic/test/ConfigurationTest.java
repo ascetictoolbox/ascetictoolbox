@@ -179,11 +179,5 @@ public class ConfigurationTest {
         public void updatedResource(Worker<?> r) {
             ConfigurationTest.addWorker(r);
         }
-
-        @Override
-        public WorkloadStatus getWorkload() {
-            return new WorkloadStatus(1);
-        }
-
     }
 }

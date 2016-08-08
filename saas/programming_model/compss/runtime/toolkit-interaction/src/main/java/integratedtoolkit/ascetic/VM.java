@@ -14,6 +14,7 @@ import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.util.CoreManager;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.TreeMap;
 import org.apache.log4j.Logger;
 
 public class VM {
@@ -26,6 +27,7 @@ public class VM {
     private HashMap<AllocatableAction, JobExecution> runningJobs = new HashMap<AllocatableAction, JobExecution>();
 
     private final static int[] implCount = new int[CoreManager.getCoreCount()];
+    private final static TreeMap<String, Integer> componentCount = new TreeMap<String, Integer>();
 
     static {
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
@@ -39,6 +41,8 @@ public class VM {
     private final ResourceDescription description;
     private final NIOConfiguration configuration;
     private final LinkedList<Implementation> compatibleImpls;
+    private double idlePower;
+    private double idlePrice;
     private double[][] power;
     private double[][] price;
     private float[][] eventWeights;
@@ -50,6 +54,12 @@ public class VM {
         logger.info("Creating a new VM");
         this.vm = vm;
         String ovfId = vm.getOvfId();
+        Integer count = componentCount.get(ovfId);
+        if (count == null) {
+            count = 0;
+        }
+        count++;
+        componentCount.put(ovfId, count);
         MethodResourceDescription rd = Configuration.getComponentDescriptions(ovfId);
         description = new CloudMethodResourceDescription(rd);
         configuration = new NIOConfiguration(Configuration.getComponentProperties(ovfId));
@@ -57,6 +67,9 @@ public class VM {
         configuration.setTotalComputingUnits(rd.getProcessors().get(0).getComputingUnits());
         configuration.setHost(vm.getIp());
         compatibleImpls = Configuration.getComponentImplementations(ovfId);
+        Cost idleCost = Configuration.getIdleCosts(ovfId);
+        idlePower = idleCost.getPowerValue();
+        idlePrice = idleCost.getCharges();
         power = new double[CoreManager.getCoreCount()][];
         price = new double[CoreManager.getCoreCount()][];
         Cost[][] defaultCosts = Configuration.getDefaultCosts(ovfId);
@@ -65,7 +78,7 @@ public class VM {
             price[coreId] = new double[implCount[coreId]];
             for (int implId = 0; implId < implCount[coreId]; implId++) {
                 if (defaultCosts[coreId][implId] != null) {
-                    power[coreId][implId] = defaultCosts[coreId][implId].getEnergyValue();
+                    power[coreId][implId] = defaultCosts[coreId][implId].getPowerValue();
                     price[coreId][implId] = defaultCosts[coreId][implId].getCharges();
                 }
             }
@@ -79,12 +92,16 @@ public class VM {
         coresEnergy = 0;
         coresCost = 0;
         System.out.println("Detected VM " + vm.getIp());
+        System.out.println("\tIdle");
+        System.out.println("\t\t Power: " + idlePower);
+        System.out.println("\t\t Price: " + idlePrice);
         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
             System.out.println("\tCore " + coreId);
             for (int implId = 0; implId < implCount[coreId]; implId++) {
                 System.out.println("\t\tImplementation " + implId);
                 System.out.println("\t\t\t Time: " + times[coreId][implId]);
                 System.out.println("\t\t\t Power: " + power[coreId][implId]);
+                System.out.println("\t\t\t Energy: " + power[coreId][implId] * times[coreId][implId] / 1000);
                 System.out.println("\t\t\t Price: " + price[coreId][implId]);
             }
         }
@@ -108,7 +125,8 @@ public class VM {
 
     public void updateConsumptions(AppManager appManager) {
         if (System.currentTimeMillis() - lastUpdate > UPDATE_FREQ) {
-
+            idlePower = idlePower;
+            idlePrice = idlePrice;
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
                     Cost c = null;
@@ -251,6 +269,22 @@ public class VM {
 
     public LinkedList<Implementation> getCompatibleImplementations() {
         return this.compatibleImpls;
+    }
+
+    public double getIdlePower() {
+        return idlePower;
+    }
+
+    public double getIdlePrice() {
+        return idlePrice;
+    }
+
+    public static int getComponentCount(String component) {
+        Integer count = componentCount.get(component);
+        if (count == null) {
+            count = 0;
+        }
+        return count;
     }
 
     private class JobExecution {

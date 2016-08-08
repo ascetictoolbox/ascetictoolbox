@@ -1,6 +1,5 @@
 package integratedtoolkit.components.impl;
 
-import integratedtoolkit.components.ResourceUser;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.FailedActionException;
@@ -11,6 +10,7 @@ import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.SchedulingInformation;
 import integratedtoolkit.types.Score;
+import integratedtoolkit.types.WorkloadState;
 import integratedtoolkit.types.allocatableactions.StartWorkerAction;
 import integratedtoolkit.util.ResourceScheduler;
 import integratedtoolkit.types.resources.Worker;
@@ -18,6 +18,7 @@ import integratedtoolkit.types.resources.WorkerResourceDescription;
 import integratedtoolkit.util.ActionSet;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ErrorManager;
+import integratedtoolkit.util.ResourceOptimizer;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,11 +32,19 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
 
     // Logger
     protected static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
+    protected static final Logger resLogger = Logger.getLogger(Loggers.RESOURCES);
     protected static final boolean debug = logger.isDebugEnabled();
 
     private final ActionSet<P, T> blockedActions = new ActionSet<P, T>();
     private int[] readyCounts = new int[CoreManager.getCoreCount()];
     private final HashMap<Worker<T>, ResourceScheduler<P, T>> workers = new HashMap<Worker<T>, ResourceScheduler<P, T>>();
+    private final ResourceOptimizer ro = getResourceOptimizer();
+
+    public TaskScheduler() {
+        if (ro != null) {
+            ro.start();
+        }
+    }
 
     /**
      * New Core Elements have been detected; the Task Scheduler needs to be
@@ -218,20 +227,15 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     }
 
     public final void updatedWorker(Worker<T> worker) {
-
-        System.out.println("UPDATING WORKER " + worker.getName());
-        System.out.println("Description: " + worker.getDescription());
         ResourceScheduler<P, T> ui = workers.get(worker);
         if (ui == null) {
             //Register worker if it's the first time it is useful.
             ui = generateSchedulerForResource(worker);
-            System.out.println("\t Generated ResourceScheduler" + ui.hashCode() + " for worker " + worker.getName());
             synchronized (workers) {
                 workers.put(worker, ui);
             }
 
             StartWorkerAction action = new StartWorkerAction(generateSchedulingInformation(), ui, this);
-            System.out.println("Created " + action + " to initialize " + ui.hashCode());
             try {
                 action.schedule(ui, (Score) null);
                 action.tryToLaunch();
@@ -359,8 +363,18 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         return coresInfo.toString();
     }
 
-    public final void getWorkloadState(ResourceUser.WorkloadStatus response) {
-        int coreCount = CoreManager.getCoreCount();
+    public final WorkloadState getWorkload() {
+        WorkloadState response = createWorkloadState();
+        updateWorkloadState(response);
+        return response;
+    }
+
+    protected WorkloadState createWorkloadState() {
+        return new WorkloadState();
+    }
+
+    protected void updateWorkloadState(WorkloadState state) {
+        int coreCount = state.getCoreCount();
         Profile[] coreProfile = new Profile[coreCount];
         for (int coreId = 0; coreId < coreCount; coreId++) {
             coreProfile[coreId] = new Profile();
@@ -384,16 +398,16 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                     Integer coreId = running.getImplementations()[0].getCoreId();
                     // CoreId can be null for Actions that are not tasks
                     if (coreId != null) {
-                        response.registerRunning(coreId, now - running.getStartTime());
+                        state.registerRunning(coreId, now - running.getStartTime());
                     }
                 }
             }
         }
 
         for (int coreId = 0; coreId < coreCount; coreId++) {
-            response.registerNoResources(coreId, blockedActions.getActionCounts()[coreId]);
-            response.registerReady(coreId, readyCounts[coreId]);
-            response.registerTimes(coreId,
+            state.registerNoResources(coreId, blockedActions.getActionCounts()[coreId]);
+            state.registerReady(coreId, readyCounts[coreId]);
+            state.registerTimes(coreId,
                     coreProfile[coreId].getMinExecutionTime(),
                     coreProfile[coreId].getAverageExecutionTime(),
                     coreProfile[coreId].getMaxExecutionTime());
@@ -469,6 +483,10 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
 
     }
 
+    protected ResourceOptimizer getResourceOptimizer() {
+        return new ResourceOptimizer(this);
+    }
+
     public ResourceScheduler<P, T> generateSchedulerForResource(Worker<T> w) {
         return new ResourceScheduler<P, T>(w);
     }
@@ -491,6 +509,12 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     }
 
     public void shutdown() {
+        // Stop Resource Optimizer
+        if (ro != null) {
+            ro.shutdown();
+            resLogger.info(getWorkload().toString());
+        } else {
+            logger.info("Resource Optimizer was not initialized");
+        }
     }
-
 }

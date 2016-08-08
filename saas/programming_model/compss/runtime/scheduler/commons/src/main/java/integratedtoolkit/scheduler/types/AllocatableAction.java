@@ -40,6 +40,7 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         public void actionCompletion(AllocatableAction<?, ?> action);
 
         public void actionError(AllocatableAction<?, ?> action);
+        
     }
 
     private enum State {

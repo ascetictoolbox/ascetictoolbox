@@ -290,6 +290,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 state.replaceAction(currentTop);
             }
             state.releaseResources(expectedTimeStamp, action);
+            updateConsumptions(state, worker, action);
 
             while (state.canActionRun()) {
                 selectableActions.removeFirst(currentTop.getCoreId());
@@ -307,6 +308,17 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
         public String toString() {
             return action + " end @ " + expectedTimeStamp;
+        }
+    }
+
+    private static void updateConsumptions(LocalOptimizationState state, AsceticResourceScheduler worker, AllocatableAction action) {
+        Implementation impl = action.getAssignedImplementation();
+        AsceticProfile p = (AsceticProfile) worker.getProfile(impl);
+        if (p != null) {
+            AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
+            long length = dsi.getExpectedEnd() - (dsi.getExpectedStart() < 0 ? 0 : dsi.getExpectedStart());
+            state.consumeEnergy(p.getPower() * length);
+            state.addCost(p.getPrice());
         }
     }
 

@@ -349,15 +349,18 @@ public class SingleExecution<P extends Profile, T extends WorkerResourceDescript
             candidates = getCompatibleWorkers();
         }
         int usefulResources = 0;
+        System.out.println("Scheduling "+this);
         for (ResourceScheduler<?, ?> w : candidates) {
             ResourceScheduler<P, T> worker = (ResourceScheduler<P, T>) w;
             if (executingResources.contains(w)) {
                 continue;
             }
             Score resourceScore = worker.getResourceScore(this, task.getTaskParams(), actionScore);
+            System.out.println("\t Resource "+w.getName());
             usefulResources++;
-            for (Implementation<T> impl : getCompatibleImplementations(worker)) {
+            for (Implementation<T> impl : getCompatibleImplementations(worker)) {                
                 Score implScore = worker.getImplementationScore(this, task.getTaskParams(), impl, resourceScore);
+                System.out.println("\t\t Implementation "+impl.getImplementationId()+" "+implScore);
                 debugString
                         .append(" Resource ").append(w.getName()).append(" ")
                         .append(" Implementation ").append(impl.getImplementationId()).append(" ")

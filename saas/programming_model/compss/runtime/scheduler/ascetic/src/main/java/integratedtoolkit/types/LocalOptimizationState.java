@@ -11,6 +11,8 @@ public class LocalOptimizationState {
     private final long updateId;
 
     private final LinkedList<Gap> gaps = new LinkedList<Gap>();
+    private double totalCost;
+    private double totalEnergy;
 
     private AllocatableAction action = null;
     private ResourceDescription missingResources;
@@ -18,6 +20,8 @@ public class LocalOptimizationState {
 
     public LocalOptimizationState(long updateId, ResourceDescription rd) {
         this.updateId = updateId;
+        totalCost = 0;
+        totalEnergy = 0;
         Gap g = new Gap(0, Long.MAX_VALUE, null, rd.copy(), 0);
         gaps.add(g);
     }
@@ -166,4 +170,19 @@ public class LocalOptimizationState {
         return sb.toString();
     }
 
+    public double getTotalEnergy() {
+        return totalEnergy;
+    }
+
+    public void consumeEnergy(double energy) {
+        totalEnergy += energy;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
+    public void addCost(double cost) {
+        totalCost += cost;
+    }
 }

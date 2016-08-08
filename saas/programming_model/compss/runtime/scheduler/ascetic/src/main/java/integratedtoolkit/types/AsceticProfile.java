@@ -11,14 +11,12 @@ public class AsceticProfile extends Profile {
     private final AllocatableAction action;
 
     public AsceticProfile(Worker w, Implementation impl, AllocatableAction action) {
-        System.out.println("Creating Profile for action " + action);
         this.worker = w;
         this.impl = impl;
         this.action = action;
     }
 
     public AsceticProfile(Worker w, Implementation impl) {
-        System.out.println("Creating default profile for impl " + impl.getImplementationId() + " at worker " + w);
         this.worker = w;
         this.impl = impl;
         this.action = null;
@@ -28,12 +26,13 @@ public class AsceticProfile extends Profile {
         this.maxTime = defaultTime;
     }
 
-    public double getEnergy() {
-        return Ascetic.getPower(worker, impl) * this.averageTime;
+    
+    public double getPower() {
+        return Ascetic.getPower(worker, impl);
     }
 
     public double getPrice() {
-        return Ascetic.getPrice(worker, impl) * this.averageTime;
+        return Ascetic.getPrice(worker, impl);
     }
 
     @Override

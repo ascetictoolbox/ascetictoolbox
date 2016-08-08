@@ -35,6 +35,9 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     public static final long DATA_TRANSFER_DELAY = 200;
 
     private final LinkedList<Gap> gaps;
+    private double pendingActionsEnergy = 0;
+    private double pendingActionsCost = 0;
+
     private OptimizationAction opAction;
     private Set<AllocatableAction> pendingUnschedulings = new HashSet<AllocatableAction>();
 
@@ -101,14 +104,14 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
             resourceFreeTime = 0;
         }
         long implScore;
-        Profile p = this.getProfile(impl);
+        AsceticProfile p = (AsceticProfile) this.getProfile(impl);
         if (p != null) {
             implScore = p.getAverageExecutionTime();
         } else {
             implScore = 0;
         }
-        double energy = Ascetic.getPower(myWorker, impl) * implScore;
-        double cost = Ascetic.getPrice(myWorker, impl) * implScore;
+        double energy = p.getPower() * implScore;
+        double cost = p.getPrice();
         //The data transfer penalty is already included on the datadependency time of the resourceScore
         return new AsceticScore<P, T>((AsceticScore<P, T>) resourceScore, 0, resourceFreeTime, implScore, energy, cost);
     }
@@ -226,6 +229,14 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
             }
         }
 
+        Implementation impl = action.getAssignedImplementation();
+        AsceticProfile p = (AsceticProfile) getProfile(impl);
+        if (p != null) {
+            long length = actionDSI.getExpectedEnd() - (actionDSI.getExpectedStart() < 0 ? 0 : actionDSI.getExpectedStart());
+            pendingActionsCost -= p.getPrice();
+            pendingActionsEnergy -= p.getPower() * length;
+        }
+
         actionDSI.unlock();
         for (AsceticSchedulingInformation successorsDSI : successorsDSIs) {
             successorsDSI.unlock();
@@ -253,7 +264,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         }
         AsceticSchedulingInformation<P, T> schedInfo = (AsceticSchedulingInformation<P, T>) action.getSchedulingInfo();
         Implementation<T> impl = action.getAssignedImplementation();
-        Profile p = getProfile(impl);
+        AsceticProfile p = (AsceticProfile) getProfile(impl);
         ResourceDescription constraints = impl.getRequirements().copy();
         LinkedList<Gap> predecessors = new LinkedList();
 
@@ -307,6 +318,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         long expectedEnd = expectedStart;
         if (p != null) {
             expectedEnd += p.getAverageExecutionTime();
+            pendingActionsCost += p.getPrice();
+            pendingActionsEnergy += p.getPower() * p.getAverageExecutionTime();
         }
         schedInfo.setExpectedEnd(expectedEnd);
 
@@ -675,6 +688,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
             state.removeTmpGap(g);
         }
 
+        this.pendingActionsCost = state.getTotalCost();
+        this.pendingActionsEnergy = state.getTotalEnergy();
         return state.getGaps();
     }
 
@@ -830,4 +845,21 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     public P generateProfileForAllocatable(AllocatableAction action) {
         return (P) new AsceticProfile(myWorker, action.getAssignedImplementation(), action);
     }
+
+    public double getIdlePower() {
+        return Ascetic.getPower(myWorker);
+    }
+
+    public double getActionsEnergy() {
+        return this.pendingActionsEnergy;
+    }
+
+    public double getIdlePrice() {
+        return Ascetic.getPrice(myWorker);
+    }
+
+    public double getActionsCost() {
+        return this.pendingActionsCost;
+    }
+
 }

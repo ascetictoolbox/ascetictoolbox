@@ -10,7 +10,6 @@ import integratedtoolkit.types.resources.configuration.ServiceConfiguration;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.types.resources.exceptions.ResourcesFileValidationException;
 import integratedtoolkit.components.ResourceUser;
-import integratedtoolkit.components.ResourceUser.WorkloadStatus;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.connectors.ConnectorException;
 import integratedtoolkit.exceptions.NoResourceAvailableException;
@@ -58,7 +57,6 @@ public class ResourceManager {
     private static WorkerPool pool;
     private static int[] poolCoreMaxConcurrentTasks;
     private static ResourceUser resourceUser;
-    private static ResourceOptimizer ro;
 
     // Loggers
     private static final Logger resourcesLogger = Logger.getLogger(Loggers.RESOURCES);
@@ -122,11 +120,6 @@ public class ResourceManager {
         } catch (NoResourceAvailableException e) {
             ErrorManager.fatal(ERROR_NO_RES, e);
         }
-
-        // Start ResourceOptimizer
-        ro = new ResourceOptimizer(resourceUser);
-        ro.setName("Resource Optimizer");
-        ro.start();
     }
 
     /* ********************************************************************
@@ -137,18 +130,11 @@ public class ResourceManager {
      *
      * @param status
      */
-    public static void stopNodes(WorkloadStatus status) {
+    public static void stopNodes() {
         // Log resource
         resourcesLogger.info("TIMESTAMP = " + String.valueOf(System.currentTimeMillis()));
         resourcesLogger.info("INFO_MSG = [Stopping all workers]");
         runtimeLogger.info("Stopping all workers");
-
-        // Stop Resource Optimizer
-        if (ro != null) {
-            ro.shutdown(status);
-        } else {
-            runtimeLogger.info("Resource Optimizer was not initialized");
-        }
 
         // Stop all Cloud VM
         if (CloudManager.isUseCloud()) {
@@ -608,14 +594,6 @@ public class ResourceManager {
             sb.append(prefix).append("</Resource>").append("\n");
         }
         return sb.toString();
-    }
-
-    /**
-     * Prints out the load information
-     *
-     */
-    public static void printLoadInfo() {
-        resourcesLogger.info(resourceUser.getWorkload().toString());
     }
 
     /**

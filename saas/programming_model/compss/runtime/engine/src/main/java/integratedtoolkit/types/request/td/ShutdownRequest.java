@@ -1,12 +1,10 @@
 package integratedtoolkit.types.request.td;
 
-import integratedtoolkit.components.ResourceUser.WorkloadStatus;
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.allocatableactions.SingleExecution;
 import integratedtoolkit.types.request.exceptions.ShutdownException;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
-import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ResourceManager;
 
 import java.util.concurrent.Semaphore;
@@ -57,9 +55,7 @@ public class ShutdownRequest<P extends Profile, T extends WorkerResourceDescript
         ts.shutdown();
 
         // Print core state
-        WorkloadStatus status = new WorkloadStatus(CoreManager.getCoreCount());
-        ts.getWorkloadState(status);
-        ResourceManager.stopNodes(status);
+        ResourceManager.stopNodes();
         semaphore.release();
         throw new ShutdownException();
     }

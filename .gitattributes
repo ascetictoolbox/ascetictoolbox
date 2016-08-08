@@ -4363,7 +4363,6 @@ saas/programming_model/compss/runtime/resources/commons/src/main/java/integrated
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/util/CloudTypeManager.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/util/ResourceLoader.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/util/ResourceManager.java -text
-saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/util/ResourceOptimizer.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/util/WorkerPool.java -text
 saas/programming_model/compss/runtime/resources/pom.xml -text
 saas/programming_model/compss/runtime/scheduler/ascetic/pom.xml -text
@@ -4390,8 +4389,10 @@ saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integrated
 saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/types/Profile.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/types/SchedulingInformation.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/types/Score.java -text
+saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/types/WorkloadState.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/types/allocatableactions/StartWorkerAction.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/util/ActionSet.java -text
+saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/util/ResourceOptimizer.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/main/java/integratedtoolkit/util/ResourceScheduler.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/test/java/integratedtoolkit/types/allocatiableaction/AllocatableActionImpl.java -text
 saas/programming_model/compss/runtime/scheduler/commons/src/test/java/integratedtoolkit/types/allocatiableaction/AllocatableActionTest.java -text

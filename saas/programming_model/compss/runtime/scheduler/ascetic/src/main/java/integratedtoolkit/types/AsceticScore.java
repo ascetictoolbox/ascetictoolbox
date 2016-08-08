@@ -45,15 +45,42 @@ public class AsceticScore<P extends Profile, T extends WorkerResourceDescription
             return actionScore > other.actionScore;
         }
 
+        double diffCost = expectedCost - otherDS.expectedCost;
+        double diffEnergy = expectedEnergy - otherDS.expectedEnergy;
+        long ownEnd = expectedStart + implementationScore;
+        long otherEnd = otherDS.expectedStart + otherDS.implementationScore;
+        long diffEnd = ownEnd - otherEnd;
         switch (opParam) {
             case COST:
-                return expectedCost < otherDS.expectedCost;
+                if (diffCost == 0) {
+                    if (diffEnd == 0) {
+                        return diffEnergy < 0;
+                    } else {
+                        return diffEnd < 0;
+                    }
+                } else {
+                    return diffCost < 0;
+                }
             case ENERGY:
-                return expectedEnergy < otherDS.expectedEnergy;
+                if (diffEnergy == 0) {
+                    if (diffEnd == 0) {
+                        return diffCost < 0;
+                    } else {
+                        return diffEnd < 0;
+                    }
+                } else {
+                    return diffEnergy < 0;
+                }
             default:
-                long ownEnd = expectedStart + implementationScore;
-                long otherEnd = otherDS.expectedStart + otherDS.implementationScore;
-                return ownEnd < otherEnd;
+                if (diffEnd == 0) {
+                    if (diffEnergy == 0) {
+                        return diffCost < 0;
+                    } else {
+                        return diffEnergy < 0;
+                    }
+                } else {
+                    return diffEnd < 0;
+                }
         }
     }
 
@@ -90,6 +117,6 @@ public class AsceticScore<P extends Profile, T extends WorkerResourceDescription
     }
 
     public String toString() {
-        return "action " + actionScore + " availableData " + expectedDataAvailable + " resource " + resourceScore + " expectedStart " + expectedStart + " implementation" + implementationScore;
+        return "action " + actionScore + " availableData " + expectedDataAvailable + " resource " + resourceScore + " expectedStart " + expectedStart + " length " + implementationScore + " cost " + expectedCost + " energy " + expectedEnergy;
     }
 }

@@ -7,6 +7,7 @@ import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Task;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.scheduler.types.AllocatableAction.ActionOrchestrator;
+import integratedtoolkit.types.WorkloadState;
 import integratedtoolkit.types.request.td.*;
 import integratedtoolkit.types.request.exceptions.ShutdownException;
 import integratedtoolkit.types.resources.MethodResourceDescription;
@@ -154,7 +155,7 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
     }
 
     // Scheduling optimizer thread
-    public WorkloadStatus getWorkload() {
+    public WorkloadState getWorkload() {
         Semaphore sem = new Semaphore(0);
         GetCurrentScheduleRequest request = new GetCurrentScheduleRequest(sem);
         addPrioritaryRequest(request);
