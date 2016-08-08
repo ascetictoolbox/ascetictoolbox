@@ -4366,9 +4366,11 @@ saas/programming_model/compss/runtime/resources/commons/src/main/java/integrated
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/util/WorkerPool.java -text
 saas/programming_model/compss/runtime/resources/pom.xml -text
 saas/programming_model/compss/runtime/scheduler/ascetic/pom.xml -text
+saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticResourceOptimizer.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticResourceScheduler.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticScheduler.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticSchedulingInformation.java -text
+saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/AsceticWorkloadState.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/scheduler/ascetic/ScheduleOptimizer.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/types/AsceticProfile.java -text
 saas/programming_model/compss/runtime/scheduler/ascetic/src/main/java/integratedtoolkit/types/AsceticScore.java -text
