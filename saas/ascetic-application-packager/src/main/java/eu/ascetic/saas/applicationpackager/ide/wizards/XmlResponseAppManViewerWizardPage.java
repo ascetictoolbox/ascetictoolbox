@@ -238,14 +238,19 @@ public class XmlResponseAppManViewerWizardPage extends WizardPage {
 	 *
 	 * @param msg the new error uploading app
 	 */
-	public void setErrorUploadingApp(String msg, AppManagerCallProgressBarDialog dialog) {
+	public void setErrorUploadingApp(final String msg, final AppManagerCallProgressBarDialog progressBardialog) {
 		// TODO Auto-generated method stub
-		this.dialog = dialog;
-		lbErrorName.setVisible(true);
-		lbErrorValue.setVisible(true);
-		lbErrorValue.setText(msg);
-		dialog.addLogMessage(msg);
-		setPageComplete(true);
+		Display.getDefault().asyncExec(new Runnable() {
+    		public void run() {
+    			dialog = progressBardialog;
+    			lbErrorName.setVisible(true);
+    			lbErrorValue.setVisible(true);
+    			lbErrorValue.setText(msg);
+    			dialog.addLogMessage(msg);
+    			setPageComplete(true);		
+    		}
+		});
+		
 	}
 	
 //	public void addLogMessage(String message){

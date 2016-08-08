@@ -73,7 +73,7 @@ public class VmicClient {
 		try {
 			ovfDefinitionAsString = Utils.readFile(
 					"C:\\data\\projects\\ARI\\it\\ASCETiC\\svn\\trunk\\saas\\ascetic-application-packager"
-					+ "\\src\\main\\resources\\input-vmic-ovf-v15_swDependencies.ovf");
+					+ "\\src\\main\\resources\\hpe\\NewsAssetDeploymentMultiTenantSmallMediumCustomer-v16-HPE.ovf");
 					//input-vmic-v14-fullAttributes.ovf");
 		 } catch (IOException e) {
             e.printStackTrace();

@@ -200,6 +200,61 @@ public class Client {
 		return response;
 	}
 	
+	
+	public static String postMethod(String url, String payload, String accept, String contentType, Boolean exception) {
+		// Create an instance of HttpClient.
+		HttpClient client = getHttpClient();
+
+		logger.info("Connecting to: " + url);
+		System.out.println("Connecting to: " + url);
+		// Create a method instance.
+		PostMethod method = new PostMethod(url);
+		setHeaders(method, accept);
+		method.addRequestHeader("Content-Type", contentType);
+		
+		// Provide custom retry handler is necessary
+		method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+		String response = "";
+
+		try {
+			// We set the payload
+			StringRequestEntity payloadEntity = new StringRequestEntity(payload,  Dictionary.CONTENT_TYPE_JSON, "UTF-8");
+			method.setRequestEntity(payloadEntity);
+			
+			// Execute the method.
+			int statusCode = client.executeMethod(method);
+			logger.info("Status Code: " + statusCode );
+			System.out.println("Status Code: " + statusCode );
+
+			if (statusCode >= 200 && statusCode > 300) { //TODO test for this case... 
+				logger.info("Execution of POST method to: " + url + " failed: " + method.getStatusLine());
+				System.out.println("Execution of POST method to: " + url + " failed: " + method.getStatusLine());
+			} else {
+				// Read the response body.
+				byte[] responseBody = method.getResponseBody();
+				response = new String(responseBody);
+			}	
+
+		} catch(HttpException e) {
+			logger.info("Fatal protocol violation: " + e.getMessage());
+			System.out.println("Fatal protocol violation: " + e.getMessage());
+			e.printStackTrace();
+			exception = true;
+		} catch(IOException e) {
+			logger.info("Fatal transport error: " + e.getMessage());
+			System.out.println("Fatal transport error: " + e.getMessage());
+			e.printStackTrace();
+
+			exception = true;
+		} finally {
+			// Release the connection.
+			method.releaseConnection();
+		}
+
+		return response;
+	}
+	
 	/**
 	 * PUT REST Method
 	 * @param url to do the PUT method

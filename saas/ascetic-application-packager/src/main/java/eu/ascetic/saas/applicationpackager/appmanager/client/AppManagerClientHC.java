@@ -131,7 +131,32 @@ public class AppManagerClientHC implements AppManagerClient {
 	}
 
 	
-public void showDeploymentURL(String appName, String deploymentId){
+	public Application postApplication(String ovf) {
+		
+		
+		Application app  = null;
+		Boolean exception = false;
+		String vmDeployUrl = url + "/applications";
+		logger.info("URL build: " + vmDeployUrl);
+		
+		try {
+//			ListVms listVms = new ListVms(vms);
+//			String payload = ModelConverter.objectListVmsToJSON(listVms);
+//			
+			String response = Client.postMethod(vmDeployUrl, ovf, Dictionary.CONTENT_TYPE_XML, Dictionary.CONTENT_TYPE_XML, exception);
+			logger.info("PAYLOAD: " + response);
+			app = ModelConverter.xmlApplicationToObject(response);
+			
+		} catch(Exception e) {
+			logger.warn("Error trying to parse XML response from AppMan: " + url + "/vms" + " Exception: " + e.getMessage());
+			exception = true;
+		}
+		
+		if(exception) return null;
+		return app;
+	}
+	
+	public void showDeploymentURL(String appName, String deploymentId){
 		String targetUrl = url + "/applications/" + appName + "/deployments/" + deploymentId;
 		logger.info("Connecting to: " + targetUrl);		
 	}
@@ -158,6 +183,7 @@ public void showDeploymentURL(String appName, String deploymentId){
 		if(exception) return null;
 		return deployment;
 	}
+	
 	
 
 	
