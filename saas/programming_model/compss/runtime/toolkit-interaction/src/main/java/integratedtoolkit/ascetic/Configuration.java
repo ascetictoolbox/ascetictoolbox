@@ -150,6 +150,8 @@ public class Configuration {
                     eventWeights[coreId][implId] = 0f;
                     eventTimes[coreId][implId] = Long.MAX_VALUE;
                     eventCosts[coreId][implId] = new Cost();
+                    eventCosts[coreId][implId].setPowerValue((double) 0);
+                    eventCosts[coreId][implId].setCharges((double) 0);
                 }
 
             }
@@ -185,42 +187,43 @@ public class Configuration {
                         eventCosts[coreId][implId].setPowerValue(energy);
                     }
                 }
-            }
-            System.out.println("Idle Power: " + (idleCost == null ? "-" : idleCost.getPowerValue()) + "W");
-            System.out.println("Idle Cost: " + (idleCost == null ? "-" : idleCost.getCharges()));
-            System.out.println("Events");
-            for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
-                int implCount = CoreManager.getCoreImplementations(coreId).length;
-                System.out.println("\tCore " + coreId);
-                for (int implId = 0; implId < implCount; implId++) {
-                    System.out.println("\t\tImplementation " + implId);
-                    System.out.println("\t\t\t Weight: " + eventWeights[coreId][implId]);
-                    System.out.println("\t\t\t Time: " + eventTimes[coreId][implId]);
-                    Cost c = eventCosts[coreId][implId];
-                    if (c == null) {
-                        System.out.println("\t\t\t Power: -W");
-                        System.out.println("\t\t\t Energy: -J");
-                        System.out.println("\t\t\t Cost: -€");
-                    } else {
-                        System.out.println("\t\t\t Power: " + c.getPowerValue() + "W");
-                        System.out.println("\t\t\t Energy: " + c.getPowerValue() * eventTimes[coreId][implId] / 1000 + "J");
-                        System.out.println("\t\t\t Cost: " + c.getCharges() + "€");
-                    }
-                }
-            }
 
-            String propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMUser").getValue();
-            conf.setUser(propertyValue);
-            propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMInstallDir").getValue();
-            conf.setInstallDir(propertyValue);
-            propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMWorkingDir").getValue();
-            conf.setWorkingDir(propertyValue);
-            propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMAppDir").getValue();
-            conf.setAppDir(propertyValue);
-            conf.setMinPort(43001);
-            conf.setMaxPort(43001);
-            boundaries[0] = vs.getProductSectionArray()[0].getLowerBound();
-            boundaries[1] = vs.getProductSectionArray()[0].getUpperBound();
+                System.out.println("Idle Power: " + (idleCost == null ? "-" : idleCost.getPowerValue()) + "W");
+                System.out.println("Idle Cost: " + (idleCost == null ? "-" : idleCost.getCharges()));
+                System.out.println("Events");
+                for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+                	int implCount = CoreManager.getCoreImplementations(coreId).length;
+                	System.out.println("\tCore " + coreId);
+                	for (int implId = 0; implId < implCount; implId++) {
+                		System.out.println("\t\tImplementation " + implId);
+                		System.out.println("\t\t\t Weight: " + eventWeights[coreId][implId]);
+                		System.out.println("\t\t\t Time: " + eventTimes[coreId][implId]);
+                		Cost c = eventCosts[coreId][implId];
+                		if (c == null) {
+                			System.out.println("\t\t\t Power: -W");
+                			System.out.println("\t\t\t Energy: -J");
+                			System.out.println("\t\t\t Cost: -€");
+                		} else {
+                			System.out.println("\t\t\t Power: " + c.getPowerValue() + "W");
+                			System.out.println("\t\t\t Energy: " + c.getPowerValue() * eventTimes[coreId][implId] / 1000 + "J");
+                			System.out.println("\t\t\t Cost: " + c.getCharges() + "€");
+                		}
+                	}
+                }
+
+                String propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMUser").getValue();
+                conf.setUser(propertyValue);
+                propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMInstallDir").getValue();
+                conf.setInstallDir(propertyValue);
+                propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMWorkingDir").getValue();
+                conf.setWorkingDir(propertyValue);
+                propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMAppDir").getValue();
+                conf.setAppDir(propertyValue);
+                conf.setMinPort(43001);
+                conf.setMaxPort(43001);
+                boundaries[0] = vs.getProductSectionArray()[0].getLowerBound();
+                boundaries[1] = vs.getProductSectionArray()[0].getUpperBound();
+            }
         }
     }
 

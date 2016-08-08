@@ -37,7 +37,9 @@ public class AppManager {
                     vm = new VM(rvm);
                     vm.updateConsumptions(this);
                     detectedVMs.put(IPv4, vm);
-                    newResources.add(vm);
+                    if (!vm.getCompatibleImplementations().isEmpty()){
+                    	newResources.add(vm);
+                    }
                 }
             }
         } catch (Exception e) {
