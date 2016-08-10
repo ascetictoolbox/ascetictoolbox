@@ -142,6 +142,13 @@ public interface ActuatorInvoker {
     public void deleteVM(String application, String deployment, String vmID);
 
     /**
+     * This forces a renegotiation of the SLA terms of a deployment
+     * @param applicationId The id of the application that is to be renegotiated
+     * @param deploymentId The id of the deployment of the application
+     */
+    public void renegotiate(String applicationId, String deploymentId);
+    
+    /**
      * This deletes all VMs of an application
      *
      * @param applicationId The application the VM is part of

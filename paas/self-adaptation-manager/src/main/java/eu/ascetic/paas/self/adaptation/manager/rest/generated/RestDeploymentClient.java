@@ -107,9 +107,15 @@ public class RestDeploymentClient {
         return webResource.path(java.text.MessageFormat.format("{0}", new Object[]{deployment_id})).type(javax.ws.rs.core.MediaType.TEXT_PLAIN).delete(ClientResponse.class, requestEntity);
     }
 
-    public <T> T getCostEstimation(Class<T> responseType, String event_id) throws UniformInterfaceException {
+    public <T> T renegotiate(Class<T> responseType, String deployment_id) throws UniformInterfaceException {
         WebResource resource = webResource;
-        resource = resource.path(java.text.MessageFormat.format("events/{0}/cost-estimation", new Object[]{event_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/renegotiate", new Object[]{deployment_id}));
+        return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public <T> T getCostEstimation(Class<T> responseType, String deployment_id, String event_id) throws UniformInterfaceException {
+        WebResource resource = webResource;
+        resource = resource.path(java.text.MessageFormat.format("{0}/events/{1}/cost-estimation", new Object[]{deployment_id, event_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
@@ -159,7 +165,7 @@ public class RestDeploymentClient {
         if (duration != null) {
             resource = resource.queryParam("duration", duration);
         }
-        resource = resource.path(java.text.MessageFormat.format("{0}//energy-estimation", new Object[]{deployment_id}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/energy-estimation", new Object[]{deployment_id}));
         return resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 

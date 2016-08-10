@@ -150,6 +150,9 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
             case SCALE_TO_N_VMS:
                 horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
                 break;
+            case RENEGOTIATE:
+                renegotiate(response.getApplicationId(), response.getDeploymentId());
+                break;                
             default:
                 Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
                 break;
@@ -246,6 +249,11 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
         }
     }
 
+    @Override
+    public void renegotiate(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }    
+    
     /**
      * This deletes all VMs of an application
      *

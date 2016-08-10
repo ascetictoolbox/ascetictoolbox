@@ -265,6 +265,11 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
     }
 
     @Override
+    public void renegotiate(String applicationId, String deploymentId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public void hardShutdown(String applicationId, String deploymentId) {
         /**
          * This works over the entire pool, for a named user. The application ID
@@ -418,6 +423,9 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
             case SCALE_TO_N_VMS:
                 horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
                 break;
+            case RENEGOTIATE:
+                renegotiate(response.getApplicationId(), response.getDeploymentId());
+                break;                  
             default:
                 Logger.getLogger(OpenNebulaActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
                 break; 

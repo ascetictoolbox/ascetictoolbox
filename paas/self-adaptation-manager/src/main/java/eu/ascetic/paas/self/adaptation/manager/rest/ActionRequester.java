@@ -442,6 +442,13 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }
     }
 
+    @Override
+    public void renegotiate(String applicationId, String deploymentId) {
+        RestDeploymentClient client = new RestDeploymentClient(applicationId);
+        client.renegotiate(String.class, deploymentId);
+        client.close();
+    }
+
     /**
      * This deletes all VMs of an application
      *
@@ -535,6 +542,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
             case SCALE_TO_N_VMS:
                 horizontallyScaleToNVms(response.getApplicationId(), response.getDeploymentId(), response);
                 break;
+            case RENEGOTIATE:
+                renegotiate(response.getApplicationId(), response.getDeploymentId());
+                break;                
             default:
                 Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
                 break;

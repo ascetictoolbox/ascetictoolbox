@@ -50,6 +50,7 @@ public class Response implements Comparable<Response> {
         ADAPTATION_TYPE_MAPPING.put("HARD_SHUTDOWN_APP", Response.AdaptationType.HARD_SHUTDOWN_APP);
         ADAPTATION_TYPE_MAPPING.put("REQUEST_VM_CONSOLIDATION", Response.AdaptationType.REQUEST_VM_CONSOLIDATION);
         ADAPTATION_TYPE_MAPPING.put("SCALE_TO_N_VMS", Response.AdaptationType.SCALE_TO_N_VMS);
+        ADAPTATION_TYPE_MAPPING.put("RENEGOTIATE", Response.AdaptationType.RENEGOTIATE);
         ADAPTATION_TYPE_MAPPING.put(null, null);
         ADAPTATION_TYPE_MAPPING.put("", null);
     }
@@ -61,7 +62,7 @@ public class Response implements Comparable<Response> {
 
         ADD_VM, REMOVE_VM, INFLATE_VM, DEFLATE_VM, 
         ADD_CPU, REMOVE_CPU, ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP, 
-        HARD_SHUTDOWN_APP, REQUEST_VM_CONSOLIDATION, SCALE_TO_N_VMS
+        HARD_SHUTDOWN_APP, REQUEST_VM_CONSOLIDATION, SCALE_TO_N_VMS, RENEGOTIATE
     }
     
     private enum AdaptationDetailKeys {
