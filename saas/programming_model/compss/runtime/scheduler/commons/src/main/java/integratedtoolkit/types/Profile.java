@@ -1,6 +1,5 @@
 package integratedtoolkit.types;
 
-import integratedtoolkit.scheduler.types.AllocatableAction;
 
 public class Profile {
 
@@ -15,6 +14,7 @@ public class Profile {
         this.minTime = Long.MAX_VALUE;
         this.averageTime = 100;
         this.maxTime = Long.MIN_VALUE;
+        startTime=System.currentTimeMillis();
     }
 
     public void start() {

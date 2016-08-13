@@ -40,7 +40,7 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         public void actionCompletion(AllocatableAction<?, ?> action);
 
         public void actionError(AllocatableAction<?, ?> action);
-        
+
     }
 
     private enum State {
@@ -65,6 +65,7 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
     private State state;
     protected ResourceScheduler<P, T> selectedResource;
     protected Implementation<T> selectedImpl;
+    protected WorkerResourceDescription resourceConsumption;
     protected final LinkedList<ResourceScheduler<P, T>> executingResources;
 
     private final SchedulingInformation<P, T> schedulingInfo;
@@ -234,9 +235,8 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
 
     private void execute() {
         logger.info(this + " execution starts on worker " + selectedResource.getName());
-
         // there are enough resources to host the actions and no waiting tasks in the queue
-        if (!selectedResource.hasBlockedActions() && areEnoughResources()) {
+        if (!isToReserveResources() || (!selectedResource.hasBlockedActions() && areEnoughResources())) {
             // register executing resource
             executingResources.add(selectedResource);
             // Run action
@@ -266,11 +266,28 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         doAction();
     }
 
-    protected abstract boolean areEnoughResources();
+    public abstract boolean isToReserveResources();
 
-    protected abstract void reserveResources();
+    private final boolean areEnoughResources() {
+        Worker<T> w = selectedResource.getResource();
+        return w.canRunNow(selectedImpl.getRequirements());
+    }
 
-    protected abstract void releaseResources();
+    private final void reserveResources() {
+        if (isToReserveResources()) {
+            Worker<T> w = selectedResource.getResource();
+            resourceConsumption = w.runTask(selectedImpl.getRequirements());
+        }
+    }
+
+    public abstract boolean isToReleaseResources();
+
+    private final void releaseResources() {
+        if (isToReleaseResources()) {
+            Worker w = selectedResource.getResource();
+            w.endTask(resourceConsumption);
+        }
+    }
 
     /**
      * Triggers the action
@@ -288,18 +305,7 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         //Release resources and run tasks blocked on the resource
         releaseResources();
         selectedResource.unhostAction(this);
-
-        while (selectedResource.hasBlockedActions()) {
-            AllocatableAction<P, T> firstBlocked = selectedResource.getFirstBlocked();
-            if (firstBlocked.areEnoughResources()) {
-                selectedResource.removeFirstBlocked();
-                logger.info(this + " execution resumed on worker " + selectedResource.getName());
-                firstBlocked.lock.lock();
-                firstBlocked.run();
-            } else {
-                break;
-            }
-        }
+        enactBlockedActions();
         //Action notification
         doCompleted();
 
@@ -332,9 +338,16 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         //Release resources and run tasks blocked on the resource
         releaseResources();
         selectedResource.unhostAction(this);
+        enactBlockedActions();
+
+        //Action notification
+        doError();
+    }
+
+    private void enactBlockedActions() {
         while (selectedResource.hasBlockedActions()) {
             AllocatableAction<P, T> firstBlocked = selectedResource.getFirstBlocked();
-            if (firstBlocked.areEnoughResources()) {
+            if (!firstBlocked.isToReserveResources() && firstBlocked.areEnoughResources()) {
                 selectedResource.removeFirstBlocked();
                 logger.info(this + " execution resumed on worker " + selectedResource.getName());
                 firstBlocked.lock.lock();
@@ -343,9 +356,6 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
                 break;
             }
         }
-
-        //Action notification
-        doError();
     }
 
     protected abstract void doError() throws FailedActionException;

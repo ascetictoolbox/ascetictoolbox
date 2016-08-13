@@ -1,6 +1,5 @@
 package integratedtoolkit.types.allocatiableaction;
 
-import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.FailedActionException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
@@ -74,20 +73,6 @@ public class AllocatableActionImpl<P extends Profile, T extends WorkerResourceDe
         return true;
     }
 
-    @Override
-    protected boolean areEnoughResources() {
-        return true;
-    }
-
-    @Override
-    protected void reserveResources() {
-
-    }
-
-    @Override
-    protected void releaseResources() {
-
-    }
 
     @Override
     public void schedule(Score actionScore) throws BlockedActionException, UnassignedActionException {
@@ -122,6 +107,16 @@ public class AllocatableActionImpl<P extends Profile, T extends WorkerResourceDe
     @Override
     public int getPriority() {
         return 0;
+    }
+
+    @Override
+    public boolean isToReserveResources() {
+        return true;
+    }
+
+    @Override
+    public boolean isToReleaseResources() {
+        return true;
     }
 
 }

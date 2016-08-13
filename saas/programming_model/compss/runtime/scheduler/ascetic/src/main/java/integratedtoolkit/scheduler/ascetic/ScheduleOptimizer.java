@@ -40,8 +40,8 @@ public class ScheduleOptimizer extends Thread {
             long optimizationTS = System.currentTimeMillis();
             ResourceScheduler<?, ?>[] workers = scheduler.getWorkers();
             globalOptimization(optimizationTS, workers);
-            waitForNextIteration(lastUpdate);
             lastUpdate = optimizationTS;
+            waitForNextIteration(lastUpdate);
         }
         sem.release();
     }

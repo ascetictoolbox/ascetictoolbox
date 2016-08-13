@@ -53,7 +53,7 @@ public class DeletionThread extends Thread {
 
     public void run() {
         if (reduction != null) {
-            Semaphore sem = null;/*ResourceManager.reduceCloudWorker(worker, reduction, LinkedList<Implementation> compatibleImpls);*/
+            Semaphore sem = null/*ResourceManager.reduceCloudWorker(worker, reduction, compatibleImpls)*/;
             try {
                 if (sem != null) {
                     if (debug) {
@@ -72,7 +72,7 @@ public class DeletionThread extends Thread {
         if (vm != null) {
             CloudMethodWorker worker = vm.getWorker();
             if (worker.shouldBeStopped()) {
-            	worker.retrieveData(true);
+                worker.retrieveData(true);
                 Semaphore sem = new Semaphore(0);
                 ShutdownListener sl = new ShutdownListener(sem);
                 runtimeLogger.info("Stopping worker " + worker.getName() + "...");

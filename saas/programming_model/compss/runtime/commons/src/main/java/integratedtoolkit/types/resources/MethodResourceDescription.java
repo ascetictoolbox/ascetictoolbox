@@ -532,7 +532,7 @@ public class MethodResourceDescription extends WorkerResourceDescription {
     /* *******************************************
      * METHODRESOURCE OPERATIONS
      * *******************************************/
-	// This method tries to substitute the implicit default values by defined mr2 values.
+    // This method tries to substitute the implicit default values by defined mr2 values.
     // Keeps the already defined values (do NOT overwrite)
     // ONLY CALLED FROM CONSTRAINTS (1 processor always)
     public void merge(MethodResourceDescription mr2) {
@@ -897,7 +897,7 @@ public class MethodResourceDescription extends WorkerResourceDescription {
     }
 
     @Override
-    public void increaseDynamic(ResourceDescription rd2) {
+    public void increaseDynamic(ResourceDescription rd2) {       
         MethodResourceDescription mrd2 = (MethodResourceDescription) rd2;
 
         // Processor
@@ -985,45 +985,45 @@ public class MethodResourceDescription extends WorkerResourceDescription {
     public ResourceDescription getDynamicCommons(ResourceDescription other) {
         MethodResourceDescription otherMRD = (MethodResourceDescription) other;
         MethodResourceDescription common = new MethodResourceDescription();
-        
+
         // Processor
         for (Processor p : otherMRD.getProcessors()) {
-        	boolean isProcessorCompatible = false;
-        	int i = 0;
-        	while (i < this.processors.size() && !isProcessorCompatible) {
-        		Processor pThis = this.processors.get(i);
-        		
-            	// Only checks compatibility, not inclusion
-        		if (checkProcessorCompatibility(pThis, p)) {
-    	    		// Satisfies compatibility
-        			isProcessorCompatible = true;
-        			// Include commons
-        			common.addProcessor(getDynamicCommonsProcessor(pThis, p));
-        		}
-        		i = i + 1;
-        	}
+            boolean isProcessorCompatible = false;
+            int i = 0;
+            while (i < this.processors.size() && !isProcessorCompatible) {
+                Processor pThis = this.processors.get(i);
+
+                // Only checks compatibility, not inclusion
+                if (checkProcessorCompatibility(pThis, p)) {
+                    // Satisfies compatibility
+                    isProcessorCompatible = true;
+                    // Include commons
+                    common.addProcessor(getDynamicCommonsProcessor(pThis, p));
+                }
+                i = i + 1;
+            }
         }
-        
+
         // Memory
         // Only checks compatibility, not inclusion
         if (checkCompatibility(this.memoryType, otherMRD.memoryType)) {
-        	// Copy the assignable memory type (no the requested)
-        	common.setMemoryType(this.getMemoryType());
-        	common.setMemorySize(Math.min(this.memorySize, otherMRD.getMemorySize()));
+            // Copy the assignable memory type (no the requested)
+            common.setMemoryType(this.getMemoryType());
+            common.setMemorySize(Math.min(this.memorySize, otherMRD.getMemorySize()));
         }
-        
+
         return common;
     }
-    
+
     private Processor getDynamicCommonsProcessor(Processor pThis, Processor p) {
-    	// Copy the assignable processor (no the requested)
-    	Processor common = new Processor(pThis);
-    	
-    	// Compute the number of CUs that can be given
-    	int cus = Math.min(pThis.getComputingUnits(), p.getComputingUnits());
-    	common.setComputingUnits(cus);
-    	
-    	return common;
+        // Copy the assignable processor (no the requested)
+        Processor common = new Processor(pThis);
+
+        // Compute the number of CUs that can be given
+        int cus = Math.min(pThis.getComputingUnits(), p.getComputingUnits());
+        common.setComputingUnits(cus);
+
+        return common;
     }
 
     @Override

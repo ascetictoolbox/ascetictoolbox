@@ -16,19 +16,6 @@ public class OptimizationAction extends AllocatableAction {
         super(new AsceticSchedulingInformation());
     }
 
-    @Override
-    protected boolean areEnoughResources() {
-        return true;
-    }
-
-    @Override
-    protected void reserveResources() {
-    }
-
-    @Override
-    protected void releaseResources() {
-
-    }
 
     @Override
     protected void doAction() {
@@ -98,6 +85,16 @@ public class OptimizationAction extends AllocatableAction {
     @Override
     public void schedule(ResourceScheduler targetWorker, Implementation impl) throws BlockedActionException, UnassignedActionException {
 
+    }
+
+    @Override
+    public boolean isToReserveResources() {
+        return true;
+    }
+
+    @Override
+    public boolean isToReleaseResources() {
+        return true;
     }
 
 }

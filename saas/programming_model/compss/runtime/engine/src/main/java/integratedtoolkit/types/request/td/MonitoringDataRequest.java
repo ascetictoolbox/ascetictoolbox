@@ -5,15 +5,15 @@ import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
 import integratedtoolkit.util.ResourceManager;
+import integratedtoolkit.util.ResourceScheduler;
 
 import java.util.concurrent.Semaphore;
-
 
 /**
  * The MonitoringDataRequest class represents a request to obtain the current
  * resources and cores that can be run
  */
-public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDescription> extends TDRequest<P,T> {
+public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDescription> extends TDRequest<P, T> {
 
     /**
      * Semaphore where to synchronize until the operation is done
@@ -75,18 +75,18 @@ public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDe
     }
 
     @Override
-    public void process(TaskScheduler<P,T> ts) {
+    public void process(TaskScheduler<P, T> ts) {
         String prefix = "\t";
         StringBuilder monitorData = new StringBuilder();
         monitorData.append(ts.getCoresMonitoringData(prefix));
 
         monitorData.append(prefix).append("<ResourceInfo>").append("\n");
         monitorData.append(ResourceManager.getPendingRequestsMonitorData(prefix + "\t"));
-        for (Worker<?> r : ResourceManager.getAllWorkers()) {
-        	Worker<T> worker = (Worker<T>) r;
+        for (ResourceScheduler rs : ts.getWorkers()) {
+            Worker<T> worker = (Worker<T>) rs.getResource();
             monitorData.append(prefix + "\t").append("<Resource id=\"" + worker.getName() + "\">").append("\n");
             //CPU, Core, Memory, Disk, Provider, Image --> Inside resource
-            monitorData.append(r.getMonitoringData(prefix + "\t\t"));
+            monitorData.append(worker.getMonitoringData(prefix + "\t\t"));
             String runnningActions = ts.getRunningActionMonitorData(worker, prefix + "\t\t\t");
             if (runnningActions != null) {
                 //Resource state = running
@@ -107,7 +107,7 @@ public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDe
     }
 
     @Override
-    public TDRequestType getType(){
+    public TDRequestType getType() {
         return TDRequestType.MONITORING_DATA;
     }
 

@@ -1,6 +1,5 @@
 package integratedtoolkit.types.allocatableactions;
 
-import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.FailedActionException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
@@ -11,29 +10,30 @@ import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.SchedulingInformation;
 import integratedtoolkit.types.Score;
 import integratedtoolkit.types.ServiceImplementation;
+import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.Resource.Type;
-import integratedtoolkit.types.resources.MethodWorker;
-import integratedtoolkit.types.resources.ResourceDescription;
+import integratedtoolkit.types.resources.ShutdownListener;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 import integratedtoolkit.util.ErrorManager;
 import integratedtoolkit.util.ResourceManager;
 import integratedtoolkit.util.ResourceScheduler;
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
-public class StartWorkerAction<T extends WorkerResourceDescription> extends AllocatableAction<Profile, T> {
+public class StopWorkerAction<T extends WorkerResourceDescription> extends AllocatableAction<Profile, T> {
 
     private final ResourceScheduler<Profile, T> worker;
-    private final TaskScheduler ts;
     private final Implementation impl;
+    private final ResourceUpdate ru;
 
-    public StartWorkerAction(SchedulingInformation schedulingInformation, ResourceScheduler<Profile, T> worker, TaskScheduler ts) {
+    public StopWorkerAction(SchedulingInformation schedulingInformation, ResourceScheduler<Profile, T> worker, ResourceUpdate modification) {
         super(schedulingInformation);
         this.worker = worker;
-        this.ts = ts;
+        this.ru = modification;
         if (worker.getResource().getType() == Type.WORKER) {
-            MethodWorker mw = (MethodWorker) worker.getResource();
-            impl = new MethodImplementation("", null, null, mw.getDescription());
+            impl = new MethodImplementation("", null, null, new MethodResourceDescription());
         } else {
             impl = new ServiceImplementation(null, "", "", "", "");
         }
@@ -43,22 +43,30 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
     protected void doAction() {
         (new Thread() {
             public void run() {
-                Thread.currentThread().setName(selectedResource.getResource().getName() + " starter");
+                Thread.currentThread().setName(selectedResource.getResource().getName() + " stopper");
+                worker.getResource().retrieveData(true);
+                Semaphore sem = new Semaphore(0);
+                ShutdownListener sl = new ShutdownListener(sem);
+                worker.getResource().stop(sl);
+
+                sl.enable();
                 try {
-                    selectedResource.getResource().start();
-                    notifyCompleted();
+                    sem.acquire();
                 } catch (Exception e) {
-                    logger.error("Error starting resource", e);
-                    ErrorManager.warn("Exception creating worker. Check runtime.log for more details", e);
+                    logger.error("ERROR: Exception raised on worker shutdown", e);
+                    ErrorManager.warn("Exception stopping worker. Check runtime.log for more details", e);
                     notifyError();
                 }
+
+                notifyCompleted();
+
             }
         }).start();
     }
 
     @Override
     protected void doCompleted() {
-        logger.info("Worker " + worker.getName() + " is ready to execute tasks.");
+        ResourceManager.terminateResource(worker.getResource(), ru.getModification());
     }
 
     @Override
@@ -68,19 +76,7 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
 
     @Override
     protected void doFailed() {
-        Worker wNode = worker.getResource();
-
-        //Remove from the pool
-        ResourceManager.removeWorker(wNode);
-
-        //Remove all resources assigned to the node
-        ResourceDescription rd = wNode.getDescription();
-        rd.reduce(rd);
-
-        //Update the CE and Implementations that can run (none)
-        worker.getResource().updatedFeatures(new LinkedList());
-
-        ts.updateWorker(wNode, null);
+        ResourceManager.terminateResource(worker.getResource(), ru.getModification());
     }
 
     @Override
@@ -143,7 +139,7 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
     }
 
     public String toString() {
-        return "StartWorkerAction for worker " + worker.getName();
+        return "StopWorkerAction for worker " + worker.getName();
     }
 
     @Override
@@ -153,12 +149,11 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
 
     @Override
     public boolean isToReserveResources() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isToReleaseResources() {
-        return true;
+        return false;
     }
-    
 }

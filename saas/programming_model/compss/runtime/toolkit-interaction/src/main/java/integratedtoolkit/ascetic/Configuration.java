@@ -235,11 +235,11 @@ public class Configuration {
             coreCount = 1;
         }
         Processor proc = new Processor();
-        rd.addProcessor(proc);
         float cpuspeed = ((float) vs.getVirtualHardwareSection().getCPUSpeed() / 1000f);
         proc.setComputingUnits(coreCount);
         proc.setSpeed(cpuspeed);
-
+        rd.addProcessor(proc);
+        
         int memory = vs.getVirtualHardwareSection().getMemorySize();
         if (memory > 0) {
             rd.setMemorySize((float) memory / 1024f);

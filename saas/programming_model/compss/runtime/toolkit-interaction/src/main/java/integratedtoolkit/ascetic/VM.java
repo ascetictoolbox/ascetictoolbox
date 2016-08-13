@@ -11,6 +11,7 @@ import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.MethodWorker;
 import integratedtoolkit.types.resources.ResourceDescription;
 import integratedtoolkit.types.resources.Worker;
+import integratedtoolkit.util.CloudManager;
 import integratedtoolkit.util.CoreManager;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -38,7 +39,7 @@ public class VM {
     private final eu.ascetic.paas.applicationmanager.model.VM vm;
 
     private Worker worker;
-    private final ResourceDescription description;
+    private final CloudMethodResourceDescription description;
     private final NIOConfiguration configuration;
     private final LinkedList<Implementation> compatibleImpls;
     private double idlePower;
@@ -62,6 +63,8 @@ public class VM {
         componentCount.put(ovfId, count);
         MethodResourceDescription rd = Configuration.getComponentDescriptions(ovfId);
         description = new CloudMethodResourceDescription(rd);
+        description.setType(ovfId);
+        description.setImage(CloudManager.getProvider("Ascetic").getImage(ovfId));
         configuration = new NIOConfiguration(Configuration.getComponentProperties(ovfId));
         configuration.setLimitOfTasks(rd.getProcessors().get(0).getComputingUnits());
         configuration.setTotalComputingUnits(rd.getProcessors().get(0).getComputingUnits());
@@ -83,10 +86,7 @@ public class VM {
                 }
             }
         }
-        /*energy = new double[CoreManager.getCoreCount()][];
-         for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
-         energy[coreId] = new double[implCount[coreId]];
-         }*/
+        
         times = Configuration.getComponentTimes(ovfId);
         eventWeights = Configuration.getEventWeights(ovfId);
         coresEnergy = 0;

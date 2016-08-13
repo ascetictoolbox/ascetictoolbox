@@ -37,14 +37,26 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     private final LinkedList<Gap> gaps;
     private double pendingActionsEnergy = 0;
     private double pendingActionsCost = 0;
+    private int[][] implementationsCount;
+    private int[][] runningImplementationsCount;
+    private double runningActionsEnergy = 0;
+    private double runningActionsCost = 0;
 
     private OptimizationAction opAction;
     private Set<AllocatableAction> pendingUnschedulings = new HashSet<AllocatableAction>();
+    private long expectedEndTimeRunning;
 
     public AsceticResourceScheduler(Worker<T> w) {
         super(w);
         gaps = new LinkedList<Gap>();
         addGap(new Gap(Long.MIN_VALUE, Long.MAX_VALUE, null, myWorker.getDescription().copy(), 0));
+        implementationsCount = new int[CoreManager.getCoreCount()][];
+        runningImplementationsCount = new int[CoreManager.getCoreCount()][];
+        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+            implementationsCount[coreId] = new int[CoreManager.getCoreImplementations(coreId).length];
+            runningImplementationsCount[coreId] = new int[CoreManager.getCoreImplementations(coreId).length];
+        }
+        expectedEndTimeRunning = 0;
     }
 
     /*--------------------------------------------------
@@ -325,9 +337,11 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 
         //Unlock access to current task
         schedInfo.unlock();
-
-        //Create new Gap correspondin to the resources released by the action
-        addGap(new Gap(expectedEnd, Long.MAX_VALUE, action, impl.getRequirements().copy(), 0));
+        if (action.isToReleaseResources()) {//Create new Gap correspondin to the resources released by the action
+            addGap(new Gap(expectedEnd, Long.MAX_VALUE, action, impl.getRequirements().copy(), 0));
+        } else {
+            addGap(new Gap(Long.MAX_VALUE, Long.MAX_VALUE, action, impl.getRequirements().copy(), 0));
+        }
     }
 
     private void useGap(Gap gap, ResourceDescription resources, LinkedList<Gap> predecessors) {
@@ -624,7 +638,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
          * to avoid their start without being on the runningActions set.
          */
         LocalOptimizationState state = new LocalOptimizationState(updateId, myWorker.getDescription());
-
+        System.out.println("RESCHEDULE " + this.getName());
         Gap gap = state.peekFirstGap();
         ResourceDescription gapResource = gap.getResources();
         PriorityQueue<SchedulingEvent<P, T>> schedulingQueue = new PriorityQueue<SchedulingEvent<P, T>>();
@@ -687,9 +701,13 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         for (Gap g : state.getGaps()) {
             state.removeTmpGap(g);
         }
-
         this.pendingActionsCost = state.getTotalCost();
         this.pendingActionsEnergy = state.getTotalEnergy();
+        this.implementationsCount = state.getImplementationsCount();
+        this.expectedEndTimeRunning = state.getEndRunningTime();
+        this.runningImplementationsCount = state.getRunningImplementations();
+        this.runningActionsEnergy = state.getRunningEnergy();
+        this.runningActionsCost = state.getRunningCost();
         return state.getGaps();
     }
 
@@ -738,7 +756,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         actionDSI.setExpectedStart(start);
 
         //Set End  Time
-        Profile p = getProfile(impl);
+        AsceticProfile p = (AsceticProfile) getProfile(impl);
         long endTime = start;
         if (p != null) {
             endTime += p.getAverageExecutionTime();
@@ -751,7 +769,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         actionDSI.clearPredecessors();
         actionDSI.clearSuccessors();
         actionDSI.setToReschedule(false);
-        state.reserveResources(impl.getRequirements(), 0);
+        state.runningAction(impl, p, endTime);
+
     }
 
     private boolean tryToLaunch(AllocatableAction action) {
@@ -850,7 +869,11 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         return Ascetic.getPower(myWorker);
     }
 
-    public double getActionsEnergy() {
+    public double getRunningActionsEnergy() {
+        return this.runningActionsEnergy;
+    }
+
+    public double getScheduledActionsEnergy() {
         return this.pendingActionsEnergy;
     }
 
@@ -858,8 +881,28 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         return Ascetic.getPrice(myWorker);
     }
 
+    public double getRunningActionsCost() {
+        return this.runningActionsCost;
+    }
+
     public double getActionsCost() {
         return this.pendingActionsCost;
+    }
+
+    public int getSimultaneousCapacity(Implementation impl) {
+        return myWorker.fitCount(impl);
+    }
+
+    public int[][] getImplementationCounts() {
+        return this.implementationsCount;
+    }
+
+    public long getExpectedEndTimeRunning() {
+        return this.expectedEndTimeRunning;
+    }
+
+    public int[][] getRunningImplementationCounts() {
+        return this.runningImplementationsCount;
     }
 
 }

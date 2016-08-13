@@ -9,6 +9,7 @@ import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.MethodImplementation;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.Worker;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ResourceManager;
 import java.util.LinkedList;
@@ -176,7 +177,7 @@ public class ConfigurationTest {
     public static class Status implements ResourceUser {
 
         @Override
-        public void updatedResource(Worker<?> r) {
+        public void updatedResource(Worker<?> r, ResourceUpdate ru) {
             ConfigurationTest.addWorker(r);
         }
     }

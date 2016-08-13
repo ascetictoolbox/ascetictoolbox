@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * The CloudImageManager is an utility to manage the different images that can
  * be used for a certain Cloud Provider
@@ -24,16 +23,15 @@ public class CloudImageManager {
      * Relation between the name of an image and its features
      */
     private HashMap<String, CloudImageDescription> images;
-    
+
     // Logger
     private static final Logger logger = Logger.getLogger(Loggers.CM_COMP);
 
-    
     /**
      * Constructs a new CloudImageManager
      */
     public CloudImageManager() {
-    	logger.info("Initializing CloudImageManager");
+        logger.info("Initializing CloudImageManager");
         images = new HashMap<String, CloudImageDescription>();
     }
 
@@ -43,7 +41,7 @@ public class CloudImageManager {
      * @param cid Description of the image
      */
     public void add(CloudImageDescription cid) {
-    	logger.debug("Add new Image description");
+        logger.debug("Add new Image description");
         images.put(cid.getImageName(), cid);
     }
 
@@ -56,47 +54,47 @@ public class CloudImageManager {
      * resource description
      */
     public LinkedList<CloudImageDescription> getCompatibleImages(MethodResourceDescription requested) {
-    	//logger.debug("REQUESTED: " + requested.toString());
+        //logger.debug("REQUESTED: " + requested.toString());
         LinkedList<CloudImageDescription> compatiblesList = new LinkedList<CloudImageDescription>();
         for (CloudImageDescription cid : images.values()) {
         	//logger.debug("CID:     " + cid.toString());
-        	
-        	// OS CHECK
+
+            // OS CHECK
             String imageOSType = cid.getOperatingSystemType();
             String reqOSType = requested.getOperatingSystemType();
             if (!imageOSType.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
-            		&& !reqOSType.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
-            		&& !imageOSType.equals(reqOSType)) {
-            	continue;
+                    && !reqOSType.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
+                    && !imageOSType.equals(reqOSType)) {
+                continue;
             }
 
             String imageOSDistr = cid.getOperatingSystemDistribution();
             String reqOSDistr = requested.getOperatingSystemDistribution();
             if (!imageOSDistr.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
-            		&& !reqOSDistr.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
-            		&& !imageOSDistr.equals(reqOSDistr)) {
-            	continue;
+                    && !reqOSDistr.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
+                    && !imageOSDistr.equals(reqOSDistr)) {
+                continue;
             }
 
             String imageOSVersion = cid.getOperatingSystemVersion();
             String reqOSVersion = requested.getOperatingSystemVersion();
             if (!imageOSVersion.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
-            		&& !reqOSVersion.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
-            		&& !imageOSVersion.equals(reqOSVersion)) {
-            	continue;
+                    && !reqOSVersion.equals(CloudMethodResourceDescription.UNASSIGNED_STR)
+                    && !imageOSVersion.equals(reqOSVersion)) {
+                continue;
             }
-            
+
             // SOFTWARE CHECK
             if (!cid.getAppSoftware().containsAll(requested.getAppSoftware())) {
-            	continue;
+                continue;
             }
-            
+
             // CHECK QUEUES
             List<String> req_queues = requested.getHostQueues();
             List<String> image_queues = cid.getQueues();
             // Disjoint = true if the two specified collections have no elements in common.
             if (!req_queues.isEmpty() && Collections.disjoint(req_queues, image_queues)) {
-            	continue;
+                continue;
             }
 
             compatiblesList.add(cid);
@@ -111,6 +109,10 @@ public class CloudImageManager {
      */
     public Set<String> getAllImageNames() {
         return images.keySet();
+    }
+
+    public CloudImageDescription getImage(String name) {
+        return images.get(name);
     }
 
     public String getCurrentState(String prefix) {
@@ -129,5 +131,5 @@ public class CloudImageManager {
 
         return sb.toString();
     }
-    
+
 }

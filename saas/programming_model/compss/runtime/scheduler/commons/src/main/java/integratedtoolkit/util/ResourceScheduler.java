@@ -7,6 +7,7 @@ import integratedtoolkit.types.Score;
 import integratedtoolkit.types.TaskParams;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 
 import java.util.LinkedList;
 
@@ -18,6 +19,9 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
     //Task without enough resources to be executed right now
     private final LinkedList<AllocatableAction<P, T>> blocked;
 
+    //Modifications pending to be applied
+    private final LinkedList<ResourceUpdate> pendingModifications;
+
     //Profile information of the task executions
     private Profile[][] profiles;
 
@@ -28,6 +32,7 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
         profiles = loadProfiles();
         running = new LinkedList<AllocatableAction<P, T>>();
         blocked = new LinkedList<AllocatableAction<P, T>>();
+        pendingModifications = new LinkedList<ResourceUpdate>();
     }
 
     public final String getName() {
@@ -90,7 +95,7 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
 
     public final void profiledExecution(Implementation<T> impl, Profile profile) {
         if (impl != null) {
-            System.out.println(this.getName() + " run Implementation " + impl.getImplementationId() + " for core " + impl.getCoreId() + " and took " + profile.getAverageExecutionTime());
+            System.out.println(this.getName() + " ran Implementation " + impl.getImplementationId() + " for core " + impl.getCoreId() + " and took " + profile.getAverageExecutionTime());
             int coreId = impl.getCoreId();
             int implId = impl.getImplementationId();
             profiles[coreId][implId].accumulate(profile);
@@ -214,5 +219,17 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
             }
         }
         return profiles;
+    }
+
+    public final void pendingModification(ResourceUpdate modification) {
+        pendingModifications.add(modification);
+    }
+
+    public final boolean hasPendingModifications() {
+        return !pendingModifications.isEmpty();
+    }
+
+    public final void completedModification(ResourceUpdate modification) {
+        pendingModifications.remove(modification);
     }
 }

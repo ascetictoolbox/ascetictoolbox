@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import integratedtoolkit.ascetic.fake.FakeAppManager;
 import integratedtoolkit.scheduler.types.AllocatableAction;
+import integratedtoolkit.types.resources.MethodResourceDescription;
 import java.util.LinkedList;
 
 public class Ascetic {
@@ -64,6 +65,10 @@ public class Ascetic {
 
     public static LinkedList<String> getComponentNames() {
         return Configuration.getComponentNames();
+    }
+
+    public static MethodResourceDescription getComponentDescription(String componentName) {
+        return Configuration.getComponentDescriptions(componentName);
     }
 
     public static void discoverNewResources() {
@@ -190,6 +195,10 @@ public class Ascetic {
         return Configuration.getIdleCosts(componentName).getCharges();
     }
 
+    public static double getPrice(String componentName, Implementation impl) {
+        return Configuration.getDefaultCosts(componentName)[impl.getCoreId()][impl.getImplementationId()].getCharges();
+    }
+
     public static double getPrice(Worker w) {
         String IPv4 = w.getName();
         VM vm = resources.get(IPv4);
@@ -212,6 +221,10 @@ public class Ascetic {
         return Configuration.getIdleCosts(componentName).getPowerValue();
     }
 
+    public static double getPower(String componentName, Implementation impl) {
+        return Configuration.getDefaultCosts(componentName)[impl.getCoreId()][impl.getImplementationId()].getPowerValue();
+    }
+
     public static double getPower(Worker w) {
         String IPv4 = w.getName();
         VM vm = resources.get(IPv4);
@@ -228,6 +241,10 @@ public class Ascetic {
 
     public static long getTimeBoundary() {
         return Configuration.getPerformanceBoundary();
+    }
+
+    public static long getExecutionTime(String componentName, Implementation impl) {
+        return Configuration.getComponentTimes(componentName)[impl.getCoreId()][impl.getImplementationId()];
     }
 
     public static long getExecutionTime(Worker w, Implementation impl) {

@@ -1,5 +1,6 @@
 package integratedtoolkit.util;
 
+import integratedtoolkit.types.CloudImageDescription;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
@@ -7,7 +8,6 @@ import integratedtoolkit.types.resources.description.CloudMethodResourceDescript
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
-
 
 public class CloudTypeManager {
 
@@ -53,11 +53,11 @@ public class CloudTypeManager {
         for (Type type : types.values()) {
             CloudMethodResourceDescription mixedDescription = new CloudMethodResourceDescription(type.rd);
             if (mixedDescription.contains(requested)) {
-	            // Satisfies the constraints, add compatible
-            	compatiblesList.add(mixedDescription);
+                // Satisfies the constraints, add compatible
+                compatiblesList.add(mixedDescription);
             }
         }
-        
+
         return compatiblesList;
     }
 
@@ -244,6 +244,15 @@ public class CloudTypeManager {
         sb.append(prefix).append("]").append("\n");
 
         return sb.toString();
+    }
+
+    public CloudMethodResourceDescription getInstanceType(String name) {
+        CloudMethodResourceDescription typeDescription = null;
+        Type t = types.get(name);
+        if (t != null) {
+            typeDescription = new CloudMethodResourceDescription(t.rd);
+        }
+        return typeDescription;
     }
 
     private class Type {

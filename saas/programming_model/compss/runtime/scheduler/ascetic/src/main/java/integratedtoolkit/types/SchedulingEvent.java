@@ -200,16 +200,26 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
         }
 
         private long getExpectedEnd(AllocatableAction action, AsceticResourceScheduler worker, long expectedStart) {
-            Implementation<T> impl = action.getAssignedImplementation();
-            Profile p = worker.getProfile(impl);
-            long endTime = expectedStart;
-            if (p != null) {
-                endTime += p.getAverageExecutionTime();
+            long theoreticalEnd;
+            if (action.isToReleaseResources()) {
+                Implementation<T> impl = action.getAssignedImplementation();
+                Profile p = worker.getProfile(impl);
+                long endTime = expectedStart;
+                if (p != null) {
+                    endTime += p.getAverageExecutionTime();
+                }
+                if (endTime < 0) {
+                    endTime = 0;
+                }
+                theoreticalEnd = endTime;
+            } else {
+                theoreticalEnd = Long.MAX_VALUE;
             }
-            if (endTime < 0) {
-                endTime = 0;
+            if (theoreticalEnd < expectedStart) {
+                return Long.MAX_VALUE;
+            } else {
+                return theoreticalEnd;
             }
-            return endTime;
         }
 
         private AllocatableAction pollActionForGap(Gap gap, AsceticResourceScheduler worker, PriorityActionSet selectableActions) {
@@ -317,6 +327,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
         if (p != null) {
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
             long length = dsi.getExpectedEnd() - (dsi.getExpectedStart() < 0 ? 0 : dsi.getExpectedStart());
+            state.runImplementation(impl);
             state.consumeEnergy(p.getPower() * length);
             state.addCost(p.getPrice());
         }

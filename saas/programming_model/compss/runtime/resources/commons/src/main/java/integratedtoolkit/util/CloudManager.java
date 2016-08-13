@@ -12,6 +12,8 @@ import integratedtoolkit.types.resources.Resource;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.MethodResourceDescription;
+import integratedtoolkit.types.resources.ResourceDescription;
+import integratedtoolkit.types.resources.Worker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,16 +29,16 @@ import org.apache.log4j.Logger;
  */
 public class CloudManager {
 
-	private static final String CONNECTORS_PATH = File.separator + "Runtime" + File.separator + "connectors" + File.separator;
-	
-	private static final String WARN_NO_IT_HOME = "WARN: IT_HOME not defined, no default connectors loaded";
-	private static final String WARN_NO_IT_HOME_RESOURCES = "WARN_MSG = [IT_HOME NOT DEFINED, NO DEFAULT CONNECTORS LOADED]";
-	private static final String WARN_NO_CONNECTORS_FOLDER = "WARN: Connectors folder not defined, no default connectors loaded";
-	private static final String WARN_NO_CONNECTORS_FOLDER_RESOURCES = "WARN_MSG = [CONNECTORS FOLDER NOT DEFINED, NO DEFAULT CONNECTORS LOADED]";
-	private static final String WARN_NO_RESOURCE_MATCHES = "WARN: No resource matches the constraints";
-	private static final String WARN_CANNOT_TURN_ON = "WARN: Connector cannot turn on resource";
-	private static final String WARN_EXCEPTION_TURN_ON = "WARN: Connector exception on turn on resource";
-	
+    private static final String CONNECTORS_PATH = File.separator + "Runtime" + File.separator + "connectors" + File.separator;
+
+    private static final String WARN_NO_IT_HOME = "WARN: IT_HOME not defined, no default connectors loaded";
+    private static final String WARN_NO_IT_HOME_RESOURCES = "WARN_MSG = [IT_HOME NOT DEFINED, NO DEFAULT CONNECTORS LOADED]";
+    private static final String WARN_NO_CONNECTORS_FOLDER = "WARN: Connectors folder not defined, no default connectors loaded";
+    private static final String WARN_NO_CONNECTORS_FOLDER_RESOURCES = "WARN_MSG = [CONNECTORS FOLDER NOT DEFINED, NO DEFAULT CONNECTORS LOADED]";
+    private static final String WARN_NO_RESOURCE_MATCHES = "WARN: No resource matches the constraints";
+    private static final String WARN_CANNOT_TURN_ON = "WARN: Connector cannot turn on resource";
+    private static final String WARN_EXCEPTION_TURN_ON = "WARN: Connector exception on turn on resource";
+
     private static boolean useCloud;
     private static int initialVMs = 0;
     private static int minVMs = 0;
@@ -147,7 +149,7 @@ public class CloudManager {
      */
     public static void newCloudProvider(String name, Integer limitOfVMs, String connectorPath, HashMap<String, String> connectorProperties)
             throws Exception {
-    	
+
         CloudProvider cp = new CloudProvider(connectorPath, limitOfVMs, connectorProperties, name);
         providers.put(name, cp);
     }
@@ -161,7 +163,7 @@ public class CloudManager {
      */
     public static void addImageToProvider(String providerName, CloudImageDescription cid)
             throws Exception {
-    	
+
         CloudProvider cp = providers.get(providerName);
         if (cp == null) {
             throw new Exception("Inexistent Cloud Provider " + providerName);
@@ -264,7 +266,7 @@ public class CloudManager {
      * @return
      */
     public static ResourceCreationRequest askForResources(Integer amount, MethodResourceDescription requirements, boolean contained) {
-    	// Search best resource
+        // Search best resource
         CloudProvider bestProvider = null;
         CloudMethodResourceDescription bestConstraints = null;
         Float bestValue = Float.MAX_VALUE;
@@ -277,7 +279,7 @@ public class CloudManager {
             }
         }
         if (bestConstraints == null) {
-        	runtimeLogger.warn(WARN_NO_RESOURCE_MATCHES);
+            runtimeLogger.warn(WARN_NO_RESOURCE_MATCHES);
             return null;
         }
 
@@ -317,11 +319,66 @@ public class CloudManager {
                 }
                 return rcr;
             } else {
-            	runtimeLogger.warn(WARN_CANNOT_TURN_ON);
+                runtimeLogger.warn(WARN_CANNOT_TURN_ON);
                 return null;
             }
         } catch (Exception e) {
-        	runtimeLogger.warn(WARN_EXCEPTION_TURN_ON, e);
+            runtimeLogger.warn(WARN_EXCEPTION_TURN_ON, e);
+            return null;
+        }
+    }
+
+    public static ResourceCreationRequest askForResources(String provider, String instanceName, String imageName) {
+        CloudProvider cp = providers.get(provider);
+        if (provider == null) {
+            runtimeLogger.warn(WARN_EXCEPTION_TURN_ON);
+            return null;
+        }
+        CloudMethodResourceDescription constraints = cp.getResourceDescription(instanceName, imageName);
+        if (constraints == null) {
+            runtimeLogger.warn(WARN_EXCEPTION_TURN_ON);
+            return null;
+        }
+        // Code only executed if a resource fits the constraints
+        int coreCount = CoreManager.getCoreCount();
+        int[][] simultaneousCounts = cp.getSimultaneousImpls(constraints.getType());
+        if (simultaneousCounts == null) {
+            simultaneousCounts = new int[coreCount][];
+            for (int coreId = 0; coreId < coreCount; coreId++) {
+                Implementation<?>[] impls = CoreManager.getCoreImplementations(coreId);
+                simultaneousCounts[coreId] = new int[impls.length];
+                for (int implId = 0; implId < impls.length; ++implId) {
+                    if (impls[implId].getType() == Type.METHOD) {
+                        MethodResourceDescription description = (MethodResourceDescription) impls[implId].getRequirements();
+                        if (description != null) {
+                            Integer into = constraints.canHostSimultaneously(description);
+                            simultaneousCounts[coreId][implId] = into;
+                        }
+                    }
+                }
+            }
+        }
+
+        runtimeLogger.debug("Asking for resource creation");
+        ResourceCreationRequest rcr = new ResourceCreationRequest(constraints, simultaneousCounts, provider);
+        try {
+            if (cp.turnON(rcr)) {
+                pendingRequests.add(rcr);
+                int[][] reqCounts = rcr.requestedSimultaneousTaskCount();
+                for (int coreId = 0; coreId < reqCounts.length; coreId++) {
+                    int coreSlots = 0;
+                    for (int implId = 0; implId < reqCounts[coreId].length; implId++) {
+                        coreSlots = Math.max(coreSlots, reqCounts[coreId][implId]);
+                    }
+                    pendingCoreCount[coreId] += coreSlots;
+                }
+                return rcr;
+            } else {
+                runtimeLogger.warn(WARN_CANNOT_TURN_ON);
+                return null;
+            }
+        } catch (Exception e) {
+            runtimeLogger.warn(WARN_EXCEPTION_TURN_ON, e);
             return null;
         }
     }
@@ -443,10 +500,12 @@ public class CloudManager {
         }
     }
 
-    public static void destroyResources(CloudMethodWorker res, CloudMethodResourceDescription reduction) {
+    public static void destroyResources(Worker res, ResourceDescription reduction) {
         runtimeLogger.debug("Destroying resources for reduction");
         CloudProvider cp = VM2Provider.get(res.getName());
-        cp.turnOff(res, reduction);
+        if (cp != null) {
+            cp.turnOff((CloudMethodWorker) res, (CloudMethodResourceDescription) reduction);
+        }
     }
 
     /**
@@ -565,13 +624,4 @@ public class CloudManager {
         return null;
     }
 
-    /*private static class Ender extends Thread {
-
-     public void run() {
-     for (CloudProvider cp : providers.values()) {
-     logger.debug("Terminating all at ender");
-     cp.terminateAll();
-     }
-     }
-     }*/
 }

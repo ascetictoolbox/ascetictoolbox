@@ -12,6 +12,7 @@ import integratedtoolkit.types.request.td.*;
 import integratedtoolkit.types.request.exceptions.ShutdownException;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.Worker;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 import integratedtoolkit.util.CEIParser;
 import integratedtoolkit.util.Classpath;
 import integratedtoolkit.util.ErrorManager;
@@ -33,14 +34,14 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
 
         public void notifyTaskEnd(Task task);
     }
-    
+
     // Schedulers jars path
     private static final String SCHEDULERS_REL_PATH = File.separator + "Runtime" + File.separator + "scheduler";
 
     // Subcomponents
     protected TaskScheduler<?, ?> scheduler;
     protected LinkedBlockingDeque<TDRequest<?, ?>> requestQueue;
-    
+
     // Scheduler thread
     protected Thread dispatcher;
     protected boolean keepGoing;
@@ -55,7 +56,6 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
     protected static boolean tracing = System.getProperty(ITConstants.IT_TRACING) != null
             && Integer.parseInt(System.getProperty(ITConstants.IT_TRACING)) > 0;
 
-            
     public TaskDispatcher() {
         requestQueue = new LinkedBlockingDeque<TDRequest<?, ?>>();
         dispatcher = new Thread(this);
@@ -66,14 +66,14 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
 
         // Parse interface
         CEIParser.parse();
-        
+
         // Load resources
         ResourceManager.load(this);
 
         // Initialize structures
         scheduler = constructScheduler();
         keepGoing = true;
-        
+
         if (Tracer.basicModeEnabled()) {
             Tracer.enablePThreads();
         }
@@ -81,12 +81,12 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
         if (Tracer.basicModeEnabled()) {
             Tracer.disablePThreads();
         }
-        
+
         AllocatableAction.orchestrator = this;
 
         // Insert workers
         for (Worker w : ResourceManager.getAllWorkers()) {
-            scheduler.updatedWorker(w);
+            scheduler.updateWorker(w, null);
         }
         logger.info("Initialization finished");
     }
@@ -182,22 +182,22 @@ public class TaskDispatcher implements Runnable, ResourceUser, ActionOrchestrato
         }
         return (String) request.getResponse();
     }
-    
+
     public void printCurrentGraph(BufferedWriter graph) {
-    	Semaphore sem = new Semaphore(0);
-    	PrintCurrentGraphRequest request = new PrintCurrentGraphRequest(sem, graph);
-    	addRequest(request);
-    	
-    	// Synchronize until request has been processed
-    	try {
+        Semaphore sem = new Semaphore(0);
+        PrintCurrentGraphRequest request = new PrintCurrentGraphRequest(sem, graph);
+        addRequest(request);
+
+        // Synchronize until request has been processed
+        try {
             sem.acquire();
         } catch (InterruptedException e) {
         }
     }
 
     @Override
-    public void updatedResource(Worker<?> r) {
-        WorkerUpdateRequest request = new WorkerUpdateRequest(r);
+    public void updatedResource(Worker<?> r, ResourceUpdate ru) {
+        WorkerUpdateRequest request = new WorkerUpdateRequest(r, ru);
         addPrioritaryRequest(request);
     }
 

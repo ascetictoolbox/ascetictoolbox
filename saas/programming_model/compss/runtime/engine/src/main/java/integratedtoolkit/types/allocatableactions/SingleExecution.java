@@ -57,8 +57,6 @@ public class SingleExecution<P extends Profile, T extends WorkerResourceDescript
     private int executionErrors = 0;
     private LinkedList<Integer> jobs = new LinkedList<Integer>();
 
-    private WorkerResourceDescription resourceConsumption;
-
     public SingleExecution(SchedulingInformation<P, T> schedulingInformation, TaskProducer producer, Task task) {
         super(schedulingInformation);
         this.producer = producer;
@@ -83,24 +81,6 @@ public class SingleExecution<P extends Profile, T extends WorkerResourceDescript
 
     public Task getTask() {
         return this.task;
-    }
-
-    @Override
-    protected boolean areEnoughResources() {
-        Worker<T> w = selectedResource.getResource();
-        return w.canRunNow(selectedImpl.getRequirements());
-    }
-
-    @Override
-    protected void reserveResources() {
-        Worker<T> w = selectedResource.getResource();
-        resourceConsumption = w.runTask(selectedImpl.getRequirements());
-    }
-
-    @Override
-    protected void releaseResources() {
-        Worker w = selectedResource.getResource();
-        w.endTask(resourceConsumption);
     }
 
     @Override
@@ -464,5 +444,15 @@ public class SingleExecution<P extends Profile, T extends WorkerResourceDescript
     @Override
     public int getPriority() {
         return task.getTaskParams().hasPriority() ? 1 : 0;
+    }
+
+    @Override
+    public boolean isToReserveResources() {
+        return true;
+    }
+
+    @Override
+    public boolean isToReleaseResources() {
+        return true;
     }
 }

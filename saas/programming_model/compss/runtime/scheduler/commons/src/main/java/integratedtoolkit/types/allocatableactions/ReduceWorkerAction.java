@@ -11,29 +11,32 @@ import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.SchedulingInformation;
 import integratedtoolkit.types.Score;
 import integratedtoolkit.types.ServiceImplementation;
+import integratedtoolkit.types.resources.CloudMethodWorker;
+import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.Resource.Type;
-import integratedtoolkit.types.resources.MethodWorker;
-import integratedtoolkit.types.resources.ResourceDescription;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
+import integratedtoolkit.types.resources.updates.PendingReduction;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 import integratedtoolkit.util.ErrorManager;
 import integratedtoolkit.util.ResourceManager;
 import integratedtoolkit.util.ResourceScheduler;
 import java.util.LinkedList;
 
-public class StartWorkerAction<T extends WorkerResourceDescription> extends AllocatableAction<Profile, T> {
+public class ReduceWorkerAction<T extends WorkerResourceDescription> extends AllocatableAction<Profile, T> {
 
     private final ResourceScheduler<Profile, T> worker;
     private final TaskScheduler ts;
     private final Implementation impl;
+    private final PendingReduction<MethodResourceDescription> ru;
 
-    public StartWorkerAction(SchedulingInformation schedulingInformation, ResourceScheduler<Profile, T> worker, TaskScheduler ts) {
+    public ReduceWorkerAction(SchedulingInformation schedulingInformation, ResourceScheduler<Profile, T> worker, TaskScheduler ts, ResourceUpdate modification) {
         super(schedulingInformation);
         this.worker = worker;
         this.ts = ts;
+        this.ru = (PendingReduction<MethodResourceDescription>) modification;
         if (worker.getResource().getType() == Type.WORKER) {
-            MethodWorker mw = (MethodWorker) worker.getResource();
-            impl = new MethodImplementation("", null, null, mw.getDescription());
+            impl = new MethodImplementation("", null, null, (MethodResourceDescription) modification.getModification());
         } else {
             impl = new ServiceImplementation(null, "", "", "", "");
         }
@@ -41,24 +44,32 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
 
     @Override
     protected void doAction() {
-        (new Thread() {
-            public void run() {
-                Thread.currentThread().setName(selectedResource.getResource().getName() + " starter");
-                try {
-                    selectedResource.getResource().start();
+        try {
+            (new Thread() {
+                public void run() {
+                    Thread.currentThread().setName(selectedResource.getResource().getName() + " stopper");
+
+                    ResourceManager.reduceResource((CloudMethodWorker) worker.getResource(), (PendingReduction<MethodResourceDescription>) ru, ru.getCompatibleImplementations());
+                    Worker w = selectedResource.getResource();
+                    w.endTask(resourceConsumption);
+                    try {
+                        ru.waitForCompletion();
+                    } catch (Exception e) {
+                        logger.error("ERROR: Exception raised on worker reduction", e);
+                        ErrorManager.warn("Exception reducing worker. Check runtime.log for more details", e);
+                        notifyError();
+                    }
                     notifyCompleted();
-                } catch (Exception e) {
-                    logger.error("Error starting resource", e);
-                    ErrorManager.warn("Exception creating worker. Check runtime.log for more details", e);
-                    notifyError();
                 }
-            }
-        }).start();
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void doCompleted() {
-        logger.info("Worker " + worker.getName() + " is ready to execute tasks.");
+        ts.completedResourceUpdate(worker, ru);
     }
 
     @Override
@@ -68,19 +79,8 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
 
     @Override
     protected void doFailed() {
-        Worker wNode = worker.getResource();
-
-        //Remove from the pool
-        ResourceManager.removeWorker(wNode);
-
-        //Remove all resources assigned to the node
-        ResourceDescription rd = wNode.getDescription();
-        rd.reduce(rd);
-
-        //Update the CE and Implementations that can run (none)
-        worker.getResource().updatedFeatures(new LinkedList());
-
-        ts.updateWorker(wNode, null);
+        logger.error("Error waiting for tasks to end");
+        ts.completedResourceUpdate(worker, ru);
     }
 
     @Override
@@ -143,7 +143,7 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
     }
 
     public String toString() {
-        return "StartWorkerAction for worker " + worker.getName();
+        return "ReduceWorkerAction for worker " + worker.getName();
     }
 
     @Override
@@ -158,7 +158,6 @@ public class StartWorkerAction<T extends WorkerResourceDescription> extends Allo
 
     @Override
     public boolean isToReleaseResources() {
-        return true;
+        return false;
     }
-    
 }

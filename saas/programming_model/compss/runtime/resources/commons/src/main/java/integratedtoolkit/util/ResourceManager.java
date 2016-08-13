@@ -20,10 +20,14 @@ import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.Resource.Type;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.MethodWorker;
+import integratedtoolkit.types.resources.ResourceDescription;
 import integratedtoolkit.types.resources.ServiceResourceDescription;
 import integratedtoolkit.types.resources.ShutdownListener;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.ServiceWorker;
+import integratedtoolkit.types.resources.updates.PendingReduction;
+import integratedtoolkit.types.resources.updates.PerformedIncrease;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -308,6 +312,10 @@ public class ResourceManager {
     /* ********************************************************************
      * CLOUD METHODS
      * ********************************************************************/
+    public static void createResources(String provider, String instanceType, String imageName) {
+        CloudManager.askForResources(provider, instanceType, imageName);
+    }
+
     /**
      * Adds a cloud worker
      *
@@ -326,8 +334,8 @@ public class ResourceManager {
                 poolCoreMaxConcurrentTasks[coreId] += maxTaskCount[coreId];
             }
         }
-
-        resourceUser.updatedResource(worker);
+        ResourceUpdate ru = new PerformedIncrease(worker.getDescription(), compatibleImpls);
+        resourceUser.updatedResource(worker, ru);
 
         // Log new resource
         resourcesLogger.info("TIMESTAMP = " + String.valueOf(System.currentTimeMillis()));
@@ -356,7 +364,8 @@ public class ResourceManager {
             }
             pool.defineCriticalSet();
         }
-        resourceUser.updatedResource(worker);
+        ResourceUpdate ru = new PerformedIncrease(extension, compatibleImpls);
+        resourceUser.updatedResource(worker, ru);
 
         // Log modified resource
         resourcesLogger.info("TIMESTAMP = " + String.valueOf(System.currentTimeMillis()));
@@ -371,28 +380,40 @@ public class ResourceManager {
      * @param reduction
      * @return
      */
-    public static Semaphore reduceCloudWorker(CloudMethodWorker worker, CloudMethodResourceDescription reduction, LinkedList<Implementation> compatibleImpls) {
-        Semaphore sem;
+    public static void reduceCloudWorker(CloudMethodWorker worker, MethodResourceDescription reduction, LinkedList<LinkedList> compatibleImplementations) {
+        ResourceUpdate modification = new PendingReduction(reduction, compatibleImplementations);
+        resourceUser.updatedResource(worker, modification);
+    }
+
+    /**
+     * Decreases the capabilities of a given cloud worker
+     *
+     * @param worker
+     * @param reduction
+     * @return
+     */
+    public static void reduceResource(CloudMethodWorker worker, PendingReduction<MethodResourceDescription> modification, LinkedList<Implementation> compatibleImpls) {
         synchronized (pool) {
             int[] maxTaskCount = worker.getSimultaneousTasks();
             for (int coreId = 0; coreId < maxTaskCount.length; coreId++) {
                 poolCoreMaxConcurrentTasks[coreId] -= maxTaskCount[coreId];
             }
-            sem = worker.reduceFeatures(reduction, compatibleImpls);
+            worker.applyReduction(modification, compatibleImpls);
             maxTaskCount = worker.getSimultaneousTasks();
             for (int coreId = 0; coreId < maxTaskCount.length; coreId++) {
                 poolCoreMaxConcurrentTasks[coreId] += maxTaskCount[coreId];
             }
             pool.defineCriticalSet();
         }
-        resourceUser.updatedResource(worker);
 
         // Log new resource
         resourcesLogger.info("TIMESTAMP = " + String.valueOf(System.currentTimeMillis()));
         resourcesLogger.info("INFO_MSG = [Resource removed from the pool. Name = " + worker.getName() + "]");
         runtimeLogger.info("Resource removed from the pool. Name = " + worker.getName());
+    }
 
-        return sem;
+    public static void terminateResource(Worker worker, ResourceDescription reduction) {
+        CloudManager.destroyResources(worker, reduction);
     }
 
     /**

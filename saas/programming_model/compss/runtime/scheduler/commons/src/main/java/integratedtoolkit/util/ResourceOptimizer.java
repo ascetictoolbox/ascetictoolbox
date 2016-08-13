@@ -164,7 +164,6 @@ public class ResourceOptimizer extends Thread {
      * ********************************************************
      */
     protected void initialCreations() {
-        System.out.println("RO initialCreations");
         int alreadyCreated = addBasicNodes();
         //Distributes the rest of the VM
         addExtraNodes(alreadyCreated);

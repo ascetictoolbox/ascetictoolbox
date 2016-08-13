@@ -6,9 +6,14 @@ import integratedtoolkit.types.resources.Worker;
 
 public class AsceticProfile extends Profile {
 
-    private final Worker worker;
-    private final Implementation impl;
-    private final AllocatableAction action;
+    protected final Worker worker;
+    protected final Implementation impl;
+    protected final AllocatableAction action;
+    protected AsceticProfile() {
+        this.worker = null;
+        this.impl = null;
+        this.action = null;
+    }
 
     public AsceticProfile(Worker w, Implementation impl, AllocatableAction action) {
         this.worker = w;
@@ -26,7 +31,6 @@ public class AsceticProfile extends Profile {
         this.maxTime = defaultTime;
     }
 
-    
     public double getPower() {
         return Ascetic.getPower(worker, impl);
     }

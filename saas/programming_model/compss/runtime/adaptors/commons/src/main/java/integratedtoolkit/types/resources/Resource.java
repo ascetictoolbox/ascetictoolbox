@@ -178,6 +178,7 @@ public abstract class Resource implements Comparable<Resource> {
     	if (debug) {
             logger.debug("retriving data resource " + this.getName());
         }
+        System.out.println("Retrieving data from resource "+this.getName());
         Semaphore sem = new Semaphore(0);
         SafeCopyListener listener = new SafeCopyListener(sem);
         HashSet<LogicalData> lds = LogicalData.getAllDataFromHost(this);
@@ -187,6 +188,7 @@ public abstract class Resource implements Comparable<Resource> {
             ld.notifyToInProgressCopiesEnd(listener);
             DataLocation lastLoc = ld.removeHostAndCheckLocationToSave(this, disks);
             if (lastLoc != null && saveUniqueData) {
+                System.out.println("Needs to copy "+ld.getName());
                 listener.addOperation();
                 DataLocation safeLoc = DataLocation.getLocation(Comm.appHost, Comm.appHost.getTempDirPath() + ld.getName());
                 masterNode.obtainData(ld, lastLoc, safeLoc, ld, new SafeCopyTransferable(), listener);

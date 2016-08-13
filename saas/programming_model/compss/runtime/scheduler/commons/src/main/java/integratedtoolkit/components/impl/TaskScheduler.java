@@ -11,13 +11,17 @@ import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.SchedulingInformation;
 import integratedtoolkit.types.Score;
 import integratedtoolkit.types.WorkloadState;
+import integratedtoolkit.types.allocatableactions.ReduceWorkerAction;
 import integratedtoolkit.types.allocatableactions.StartWorkerAction;
+import integratedtoolkit.types.allocatableactions.StopWorkerAction;
 import integratedtoolkit.util.ResourceScheduler;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
+import integratedtoolkit.types.resources.updates.ResourceUpdate;
 import integratedtoolkit.util.ActionSet;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ErrorManager;
+import integratedtoolkit.util.ResourceManager;
 import integratedtoolkit.util.ResourceOptimizer;
 
 import java.util.Collection;
@@ -226,75 +230,140 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         }
     }
 
-    public final void updatedWorker(Worker<T> worker) {
+    public final void updateWorker(Worker<T> worker, ResourceUpdate rs) {
         ResourceScheduler<P, T> ui = workers.get(worker);
         if (ui == null) {
             //Register worker if it's the first time it is useful.
-            ui = generateSchedulerForResource(worker);
-            synchronized (workers) {
-                workers.put(worker, ui);
-            }
+            ui = addWorker(worker);
+            startWorker(ui);
+            workerDetected(ui);
+        }
 
-            StartWorkerAction action = new StartWorkerAction(generateSchedulingInformation(), ui, this);
+        if (rs.checkCompleted()) {
+            completedResourceUpdate(ui, rs);
+        } else {
+            pendingResourceUpdate(ui, rs);
+        }
+    }
+
+    private final ResourceScheduler<P, T> addWorker(Worker<T> worker) {
+        ResourceScheduler<P, T> ui = generateSchedulerForResource(worker);
+        synchronized (workers) {
+            workers.put(worker, ui);
+        }
+        return ui;
+    }
+
+    private final void startWorker(ResourceScheduler<P, T> ui) {
+        StartWorkerAction action = new StartWorkerAction(generateSchedulingInformation(), ui, this);
+        try {
+            action.schedule(ui, (Score) null);
+            action.tryToLaunch();
+        } catch (Exception e) {
+            //Can not be blocked nor unassigned
+        }
+    }
+
+    public final void pendingResourceUpdate(ResourceScheduler worker, ResourceUpdate modification) {
+
+        switch (modification.getType()) {
+            case INCREASE:
+                //Can't happen
+                break;
+            case REDUCE:
+                reduceWorkerResources(worker, modification);
+                break;
+            default:
+
+        }
+    }
+
+    public final void completedResourceUpdate(ResourceScheduler worker, ResourceUpdate modification) {
+        worker.completedModification(modification);
+        SchedulingInformation.changesOnWorker(worker);
+        switch (modification.getType()) {
+            case INCREASE:
+                increasedWorkerResources(worker, modification);
+                break;
+            case REDUCE:
+                reducedWorkerResources(worker, modification);
+                break;
+            default:
+
+        }
+    }
+
+    private final void increasedWorkerResources(ResourceScheduler worker, ResourceUpdate modification) {
+        //Inspect blocked actions to be freed
+        LinkedList<AllocatableAction<P, T>> stillBlocked = new LinkedList<AllocatableAction<P, T>>();
+        for (AllocatableAction<P, T> action : blockedActions.removeAllCompatibleActions(worker.getResource())) {
+            Score actionScore = getActionScore(action);
             try {
-                action.schedule(ui, (Score) null);
+                logger.info("Unblocked Action: " + action);
+                scheduleAction(action, actionScore);
+                if (!action.hasDataPredecessors()) {
+                    if (action.getImplementations().length > 0) {
+                        int coreId = action.getImplementations()[0].getCoreId();
+                        readyCounts[coreId]++;
+                    }
+                }
+                try {
+                    action.tryToLaunch();
+                } catch (InvalidSchedulingException ise) {
+                    action.schedule(action.getConstrainingPredecessor().getAssignedResource(), actionScore);
+                    try {
+                        action.tryToLaunch();
+                    } catch (InvalidSchedulingException ise2) {
+                        //Impossible exception. 
+                    }
+                }
+            } catch (UnassignedActionException ure) {
+                StringBuilder info = new StringBuilder("Scheduler has lost track of action ");
+                info.append(action.toString());
+                ErrorManager.fatal(info.toString());
+
+            } catch (BlockedActionException bae) {
+                // We should never follow this path except if there is some 
+                // error on the resource management
+                stillBlocked.add(action);
+            }
+        }
+
+        for (AllocatableAction<P, T> a : stillBlocked) {
+            blockedActions.addAction(a);
+        }
+        this.workerLoadUpdate(worker);
+    }
+
+    private final void reduceWorkerResources(ResourceScheduler worker, ResourceUpdate modification) {
+        worker.pendingModification(modification);
+        ReduceWorkerAction action = new ReduceWorkerAction(generateSchedulingInformation(), worker, this, modification);
+        try {
+            action.schedule(worker, (Score) null);
+            action.tryToLaunch();
+        } catch (Exception e) {
+            //Can not be blocked nor unassigned
+        }
+    }
+
+    private final void reducedWorkerResources(ResourceScheduler worker, ResourceUpdate modification) {
+        
+        if (worker.getExecutableCores().isEmpty()) {
+            synchronized (workers) {
+                workers.remove(worker.getResource());
+            }
+            this.workerRemoved(worker);
+
+            StopWorkerAction action = new StopWorkerAction(generateSchedulingInformation(), worker, modification);
+            try {
+                action.schedule(worker, (Score) null);
                 action.tryToLaunch();
             } catch (Exception e) {
                 //Can not be blocked nor unassigned
             }
-            workerDetected(ui);
-        }
-
-        //Update links CE -> Worker
-        SchedulingInformation.changesOnWorker(ui);
-
-        if (ui.getExecutableCores().isEmpty()) {
-            synchronized (workers) {
-                workers.remove(ui.getResource());
-            }
-            this.workerRemoved(ui);
         } else {
-            //Inspect blocked actions to be freed
-            LinkedList<AllocatableAction<P, T>> stillBlocked = new LinkedList<AllocatableAction<P, T>>();
-            for (AllocatableAction<P, T> action : blockedActions.removeAllCompatibleActions(worker)) {
-                Score actionScore = getActionScore(action);
-                try {
-                    logger.info("Unblocked Action: " + action);
-                    scheduleAction(action, actionScore);
-                    if (!action.hasDataPredecessors()) {
-                        if (action.getImplementations().length > 0) {
-                            int coreId = action.getImplementations()[0].getCoreId();
-                            readyCounts[coreId]++;
-                        }
-                    }
-                    try {
-                        action.tryToLaunch();
-                    } catch (InvalidSchedulingException ise) {
-                        action.schedule(action.getConstrainingPredecessor().getAssignedResource(), actionScore);
-                        try {
-                            action.tryToLaunch();
-                        } catch (InvalidSchedulingException ise2) {
-                            //Impossible exception. 
-                        }
-                    }
-                } catch (UnassignedActionException ure) {
-                    StringBuilder info = new StringBuilder("Scheduler has lost track of action ");
-                    info.append(action.toString());
-                    ErrorManager.fatal(info.toString());
-
-                } catch (BlockedActionException bae) {
-                    // We should never follow this path except if there is some 
-                    // error on the resource management
-                    stillBlocked.add(action);
-                }
-            }
-
-            for (AllocatableAction<P, T> a : stillBlocked) {
-                blockedActions.addAction(a);
-            }
-            this.workerLoadUpdate(ui);
+            ResourceManager.terminateResource(worker.getResource(), modification.getModification());
         }
-
     }
 
     public String getRunningActionMonitorData(Worker<T> worker, String prefix) {

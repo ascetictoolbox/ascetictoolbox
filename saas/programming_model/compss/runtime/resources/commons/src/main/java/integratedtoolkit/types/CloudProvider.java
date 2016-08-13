@@ -18,16 +18,15 @@ import java.util.UUID;
 import integratedtoolkit.log.Loggers;
 import org.apache.log4j.Logger;
 
-
 public class CloudProvider {
 
     private final String name;
     private final Integer limitOfVMs;
     private int currentVMCount;
-    
+
     private CloudImageManager imgManager;
     private CloudTypeManager typeManager;
-    
+
     private Connector connector;
     private Cost cost;
 
@@ -37,17 +36,16 @@ public class CloudProvider {
     private static final String WARN_NO_COMPATIBLE_IMAGE = "WARN: Cannot find any compatible Image";
     private static final String WARN_NO_VALID_INSTANCE = "WARN: Cannot find a containing/contained instanceType";
 
-
     public CloudProvider(String connectorPath, Integer limitOfVMs,
             HashMap<String, String> connectorProperties, String name) throws Exception {
 
         this.name = name;
         this.limitOfVMs = limitOfVMs;
         this.currentVMCount = 0;
-        
+
         this.imgManager = new CloudImageManager();
         this.typeManager = new CloudTypeManager();
-        
+
         Class<?> conClass = Class.forName(connectorPath);
         Constructor<?> ctor = conClass.getDeclaredConstructors()[0];
         Object conector = ctor.newInstance(name, connectorProperties);
@@ -93,8 +91,16 @@ public class CloudProvider {
         return imgManager.getAllImageNames();
     }
 
+    public CloudImageDescription getImage(String name) {
+        return imgManager.getImage(name);
+    }
+
     public Set<String> getAllInstanceTypeNames() {
         return typeManager.getAllInstanceTypeNames();
+    }
+
+    public CloudMethodResourceDescription getInstanceType(String name) {
+        return typeManager.getInstanceType(name);
     }
 
     public int[][] getSimultaneousImpls(String type) {
@@ -104,7 +110,7 @@ public class CloudProvider {
     public long getNextCreationTime() throws Exception {
         return connector.getNextCreationTime();
     }
-    
+
     public long getTimeSlot() throws Exception {
         return connector.getTimeSlot();
     }
@@ -152,15 +158,15 @@ public class CloudProvider {
      * ------------------------------------------
      */
     public CloudMethodResourceDescription getBestIncrease(Integer amount, MethodResourceDescription constraints, boolean contained) {
-    	// Check Cloud capabilities
+        // Check Cloud capabilities
         if (limitOfVMs != null && limitOfVMs != -1 && currentVMCount >= limitOfVMs) {
             return null;
         }
-        
+
         // Select all the compatible types
         LinkedList<CloudMethodResourceDescription> instances = typeManager.getCompatibleTypes(constraints);
         if (instances.isEmpty()) {
-        	logger.warn(WARN_NO_COMPATIBLE_TYPE);
+            logger.warn(WARN_NO_COMPATIBLE_TYPE);
             return null;
         }
 
@@ -173,19 +179,32 @@ public class CloudProvider {
 
         // Pick an image to be loaded in the Type (or return null)
         if (result != null) {
-        	// Select all the compatible images
+            // Select all the compatible images
             LinkedList<CloudImageDescription> images = imgManager.getCompatibleImages(constraints);
             if (images.isEmpty()) {
-            	logger.warn(WARN_NO_COMPATIBLE_IMAGE);
+                logger.warn(WARN_NO_COMPATIBLE_IMAGE);
                 return null;
             }
             result.setProviderName(images.get(0).getProviderName());
             result.setImage(images.get(0));
             result.setValue(cost.getMachineCostPerHour(result));
         } else {
-        	logger.warn(WARN_NO_VALID_INSTANCE);
+            logger.warn(WARN_NO_VALID_INSTANCE);
         }
-        
+
+        return result;
+    }
+
+    public CloudMethodResourceDescription getResourceDescription(String instanceTypeName, String imageName) {
+        CloudMethodResourceDescription result = typeManager.getInstanceType(instanceTypeName);
+        if (result != null) {
+            CloudImageDescription image = imgManager.getImage(imageName);
+            result.setProviderName(name);
+            result.setImage(image);
+            result.setValue(cost.getMachineCostPerHour(result));
+        } else {
+            logger.warn(WARN_NO_VALID_INSTANCE);
+        }
         return result;
     }
 
@@ -197,8 +216,8 @@ public class CloudProvider {
         for (CloudMethodResourceDescription rd : instances) {
             int slots = rd.canHostSimultaneously(constraints);
             float distance = slots - amount;
-            logger.debug("Can host: slots = " + slots + " amount = " + amount 
-            		+ " distance = " + distance + " bestDistance = " + bestDistance);
+            logger.debug("Can host: slots = " + slots + " amount = " + amount
+                    + " distance = " + distance + " bestDistance = " + bestDistance);
             if (distance > 0.0) {
                 continue;
             }
@@ -207,16 +226,16 @@ public class CloudProvider {
                 result = rd;
                 bestDistance = distance;
             } else if (distance == bestDistance && result != null) {
-                if (result.getValue() != null 
+                if (result.getValue() != null
                         && rd.getValue() != null
                         && result.getValue() > rd.getValue()) {
-                	// Evaluate optimal candidate
+                    // Evaluate optimal candidate
                     result = rd;
                     bestDistance = distance;
                 }
             }
         }
-        
+
         if (result == null) {
             return null;
         }
@@ -230,27 +249,27 @@ public class CloudProvider {
         for (CloudMethodResourceDescription rd : instances) {
             int slots = rd.canHostSimultaneously(constraints);
             float distance = slots - amount;
-            logger.debug("Can host: slots = " + slots + " amount = " + amount 
-            		+ " distance = " + distance + " bestDistance = " + bestDistance);
+            logger.debug("Can host: slots = " + slots + " amount = " + amount
+                    + " distance = " + distance + " bestDistance = " + bestDistance);
             if (distance < 0.0) {
                 continue;
             }
-            
+
             if (distance < bestDistance) {
                 result = rd;
                 bestDistance = distance;
             } else if (distance == bestDistance && result != null) {
-                if (result.getValue() != null 
-                		&& rd.getValue() != null 
-                		&& result.getValue() > rd.getValue()) {
-                	// Evaluate optimal candidate
+                if (result.getValue() != null
+                        && rd.getValue() != null
+                        && result.getValue() > rd.getValue()) {
+                    // Evaluate optimal candidate
                     result = rd;
                     bestDistance = distance;
                 }
             }
 
         }
-        
+
         if (result == null) {
             return null;
         }

@@ -3,6 +3,7 @@ package integratedtoolkit.types;
 import integratedtoolkit.scheduler.ascetic.AsceticSchedulingInformation;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.resources.ResourceDescription;
+import integratedtoolkit.util.CoreManager;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -11,19 +12,34 @@ public class LocalOptimizationState {
     private final long updateId;
 
     private final LinkedList<Gap> gaps = new LinkedList<Gap>();
+    private double runningCost;
     private double totalCost;
+    private double runningEnergy;
     private double totalEnergy;
 
     private AllocatableAction action = null;
     private ResourceDescription missingResources;
     private long topStartTime;
+    private int[][] implementationCount;
+    private int[][] runningImplementationsCount;
+    private long endRunningActions;
 
     public LocalOptimizationState(long updateId, ResourceDescription rd) {
         this.updateId = updateId;
         totalCost = 0;
+        runningCost = 0;
         totalEnergy = 0;
+        runningEnergy = 0;
+
         Gap g = new Gap(0, Long.MAX_VALUE, null, rd.copy(), 0);
         gaps.add(g);
+        implementationCount = new int[CoreManager.getCoreCount()][];
+        runningImplementationsCount = new int[CoreManager.getCoreCount()][];
+        for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+            implementationCount[coreId] = new int[CoreManager.getCoreImplementations(coreId).length];
+            runningImplementationsCount[coreId] = new int[CoreManager.getCoreImplementations(coreId).length];
+        }
+        endRunningActions = 0;
     }
 
     public long getId() {
@@ -31,7 +47,6 @@ public class LocalOptimizationState {
     }
 
     public LinkedList<Gap> reserveResources(ResourceDescription resources, long startTime) {
-
         LinkedList<Gap> previousGaps = new LinkedList();
         // Remove requirements from resource description
         ResourceDescription requirements = resources.copy();
@@ -75,7 +90,8 @@ public class LocalOptimizationState {
     }
 
     public void releaseResources(long expectedStart, AllocatableAction action) {
-        Gap gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
+        Gap gap;
+        gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
         AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
         dsi.addGap();
         gaps.add(gap);
@@ -167,6 +183,13 @@ public class LocalOptimizationState {
         sb.append("\tTopAction:").append(action).append("\n");
         sb.append("\tMissing To Run:").append(missingResources).append("\n");
         sb.append("\tExpected Start:").append(topStartTime).append("\n");
+        sb.append("\tPending Executions:\n");
+        for (int coreId = 0; coreId < implementationCount.length; coreId++) {
+            sb.append("\t\tCore " + coreId + ":\n");
+            for (int implId = 0; implId < implementationCount[coreId].length; implId++) {
+                sb.append("\t\t\tImplementation " + implId + ":" + implementationCount[coreId][implId] + "\n");
+            }
+        }
         return sb.toString();
     }
 
@@ -184,5 +207,40 @@ public class LocalOptimizationState {
 
     public void addCost(double cost) {
         totalCost += cost;
+    }
+
+    public void runImplementation(Implementation impl) {
+        implementationCount[impl.getCoreId()][impl.getImplementationId()]++;
+    }
+
+    public int[][] getImplementationsCount() {
+        return this.implementationCount;
+    }
+
+    public void runningAction(Implementation impl, AsceticProfile p, long pendingTime) {
+        reserveResources(impl.getRequirements(), 0);
+        if (impl.getCoreId() != null && impl.getImplementationId() != null) {
+            runningImplementationsCount[impl.getCoreId()][impl.getImplementationId()]++;
+            endRunningActions = Math.max(endRunningActions, pendingTime);
+            double power = p.getPower();
+            runningEnergy += pendingTime * power;
+            runningCost += p.getPrice();
+        }
+    }
+
+    public long getEndRunningTime() {
+        return endRunningActions;
+    }
+
+    public int[][] getRunningImplementations() {
+        return runningImplementationsCount;
+    }
+
+    public double getRunningCost() {
+        return this.runningCost;
+    }
+
+    public double getRunningEnergy() {
+        return this.runningEnergy;
     }
 }
