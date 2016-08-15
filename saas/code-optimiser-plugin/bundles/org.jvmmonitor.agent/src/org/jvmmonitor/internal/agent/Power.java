@@ -35,10 +35,10 @@ public class Power implements PowerMXBean {
         //TODO set this host calibration data correctly
         ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
         calibrationData.add(new HostEnergyCalibrationData(0, 0, 50));
-        calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));
-        calibrationData.add(new HostEnergyCalibrationData(25, 0, 65));
+        calibrationData.add(new HostEnergyCalibrationData(25, 0, 62.5));
         calibrationData.add(new HostEnergyCalibrationData(50, 0, 75));
-        calibrationData.add(new HostEnergyCalibrationData(85, 0, 90));
+        calibrationData.add(new HostEnergyCalibrationData(75, 0, 87.5));
+        calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));  
         host.setAvailable(true);
         host.setDiskGb(20);
         host.setRamMb(2048);
