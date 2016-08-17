@@ -9,7 +9,7 @@
 		extra-sbtVersion="0.13"
 		conf="test-internal"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool"
-		date="20160726091030"/>
+		date="20160817123644"/>
 	<dependencies>
 		<module organisation="com.typesafe.sbt" name="sbt-mocha">
 			<revision name="1.0.0" status="release" pubdate="20140529102332" resolver="sbt-chain" artresolver="sbt-chain" extra-scalaVersion="2.10" extra-sbtVersion="0.13" downloaded="false" searched="false" default="false" conf="compile, default(compile)" position="108">
@@ -1367,7 +1367,7 @@
 				<caller organisation="com.typesafe.play" name="sbt-plugin" conf="compile" rev="1.5.1" rev-constraint-default="1.5.1" rev-constraint-dynamic="1.5.1" callerrev="2.3.1" extra-scalaVersion="2.10" extra-sbtVersion="0.13"/>
 				<artifacts>
 					<artifact name="sbt-idea" type="jar" ext="jar" status="no" details="" size="336778" time="0" location="/Users/mmacias/.ivy2/cache/scala_2.10/sbt_0.13/com.github.mpeltonen/sbt-idea/jars/sbt-idea-1.5.2.jar">
-						<origin-location is-local="false" location="https://jcenter.bintray.com/com/github/mpeltonen/sbt-idea_2.10_0.13/1.5.2/sbt-idea-1.5.2.jar"/>
+						<origin-location is-local="false" location="http://repo1.maven.org/maven2/com/github/mpeltonen/sbt-idea_2.10_0.13/1.5.2/sbt-idea-1.5.2.jar"/>
 					</artifact>
 				</artifacts>
 			</revision>

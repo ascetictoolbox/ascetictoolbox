@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import es.bsc.amon.mq.CommandDispatcher;
 import es.bsc.amon.mq.MQManager;
+import es.bsc.amon.mq.SessionHolder;
 import play.Logger;
 import javax.jms.*;
 import javax.naming.Context;
@@ -20,15 +21,16 @@ public class InitiateMonitoringDispatcher implements CommandDispatcher {
 	public static final String FIELD_TERMS = "Terms";
 	public static final String FIELD_FREQUENCY = "Frequency";
 	public static final String FIELD_PERIOD = "Period";
-	public static final String FIELD_SLA_ID = "slaId";
+	public static final String FIELD_SLA_ID = "SlaId";
+	public static final String FIELD_SLA_ID_LOWER = "slaId";
 
 	private static final long DEFAULT_FREQUENCY = 5*60*1000;
 
 
-	private TopicSession session;
+	private SessionHolder sessionHolder;
 
-	public InitiateMonitoringDispatcher(TopicSession session) {
-		this.session = session;
+	public InitiateMonitoringDispatcher(SessionHolder sessionHolder) {
+		this.sessionHolder = sessionHolder;
 	}
 
 	private static String getString(ObjectNode n, String field) {
@@ -59,7 +61,9 @@ public class InitiateMonitoringDispatcher implements CommandDispatcher {
 			}
 			String deploymentId = getString(msgBody, FIELD_DEPLOYMENT_ID);
 			String slaId = getString(msgBody, FIELD_SLA_ID);
-
+			if(slaId == null || "".equals(slaId.trim())) {
+				slaId = getString(msgBody,FIELD_SLA_ID_LOWER);
+			}
 
 			JsonNode termsJson = msgBody.get(FIELD_TERMS);
 			List<String> terms = new ArrayList<String>();
@@ -83,7 +87,7 @@ public class InitiateMonitoringDispatcher implements CommandDispatcher {
 			JsonNode periodJson = msgBody.get(FIELD_PERIOD);
 			long period = periodJson == null ? -1 : periodJson.asLong(-1);
 
-			AppMeasuresNotifier amn = new AppMeasuresNotifier(session,appId,deploymentId, slaId, terms.toArray(new String[terms.size()]),frequency, period);
+			AppMeasuresNotifier amn = new AppMeasuresNotifier(sessionHolder,appId,deploymentId, slaId, terms.toArray(new String[terms.size()]),frequency, period);
 
 			MQManager.INSTANCE.addPeriodicNotifier(amn);
 		} catch(IllegalArgumentException e ) {

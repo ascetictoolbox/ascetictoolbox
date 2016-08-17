@@ -41,6 +41,7 @@ public enum EventsDBMapper {
     public static final String NODEID = "nodeId";
     public static final String DEPLOYMENT_ID = "deploymentId";
     public static final String DATA = "data";
+    public static final String SLA_ID = "slaId";
 	public static final String _ID = "_id";
 	public static final String _ID_OID = "$oid";
 
