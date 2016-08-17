@@ -1,0 +1,39 @@
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    margin: 0 10px 2px 0;
+    vertical-align: middle;
+    text-align: right
+}
+
+.bsc-apps-list {
+	overflow: scroll;
+	max-height: 25%;
+}
+
+@media screen and (min-width: 720px) {
+	.bsc-apps-list {
+		position: fixed;
+		max-height: 100%;
+	}
+}
+
+.bsc-graph-panel {
+	min-height: 300px;
+}
+
+#globalGraph {
+    width: 600px;
+    overflow-style: scrollbar;
+}
+
+#globalLog {
+    min-height: 50%;
+    background-color: red;
+}
+
+
+text {
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
