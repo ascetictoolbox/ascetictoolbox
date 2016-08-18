@@ -22,106 +22,104 @@
 	</util:list>
 
 	<bean id="cost-estimation-event" class="eu.ascetic.saas.experimentmanager.models.KPI">
-		<constructor-arg type="java.lang.String" value="cost-estimation"/>
-		<constructor-arg type="java.lang.String" value="event"/>
-		<constructor-arg type="java.lang.String" value="cost of a workload"/>
-		<constructor-arg>
+		<property name="name" value="cost-estimation"/>
+		<property name="level" value="event"/>
+		<property name="description" value="cost of a workload"/>
+		<property name="metric" >
 			<ref bean="SimpleCostEstimation"/>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	<bean id="cost-estimation-deployment" class="eu.ascetic.saas.experimentmanager.models.KPI">
-		<constructor-arg type="java.lang.String" value="cost-estimation-deployment"/>
-		<constructor-arg type="java.lang.String" value="deployment"/>
-		<constructor-arg type="java.lang.String" value="cost of a workload"/>
-		<constructor-arg>
+		<property name="name" value="cost-estimation-deployment"/>
+		<property name="level" value="deployment"/>
+		<property name="description" value="cost of a workload"/>
+		<property name="metric">
 			<ref bean="CostMetricAvg"/>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	
 	<bean id="duration-estimation-event" class="eu.ascetic.saas.experimentmanager.models.KPI">
-		<constructor-arg type="java.lang.String" value="duration-estimation-event"/>
-		<constructor-arg type="java.lang.String" value="event"/>
-		<constructor-arg type="java.lang.String" value="duration of a workload"/>
-		<constructor-arg>
+		<property name="name" value="duration-estimation-event"/>
+		<property name="level" value="event"/>
+		<property name="description" value="duration of a workload"/>
+		<property name="metric">
 			<ref bean="SimpleDurationEstimation"/>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	<bean id="duration-estimation-deployment" class="eu.ascetic.saas.experimentmanager.models.KPI">
-		<constructor-arg type="java.lang.String" value="duration-estimation-deployment"/>
-		<constructor-arg type="java.lang.String" value="deployment"/>
-		<constructor-arg type="java.lang.String" value="average duration of workloads"/>
-		<constructor-arg>
+		<property name="name" value="duration-estimation-deployment"/>
+		<property name="level" value="deployment"/>
+		<property name="description" value="average duration of workloads"/>
+		<property name="metric">
 			<ref bean="DurationMetricAvg"/>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	<bean id="energy-consumption-event" class="eu.ascetic.saas.experimentmanager.models.KPI">
-		<constructor-arg type="java.lang.String" value="energy-consumption-event"/>
-		<constructor-arg type="java.lang.String" value="event"/>
-		<constructor-arg type="java.lang.String" value="energy footprint of a workload in WattHour"/>
-		<constructor-arg>
+		<property name="name" value="energy-consumption-event"/>
+		<property name="level" value="event"/>
+		<property name="description" value="energy footprint of a workload in WattHour"/>
+		<property name="metric">
 			<ref bean="SimpleEnergyEstimation"/>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	<bean id="energy-consumption-deployment" class="eu.ascetic.saas.experimentmanager.models.KPI">
-		<constructor-arg type="java.lang.String" value="energy-consumption-deployment"/>
-		<constructor-arg type="java.lang.String" value="deployment"/>
-		<constructor-arg type="java.lang.String" value="Aggregated energy consumption in Wh for this aplication deployment"/>
-		<constructor-arg>
+		<property name="name" value="energy-consumption-deployment"/>
+		<property name="level" value="deployment"/>
+		<property name="description" value="Aggregated energy consumption in Wh for this aplication deployment"/>
+		<property name="metric">
 			<ref bean="SimpleEnergyEstimationDeployment"/>
-		</constructor-arg>
+		</property>
 	</bean>
 	
 	
 	<!-- ****************  METRICS ************* -->
 	
-	
-	
-	<bean id="CostMetricAvg" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<constructor-arg type="java.lang.String" value="cost-estimation"/>
-		<constructor-arg>
-			<ref bean="SimpleCostEstimation" />
-		</constructor-arg>
-	</bean>
-	
 	<bean id="SimpleCostEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<constructor-arg type="java.lang.String" value="cost-estimation-vm"/>
-		<constructor-arg type="java.lang.String" value="${costPattern}"/>
-		<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
-		<constructor-arg type="java.lang.String" value="//charges/text()"/>
+		<property name="name" value="cost-estimation-vm"/>
+		<property name="urlPattern" value="${urlToApplicationManager}/:appId/deployments/:deplId/events/:event/cost-estimation"/>
+		<property name="format" value="XML"/>
+		<property name="query" value="//charges/text()"/>
 	</bean>
 	
 	<bean id="SimpleEnergyEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<constructor-arg type="java.lang.String" value="energy-consumption"/>
-		<constructor-arg type="java.lang.String" value="${urlToApplicationManager}/:appId/deployments/:deplId/events/:event/energy-consumption"/>
-		<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
-		<constructor-arg type="java.lang.String" value="//value/text()"/>
+		<property name="name" value="energy-consumption"/>
+		<property name="urlPattern" value="${urlToApplicationManager}/:appId/deployments/:deplId/events/:event/energy-consumption"/>
+		<property name="format" value="XML"/>
+		<property name="query" value="//value/text()"/>
 	</bean>
 	
 	<bean id="SimpleEnergyEstimationDeployment" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<constructor-arg type="java.lang.String" value="energy-consumption"/>
-		<constructor-arg type="java.lang.String" value="${urlToApplicationManager}/:appId/deployments/:deplId/energy-consumption"/>
-		<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="XML"/>
-		<constructor-arg type="java.lang.String" value="//value/text()"/>
-	</bean>
-	
-	<bean id="DurationMetricAvg" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
-		<constructor-arg type="java.lang.String" value="duration-estimation-avg"/>
-		<constructor-arg>
-			<ref bean="SimpleDurationEstimation"/>
-		</constructor-arg>
+		<property name="name" value="energy-consumption"/>
+		<property name="urlPattern" value="${urlToApplicationManager}/:appId/deployments/:deplId/energy-consumption"/>
+		<property name="format" value="XML"/>
+		<property name="query" value="//value/text()"/>
 	</bean>
 	
 	<bean id="SimpleDurationEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<constructor-arg type="java.lang.String" value="event-duration"/>
-		<constructor-arg type="java.lang.String" value="${durationPattern}"/>
-		<constructor-arg type="eu.ascetic.saas.experimentmanager.wslayer.RESSOURCEFORMAT" value="JSON"/>
-		<constructor-arg type="java.lang.String" value="$..dur"/>
-		<constructor-arg type="java.lang.String" value="FROM events MATCH appId = &quot;:appId&quot; AND deploymentId = &quot;:deplId&quot; AND data.eventType = &quot;:event&quot;, GROUP BY data.eventType , avg(data.duration) as dur"/>
+		<property name="name" value="event-duration"/>
+		<property name="urlPattern" value="${durationPattern}"/>
+		<property name="format" value="JSON"/>
+		<property name="query" value="$..dur"/>
+		<property name="postPattern" value="FROM events MATCH appId = &quot;:appId&quot; AND deploymentId = &quot;:deplId&quot; AND data.eventType = &quot;:event&quot;, GROUP BY data.eventType , avg(data.duration) as dur"/>
+	</bean>
+	
+	<bean id="DurationMetricAvg" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<property name="name" value="duration-estimation-avg"/>
+		<property name="metric">
+			<ref bean="SimpleDurationEstimation"/>
+		</property>
+	</bean>
+	
+	<bean id="CostMetricAvg" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<property name="name" value="cost-estimation-avg"/>
+		<property name="metric">
+			<ref bean="SimpleCostEstimation"/>
+		</property>
 	</bean>
 	   
 </beans>

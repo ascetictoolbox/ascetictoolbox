@@ -13,13 +13,13 @@
    <import resource="kpis.xml"/>
    
 	<bean id="Experiment" class="eu.ascetic.saas.experimentmanager.models.Experiment">
-		<constructor-arg type="java.lang.String" value="Experiment COST vs Energy"/>
-		<constructor-arg type="java.lang.String" value="NewsAsset"/>
-		<constructor-arg type="java.lang.String" value="News Asset"/>
-		<constructor-arg type="java.lang.String" value="Experiment to improve NewsAsset energy consumption"/>
-		<constructor-arg type="java.util.List" > <ref bean="Events"/></constructor-arg>
-		<constructor-arg type="java.util.List" > <ref bean="Deployments"/></constructor-arg>
-		<constructor-arg type="java.util.List" > <ref bean="KPIs"/></constructor-arg>
+		<property name="name" value="Experiment COST vs Energy"/>
+		<property name="applicationId" value="NewsAsset"/>
+		<property name="applicationName" value="News Asset"/>
+		<property name="description" value="Experiment to improve NewsAsset energy consumption"/>
+		<property name="event"> <ref bean="Events"/></property>
+		<property name="deployments"> <ref bean="Deployments"/></property>
+		<property name="kpis"> <ref bean="KPIs"/></property>
 	</bean>
 
 </beans>
