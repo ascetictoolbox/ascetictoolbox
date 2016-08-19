@@ -130,6 +130,9 @@ public class MBeanServer implements IMBeanServer {
 
     /** The previous thread process CPU time. */
     private Map<Long, Long> previousThreadProcessCpuTime;
+    
+    /** The previous sampled thread process CPU time. */
+    private Map<Long, Long> previousSampledThreadProcessCpuTime;    
 
     /** The state indicating if handling only live objects. */
     private boolean isLive;
@@ -161,6 +164,7 @@ public class MBeanServer implements IMBeanServer {
         mxBeans = new HashMap<Class, Object>();
         mBeanNotification = new MBeanNotification(jvm);
         previousThreadProcessCpuTime = new HashMap<Long, Long>();
+        previousSampledThreadProcessCpuTime = new HashMap<Long, Long>();
         heapListElements = new LinkedHashMap<String, HeapElement>();
         threadListElements = new LinkedHashMap<String, ThreadElement>();
         isLive = true;
@@ -1324,6 +1328,11 @@ public class MBeanServer implements IMBeanServer {
         for (ThreadInfo threadInfo : threadMXBean.dumpAllThreads(true, false)) {
             StackTraceElement[] stackTrace = threadInfo.getStackTrace();
             String threadName = threadInfo.getThreadName();
+            long threadId = threadInfo.getThreadId();
+            long processCpuTime = threadMXBean.getThreadCpuTime(threadId);
+            double cpuUsage = calculateSampleCpuUtil(threadMXBean, threadId);
+            double power = calculatePowerConsumption(cpuUsage);
+            previousSampledThreadProcessCpuTime.put(threadId, processCpuTime);            
             if (stackTrace.length > 0 && !threadName.startsWith("JMX ") //$NON-NLS-1$
                     && !threadName.startsWith("RMI ")) { //$NON-NLS-1$
                 ThreadNode<CallTreeNode> callTreeThreadNode = cpuModel
@@ -1340,7 +1349,7 @@ public class MBeanServer implements IMBeanServer {
 
                 updateCpuModel(callTreeThreadNode, hotSpotThreadNode,
                         profiledPackages, invertStackTrace(stackTrace),
-                        actualSamplingPeriodInMilliSeconds);
+                        actualSamplingPeriodInMilliSeconds, cpuUsage, power);
 
                 if (callTreeThreadNode.hasChildren()) {
                     cpuModel.addCallTreeThread(callTreeThreadNode);
@@ -1352,6 +1361,25 @@ public class MBeanServer implements IMBeanServer {
         }
         previousSamplingTime = samplingTime;
     }
+    
+    /**
+     * This calculates the cpu utilisation of a given thread
+     * 
+     * @param threadMXBean
+     *            The Thread bean
+     * @param threadId
+     *            The id of the thread
+     * @return The CPU Utilisation
+     */
+    private double calculateSampleCpuUtil(ThreadMXBean threadMXBean, long threadId) {
+        long processCpuTime = threadMXBean.getThreadCpuTime(threadId);
+        Long previousCpuTime = previousSampledThreadProcessCpuTime.get(threadId);
+        previousSampledThreadProcessCpuTime.put(threadId, processCpuTime);
+        if (previousCpuTime != null) {
+            return Math.min((processCpuTime - previousCpuTime) / 10000000d, 100);
+        }
+        return 0;
+    }    
 
     /**
      * Gets the inverted stack trace.
@@ -1386,7 +1414,7 @@ public class MBeanServer implements IMBeanServer {
     private void updateCpuModel(ThreadNode<CallTreeNode> callTreeThreadNode,
             ThreadNode<MethodNode> hotSpotThreadNode,
             Set<String> profiledPackages, StackTraceElement[] stackTrace,
-            long period) {
+            long period, double cpuutil, double power) {
 
         String threadName = callTreeThreadNode.getName();
 
@@ -1410,17 +1438,19 @@ public class MBeanServer implements IMBeanServer {
                 isNewStack = true;
             }
 
-            updateMethodNode(hotSpotThreadNode, methodName, isNewStack, period);
+            updateMethodNode(hotSpotThreadNode, methodName, isNewStack, period, power);
 
             currentFrameNode = updateFrameNode(callTreeThreadNode,
-                    currentFrameNode, methodName, isNewStack, period,
+                    currentFrameNode, methodName, isNewStack, period, power,
                     i == stackTrace.length - 1);
 
             hotSpotThreadNode
                     .setTotalTime(hotSpotThreadNode.getTotalTime() + period);
+            hotSpotThreadNode.incrementTotalEnergy((period * power));
             if (isRootStack) {
                 callTreeThreadNode.setTotalTime(
                         callTreeThreadNode.getTotalTime() + period);
+                callTreeThreadNode.incrementTotalEnergy(power * period);
             }
 
             isRootStack = false;
@@ -1449,7 +1479,7 @@ public class MBeanServer implements IMBeanServer {
     private CallTreeNode updateFrameNode(
             ThreadNode<CallTreeNode> callTreeThreadNode,
             CallTreeNode currentFrameNode, String methodName,
-            boolean isNewStack, long period, boolean isLeaf) {
+            boolean isNewStack, long period, double power, boolean isLeaf) {
         CallTreeNode frameNode;
         if (currentFrameNode == null) {
             frameNode = (CallTreeNode) callTreeThreadNode.getChild(methodName);
@@ -1474,6 +1504,7 @@ public class MBeanServer implements IMBeanServer {
                         .setInvocationCount(frameNode.getInvocationCount() + 1);
             }
             frameNode.setTotalTime(frameNode.getTotalTime() + period);
+            frameNode.setTotalEnergy(frameNode.getTotalEnergy() + (power * period));
         }
 
         if (isLeaf) {
@@ -1496,7 +1527,7 @@ public class MBeanServer implements IMBeanServer {
      *            The sampling period
      */
     private void updateMethodNode(ThreadNode<MethodNode> hotSpotThreadNode,
-            String methodName, boolean isNewStack, long period) {
+            String methodName, boolean isNewStack, long period, double power) {
         MethodNode methodNode = (MethodNode) hotSpotThreadNode
                 .getChild(methodName);
         if (methodNode == null) {
@@ -1510,6 +1541,7 @@ public class MBeanServer implements IMBeanServer {
         }
 
         methodNode.incrementTime(period);
+        methodNode.incrementAveragePower(power, period);
     }
 
     /**

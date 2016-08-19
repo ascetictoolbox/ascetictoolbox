@@ -24,4 +24,17 @@ public interface ICallTreeNode extends IMethodNode {
      * @return the total invocation time
      */
     long getTotalTime();
+    
+    /**
+     * This gets the average power consumed during invocation of this thread.
+     * @return The average power consumed invoking this thread
+     */    
+    double getAveragePower();
+    
+    /**
+     * This gets the total energy consumed during invocation of this thread.
+     * @return The total energy consumed invoking this thread
+     */
+    double getTotalEnergy();
+    
 }

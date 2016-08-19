@@ -26,7 +26,13 @@ public enum HotSpotsColumn {
             Messages.selfTimeInPercentageToolTip),
 
     /** The method invocation count. */
-    COUNT(Messages.countLabel, 70, SWT.LEFT, Messages.countToolTip);
+    COUNT(Messages.countLabel, 70, SWT.LEFT, Messages.countToolTip),
+    
+    /** The method average power consumption. */
+    POWER(Messages.powerLabel, 70, SWT.LEFT, Messages.powerToolTip),
+    
+    /** The method total energy consumption. */
+    ENERGY(Messages.energyLabel, 70, SWT.LEFT, Messages.energyToolTip);   
 
     /** The displayed label. */
     public final String label;

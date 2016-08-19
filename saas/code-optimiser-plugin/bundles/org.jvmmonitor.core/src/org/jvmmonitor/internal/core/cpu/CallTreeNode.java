@@ -27,6 +27,9 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
     /** The parent frame node. */
     private CallTreeNode parentFrameNode;
 
+    /** The CPU usage in percentage. */
+    private double cpuUsage;
+    
     /**
      * The constructor.
      * 
@@ -43,8 +46,8 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
      * @param thread
      *            the thread node
      */
-    public CallTreeNode(ICpuModel cpuModel, String name, long time, int count,
-            CallTreeNode parent, ThreadNode<CallTreeNode> thread) {
+    public CallTreeNode(ICpuModel cpuModel, String name, long time, int count, CallTreeNode parent,
+            ThreadNode<CallTreeNode> thread) {
         this(cpuModel, name, time, count, thread);
         parentFrameNode = parent;
     }
@@ -63,8 +66,7 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
      * @param thread
      *            the thread node
      */
-    public CallTreeNode(ICpuModel cpuModel, String name, long time, int count,
-            ThreadNode<CallTreeNode> thread) {
+    public CallTreeNode(ICpuModel cpuModel, String name, long time, int count, ThreadNode<CallTreeNode> thread) {
         super(cpuModel, name, thread);
 
         totalTime = time;
@@ -144,6 +146,41 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
     }
 
     /*
+     * @see IThreadNode#getAveragePower()
+     */
+    @Override
+    public double getAveragePower() {
+        if (selfTime == 0 || totalEnergy == 0) {
+            return 0;
+        }   
+        return totalEnergy / ((double)selfTime);
+    }
+
+    /*
+     * @see IThreadNode#getTotalEnergy()
+     */
+    @Override
+    public double getTotalEnergy() {
+        return totalEnergy;
+    }
+    
+    /*
+     * @see IThreadNode#getSelfTotalEnergy()
+     */
+    @Override
+    public double getSelfTotalEnergy() {
+        if (selfTime == 0 || totalEnergy == 0 || getRootTotalTime() == 0) {
+            return 0;
+        }           
+        return (totalEnergy / totalTime) * selfTime;
+    }    
+    
+    @Override
+    public double getAverageCpuUsage() {
+        return cpuUsage;
+    }
+
+    /*
      * @see AbstractMethodNode#hashCode()
      */
     @Override
@@ -161,12 +198,9 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
         }
         CallTreeNode frameNode = (CallTreeNode) obj;
 
-        if (frameNode.getName().equals(qualifiedMethodName)
-                && frameNode.getSelfTime() == selfTime
-                && frameNode.getTotalTime() == totalTime
-                && frameNode.getInvocationCount() == invocationCount
-                && frameNode.getIndentation().length() == getIndentation()
-                        .length()) {
+        if (frameNode.getName().equals(qualifiedMethodName) && frameNode.getSelfTime() == selfTime
+                && frameNode.getTotalTime() == totalTime && frameNode.getInvocationCount() == invocationCount
+                && frameNode.getIndentation().length() == getIndentation().length()) {
             return true;
         }
 
@@ -207,6 +241,16 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
     public void setTotalTime(long time) {
         totalTime = time;
     }
+    
+    /**
+     * Sets the total energy consumed.
+     * 
+     * @param energy
+     *            the total energy consumed
+     */
+    public void setTotalEnergy(double energy) {
+        totalEnergy = energy;
+    }    
 
     /**
      * Sets the self invocation time.
@@ -242,7 +286,7 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
         }
 
         String method = qualifiedMethodName.replaceAll("<", "&lt;").replaceAll( //$NON-NLS-1$ //$NON-NLS-2$
-                ">", "&gt;"); //$NON-NLS-1$  //$NON-NLS-2$
+                ">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append("<frame name=\"").append(method).append("\" cnt=\"") //$NON-NLS-1$ //$NON-NLS-2$
                 .append(invocationCount).append("\" time=\"").append(totalTime) //$NON-NLS-1$
                 .append("\""); //$NON-NLS-1$
@@ -276,4 +320,5 @@ public class CallTreeNode extends AbstractMethodNode implements ICallTreeNode {
 
         return buffer.toString();
     }
+    
 }

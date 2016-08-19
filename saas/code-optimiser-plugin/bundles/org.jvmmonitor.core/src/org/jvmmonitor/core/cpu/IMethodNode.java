@@ -46,4 +46,18 @@ public interface IMethodNode extends ITreeNode {
      * @return The non-qualified method name
      */
     String getNonqualifiedName();
+    
+    
+    /** The CPU usage in percentage. */
+    double getAverageCpuUsage();
+    
+    /** Gets the average power consumption over a set time */
+    double getAveragePower();
+    
+    /** Gets the total power consumption over time */
+    double getTotalEnergy();
+    
+    /** Gets the total power consumption over time */
+    double getSelfTotalEnergy();     
+    
 }

@@ -29,6 +29,9 @@ public class ThreadNode<E extends IMethodNode> implements IThreadNode {
 
     /** The total invocation time. */
     private long totalTime;
+    
+    /** The total energy consumption. */
+    private double totalEnergy;    
 
     /**
      * The constructor.
@@ -93,7 +96,23 @@ public class ThreadNode<E extends IMethodNode> implements IThreadNode {
     public long getTotalTime() {
         return totalTime;
     }
-
+    
+    /*
+     * @see IThreadNode#getTotalEnergy()
+     */
+    @Override
+    public double getAveragePower() {
+        return totalEnergy / totalTime; //TODO check units here
+    }    
+    
+    /*
+     * @see IThreadNode#getTotalEnergy()
+     */
+    @Override
+    public double getTotalEnergy() {
+        return totalEnergy;
+    }
+    
     /*
      * @see Object#equals(Object)
      */
@@ -158,4 +177,24 @@ public class ThreadNode<E extends IMethodNode> implements IThreadNode {
     public void setTotalTime(long time) {
         totalTime = time;
     }
+
+    /**
+     * This increments the total invocation energy consumption.
+     * 
+     * @param energy
+     *            The energy consumption to add to the overall total
+     */
+    public void incrementTotalEnergy(double energy) {
+        totalEnergy = totalEnergy + energy;
+    }       
+    
+    /**
+     * Sets the total invocation energy consumption.
+     * 
+     * @param energy
+     *            The total energy consumed over time
+     */
+    public void setTotalEnergy(double energy) {
+        totalEnergy = energy;
+    }    
 }

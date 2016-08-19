@@ -9,6 +9,7 @@ package org.jvmmonitor.internal.ui.properties.cpu;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Tree;
+import org.jvmmonitor.core.cpu.ICallTreeNode;
 import org.jvmmonitor.core.cpu.ICpuModel;
 import org.jvmmonitor.core.cpu.IMethodNode;
 import org.jvmmonitor.core.cpu.IThreadNode;
@@ -74,6 +75,10 @@ public class HotSpotsLabelProvider extends AbstractLabelProvider {
             text = getSelfTimeInPercentageColumnText(element);
         } else if (columnIndex == getColumnIndex(HotSpotsColumn.COUNT)) {
             text = getCountColumnText(element);
+        } else if (columnIndex == getColumnIndex(HotSpotsColumn.POWER)) {
+            text = getPowerColumnText(element);
+        }  else if (columnIndex == getColumnIndex(HotSpotsColumn.ENERGY)) {
+            text = getEnergyColumnText(element);
         }
 
         return text;
@@ -204,6 +209,54 @@ public class HotSpotsLabelProvider extends AbstractLabelProvider {
         }
         return ""; //$NON-NLS-1$
     }
+    
+    /**
+     * Gets the power column text.
+     * 
+     * @param element
+     *            the element
+     * @return the power column text
+     */
+    private String getPowerColumnText(Object element) {
+        ICpuModel cpuModel = (ICpuModel) filteredTree.getViewer().getInput();
+        if (cpuModel == null) {
+            return ""; //$NON-NLS-1$
+        }
+        if (element instanceof IThreadNode) {
+            return String.format("%.2f", ((IThreadNode) element).getAveragePower());//$NON-NLS-1$
+        }
+        if (element instanceof ICallTreeNode) {
+            return String.format("%.2f", ((ICallTreeNode) element).getAveragePower());
+        }
+        if (element instanceof IMethodNode) {
+            return String.format("%.2f", ((IMethodNode) element).getAveragePower());//$NON-NLS-1$ 
+        }
+        return ""; //$NON-NLS-1$
+    }
+    
+    /**
+     * Gets the energy column text.
+     * 
+     * @param element
+     *            the element
+     * @return the energy column text
+     */
+    private String getEnergyColumnText(Object element) {
+        ICpuModel cpuModel = (ICpuModel) filteredTree.getViewer().getInput();
+        if (cpuModel == null) {
+            return ""; //$NON-NLS-1$
+        }
+        if (element instanceof IThreadNode) {
+            return String.format("%.2f", ((IThreadNode) element).getTotalEnergy());//$NON-NLS-1$
+        }
+        if (element instanceof ICallTreeNode) {
+            return String.format("%.2f", ((ICallTreeNode) element).getSelfTotalEnergy());
+        }        
+        if (element instanceof IMethodNode) {
+            return String.format("%.2f", ((IMethodNode) element).getSelfTotalEnergy());//$NON-NLS-1$ 
+        }
+        return ""; //$NON-NLS-1$
+    }    
 
     /**
      * Gets the column index corresponding to the given column.

@@ -6,6 +6,7 @@
  *******************************************************************************/
 package org.jvmmonitor.internal.core.cpu;
 
+import java.lang.management.ThreadMXBean;
 import java.util.List;
 
 import org.jvmmonitor.core.cpu.ICpuModel;
@@ -116,6 +117,25 @@ public class MethodNode extends AbstractMethodNode {
     public void incrementTime(long time) {
         selfTime += time;
     }
+    
+    /**
+     * 
+     * @param power
+     * @param duration
+     */
+    public void incrementAveragePower(double power, long duration) {
+        totalEnergy = totalEnergy + (power * duration);
+    }   
+    
+    /**
+     * 
+     * @param usage
+     * @param duration
+     */
+    public void incrementAverageCpuUsage(double usage, long duration) {
+        // TODO Auto-generated method stub
+        
+    }
 
     /**
      * Increments the sum of method invocation count.
@@ -126,4 +146,5 @@ public class MethodNode extends AbstractMethodNode {
     public void incrementCount(int count) {
         invocationCount += count;
     }
+    
 }

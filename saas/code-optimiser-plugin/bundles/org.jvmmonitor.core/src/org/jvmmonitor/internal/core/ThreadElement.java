@@ -113,7 +113,6 @@ public class ThreadElement implements IThreadElement {
         this.isSuspended = isSuspended;
         this.isDeadlocked = isDeadlocked;
         this.cpuUsage = cpuUsage;
-        this.power = power;
     }
 
     /*
@@ -209,8 +208,6 @@ public class ThreadElement implements IThreadElement {
      */
     @Override
     public double getCpuUsage() {
-//        System.out.println("RK HERE");
-//        Thread.dumpStack();
         return cpuUsage;
     }
     

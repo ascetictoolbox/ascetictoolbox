@@ -16,6 +16,9 @@ abstract public class AbstractMethodNode implements IMethodNode {
 
     /** The sum of method invocation time. */
     protected long selfTime;
+    
+    /** The total energy spent invoking this method. */
+    protected double totalEnergy;    
 
     /** The cpuModel. */
     protected ICpuModel cpuModel;
@@ -146,4 +149,31 @@ abstract public class AbstractMethodNode implements IMethodNode {
         }
         return threadNode.getTotalTime();
     }
+
+    @Override
+    public double getAverageCpuUsage() {
+        return 0; //TODO
+    }
+
+    @Override
+    public double getAveragePower() {
+        if (selfTime == 0 || totalEnergy == 0 || getRootTotalTime() == 0) {
+            return 0;
+        }  
+        return totalEnergy / ((double) selfTime);
+    }
+
+    @Override
+    public double getTotalEnergy() {
+        return totalEnergy;
+    }
+    
+    @Override
+    public double getSelfTotalEnergy() {
+        if (selfTime == 0 || totalEnergy == 0 || getRootTotalTime() == 0) {
+            return 0;
+        }        
+        return (totalEnergy / getRootTotalTime()) * selfTime;
+    }    
+    
 }

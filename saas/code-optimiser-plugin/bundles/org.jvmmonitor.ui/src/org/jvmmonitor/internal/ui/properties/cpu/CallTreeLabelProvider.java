@@ -60,7 +60,7 @@ public class CallTreeLabelProvider extends AbstractLabelProvider {
         } else if (columnIndex == getColumnIndex(CallTreeColumn.SELFTIME_PERCENTAGE)) {
             return getSelfTimeColumnImage(element);
         }
-
+        
         return null;
     }
 
@@ -223,50 +223,49 @@ public class CallTreeLabelProvider extends AbstractLabelProvider {
                     .length();
             return String.format("%" + length + "d", //$NON-NLS-1$ //$NON-NLS-2$
                     ((ICallTreeNode) element).getInvocationCount());
-        }
+        }  
         return ""; //$NON-NLS-1$
     }
     
     /**
-     * Gets the count column text.
+     * Gets the power column text.
      * 
      * @param element
      *            the element
-     * @return the count column text
+     * @return the power column text
      */
     private String getPowerColumnText(Object element) {
         ICpuModel cpuModel = (ICpuModel) treeViewer.getInput();
         if (cpuModel == null) {
             return ""; //$NON-NLS-1$
         }
-
+        if (element instanceof IThreadNode) {
+            return String.format("%.2f", ((IThreadNode) element).getAveragePower());//$NON-NLS-1$ 
+        }
         if (element instanceof ICallTreeNode) {
-            int length = String.valueOf(cpuModel.getMaxInvocationCount())
-                    .length();
-            return String.format("%" + length + "d", //$NON-NLS-1$ //$NON-NLS-2$
-                    ((ICallTreeNode) element).getInvocationCount());
+            return String.format("%.2f", ((ICallTreeNode) element).getAveragePower());
         }
         return ""; //$NON-NLS-1$
     }
     
     /**
-     * Gets the count column text.
+     * Gets the energy column text.
      * 
      * @param element
      *            the element
-     * @return the count column text
+     * @return the energy column text
      */
     private String getEnergyColumnText(Object element) {
         ICpuModel cpuModel = (ICpuModel) treeViewer.getInput();
         if (cpuModel == null) {
             return ""; //$NON-NLS-1$
         }
-
+        
+        if (element instanceof IThreadNode) {
+            return String.format("%.2f", ((IThreadNode) element).getTotalEnergy());//$NON-NLS-1$
+        }
         if (element instanceof ICallTreeNode) {
-            int length = String.valueOf(cpuModel.getMaxInvocationCount())
-                    .length();
-            return String.format("%" + length + "d", //$NON-NLS-1$ //$NON-NLS-2$
-                    ((ICallTreeNode) element).getInvocationCount());
+            return String.format("%.2f", ((ICallTreeNode) element).getSelfTotalEnergy());
         }
         return ""; //$NON-NLS-1$
     }    
