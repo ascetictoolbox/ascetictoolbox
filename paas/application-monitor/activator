@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export JAVA_OPTS="-Xms512m -Xmx512m"
+
 ###  ------------------------------- ###
 ###  Helper methods for BASH scripts ###
 ###  ------------------------------- ###
