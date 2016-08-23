@@ -36,91 +36,94 @@ import java.util.Properties;
 
 public enum DBManager {
 	INSTANCE;
-    public static final int COLLECTION_ALREADY_EXISTS = 17399;
+	public static final int COLLECTION_ALREADY_EXISTS = 17399;
 
 	//private Jongo jongo;
 	private MongoClient client;
-	private DB database;
-    private Properties config;
+	private String dbName;
+	private Properties config;
 
 	public void init(Properties config) {
 		close();
-        this.config = config;
+		this.config = config;
 		try {
 			String host = config.getProperty("mongo.host");
 			int port = Integer.parseInt(config.getProperty("mongo.port"));
 			String dbName = config.getProperty("mongo.dbname");
-			Logger.info("Connecting to mongodb://"+host+":"+port+"/"+dbName);
-			client = new MongoClient(host,port);
-			database = client.getDB(dbName);
+			Logger.info("Connecting to mongodb://" + host + ":" + port + "/" + dbName);
+			client = new MongoClient(host, port);
+
+			this.dbName = dbName;
 			//jongo = new Jongo(database);
 
-		} catch(Throwable e) {
+		} catch (Throwable e) {
 			Logger.info(e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
 
 
-    public void close() {
-		if(client != null) {
-			Logger.debug("Closing client database connection: " + client.toString() );
+	public void close() {
+		if (client != null) {
+			Logger.debug("Closing client database connection: " + client.toString());
 			client.close();
 		}
 	}
 
-    public DB getDatabase() {
-        return database;
-    }
+	public DB getDatabase() {
+		return client.getDB(dbName);
 
-    public Properties getConfig() {
-        return config;
-    }
+	}
 
-    public BasicDBList find(String collectionName, DBObject query) {
-        return find(collectionName, query, null, null);
-    }
+	public Properties getConfig() {
+		return config;
+	}
 
-    public BasicDBList find(String collectionName, DBObject query, DBObject orderby) {
-        return find(collectionName, query, orderby, null);
-    }
-    public BasicDBList find(String collectionName, DBObject query, DBObject orderby, Integer limit) {
-        BasicDBList result = new BasicDBList();
+	public BasicDBList find(String collectionName, DBObject query) {
+		return find(collectionName, query, null, null);
+	}
 
-        DBCursor c = null;
-        if(query == null) {
-            c = database.getCollection(collectionName).find();
-        } else {
-            c = database.getCollection(collectionName).find(query);
-        }
+	public BasicDBList find(String collectionName, DBObject query, DBObject orderby) {
+		return find(collectionName, query, orderby, null);
+	}
 
-        if(orderby != null) {
-            c.sort(orderby);
-        }
+	public BasicDBList find(String collectionName, DBObject query, DBObject orderby, Integer limit) {
+		BasicDBList result = new BasicDBList();
 
-        if(limit != null && limit > 0) {
-            c = c.limit(limit);
-        }
+		DBCursor c = null;
+		if (query == null) {
+			c = getDatabase().getCollection(collectionName).find();
+		} else {
+			c = getDatabase().getCollection(collectionName).find(query);
+		}
 
-        while(c.hasNext()) {
-            result.add(c.next());
-        }
-        c.close();
-        return result;
-    }
+		if (orderby != null) {
+			c.sort(orderby);
+		}
 
-    public DBObject findOne(String collectionName, DBObject query) {
-        DBObject o = null;
-        if(query == null) {
-            o = database.getCollection(collectionName).findOne();
-        } else {
-            o = database.getCollection(collectionName).findOne(query);
-        }
-        return o;
-    }
+		if (limit != null && limit > 0) {
+			c = c.limit(limit);
+		}
 
-    public void add(String collectionName, DBObject obj) {
-        database.getCollection(collectionName).insert(obj);
-    }
+		while (c.hasNext()) {
+			result.add(c.next());
+		}
+		c.close();
+		return result;
+	}
+
+	public DBObject findOne(String collectionName, DBObject query) {
+		DBObject o = null;
+		if (query == null) {
+			o = getDatabase().getCollection(collectionName).findOne();
+		} else {
+			o = getDatabase().getCollection(collectionName).findOne(query);
+		}
+		return o;
+	}
+
+	public void add(String collectionName, DBObject obj) {
+		getDatabase().getCollection(collectionName).insert(obj);
+	}
 
 }

@@ -12,256 +12,200 @@ import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import java.net.InetAddress;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public enum MQManager {
-    INSTANCE;
+	INSTANCE;
 
-    Context context;
-    TopicConnection commandTopicConnection;
-    TopicConnectionFactory commandTopicConnectionFactory;
-    final SessionHolder commandTopicSessionHolder = new SessionHolder(null);
-    Topic commandTopic;
-    MessageConsumer commandTopicMessageConsumer;
-
-
-    CommandTopicMessageDispatcher commandQueueMessageDispatcherInstance;
-    PeriodicNotificationSender periodicNotificationSender;
-
-    Map<String, CommandDispatcher> commandDispatchers = new HashMap<String, CommandDispatcher>();
-
-    AppEstimationsReader estimationsReader;
+	Context context;
+	TopicConnection commandTopicConnection;
+	TopicConnectionFactory commandTopicConnectionFactory;
+	TopicSession commandTopicSession;
+	Topic commandTopic;
+	MessageConsumer commandTopicMessageConsumer;
 
 
-    public void stopConnection() {
-        try {
-            if (commandTopicMessageConsumer != null) commandTopicMessageConsumer.close();
-        } catch (Exception e) {
-            Logger.error(e.getMessage());
-        }
-        try {
-            if (commandTopicSessionHolder.getSession() != null)
-                commandTopicSessionHolder.getSession().close();
-        } catch (Exception e) {
-            Logger.error(e.getMessage());
-        }
-        try {
-            if (commandTopicConnection != null) commandTopicConnection.close();
-        } catch (Exception e) {
-            Logger.error(e.getMessage());
-        }
-        try {
-            if (context != null) context.close();
-        } catch (Exception e) {
-            Logger.error(e.getMessage());
-        }
-        Logger.debug("Stopped previously stablished connection, if any");
-    }
+	CommandTopicMessageDispatcher commandQueueMessageDispatcherInstance;
+	PeriodicNotificationSender periodicNotificationSender;
 
-    private AtomicBoolean restartingConnection = new AtomicBoolean(false);
+	Map<String,CommandDispatcher> commandDispatchers = new HashMap<String,CommandDispatcher>();
 
-    protected void restartConnection() throws NamingException, JMSException {
-        Logger.warn("Restarting Message Queue connection");
+	AppEstimationsReader estimationsReader;
+	public void init() {
 
+		try {
+			Logger.info("Initiating Message Queue Manager...");
 
-        boolean notRestarting = restartingConnection.compareAndSet(false,true);
-        if(notRestarting) {
-            try {
-                stopConnection();
+			context = new InitialContext();
 
-                context = new InitialContext();
+			commandTopicConnectionFactory
+					= (TopicConnectionFactory) context.lookup("asceticpaas");
+			commandTopicConnection = commandTopicConnectionFactory.createTopicConnection();
+			commandTopicConnection.start();
 
-                // piece of shit for ascetic testbeds
-                try {
-                    commandTopicConnectionFactory
-                            = (TopicConnectionFactory) context.lookup(InetAddress.getLocalHost().getHostName());
-                } catch(Exception e) {
-                    commandTopicConnectionFactory
-                            = (TopicConnectionFactory) context.lookup("default");
-                }
+			commandTopicSession = commandTopicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 
-                commandTopicConnection = commandTopicConnectionFactory.createTopicConnection();
-                commandTopicConnection.start();
+			commandTopic = (Topic) context.lookup("appmon");
 
-                commandTopicSessionHolder.setSession(commandTopicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE));
+			commandTopicMessageConsumer = commandTopicSession.createSubscriber(commandTopic);
 
-                commandTopic = (Topic) context.lookup("appmon");
+			commandQueueMessageDispatcherInstance = new CommandTopicMessageDispatcher();
+			new Thread(commandQueueMessageDispatcherInstance).start();
 
-                commandTopicMessageConsumer = commandTopicSessionHolder.getSession().createSubscriber(commandTopic);
-            } finally {
-                restartingConnection.set(false);
-            }
-        } else {
-            Logger.debug("Another process is restarting it. Exiting");
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+			periodicNotificationSender = new PeriodicNotificationSender();
+			new Thread(periodicNotificationSender).start();
 
-    public void init() {
+			commandDispatchers.put(InitiateMonitoringDispatcher.COMMAND_NAME, new InitiateMonitoringDispatcher(commandTopicSession));
 
-        try {
-            Logger.info("Initiating Message Queue Manager...");
+			Logger.info("Message Queue Manager Sucessfully created...");
 
-            restartConnection();
+		} catch(JMSException|NamingException e) {
+			Logger.error("Error initializing MQ Manager: " + e.getMessage() + ". Continuing startup without MQ services...", e);
+		}
+		try {
+			estimationsReader = new AppEstimationsReader();
+		} catch(Exception e) {
+			Logger.error("Error instantiating AppEstimationsReader: " + e.getMessage(),e);
+		}
+	}
 
-            commandQueueMessageDispatcherInstance = new CommandTopicMessageDispatcher();
-            new Thread(commandQueueMessageDispatcherInstance).start();
+	public void stop() {
+		if(estimationsReader != null) estimationsReader.stop();
 
-            periodicNotificationSender = new PeriodicNotificationSender();
-            new Thread(periodicNotificationSender).start();
+		if(commandQueueMessageDispatcherInstance != null) commandQueueMessageDispatcherInstance.running = false;
+		if(periodicNotificationSender != null) periodicNotificationSender.running = false;
+		try {
+			if(commandTopicMessageConsumer != null) commandTopicMessageConsumer.close();
+			if(commandTopicSession != null) commandTopicSession.close();
+			if(commandTopicConnection != null) commandTopicConnection.close();
+			if(context != null) context.close();
+		} catch(Exception e) {
+			Logger.error(e.getMessage());
+		}
+	}
 
-            commandDispatchers.put(InitiateMonitoringDispatcher.COMMAND_NAME, new InitiateMonitoringDispatcher(commandTopicSessionHolder));
+	public void addPeriodicNotifier(PeriodicNotifier pn) {
+		periodicNotificationSender.addNotifier(pn);
+	}
 
-            Logger.info("Message Queue Manager Sucessfully created...");
+	public void removeNotifier(PeriodicNotifier pn) {
+		periodicNotificationSender.askForRemoval(pn);
+	}
 
-        } catch (JMSException | NamingException e) {
-            Logger.error("Error initializing MQ Manager: " + e.getMessage() + ". Continuing startup without MQ services...", e);
-        }
-        try {
-            estimationsReader = new AppEstimationsReader();
-        } catch (Exception e) {
-            Logger.error("Error instantiating AppEstimationsReader: " + e.getMessage(), e);
-        }
-    }
+	private class CommandTopicMessageDispatcher implements Runnable {
+		boolean running;
+		@Override
+		public void run() {
+			running = true;
+			while(running) {
+				try {
 
-    public void stop() {
-        if (estimationsReader != null) estimationsReader.stop();
-        if (commandQueueMessageDispatcherInstance != null) commandQueueMessageDispatcherInstance.running = false;
-        if (periodicNotificationSender != null) periodicNotificationSender.running = false;
-        stopConnection();
-    }
+					TextMessage message = (TextMessage) commandTopicMessageConsumer.receive();
+					Logger.debug("received message: " + message.getText());
 
-    public void addPeriodicNotifier(PeriodicNotifier pn) {
-        periodicNotificationSender.addNotifier(pn);
-    }
+					ObjectNode on = (ObjectNode)Json.parse(message.getText());
+					String command =  on.get(CommandDispatcher.FIELD_COMMAND).textValue();
+					commandDispatchers.get(command).onCommand(on);
+				} catch(Exception e) {
+					if(running) {
+						Logger.warn("Error dispatching messages: " + e.getMessage());
+						Logger.warn("Reconnecting to the MQ");
+						try {
+							commandTopicConnectionFactory
+									= (TopicConnectionFactory) context.lookup("asceticpaas");
+							commandTopicConnection = commandTopicConnectionFactory.createTopicConnection();
+							commandTopicConnection.start();
 
-    public void removeNotifier(PeriodicNotifier pn) {
-        periodicNotificationSender.askForRemoval(pn);
-    }
+							commandTopicSession = commandTopicConnection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 
-    private class CommandTopicMessageDispatcher implements Runnable {
-        boolean running;
+							commandTopic = (Topic) context.lookup("appmon");
 
-        @Override
-        public void run() {
-            running = true;
-            while (running) {
-                try {
+							commandTopicMessageConsumer = commandTopicSession.createSubscriber(commandTopic);
+						} catch(NamingException | JMSException re) {
+							Logger.error(re.getMessage(),re);
+							try {
+								Thread.sleep(10000);
+							} catch (InterruptedException e1) {
+								Logger.error(e1.getMessage(),e1);
+							}
+						}
 
-                    TextMessage message = (TextMessage) commandTopicMessageConsumer.receive();
-                    Logger.debug("received message: " + message.getText());
+					} else {
+						Logger.debug("While closing MessageDispatcher: " + e.getMessage(), e);
+					}
+				}
+				Thread.yield();
+			}
+			Logger.info("MessageDispatcher successfully finished...");
+		}
+	}
 
-                    ObjectNode on = (ObjectNode) Json.parse(message.getText());
-                    String command = on.get(CommandDispatcher.FIELD_COMMAND).textValue();
-                    commandDispatchers.get(command).onCommand(on);
-                } catch (Exception e) {
-                    if (running) {
-                        Logger.warn("Error dispatching messages: " + e.getMessage());
-                        Logger.warn("Reconnecting to the MQ");
-                        try {
-                            restartConnection();
-                        } catch (NamingException | JMSException re) {
-                            Logger.error(re.getMessage(), re);
-                            try {
-                                Thread.sleep(10000);
-                            } catch (InterruptedException e1) {
-                                Logger.error(e1.getMessage(), e1);
-                            }
-                        }
+	private static class PeriodicNotificationSender implements Runnable {
+		boolean running;
 
-                    } else {
-                        Logger.debug("While closing MessageDispatcher: " + e.getMessage(), e);
-                    }
-                }
-                Thread.yield();
-            }
-            Logger.info("MessageDispatcher successfully finished...");
-        }
-    }
+		private List<Tuple> notifiers = Collections.synchronizedList(new LinkedList<Tuple>());
+		private Set<Tuple> askedForRemoval = Collections.synchronizedSet(new HashSet<Tuple>());
 
-    private class PeriodicNotificationSender implements Runnable {
-        boolean running;
+		public void addNotifier(PeriodicNotifier pn) {
+			notifiers.add(new Tuple(pn));
+		}
 
-        private List<Tuple> notifiers = Collections.synchronizedList(new LinkedList<Tuple>());
-        private Set<Tuple> askedForRemoval = Collections.synchronizedSet(new HashSet<Tuple>());
+		public void askForRemoval(PeriodicNotifier pn) {
+			synchronized (notifiers) {
+				for(Iterator<Tuple> tit = notifiers.iterator() ; tit.hasNext() ;) {
+					Tuple t = tit.next();
+					if(t.notifier == pn) {
+						askedForRemoval.add(t);
+					}
+				}
+			}
+		}
 
-        public void addNotifier(PeriodicNotifier pn) {
-            notifiers.add(new Tuple(pn));
-        }
+		@Override
+		public void run() {
+			running = true;
+			Logger.debug("Starting PeriodicNotificationSender thread");
+			while(running) {
+				synchronized (notifiers) {
+					long now = System.currentTimeMillis();
+					for(Tuple t : notifiers) {
+						if(t.nextNotification <= now) {
+							try {
+//								Logger.debug("Time to send notification for " + t.notifier.toString());
+								t.notifier.sendNotification();
+							} catch(Exception e) {
+								Logger.warn("Error sending notification: " + e.getMessage(), e);
+							} finally {
+								t.nextNotification = now + t.notifier.getFrequency();
+							}
+						}
+					}
+					if(askedForRemoval.size() > 0) {
+						Logger.debug("Removing the clients");
+						synchronized (askedForRemoval) {
+							notifiers.removeAll(askedForRemoval);
+							askedForRemoval.clear();
+						}
+					}
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					Logger.warn(e.getMessage(),e);
+				}
+			}
+			Logger.warn("Exiting from PeriodicNotificationSender thread");
+		}
 
-        public void askForRemoval(PeriodicNotifier pn) {
-            synchronized (notifiers) {
-                for (Iterator<Tuple> tit = notifiers.iterator(); tit.hasNext(); ) {
-                    Tuple t = tit.next();
-                    if (t.notifier == pn) {
-                        askedForRemoval.add(t);
-                    }
-                }
-            }
-        }
+		private static class Tuple {
+			long nextNotification;
+			final PeriodicNotifier notifier;
 
-        @Override
-        public void run() {
-            running = true;
-            Logger.debug("Starting PeriodicNotificationSender thread");
-            while (running) {
-                synchronized (notifiers) {
-                    long now = System.currentTimeMillis();
-                    for (Tuple t : notifiers) {
-                        if (t.nextNotification <= now) {
-                            try {
-                                Logger.debug("Time to send notification for " + t.notifier.toString());
-                                t.notifier.sendNotification();
-                            } catch (Exception e) {
-                                Logger.warn("Error sending notification: " + e.getMessage(), e);
-                                try {
-                                    restartConnection();
-                                } catch (Exception e1) {
-                                    try {
-                                        Thread.sleep(10000);
-                                    } catch (InterruptedException e2) {
-                                        Logger.error(e2.getMessage(),e2);
-                                    }
-                                    Logger.error("Error restarting connection: " + e.getMessage(), e1);
-                                }
-
-                            } finally {
-                                t.nextNotification = now + t.notifier.getFrequency();
-                            }
-                        }
-                    }
-                    if (askedForRemoval.size() > 0) {
-                        Logger.debug("Removing the clients");
-                        synchronized (askedForRemoval) {
-                            notifiers.removeAll(askedForRemoval);
-                            askedForRemoval.clear();
-                        }
-                    }
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Logger.warn(e.getMessage(), e);
-                }
-            }
-            Logger.warn("Exiting from PeriodicNotificationSender thread");
-        }
-
-        private class Tuple {
-            long nextNotification;
-            final PeriodicNotifier notifier;
-
-            public Tuple(PeriodicNotifier notifier) {
-                this.notifier = notifier;
-                nextNotification = System.currentTimeMillis() + notifier.getFrequency();
-            }
-        }
-    }
+			public Tuple(PeriodicNotifier notifier) {
+				this.notifier = notifier;
+				nextNotification = System.currentTimeMillis() + notifier.getFrequency();
+			}
+		}
+	}
 
 }

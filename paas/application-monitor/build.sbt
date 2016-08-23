@@ -17,7 +17,7 @@ libraryDependencies ++= Seq(
   javaWs,
   "org.jongo" % "jongo" % "1.2",
   "org.antlr" % "antlr4" % "4.3",
-  "org.mongodb" % "mongo-java-driver" % "3.0.1",
+  "org.mongodb" % "mongo-java-driver" % "3.2.2",
   "org.apache.qpid" % "qpid-amqp-1-0-client-jms" % "0.32",
   "org.apache.qpid" % "qpid-amqp-1-0-client" % "0.32",
   "org.apache.qpid" % "qpid-amqp-1-0-common" % "0.32",
