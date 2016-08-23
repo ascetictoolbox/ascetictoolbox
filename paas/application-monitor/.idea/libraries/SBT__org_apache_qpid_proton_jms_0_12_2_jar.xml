@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.apache.qpid:proton-jms:0.12.2:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.qpid/proton-jms/jars/proton-jms-0.12.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.qpid/proton-jms/docs/proton-jms-0.12.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.qpid/proton-jms/srcs/proton-jms-0.12.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

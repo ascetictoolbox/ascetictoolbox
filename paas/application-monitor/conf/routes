@@ -1,0 +1,37 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /gui                                     http.Misc.redirectTo(url="/gui/")
+GET     /gui/                                    controllers.StaticAssets.at(path="/public", file="index.html")
+GET     /gui/metricPanel                         http.Gui.getAllMetricPanels()
+POST    /gui/metricPanel                         http.Gui.addMetricPanel()
+DELETE  /gui/metricPanel/:id                     http.Gui.deleteMetricPanel(id:String)
+GET     /gui/*file                               controllers.StaticAssets.at(path="/public", file)
+
+
+#List running apps
+GET     /apps                                    http.Apps.listApps(start:Long?=0,end:Long?=0)
+GET     /apps/                                   http.Apps.listApps(start:Long?=0,end:Long?=0)
+POST    /apps                                    http.Apps.onAppFinished()
+GET     /apps/finished                           http.Apps.listFinishedDeployments(start:Long?=0,end:Long?=0,limit:Integer?=-1)
+
+GET     /deployments                             http.Apps.listDeployments(start:Long?=0,end:Long?=0)
+GET     /deployments/                            http.Apps.listDeployments(start:Long?=0,end:Long?=0)
+
+POST    /event                                   http.Events.post()
+PATCH   /event                                   http.Events.update()
+GET     /event/:id                               http.Events.get(id:String)
+PATCH   /event/:id                               http.Events.finish(id:String)
+DELETE  /event/:id                               http.Events.delete(id:String)
+
+POST    /query                                   http.Queries.post()
+
+#Get consolidated metrics for an application/node
+GET     /metrics/:oper/:appId/:nodeId            http.Metrics.getAllMetricsHistory(oper:String,appId:String,nodeId:String,start:Long ?=-1,end:Long?=-1,resolution:Long?=-1)
+
+GET     /status                                  http.Status.getStatus()
+GET     /status/meta                             http.Status.getMeta()
+
+

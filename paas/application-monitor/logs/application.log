@@ -1,0 +1,1032 @@
+2016-08-23 12:27:11,986 - [INFO] - from play in pool-4-thread-1 
+Listening for HTTP on /0:0:0:0:0:0:0:0:9000
+
+2016-08-23 12:27:34,787 - [INFO] - from application in play-internal-execution-context-1 
+Connecting to mongodb://localhost:27017/applicationmonitor
+
+2016-08-23 12:27:34,981 - [INFO] - from application in play-internal-execution-context-1 
+Initiating Message Queue Manager...
+
+2016-08-23 12:27:34,981 - [WARN] - from application in play-internal-execution-context-1 
+Restarting Message Queue connection
+
+2016-08-23 12:27:34,981 - [DEBUG] - from application in play-internal-execution-context-1 
+Stopped previously stablished connection, if any
+
+2016-08-23 12:27:35,861 - [DEBUG] - from application in Thread-7 
+Starting PeriodicNotificationSender thread
+
+2016-08-23 12:27:35,862 - [INFO] - from application in play-internal-execution-context-1 
+Message Queue Manager Sucessfully created...
+
+2016-08-23 12:27:35,869 - [INFO] - from application in Thread-8 
+Initializing Estimations Reader thread
+
+2016-08-23 12:27:35,980 - [INFO] - from org.apache.qpid.jms.JmsConnection in AmqpProvider:(2):[amqp://localhost:5672] 
+Connection ID::8959f901-09f9-4c81-89bb-910e32cadc1a:1 connected to remote Broker: amqp://localhost:5672
+
+2016-08-23 12:27:35,983 - [DEBUG] - from play in play-internal-execution-context-1 
+Plugin [play.api.db.BoneCPPlugin] is disabled
+
+2016-08-23 12:27:35,990 - [DEBUG] - from play in play-internal-execution-context-1 
+Plugin [play.api.db.evolutions.EvolutionsPlugin] is disabled
+
+2016-08-23 12:27:36,849 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2016-08-23 12:27:37,252 - [INFO] - from akka.event.slf4j.Slf4jLogger in play-akka.actor.default-dispatcher-2 
+Slf4jLogger started
+
+2016-08-23 12:27:38,233 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Creating collection 'appdeployments'...
+
+2016-08-23 12:27:38,268 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-6 
+Opened connection [connectionId{localValue:2, serverValue:2}] to localhost:27017
+
+2016-08-23 12:27:38,381 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-6 
+Opened connection [connectionId{localValue:3, serverValue:3}] to localhost:27017
+
+2016-08-23 12:27:40,734 - [INFO] - from application in play-akka.actor.default-dispatcher-4 
+Creating collection 'guiMetrics'...
+
+2016-08-23 12:30:54,023 - [INFO] - from application in play-akka.actor.default-dispatcher-12 
+Creating collection 'events'...
+
+2016-08-23 12:31:44,652 - [WARN] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-10 
+Got socket exception on connection [connectionId{localValue:3, serverValue:3}] to localhost:27017. All connections to localhost:27017 will be closed.
+
+2016-08-23 12:31:44,660 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-10 
+Closed connection [connectionId{localValue:3, serverValue:3}] to localhost:27017 because there was a socket exception raised by this connection.
+
+2016-08-23 12:31:44,664 - [ERROR] - from play in play-akka.actor.default-dispatcher-10 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoSocketReadException: Prematurely reached end of stream
+
+2016-08-23 12:31:44,672 - [INFO] - from org.mongodb.driver.cluster in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Exception in monitor thread while connecting to server localhost:27017
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.connection.SocketStream.open(SocketStream.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.open(InternalStreamConnection.java:114) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:128) ~[mongo-java-driver-3.2.2.jar:na]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_45]
+Caused by: java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method) ~[na:1.8.0_45]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:345) ~[na:1.8.0_45]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[na:1.8.0_45]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[na:1.8.0_45]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) ~[na:1.8.0_45]
+	at java.net.Socket.connect(Socket.java:589) ~[na:1.8.0_45]
+	at com.mongodb.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:50) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.SocketStream.open(SocketStream.java:58) ~[mongo-java-driver-3.2.2.jar:na]
+	... 3 common frames omitted
+
+2016-08-23 12:31:44,693 - [ERROR] - from application in play-akka.actor.default-dispatcher-10 
+
+
+! @716n0fie6 - Internal server error, for (POST) [/event] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoSocketReadException: Prematurely reached end of stream]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoSocketReadException: Prematurely reached end of stream
+	at com.mongodb.connection.SocketStream.read(SocketStream.java:88) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:491) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.receiveMessage(InternalStreamConnection.java:221) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.UsageTrackingInternalConnection.receiveMessage(UsageTrackingInternalConnection.java:102) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultConnectionPool$PooledConnection.receiveMessage(DefaultConnectionPool.java:435) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.WriteCommandProtocol.receiveMessage(WriteCommandProtocol.java:234) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.WriteCommandProtocol.execute(WriteCommandProtocol.java:104) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InsertCommandProtocol.execute(InsertCommandProtocol.java:67) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InsertCommandProtocol.execute(InsertCommandProtocol.java:37) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServer$DefaultServerProtocolExecutor.execute(DefaultServer.java:159) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerConnection.executeProtocol(DefaultServerConnection.java:286) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerConnection.insertCommand(DefaultServerConnection.java:115) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.InsertOperation.executeCommandProtocol(InsertOperation.java:76) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.BaseWriteOperation$1.call(BaseWriteOperation.java:141) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.BaseWriteOperation$1.call(BaseWriteOperation.java:133) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnectionSource(OperationHelper.java:230) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:221) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.BaseWriteOperation.execute(BaseWriteOperation.java:133) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.BaseWriteOperation.execute(BaseWriteOperation.java:60) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:781) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:764) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.executeWriteOperation(DBCollection.java:333) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:328) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:319) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:289) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:255) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:177) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.save(DBCollection.java:398) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.save(DBCollection.java:373) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.controller.EventsDBMapper.storeEvent(EventsDBMapper.java:101) ~[classes/:na]
+	at http.Events.post(Events.java:31) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$13$$anonfun$apply$13.apply(routes_routing.scala:288) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$13$$anonfun$apply$13.apply(routes_routing.scala:288) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:31:45,711 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-10 
+No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:31:46,654 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-12 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:31:46,668 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-5 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:31:46,811 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-9 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:31:51,810 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-7 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:31:56,810 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-8 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:01,813 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-11 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:04,842 - [INFO] - from org.mongodb.driver.connection in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Opened connection [connectionId{localValue:41, serverValue:1}] to localhost:27017
+
+2016-08-23 12:32:04,846 - [INFO] - from org.mongodb.driver.cluster in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[2, 6, 12]}, minWireVersion=0, maxWireVersion=2, maxDocumentSize=16777216, roundTripTimeNanos=2102728}
+
+2016-08-23 12:32:04,846 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-9 
+Closed connection [connectionId{localValue:2, serverValue:2}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:32:04,858 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-5 
+Opened connection [connectionId{localValue:42, serverValue:2}] to localhost:27017
+
+2016-08-23 12:32:04,859 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-8 
+Opened connection [connectionId{localValue:46, serverValue:7}] to localhost:27017
+
+2016-08-23 12:32:04,860 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-7 
+Opened connection [connectionId{localValue:43, serverValue:3}] to localhost:27017
+
+2016-08-23 12:32:04,860 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-9 
+Opened connection [connectionId{localValue:45, serverValue:6}] to localhost:27017
+
+2016-08-23 12:32:04,861 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-12 
+Opened connection [connectionId{localValue:44, serverValue:5}] to localhost:27017
+
+2016-08-23 12:32:04,861 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-11 
+Opened connection [connectionId{localValue:48, serverValue:8}] to localhost:27017
+
+2016-08-23 12:32:04,861 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-10 
+Opened connection [connectionId{localValue:47, serverValue:4}] to localhost:27017
+
+2016-08-23 12:32:36,654 - [WARN] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-12 
+Got socket exception on connection [connectionId{localValue:44, serverValue:5}] to localhost:27017. All connections to localhost:27017 will be closed.
+
+2016-08-23 12:32:36,655 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-12 
+Closed connection [connectionId{localValue:44, serverValue:5}] to localhost:27017 because there was a socket exception raised by this connection.
+
+2016-08-23 12:32:36,656 - [ERROR] - from play in play-akka.actor.default-dispatcher-12 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoSocketReadException: Prematurely reached end of stream
+
+2016-08-23 12:32:36,657 - [INFO] - from org.mongodb.driver.cluster in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Exception in monitor thread while connecting to server localhost:27017
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.connection.SocketStream.open(SocketStream.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.open(InternalStreamConnection.java:114) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:128) ~[mongo-java-driver-3.2.2.jar:na]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_45]
+Caused by: java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method) ~[na:1.8.0_45]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:345) ~[na:1.8.0_45]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[na:1.8.0_45]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[na:1.8.0_45]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) ~[na:1.8.0_45]
+	at java.net.Socket.connect(Socket.java:589) ~[na:1.8.0_45]
+	at com.mongodb.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:50) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.SocketStream.open(SocketStream.java:58) ~[mongo-java-driver-3.2.2.jar:na]
+	... 3 common frames omitted
+
+2016-08-23 12:32:36,661 - [ERROR] - from application in play-akka.actor.default-dispatcher-12 
+
+
+! @716n0ihb2 - Internal server error, for (GET) [/apps?start=-300000] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoSocketReadException: Prematurely reached end of stream]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoSocketReadException: Prematurely reached end of stream
+	at com.mongodb.connection.SocketStream.read(SocketStream.java:88) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:491) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.receiveMessage(InternalStreamConnection.java:221) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.UsageTrackingInternalConnection.receiveMessage(UsageTrackingInternalConnection.java:102) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultConnectionPool$PooledConnection.receiveMessage(DefaultConnectionPool.java:435) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.QueryProtocol.execute(QueryProtocol.java:297) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.QueryProtocol.execute(QueryProtocol.java:54) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServer$DefaultServerProtocolExecutor.execute(DefaultServer.java:159) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerConnection.executeProtocol(DefaultServerConnection.java:286) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerConnection.query(DefaultServerConnection.java:209) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation$1.call(FindOperation.java:496) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation$1.call(FindOperation.java:482) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnectionSource(OperationHelper.java:239) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:212) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation.execute(FindOperation.java:482) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation.execute(FindOperation.java:79) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCursor.initializeCursor(DBCursor.java:851) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCursor.hasNext(DBCursor.java:152) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.DBManager.find(DBManager.java:108) ~[classes/:na]
+	at es.bsc.amon.DBManager.find(DBManager.java:83) ~[classes/:na]
+	at es.bsc.amon.controller.AppsDBMapper.getAllApps(AppsDBMapper.java:101) ~[classes/:na]
+	at http.Apps.listApps(Apps.java:42) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$7$$anonfun$apply$7.apply(routes_routing.scala:240) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$7$$anonfun$apply$7.apply(routes_routing.scala:240) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:32:36,669 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-12 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:36,813 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-10 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:37,207 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-5 
+No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:41,657 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-8 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:41,812 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-9 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:46,812 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-11 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:32:51,812 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-7 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketOpenException: Exception opening socket}, caused by {java.net.ConnectException: Connection refused}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:04,379 - [INFO] - from org.mongodb.driver.cluster in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Exception in monitor thread while connecting to server localhost:27017
+com.mongodb.MongoSocketReadException: Prematurely reached end of stream
+	at com.mongodb.connection.SocketStream.read(SocketStream.java:88) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.receiveResponseBuffers(InternalStreamConnection.java:491) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.receiveMessage(InternalStreamConnection.java:221) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.CommandHelper.receiveReply(CommandHelper.java:134) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.CommandHelper.receiveCommandResult(CommandHelper.java:121) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.CommandHelper.executeCommand(CommandHelper.java:32) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnectionInitializer.initializeConnectionDescription(InternalStreamConnectionInitializer.java:83) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnectionInitializer.initialize(InternalStreamConnectionInitializer.java:43) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.InternalStreamConnection.open(InternalStreamConnection.java:115) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:128) ~[mongo-java-driver-3.2.2.jar:na]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_45]
+
+2016-08-23 12:33:06,673 - [ERROR] - from play in play-akka.actor.default-dispatcher-12 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:06,679 - [ERROR] - from application in play-akka.actor.default-dispatcher-12 
+
+
+! @716n0k9lf - Internal server error, for (GET) [/apps/finished?limit=12] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getReadConnectionSource(ClusterBinding.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:210) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation.execute(FindOperation.java:482) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation.execute(FindOperation.java:79) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCursor.initializeCursor(DBCursor.java:851) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCursor.hasNext(DBCursor.java:152) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.DBManager.find(DBManager.java:108) ~[classes/:na]
+	at es.bsc.amon.controller.AppsDBMapper.getFinishedAppDeployments(AppsDBMapper.java:146) ~[classes/:na]
+	at http.Apps.listFinishedDeployments(Apps.java:80) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$10$$anonfun$apply$10.apply(routes_routing.scala:264) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$10$$anonfun$apply$10.apply(routes_routing.scala:264) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:06,690 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-12 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:06,814 - [ERROR] - from play in play-akka.actor.default-dispatcher-10 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:06,820 - [ERROR] - from application in play-akka.actor.default-dispatcher-10 
+
+
+! @716n0ka10 - Internal server error, for (POST) [/query] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getReadConnectionSource(ClusterBinding.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:210) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:223) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:65) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1377) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1308) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1294) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.controller.EventsDBMapper.aggregate(EventsDBMapper.java:197) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregateFromJsonStr(QueriesDBMapper.java:61) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregate(QueriesDBMapper.java:43) ~[classes/:na]
+	at http.Queries.post(Queries.java:32) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:06,827 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-10 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:07,210 - [ERROR] - from play in play-akka.actor.default-dispatcher-5 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches WritableServerSelector. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:07,220 - [ERROR] - from application in play-akka.actor.default-dispatcher-5 
+
+
+! @716n0kag9 - Internal server error, for (POST) [/event] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches WritableServerSelector. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches WritableServerSelector. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getWriteConnectionSource(ClusterBinding.java:68) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:219) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.BaseWriteOperation.execute(BaseWriteOperation.java:133) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.BaseWriteOperation.execute(BaseWriteOperation.java:60) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:781) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:764) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.executeWriteOperation(DBCollection.java:333) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:328) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:319) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:289) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:255) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.insert(DBCollection.java:177) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.save(DBCollection.java:398) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.save(DBCollection.java:373) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.controller.EventsDBMapper.storeEvent(EventsDBMapper.java:101) ~[classes/:na]
+	at http.Events.post(Events.java:31) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$13$$anonfun$apply$13.apply(routes_routing.scala:288) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$13$$anonfun$apply$13.apply(routes_routing.scala:288) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:08,243 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-5 
+No server chosen by WritableServerSelector from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:11,660 - [ERROR] - from play in play-akka.actor.default-dispatcher-8 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:11,667 - [ERROR] - from application in play-akka.actor.default-dispatcher-8 
+
+
+! @716n0kh59 - Internal server error, for (GET) [/apps?start=-300000] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getReadConnectionSource(ClusterBinding.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:210) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation.execute(FindOperation.java:482) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.FindOperation.execute(FindOperation.java:79) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCursor.initializeCursor(DBCursor.java:851) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCursor.hasNext(DBCursor.java:152) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.DBManager.find(DBManager.java:108) ~[classes/:na]
+	at es.bsc.amon.DBManager.find(DBManager.java:83) ~[classes/:na]
+	at es.bsc.amon.controller.AppsDBMapper.getAllApps(AppsDBMapper.java:101) ~[classes/:na]
+	at http.Apps.listApps(Apps.java:42) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$7$$anonfun$apply$7.apply(routes_routing.scala:240) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$7$$anonfun$apply$7.apply(routes_routing.scala:240) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:11,676 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-8 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:11,814 - [ERROR] - from play in play-akka.actor.default-dispatcher-9 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:11,819 - [ERROR] - from application in play-akka.actor.default-dispatcher-9 
+
+
+! @716n0khb7 - Internal server error, for (POST) [/query] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getReadConnectionSource(ClusterBinding.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:210) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:223) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:65) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1377) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1308) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1294) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.controller.EventsDBMapper.aggregate(EventsDBMapper.java:197) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregateFromJsonStr(QueriesDBMapper.java:61) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregate(QueriesDBMapper.java:43) ~[classes/:na]
+	at http.Queries.post(Queries.java:32) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:11,829 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-9 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:16,813 - [ERROR] - from play in play-akka.actor.default-dispatcher-11 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:16,817 - [ERROR] - from application in play-akka.actor.default-dispatcher-11 
+
+
+! @716n0kole - Internal server error, for (POST) [/query] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getReadConnectionSource(ClusterBinding.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:210) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:223) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:65) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1377) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1308) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1294) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.controller.EventsDBMapper.aggregate(EventsDBMapper.java:197) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregateFromJsonStr(QueriesDBMapper.java:61) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregate(QueriesDBMapper.java:43) ~[classes/:na]
+	at http.Queries.post(Queries.java:32) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:16,823 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-11 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:21,813 - [ERROR] - from play in play-akka.actor.default-dispatcher-7 
+Cannot invoke the action, eventually got an error: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+
+2016-08-23 12:33:21,834 - [ERROR] - from application in play-akka.actor.default-dispatcher-7 
+
+
+! @716n0l66d - Internal server error, for (POST) [/query] ->
+
+play.api.Application$$anon$1: Execution exception[[MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.1.jar:2.3.1]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.1.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:23) [scala-library-2.11.1.jar:na]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:41) [akka-actor_2.11-2.3.3.jar:na]
+	at akka.dispatch.ForkJoinExecutorConfigurator$AkkaForkJoinTask.exec(AbstractDispatcher.scala:393) [akka-actor_2.11-2.3.3.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.1.jar:na]
+Caused by: com.mongodb.MongoTimeoutException: Timed out after 30000 ms while waiting for a server that matches ReadPreferenceServerSelector{readPreference=primary}. Client view of cluster state is {type=UNKNOWN, servers=[{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]
+	at com.mongodb.connection.BaseCluster.createTimeoutException(BaseCluster.java:369) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.connection.BaseCluster.selectServer(BaseCluster.java:101) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:75) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding$ClusterBindingConnectionSource.<init>(ClusterBinding.java:71) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.binding.ClusterBinding.getReadConnectionSource(ClusterBinding.java:63) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.OperationHelper.withConnection(OperationHelper.java:210) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:223) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.operation.AggregateOperation.execute(AggregateOperation.java:65) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo.execute(Mongo.java:772) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.Mongo$2.execute(Mongo.java:759) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1377) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1308) ~[mongo-java-driver-3.2.2.jar:na]
+	at com.mongodb.DBCollection.aggregate(DBCollection.java:1294) ~[mongo-java-driver-3.2.2.jar:na]
+	at es.bsc.amon.controller.EventsDBMapper.aggregate(EventsDBMapper.java:197) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregateFromJsonStr(QueriesDBMapper.java:61) ~[classes/:na]
+	at es.bsc.amon.controller.QueriesDBMapper.aggregate(QueriesDBMapper.java:43) ~[classes/:na]
+	at http.Queries.post(Queries.java:32) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at Routes$$anonfun$routes$1$$anonfun$applyOrElse$18$$anonfun$apply$18.apply(routes_routing.scala:328) ~[classes/:na]
+	at play.core.Router$HandlerInvokerFactory$$anon$4.resultCall(Router.scala:264) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.invocation(Router.scala:255) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anon$1.call(JavaAction.scala:55) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.GlobalSettings$1.call(GlobalSettings.java:67) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.JavaAction$$anonfun$11.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at play.core.j.HttpExecutionContext$$anon$2.run(HttpExecutionContext.scala:40) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.core.j.HttpExecutionContext.execute(HttpExecutionContext.scala:32) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$.apply(Future.scala:31) ~[scala-library-2.11.1.jar:na]
+	at scala.concurrent.Future$.apply(Future.scala:492) ~[scala-library-2.11.1.jar:na]
+	at play.core.j.JavaAction$class.apply(JavaAction.scala:82) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.core.Router$HandlerInvokerFactory$JavaActionInvokerFactory$$anon$15$$anon$1.apply(Router.scala:252) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4$$anonfun$apply$5.apply(Action.scala:130) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:21) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:129) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1$$anonfun$apply$4.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.1.jar:na]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:128) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.mvc.Action$$anonfun$apply$1.apply(Action.scala:121) ~[play_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$mapM$1.apply(Iteratee.scala:483) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMapM$1.apply(Iteratee.scala:519) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at play.api.libs.iteratee.Iteratee$$anonfun$flatMap$1$$anonfun$apply$14.apply(Iteratee.scala:496) ~[play-iteratees_2.11-2.3.1.jar:2.3.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) [scala-library-2.11.1.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) [scala-library-2.11.1.jar:na]
+	... 6 common frames omitted
+
+2016-08-23 12:33:21,839 - [INFO] - from org.mongodb.driver.cluster in play-akka.actor.default-dispatcher-7 
+No server chosen by ReadPreferenceServerSelector{readPreference=primary} from cluster description ClusterDescription{type=UNKNOWN, connectionMode=SINGLE, all=[ServerDescription{address=localhost:27017, type=UNKNOWN, state=CONNECTING, exception={com.mongodb.MongoSocketReadException: Prematurely reached end of stream}}]}. Waiting for 30000 ms before timing out
+
+2016-08-23 12:33:36,608 - [INFO] - from org.mongodb.driver.connection in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Opened connection [connectionId{localValue:160, serverValue:1}] to localhost:27017
+
+2016-08-23 12:33:36,610 - [INFO] - from org.mongodb.driver.cluster in cluster-ClusterId{value='57bc2516dc4cdf3b3bd09b46', description='null'}-localhost:27017 
+Monitor thread successfully connected to server with description ServerDescription{address=localhost:27017, type=STANDALONE, state=CONNECTED, ok=true, version=ServerVersion{versionList=[2, 6, 12]}, minWireVersion=0, maxWireVersion=2, maxDocumentSize=16777216, roundTripTimeNanos=1252808}
+
+2016-08-23 12:33:36,611 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-12 
+Closed connection [connectionId{localValue:42, serverValue:2}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:33:36,611 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-8 
+Closed connection [connectionId{localValue:46, serverValue:7}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:33:36,612 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-12 
+Closed connection [connectionId{localValue:43, serverValue:3}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:33:36,611 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-5 
+Closed connection [connectionId{localValue:47, serverValue:4}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:33:36,611 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-7 
+Closed connection [connectionId{localValue:45, serverValue:6}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:33:36,611 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-10 
+Closed connection [connectionId{localValue:48, serverValue:8}] to localhost:27017 because there was a socket exception raised on another connection from this pool.
+
+2016-08-23 12:33:36,627 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-11 
+Opened connection [connectionId{localValue:161, serverValue:3}] to localhost:27017
+
+2016-08-23 12:33:36,627 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-9 
+Opened connection [connectionId{localValue:163, serverValue:4}] to localhost:27017
+
+2016-08-23 12:33:36,628 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-12 
+Opened connection [connectionId{localValue:164, serverValue:5}] to localhost:27017
+
+2016-08-23 12:33:36,628 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-8 
+Opened connection [connectionId{localValue:162, serverValue:2}] to localhost:27017
+
+2016-08-23 12:33:36,629 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-10 
+Opened connection [connectionId{localValue:167, serverValue:8}] to localhost:27017
+
+2016-08-23 12:33:36,630 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-7 
+Opened connection [connectionId{localValue:166, serverValue:7}] to localhost:27017
+
+2016-08-23 12:33:36,631 - [INFO] - from org.mongodb.driver.connection in play-akka.actor.default-dispatcher-5 
+Opened connection [connectionId{localValue:165, serverValue:6}] to localhost:27017
+

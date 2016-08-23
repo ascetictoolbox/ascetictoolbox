@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Play2ProjectSettings">
+    <option name="LANGUAGE_IMPORTS">
+      <array>
+        <option value="play.api.data.Field" />
+        <option value="play.data._" />
+        <option value="scala.collection.JavaConversions._" />
+        <option value="play.api.templates.PlayMagic._" />
+        <option value="java.lang._" />
+        <option value="play.mvc._" />
+        <option value="play.core.j.PlayMagicForJava._" />
+        <option value="java.util._" />
+        <option value="scala.collection.JavaConverters._" />
+        <option value="play.mvc.Http.Context.Implicit._" />
+      </array>
+    </option>
+  </component>
+</project>
