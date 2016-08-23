@@ -1,10 +1,9 @@
 package org.jvmmonitor.internal.core;
 
 import java.util.ArrayList;
-
+import java.util.List;
 import javax.management.Attribute;
 import javax.management.ObjectName;
-
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.eclipse.core.runtime.IStatus;
 import org.jvmmonitor.core.IPowerMonitor;
@@ -104,7 +103,46 @@ public class PowerMonitor implements IPowerMonitor {
         System.err.println("Power - Is Tracking - False");
         return false;
     }
-
+    
+    @Override
+    public void setHostCalibrationInputString(String calibrationData) {
+        System.out.println(calibrationData);
+        ArrayList<HostEnergyCalibrationData> data = new ArrayList<>();
+        String[] splitString = calibrationData.split(",");
+        for (int i = 0; i < splitString.length; i = i + 2) {
+            double cpu = Double.parseDouble(splitString[i]);
+            double power = Double.parseDouble(splitString[i+1]);
+            HostEnergyCalibrationData item = new HostEnergyCalibrationData(cpu, 0, power);
+            data.add(item);
+        }
+        host.setCalibrationData(data);
+    }      
+    
+    @Override
+    public void setHostCalibrationData(List<HostEnergyCalibrationData> calibrationData) throws JvmCoreException {
+        ObjectName objectName = validateAgent();
+        if (objectName != null) {
+            if (calibrationData instanceof ArrayList) {
+                host.setCalibrationData(((ArrayList) calibrationData));
+            } else {
+                ArrayList<HostEnergyCalibrationData> data = new ArrayList<>();
+                data.addAll(calibrationData);
+                host.setCalibrationData(data);
+            }
+            //Set the server side calibration data
+            String attribute = "";
+            for (HostEnergyCalibrationData item : calibrationData) {
+                attribute = attribute + (attribute.equals("") ? "" : ",") + item.getCpuUsage() + "," + item.getWattsUsed();
+            }
+            try {
+                Attribute attrib = new Attribute("HostCalibrationInputString", attribute);
+                jvm.getMBeanServer().setAttribute(objectName, attrib);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }    
+    
     @Override
     public void refreshResourcesCache() throws JvmCoreException {
         // TODO Auto-generated method stub

@@ -1,5 +1,9 @@
 package org.jvmmonitor.core;
 
+import java.util.List;
+
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+
 public interface IPowerMonitor {
 
     /** The MXBean name. */
@@ -23,6 +27,18 @@ public interface IPowerMonitor {
      * @throws JvmCoreException
      */
     boolean isTracking() throws JvmCoreException;
+    
+    /**
+     * This sets the host calibration data
+     * @param calibrationData
+     */    
+    public void setHostCalibrationInputString(String calibrationData) throws JvmCoreException;    
+    
+    /**
+     * This sets the host calibration data
+     * @param calibrationData
+     */    
+    public void setHostCalibrationData(List<HostEnergyCalibrationData> calibrationData) throws JvmCoreException;
 
     /**
      * Refreshes the resources cache.

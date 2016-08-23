@@ -22,6 +22,18 @@ public interface PowerMXBean {
     public double getPower();
     
     /**
+     * This gets the host calibration data
+     * @param calibrationData
+     */        
+    public String getHostCalibrationInputString();    
+    
+    /**
+     * This sets the host calibration data for this agent.
+     * @param datapoints The datapoints to use for estimating energy usage, semi-colon separated.
+     */
+    public void setHostCalibrationInputString(String datapoints);    
+    
+    /**
      * This sets the host calibration data for this agent.
      * @param datapoints The datapoints to use for estimating energy usage.
      */

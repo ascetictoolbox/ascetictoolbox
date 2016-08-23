@@ -24,6 +24,7 @@ public class Power implements PowerMXBean {
     private long nanoBefore = 0;
     private long cpuBefore = 0;
     Host host = new Host(0, "localhost");
+    private String inputString = "";
 
     /**
      * The constructor.
@@ -73,6 +74,32 @@ public class Power implements PowerMXBean {
             host.setCalibrationData(data);
         }
     }
+    
+    @Override
+    public String getHostCalibrationInputString() {
+        return inputString;
+    }
+    
+    @Override
+    public void setHostCalibrationInputString(String calibrationData) {
+        try {
+            System.out.println(calibrationData);
+            ArrayList<HostEnergyCalibrationData> data = new ArrayList<>();
+            String[] splitString = calibrationData.split(",");
+            for (int i = 0; i < splitString.length; i = i + 2) {
+                double cpu = Double.parseDouble(splitString[i]);
+                double power = Double.parseDouble(splitString[i+1]);
+                HostEnergyCalibrationData item = new HostEnergyCalibrationData(cpu, 0, power);
+                data.add(item);
+            }
+            //The calibration data is set only at the end after no parsing errors etc.
+            host.setCalibrationData(data);
+            inputString = calibrationData;            
+        } catch (Exception ex) {
+            //In this event fail silently
+        }
+        
+    }    
 
     @Override
     public List<HostEnergyCalibrationData> getHostCalibrationData() {

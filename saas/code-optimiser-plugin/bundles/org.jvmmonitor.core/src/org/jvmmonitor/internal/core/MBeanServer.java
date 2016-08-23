@@ -81,6 +81,8 @@ import org.jvmmonitor.internal.core.cpu.CpuModel;
 import org.jvmmonitor.internal.core.cpu.MethodNode;
 import org.jvmmonitor.internal.core.cpu.ThreadNode;
 
+import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
+
 /**
  * The MBean server. MBeanServerConnection is hidden for clients, since its
  * method invocation doesn't return until timeout occurs when target JVM is
@@ -222,6 +224,20 @@ public class MBeanServer implements IMBeanServer {
                     NLS.bind(Messages.getAttributeFailedMsg, attributeName), e);
         }
     }
+    
+
+    /*
+     * @see IMBeanServer#setAttribute(ObjectName, Attribute)
+     */
+    public void setHostCalibrationData(List<HostEnergyCalibrationData> calibrationData)
+            throws JvmCoreException {
+        Assert.isNotNull(calibrationData);
+
+        if (!checkReachability()) {
+            return;
+        }
+        jvm.getPowerMonitor().setHostCalibrationData(calibrationData);
+    }  
 
     /*
      * @see IMBeanServer#setAttribute(ObjectName, Attribute)
