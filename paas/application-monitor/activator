@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export JAVA_OPTS="-Xms512m -Xmx512m"
+export JAVA_OPTS="-Xms1024m -Xmx1024m"
 
 ###  ------------------------------- ###
 ###  Helper methods for BASH scripts ###
