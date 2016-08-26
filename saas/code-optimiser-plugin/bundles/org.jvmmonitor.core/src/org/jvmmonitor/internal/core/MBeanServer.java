@@ -901,6 +901,7 @@ public class MBeanServer implements IMBeanServer {
      * @throws JvmCoreException
      */
     protected void refresh() throws JvmCoreException {
+        boolean powerCalibrated = false;
         if (!checkReachability()) {
             return;
         }
@@ -909,7 +910,14 @@ public class MBeanServer implements IMBeanServer {
                 String attributeName = attribute.getAttributeName();
                 Object attributeObject = getAttribute(attribute.getObjectName(),
                         attributeName);
-
+                //This checks to see if the power monitoring data is loaded in correctly
+                if (!powerCalibrated && "Power".equals(attributeName)) {
+                    if ("".equals(jvm.getPowerMonitor().getHostCalibrationInputString())) {
+                        powerCalibrated = true;
+                        jvm.getPowerMonitor().loadCalibrationData();
+                    }
+                }
+ 
                 Number value = getAttributeValue(attributeObject,
                         attributeName);
                 if (value == null) {

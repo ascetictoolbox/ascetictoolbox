@@ -3709,6 +3709,7 @@ saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/build.jardesc -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/src/org/jvmmonitor/internal/agent/Power.java -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/src/org/jvmmonitor/internal/agent/PowerMXBean.java -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/META-INF/MANIFEST.MF -text
+saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/calibration_data.csv -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.agentLoadHandler.exsd -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.heapDumpHandler.exsd -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.core/schema/org.jvmmonitor.core.jvmAttachHandler.exsd -text

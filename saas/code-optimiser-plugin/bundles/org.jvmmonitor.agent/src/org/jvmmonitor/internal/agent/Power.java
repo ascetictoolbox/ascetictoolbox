@@ -33,17 +33,9 @@ public class Power implements PowerMXBean {
         operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
         nanoBefore = System.nanoTime();
         cpuBefore = getProcessCpuTime();
-        //TODO set this host calibration data correctly
-        ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
-        calibrationData.add(new HostEnergyCalibrationData(0, 0, 50));
-        calibrationData.add(new HostEnergyCalibrationData(25, 0, 62.5));
-        calibrationData.add(new HostEnergyCalibrationData(50, 0, 75));
-        calibrationData.add(new HostEnergyCalibrationData(75, 0, 87.5));
-        calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));  
         host.setAvailable(true);
         host.setDiskGb(20);
         host.setRamMb(2048);
-        host.setCalibrationData(calibrationData);
         PropertiesConfiguration config = new PropertiesConfiguration();
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", 0);
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
@@ -112,6 +104,9 @@ public class Power implements PowerMXBean {
      * @return the value for power
      */
     public double getPower() {
+        if (!host.isCalibrated()) {
+            return 0;
+        }
         try {
             if (predictor != null) {
                 long nanoAfter = System.nanoTime();

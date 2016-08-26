@@ -204,17 +204,6 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
         if (swtResourceMonitor.isSupported()) {
             swtResourceMonitor.setTracking(true);
         }
-
-//        System.err.println("Starting Power is Supported Test");
-//        try {
-//	        if (powerMonitor.isSupported()) {
-//	        	System.err.println("Power is Supported Test = true");
-//	        	powerMonitor.setTracking(true);
-//	        }
-//	        System.err.println("Ending Power is Supported Test");
-//        } catch (Exception ex) {
-//        	ex.printStackTrace();
-//        }
         
         JvmModel.getInstance().fireJvmModelChangeEvent(
                 new JvmModelEvent(State.JvmConnected, this));
@@ -234,14 +223,7 @@ public class ActiveJvm extends AbstractJvm implements IActiveJvm {
             }
         } catch (JvmCoreException e) {
             // do nothing
-        }
-//        try {
-//            if (powerMonitor.isSupported()) {
-//            	powerMonitor.setTracking(false);
-//            }
-//        } catch (JvmCoreException e) {
-//            // do nothing
-//        }        
+        }     
 
         JvmModel.getInstance().fireJvmModelChangeEvent(
                 new JvmModelEvent(State.JvmDisconnected, this));

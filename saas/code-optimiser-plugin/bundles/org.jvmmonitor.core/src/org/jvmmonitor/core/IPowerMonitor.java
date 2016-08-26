@@ -35,6 +35,16 @@ public interface IPowerMonitor {
     public void setHostCalibrationInputString(String calibrationData) throws JvmCoreException;    
     
     /**
+     * This gets the host calibration data
+     */ 
+    public String getHostCalibrationInputString();
+    
+    /**
+     * This forces the calibration data to load in from file
+     */
+    public void loadCalibrationData();
+    
+    /**
      * This sets the host calibration data
      * @param calibrationData
      */    

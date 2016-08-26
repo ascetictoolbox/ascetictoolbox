@@ -1,5 +1,7 @@
 package org.jvmmonitor.internal.core;
 
+import java.io.File;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.management.Attribute;
@@ -10,6 +12,7 @@ import org.jvmmonitor.core.IPowerMonitor;
 import org.jvmmonitor.core.JvmCoreException;
 import org.jvmmonitor.core.JvmModel;
 
+import eu.ascetic.ioutils.ResultsStore;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.CpuOnlyBestFitEnergyPredictor;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.energypredictor.EnergyPredictorInterface;
 import eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.usage.HostEnergyCalibrationData;
@@ -25,7 +28,10 @@ public class PowerMonitor implements IPowerMonitor {
     private EnergyPredictorInterface predictor = null;
     
     private eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host host 
-        = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(0, "localhost");      
+        = new eu.ascetic.asceticarchitecture.iaas.energymodeller.types.energyuser.Host(0, "localhost");
+    
+    private static final String CALIBRATION_DATA_FILE = "calibration_data.csv";
+    private ResultsStore calibrationData;
     
     /**
      * The constructor.
@@ -35,17 +41,6 @@ public class PowerMonitor implements IPowerMonitor {
      */
     public PowerMonitor(ActiveJvm jvm) {
         this.jvm = jvm;
-        //TODO Set this calibration data correctly
-        ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
-        calibrationData.add(new HostEnergyCalibrationData(0, 0, 50));
-        calibrationData.add(new HostEnergyCalibrationData(25, 0, 62.5));
-        calibrationData.add(new HostEnergyCalibrationData(50, 0, 75));
-        calibrationData.add(new HostEnergyCalibrationData(75, 0, 87.5));
-        calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));        
-        host.setAvailable(true);
-        host.setDiskGb(20);
-        host.setRamMb(2048);
-        host.setCalibrationData(calibrationData);
         PropertiesConfiguration config = new PropertiesConfiguration();
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.default_load", 0);
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.vm_share_rule", "DefaultEnergyShareRule");
@@ -54,7 +49,102 @@ public class PowerMonitor implements IPowerMonitor {
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.datasource", "ZabbixDirectDbDataSourceAdaptor");
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.min", 0);
         config.setProperty("iaas.energy.modeller.cpu.energy.predictor.utilisation.observe_time.sec", 30);
-        predictor = new CpuOnlyBestFitEnergyPredictor(config);        
+        predictor = new CpuOnlyBestFitEnergyPredictor(config);
+    }
+    
+    /**
+     * This loads the calibration data from file and sets the calibration data
+     * if needed.
+     */
+    @Override
+    public void loadCalibrationData() {
+        try {
+            setHostCalibrationData(readCalbrationDataFromFile());
+        }
+        catch (Exception ex) {
+            
+        }
+        if (!host.isCalibrated()) {
+            System.out.println("Using Defaults");
+            writeDefaultCalibrartionDataToFile();
+            useDefaultCalibrationData();
+        }
+    }
+    
+    /**
+     * This sets the default calibration data in case no data is read from file.
+     */
+    private void useDefaultCalibrationData () {
+        ArrayList<HostEnergyCalibrationData> calibrationData = new ArrayList<>();
+        calibrationData.add(new HostEnergyCalibrationData(0, 0, 50));
+        calibrationData.add(new HostEnergyCalibrationData(25, 0, 62.5));
+        calibrationData.add(new HostEnergyCalibrationData(50, 0, 75));
+        calibrationData.add(new HostEnergyCalibrationData(75, 0, 87.5));
+        calibrationData.add(new HostEnergyCalibrationData(100, 0, 100));
+        host.setHostName(jvm.getHost().getName());
+        host.setAvailable(true);
+        host.setDiskGb(20);
+        host.setRamMb(2048);
+        host.setCalibrationData(calibrationData);        
+    }
+    
+    /**
+     * This writes the default calibration data to file
+     */
+    private void writeDefaultCalibrartionDataToFile() {
+        if (!calibrationData.getResultsFile().exists()) {
+            calibrationData.add("Hostname");
+            calibrationData.append("CPU Utilisation");
+            calibrationData.append("Power");
+            calibrationData.add(host.getHostName());
+            calibrationData.append(0);
+            calibrationData.append(50);
+            calibrationData.add(host.getHostName());
+            calibrationData.append(25);
+            calibrationData.append(62.5);
+            calibrationData.add(host.getHostName());
+            calibrationData.append(50);
+            calibrationData.append(75);
+            calibrationData.add(host.getHostName());
+            calibrationData.append(75);
+            calibrationData.append(87.5);
+            calibrationData.add(host.getHostName());
+            calibrationData.append(100);
+            calibrationData.append(100);
+            calibrationData.save();
+        }
+    }
+    
+    private ArrayList<HostEnergyCalibrationData> readCalbrationDataFromFile() {
+        ArrayList<HostEnergyCalibrationData> answer = new ArrayList<HostEnergyCalibrationData>();
+        String path = PowerMonitor.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        try {
+            path = URLDecoder.decode(path, "UTF-8");
+        } catch (Exception ex) {
+        }
+        calibrationData = new ResultsStore(path + "//" + CALIBRATION_DATA_FILE);        
+        if (!calibrationData.getResultsFile().exists()) {
+            return answer;
+        }
+        calibrationData.load();
+        //Ignore the header row
+        if (calibrationData.size() <= 1) {
+            return answer;
+        }
+        for (int rowNumber = 1; rowNumber < calibrationData.size(); rowNumber++) {
+            ArrayList<String> row = calibrationData.getRow(rowNumber);
+            if (row.get(0).equals(jvm.getHost().getName())) {
+                try {
+                    double cpuUsage = Double.parseDouble(row.get(1));
+                    double wattsUsed = Double.parseDouble(row.get(2));
+                    HostEnergyCalibrationData item = new HostEnergyCalibrationData(cpuUsage, 0, wattsUsed);
+                    answer.add(item);
+                } catch (Exception ex) {
+                    //Catch any parse errors silently
+                }
+            }
+        }
+        return answer;
     }    
     
     /**
@@ -66,6 +156,15 @@ public class PowerMonitor implements IPowerMonitor {
      */
     @Override
     public double calculatePowerConsumption(double cpuUsage) {
+        if (!host.isCalibrated()) {
+            loadCalibrationData();
+        }
+        if ("".equals(getHostCalibrationInputString())) {
+            try {
+                setAgentCalibrationData(validateAgent(), host.getCalibrationData());
+            } catch (JvmCoreException e) {
+            }
+        }
         return predictor.predictPowerUsed(host, cpuUsage) - host.getIdlePowerConsumption();
     }
 
@@ -104,6 +203,38 @@ public class PowerMonitor implements IPowerMonitor {
         return false;
     }
     
+    /**
+     * This sets the agents host calibration data
+     * @param objectName
+     * @param calibrationData
+     */
+    private void setAgentCalibrationData(ObjectName objectName, ArrayList<HostEnergyCalibrationData> calibrationData) {
+      //Set the server side calibration data
+        String attribute = "";
+        for (HostEnergyCalibrationData item : calibrationData) {
+            attribute = attribute + (attribute.equals("") ? "" : ",") + item.getCpuUsage() + "," + item.getWattsUsed();
+        }
+        try {
+            Attribute attrib = new Attribute("HostCalibrationInputString", attribute);
+            jvm.getMBeanServer().setAttribute(objectName, attrib);
+        } catch (Exception ex) {
+        }
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    @Override
+    public String getHostCalibrationInputString() {
+        try {
+            ObjectName objectName = validateAgent();
+            return (String) jvm.getMBeanServer().getAttribute(objectName, "HostCalibrationInputString");
+        } catch (JvmCoreException ex) {
+            return "";
+        }
+    }
+    
     @Override
     public void setHostCalibrationInputString(String calibrationData) {
         System.out.println(calibrationData);
@@ -116,10 +247,18 @@ public class PowerMonitor implements IPowerMonitor {
             data.add(item);
         }
         host.setCalibrationData(data);
+        try {
+            ObjectName objectName = validateAgent();
+            setAgentCalibrationData(objectName, host.getCalibrationData());
+        } catch (JvmCoreException ex) {               
+            }
     }      
     
     @Override
     public void setHostCalibrationData(List<HostEnergyCalibrationData> calibrationData) throws JvmCoreException {
+        if (calibrationData.isEmpty()) {
+            return;
+        }
         ObjectName objectName = validateAgent();
         if (objectName != null) {
             if (calibrationData instanceof ArrayList) {
@@ -129,17 +268,7 @@ public class PowerMonitor implements IPowerMonitor {
                 data.addAll(calibrationData);
                 host.setCalibrationData(data);
             }
-            //Set the server side calibration data
-            String attribute = "";
-            for (HostEnergyCalibrationData item : calibrationData) {
-                attribute = attribute + (attribute.equals("") ? "" : ",") + item.getCpuUsage() + "," + item.getWattsUsed();
-            }
-            try {
-                Attribute attrib = new Attribute("HostCalibrationInputString", attribute);
-                jvm.getMBeanServer().setAttribute(objectName, attrib);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            setAgentCalibrationData(objectName, host.getCalibrationData());
         }
     }    
     
