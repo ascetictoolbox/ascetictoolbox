@@ -94,7 +94,7 @@
 	</bean>
 	
 	<bean id="SimpleEnergyEstimationDeployment" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<property name="name" value="energy-consumption"/>
+		<property name="name" value="energy-consumption-deployment"/>
 		<property name="urlPattern" value="${urlToApplicationManager}/:appId/deployments/:deplId/energy-consumption"/>
 		<property name="format" value="XML"/>
 		<property name="query" value="//value/text()"/>
