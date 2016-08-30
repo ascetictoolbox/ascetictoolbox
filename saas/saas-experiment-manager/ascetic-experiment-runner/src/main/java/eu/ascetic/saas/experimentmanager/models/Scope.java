@@ -74,4 +74,8 @@ public class Scope {
 		return name;
 	}
 
+	
+	public String toString(){
+		return this.getName() + " items : " +  this.getScopableItems().toString();
+	}
 }

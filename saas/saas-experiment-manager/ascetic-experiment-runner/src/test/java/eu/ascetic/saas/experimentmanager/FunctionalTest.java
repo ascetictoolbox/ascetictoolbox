@@ -1,8 +1,5 @@
 package eu.ascetic.saas.experimentmanager;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +15,10 @@ import eu.ascetic.saas.experimentmanager.factories.ScopeFactory;
 import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
+import eu.ascetic.saas.experimentmanager.models.ExplicitScope;
 import eu.ascetic.saas.experimentmanager.models.KPI;
 import eu.ascetic.saas.experimentmanager.models.Scope;
+import eu.ascetic.saas.experimentmanager.models.ScopeFilter;
 import eu.ascetic.saas.experimentmanager.paasAPI.InformationProvider;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.ApiException;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client.DefaultApi;
@@ -74,12 +73,11 @@ public class FunctionalTest {
 		try {
 			System.out.println("start");
 			List<String> vms = exp.getDeployment("490").getComponents().stream().map(comp -> comp.getName()).collect(Collectors.toList());
-			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", "490", exp.getEvent(), 
-					exp.getDeployment("490").getComponents());
+			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", exp.getDeployment("490"), exp.getEvent());
 			System.out.println("number of scopes : "+ eventScopes.size());
-			Map<String,List<Scope>> scopes = new HashMap<>();
+			Map<String,ScopeFilter> scopes = new HashMap<>();
 			for(KPI kpi:exp.getKpis()){
-				scopes.put(kpi.getName(),eventScopes);
+				scopes.put(kpi.getName(),new ExplicitScope(eventScopes));
 			}
 			Snapshot s = mi.takeSnapshot("dzqfesghsef",exp, "A snapshot", "This is a snapshot", "490",scopes);
 			System.out.println("computed");
@@ -103,12 +101,11 @@ public class FunctionalTest {
 		try {
 			System.out.println("start");
 			List<String> vms = exp.getDeployment("490").getComponents().stream().map(comp -> comp.getName()).collect(Collectors.toList());
-			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", "490", exp.getEvent(), 
-					exp.getDeployment("490").getComponents());
+			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", exp.getDeployment("490"), exp.getEvent());
 			System.out.println("number of scopes : "+ eventScopes.size());
-			Map<String,List<Scope>> scopes = new HashMap<>();
+			Map<String,ScopeFilter> scopes = new HashMap<>();
 			for(KPI kpi:exp.getKpis()){
-				scopes.put(kpi.getName(),eventScopes);
+				scopes.put(kpi.getName(),new ExplicitScope(eventScopes));
 			}
 			Snapshot s = mi.takeSnapshot("dqzdzqdzqdef",exp, "A snapshot", "This is a snapshot", "490",scopes);
 			System.out.println("computed");

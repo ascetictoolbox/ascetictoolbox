@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import eu.ascetic.saas.experimentmanager.models.Component;
+import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.ScopableItem;
 import eu.ascetic.saas.experimentmanager.models.Scope;
@@ -32,17 +33,27 @@ public class ScopeFactory {
 		List<Scope> scopes = new ArrayList<>();
 		for(Generator<String>.Pivot tuple:tuples){
 			List<ScopableItem> items = new ArrayList<>();
-			for(List<String> suffixe:tuple.suffixes){
+			if(!tuple.suffixes.isEmpty()){
+				for(List<String> suffixe:tuple.suffixes){
+					Map<String,Object> value = new HashMap<>();
+					
+					for(int i=0;i<tuple.prefix.size();++i){
+						value.put(itemLabels.get(i), tuple.prefix.get(i));
+					}
+					for(int i=0;i<suffixe.size();++i){
+						value.put(itemLabels.get(i+tuple.prefix.size()), suffixe.get(i));
+					}
+					items.add(new ScopableItem(tags,value));
+				}
+			}
+			else{
 				Map<String,Object> value = new HashMap<>();
-				
 				for(int i=0;i<tuple.prefix.size();++i){
 					value.put(itemLabels.get(i), tuple.prefix.get(i));
 				}
-				for(int i=0;i<suffixe.size();++i){
-					value.put(itemLabels.get(i+tuple.prefix.size()), suffixe.get(i));
-				}
 				items.add(new ScopableItem(tags,value));
 			}
+			
 			scopes.add(new Scope(appId,"",items,scopeCategory));
 		}
 		
@@ -51,17 +62,27 @@ public class ScopeFactory {
 	
 	
 	public static List<Scope> getFullDeploymentScope(String appId, 
-			String deplId, List<String> events, List<String> vms){
+			Deployment deployment, List<Event> events){
+		LinkedList<String> componentNames = new LinkedList<String>();
+		for (Component component:deployment.getComponents()){
+			componentNames.add(component.getName());
+		}
+		
+		LinkedList<String> eventNames = new LinkedList<String>();
+		for (Event event:events){
+			eventNames.add(event.getName());
+		}
+		
 		LinkedList<LinkedList<String>> axes = new LinkedList<>();
-		axes.add(new LinkedList<String>(events));
-		axes.add(new LinkedList<String>(vms));
+		axes.add(eventNames);
+		axes.add(componentNames);
 		
 		List<String> staticPart=new ArrayList<String>(){{
 			add(appId);
 		}};
 		
 		List<String> pivots=new ArrayList<String>(){{
-			add(deplId);
+			add(deployment.getId());
 		}};
 		
 
@@ -74,14 +95,15 @@ public class ScopeFactory {
 	}
 	
 	public static List<Scope> getScopeByEvent(String appId, 
-			String deplId, List<Event> events, List<Component> components){
+			Deployment deployment, List<Event> events
+			){
 		LinkedList<LinkedList<String>> axes = new LinkedList<>();
 		axes.add(new LinkedList<String>(
-				components.stream().map(c -> c.getName()).collect(Collectors.toList())));
+				deployment.getComponents().stream().map(c -> c.getName()).collect(Collectors.toList())));
 		
 		List<String> staticPart=new ArrayList<String>(){{
 			add(appId);
-			add(deplId);
+			add(deployment.getId());
 		}};
 		
 		List<String> pivots=events.stream()
@@ -94,9 +116,25 @@ public class ScopeFactory {
 				pivots,axes,itemLabels);
 	}
 	
-	
-	
-	
+	public static List<Scope> getScopeByEventNoVM(String appId, 
+			Deployment deployment, List<Event> events
+			){
+		LinkedList<LinkedList<String>> axes = new LinkedList<>();
+		
+		List<String> staticPart=new ArrayList<String>(){{
+			add(appId);
+			add(deployment.getId());
+		}};
+		
+		List<String> pivots=events.stream()
+				.map(e -> e.getName()).collect(Collectors.toList());
+		
+		List<String> tags=new ArrayList<String>(){{
+			add("event");
+		}};
+		return generateScopes(appId,tags,"Events", staticPart, 
+				pivots,axes,itemLabels);
+	}
 	
 	
 	

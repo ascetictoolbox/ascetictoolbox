@@ -47,6 +47,13 @@ public class KPI {
 		this.level = level;
 	}
 
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	
 
 }

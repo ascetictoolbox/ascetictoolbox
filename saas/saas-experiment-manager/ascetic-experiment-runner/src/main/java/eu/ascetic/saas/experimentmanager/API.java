@@ -13,12 +13,11 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import eu.ascetic.saas.experimentmanager.business.ExperimentHandler;
 import eu.ascetic.saas.experimentmanager.exception.AlreadyExistException;
 import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
-import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
 import eu.ascetic.saas.experimentmanager.models.KPI;
-import eu.ascetic.saas.experimentmanager.models.Scope;
+import eu.ascetic.saas.experimentmanager.models.ScopeFilter;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.ApiException;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client.DefaultApi;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
@@ -29,16 +28,13 @@ public class API {
 			scopeDefinitionPath = "/"+ scopeDefinitionPath;
 		}
 		Logger.getLogger("Experiment Runner").info("begin snapshot computation...");
-		Map<String,List<Scope>> scopedefinition = getScope(scopeDefinitionPath);
+		Map<String,ScopeFilter> scopeFilters = getScope(scopeDefinitionPath);
 		
 		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 		ExperimentHandler mi = (ExperimentHandler) context.getBean("MeasureInterceptor");
 		
 		try {
-			return mi.takeSnapshot(expId, exp, "A snapshot", description, deplName, scopedefinition);
-		} catch (NoMeasureException e) {
-			e.printStackTrace();
-			return null;
+			return mi.takeSnapshot(expId, exp, "A snapshot", description, deplName, scopeFilters);
 		} catch (MetricDefinitionIncorrectException e) {
 			e.printStackTrace();
 			return null;
@@ -75,13 +71,13 @@ public class API {
 		return depls;
 	}
 	
-	public static Map<String,List<Scope>> getScope(String filepath){
+	public static Map<String,ScopeFilter> getScope(String filepath){
 		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
 			filepath = "/"+ filepath;
 		}
 		Logger.getLogger("Experiment Runner").info("Loading scopes from ..." + filepath);
 		ApplicationContext context = new FileSystemXmlApplicationContext(filepath);
-		Map<String,List<Scope>> scopes = (Map<String,List<Scope>>) context.getBean("Scopes");
+		Map<String,ScopeFilter> scopes = (Map<String,ScopeFilter>) context.getBean("Scopes");
 		return scopes;
 	}
 

@@ -6,6 +6,13 @@ public class Experiment {
 	
 	private String name;
 	private String applicationId;
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	private String applicationName;
 	private String description;
 	

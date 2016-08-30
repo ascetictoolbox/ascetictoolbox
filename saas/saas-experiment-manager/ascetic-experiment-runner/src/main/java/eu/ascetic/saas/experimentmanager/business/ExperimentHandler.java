@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import eu.ascetic.saas.experimentmanager.models.Experiment;
 import eu.ascetic.saas.experimentmanager.models.KPI;
 import eu.ascetic.saas.experimentmanager.models.Metric;
 import eu.ascetic.saas.experimentmanager.models.Scope;
+import eu.ascetic.saas.experimentmanager.models.ScopeFilter;
 import eu.ascetic.saas.experimentmanager.paasAPI.InformationProvider;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Item;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Measure;
@@ -29,7 +31,8 @@ public class ExperimentHandler {
 		this.saaSProvider = provider;
 	}
 	
-	public Snapshot takeSnapshot(String experimentId, Experiment experiment, String label, String description, String deplName, Map<String,List<Scope>> scope)  throws MetricDefinitionIncorrectException, NoMeasureException{
+	public Snapshot takeSnapshot(String experimentId, Experiment experiment, String label, 
+			String description, String deplName, Map<String,ScopeFilter> scopeFilters)  throws MetricDefinitionIncorrectException{
 		Deployment deployment = experiment.getDeployment(deplName);
 		
 		Snapshot s= new Snapshot();
@@ -42,18 +45,24 @@ public class ExperimentHandler {
 		
 		s.setVms(ExperimentAdaptator.getVMs(deployment));
 		
-		s.setMeasures(computeMeasure(experiment,scope));
+		s.setMeasures(computeMeasure(experiment,deployment, scopeFilters));
 		
 		return s;
 	}
 	
-	private List<Measure> computeMeasure(Experiment exp, Map<String,List<Scope>> scopes)  throws MetricDefinitionIncorrectException, NoMeasureException{
+	private List<Measure> computeMeasure(Experiment exp, Deployment deployment, Map<String,ScopeFilter> scopes)  throws MetricDefinitionIncorrectException{
 		List <Measure> measures = new ArrayList<>();
 		
 		for (KPI kpi: exp.getKpis()){
 			if (scopes.containsKey(kpi.getName())){
-				for (Scope scope: scopes.get(kpi.getName())){
-					measures.add(measure(kpi.getMetric(),scope));
+				for (Scope scope: scopes.get(kpi.getName()).list(kpi, exp.getApplicationId(), deployment, exp.getEvent())){
+					Measure measure = measure(kpi.getMetric(),scope);
+					if(measure != null){
+						measures.add(measure);
+					}
+					else{
+						Logger.getLogger("Experiment Runner").warning("Can't properly compute measure for kpi " + kpi.getName() + " on scope "+ scope);
+					}
 				}
 			}
 			else{
@@ -64,7 +73,7 @@ public class ExperimentHandler {
 		return measures;
 	}
 	
-	public Measure measure(Metric metric, Scope s) throws MetricDefinitionIncorrectException, NoMeasureException {
+	public Measure measure(Metric metric, Scope s) throws MetricDefinitionIncorrectException {
 		Logger.getLogger("ExperimentHandler").info("computing measure for metric "
 				+metric.getName() +  " on scope on size "+s.getScopableItems().size());
 		Measure m = new Measure();
@@ -76,9 +85,18 @@ public class ExperimentHandler {
 			i.setName(s.getName());
 			return i;
 		}).collect(Collectors.toList()));
-		m.setValue(metric.get(s));
 		m.setDescription(metric.getDescription());
+		
+		try {
+			m.setValue(metric.get(s));
+		} catch (NoMeasureException e) {
+			Logger.getLogger("Experiment Runner").log(Level.WARNING,"Can't properly compute measure on scope " + s + " no measure found",e);
+			return null;
+		}
+		
+		
 		return m;
+		
 	}
 	
 	

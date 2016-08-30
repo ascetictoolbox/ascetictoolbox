@@ -6,15 +6,28 @@ import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
 
 public class AggregatedMetric extends Metric {
 	
-	private String name;
 	private Metric metric;
 	
+	/**
+	 * @return the metric
+	 */
+	public Metric getMetric() {
+		return metric;
+	}
+
+	/**
+	 * @param metric the metric to set
+	 */
+	public void setMetric(Metric metric) {
+		this.metric = metric;
+	}
+
 	public AggregatedMetric(){
 		
 	}
 	
 	public AggregatedMetric(String id, Metric m){
-		this.name = id;
+		this.setName(id);
 		this.metric = m;
 		this.setType("aggregated");
 	}
@@ -29,8 +42,4 @@ public class AggregatedMetric extends Metric {
 		return res.toString();
 	}
 
-	public String getName() {
-		return name;
-	}
-	
 }

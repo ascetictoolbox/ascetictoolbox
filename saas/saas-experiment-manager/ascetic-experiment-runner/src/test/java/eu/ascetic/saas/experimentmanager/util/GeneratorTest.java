@@ -1,14 +1,12 @@
 package eu.ascetic.saas.experimentmanager.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
-
-import eu.ascetic.saas.experimentmanager.util.Generator.Pivot;
 
 public class GeneratorTest {
 

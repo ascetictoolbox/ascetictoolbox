@@ -13,8 +13,6 @@ import eu.ascetic.saas.experimentmanager.wslayer.exception.WSException;
 
 public class WebserviceValue extends Metric {
 	
-	private String name;
-	
 	private String urlPattern;
 	private String postPattern;
 	private String query;
@@ -27,7 +25,7 @@ public class WebserviceValue extends Metric {
 	}
 	
 	public WebserviceValue(String id, String urlPattern, RESSOURCEFORMAT format, String query){
-		this.name = id;
+		this.setName(id);
 		this.urlPattern = urlPattern;
 		this.query = query;
 		this.postPattern = null;
@@ -36,7 +34,7 @@ public class WebserviceValue extends Metric {
 	}
 	
 	public WebserviceValue(String id, String urlPattern, RESSOURCEFORMAT format, String query, String postPattern){
-		this.name = id;
+		this.setName(id);
 		this.urlPattern = urlPattern;
 		this.query = query;
 		this.postPattern = postPattern;
@@ -71,7 +69,7 @@ public class WebserviceValue extends Metric {
 	@Override
 	public String get(Scope scope) throws MetricDefinitionIncorrectException, NoMeasureException{
 		if(scope.getScopableItems().size()!=1){
-			throw new MetricDefinitionIncorrectException("only one scopable item in scope for SimpleMetric");
+			throw new MetricDefinitionIncorrectException("only one scopable item in scope for SimpleMetric with name "+getName() + " for scope " + scope );
 		}
 		
 		ScopableItem item = scope.getScopableItems().get(0);
@@ -98,11 +96,75 @@ public class WebserviceValue extends Metric {
 		return postPattern != null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.ascetic.saas.experimentmanager.measureInterceptor.Metric#getId()
+
+	/**
+	 * @return the urlPattern
 	 */
-	public String getName(){
-		return name;
+	public String getUrlPattern() {
+		return urlPattern;
+	}
+
+	/**
+	 * @param urlPattern the urlPattern to set
+	 */
+	public void setUrlPattern(String urlPattern) {
+		this.urlPattern = urlPattern;
+	}
+
+	/**
+	 * @return the postPattern
+	 */
+	public String getPostPattern() {
+		return postPattern;
+	}
+
+	/**
+	 * @param postPattern the postPattern to set
+	 */
+	public void setPostPattern(String postPattern) {
+		this.postPattern = postPattern;
+	}
+
+	/**
+	 * @return the query
+	 */
+	public String getQuery() {
+		return query;
+	}
+
+	/**
+	 * @param query the query to set
+	 */
+	public void setQuery(String query) {
+		this.query = query;
+	}
+
+	/**
+	 * @return the format
+	 */
+	public RESSOURCEFORMAT getFormat() {
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(RESSOURCEFORMAT format) {
+		this.format = format;
+	}
+
+	/**
+	 * @return the mark
+	 */
+	public static String getMark() {
+		return mark;
+	}
+
+	/**
+	 * @param mark the mark to set
+	 */
+	public static void setMark(String mark) {
+		WebserviceValue.mark = mark;
 	}
 	
 }

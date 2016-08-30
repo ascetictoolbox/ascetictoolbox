@@ -6242,14 +6242,18 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/AggregatedMetric.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Component.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Deployment.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/DeploymentScope.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Event.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/EventScope.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Experiment.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/ExplicitScope.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/KPI.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/LogicalComponent.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Metric.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/PhysicalComponent.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/ScopableItem.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/Scope.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/ScopeFilter.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/WebserviceValue.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProvider.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProviderImpl.java -text

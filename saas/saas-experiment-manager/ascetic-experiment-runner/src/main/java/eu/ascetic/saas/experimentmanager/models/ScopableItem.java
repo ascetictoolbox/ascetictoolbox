@@ -27,6 +27,9 @@ public class ScopableItem {
 		return this.location;
 	}
 
+	public void setLocation(Map<String,Object> location){
+		this.location=location;
+	}
 	
 	public String getReference(){
 		StringBuilder sb = new StringBuilder();
@@ -40,4 +43,7 @@ public class ScopableItem {
 		return sb.toString();
 	}
 
+	public String toString(){
+		return getReference();
+	}
 }

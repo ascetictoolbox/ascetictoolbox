@@ -4,6 +4,13 @@ package eu.ascetic.saas.experimentmanager.models;
 public class Event {
 	
 	private String name;
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	private String launchCmd;
 	
 	public Event(){
