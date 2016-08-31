@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>2.0</version>
+    <date>2016-08-31T09:30:38Z</date>
+    <groups>
+        <group>
+            <name>Discovered hosts</name>
+        </group>
+        <group>
+            <name>Hypervisors</name>
+        </group>
+        <group>
+            <name>Linux servers</name>
+        </group>
+        <group>
+            <name>Watt_Meter_Emulated</name>
+        </group>
+    </groups>
+    <hosts>
+        <host>
+            <host>wally152</host>
+            <name>wally152</name>
+            <proxy/>
+            <status>0</status>
+            <ipmi_authtype>-1</ipmi_authtype>
+            <ipmi_privilege>2</ipmi_privilege>
+            <ipmi_username/>
+            <ipmi_password/>
+            <templates>
+                <template>
+                    <name>Template OS Linux</name>
+                </template>
+                <template>
+                    <name>Template Spot Metrics</name>
+                </template>
+                <template>
+                    <name>Template Watt Meter</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Discovered hosts</name>
+                </group>
+                <group>
+                    <name>Hypervisors</name>
+                </group>
+                <group>
+                    <name>Linux servers</name>
+                </group>
+                <group>
+                    <name>Watt_Meter_Emulated</name>
+                </group>
+            </groups>
+            <interfaces>
+                <interface>
+                    <default>1</default>
+                    <type>1</type>
+                    <useip>1</useip>
+                    <ip>192.168.3.152</ip>
+                    <dns/>
+                    <port>10050</port>
+                    <interface_ref>if1</interface_ref>
+                </interface>
+            </interfaces>
+            <applications/>
+            <items/>
+            <discovery_rules/>
+            <macros/>
+            <inventory/>
+        </host>
+        <host>
+            <host>wally153</host>
+            <name>wally153</name>
+            <proxy/>
+            <status>0</status>
+            <ipmi_authtype>-1</ipmi_authtype>
+            <ipmi_privilege>2</ipmi_privilege>
+            <ipmi_username/>
+            <ipmi_password/>
+            <templates>
+                <template>
+                    <name>Template OS Linux</name>
+                </template>
+                <template>
+                    <name>Template Spot Metrics</name>
+                </template>
+                <template>
+                    <name>Template Watt Meter</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Discovered hosts</name>
+                </group>
+                <group>
+                    <name>Hypervisors</name>
+                </group>
+                <group>
+                    <name>Linux servers</name>
+                </group>
+                <group>
+                    <name>Watt_Meter_Emulated</name>
+                </group>
+            </groups>
+            <interfaces>
+                <interface>
+                    <default>1</default>
+                    <type>1</type>
+                    <useip>1</useip>
+                    <ip>192.168.3.153</ip>
+                    <dns/>
+                    <port>10050</port>
+                    <interface_ref>if1</interface_ref>
+                </interface>
+            </interfaces>
+            <applications/>
+            <items/>
+            <discovery_rules/>
+            <macros/>
+            <inventory/>
+        </host>
+        <host>
+            <host>wally154</host>
+            <name>wally154</name>
+            <proxy/>
+            <status>0</status>
+            <ipmi_authtype>-1</ipmi_authtype>
+            <ipmi_privilege>2</ipmi_privilege>
+            <ipmi_username/>
+            <ipmi_password/>
+            <templates>
+                <template>
+                    <name>Template OS Linux</name>
+                </template>
+                <template>
+                    <name>Template Spot Metrics</name>
+                </template>
+                <template>
+                    <name>Template Watt Meter</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Discovered hosts</name>
+                </group>
+                <group>
+                    <name>Hypervisors</name>
+                </group>
+                <group>
+                    <name>Linux servers</name>
+                </group>
+                <group>
+                    <name>Watt_Meter_Emulated</name>
+                </group>
+            </groups>
+            <interfaces>
+                <interface>
+                    <default>1</default>
+                    <type>1</type>
+                    <useip>1</useip>
+                    <ip>192.168.3.154</ip>
+                    <dns/>
+                    <port>10050</port>
+                    <interface_ref>if1</interface_ref>
+                </interface>
+            </interfaces>
+            <applications/>
+            <items/>
+            <discovery_rules/>
+            <macros/>
+            <inventory/>
+        </host>
+        <host>
+            <host>wally155</host>
+            <name>wally155</name>
+            <proxy/>
+            <status>0</status>
+            <ipmi_authtype>-1</ipmi_authtype>
+            <ipmi_privilege>2</ipmi_privilege>
+            <ipmi_username/>
+            <ipmi_password/>
+            <templates>
+                <template>
+                    <name>Template OS Linux</name>
+                </template>
+                <template>
+                    <name>Template Spot Metrics</name>
+                </template>
+                <template>
+                    <name>Template Watt Meter</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Discovered hosts</name>
+                </group>
+                <group>
+                    <name>Hypervisors</name>
+                </group>
+                <group>
+                    <name>Linux servers</name>
+                </group>
+                <group>
+                    <name>Watt_Meter_Emulated</name>
+                </group>
+            </groups>
+            <interfaces>
+                <interface>
+                    <default>1</default>
+                    <type>1</type>
+                    <useip>1</useip>
+                    <ip>192.168.3.155</ip>
+                    <dns/>
+                    <port>10050</port>
+                    <interface_ref>if1</interface_ref>
+                </interface>
+            </interfaces>
+            <applications/>
+            <items/>
+            <discovery_rules/>
+            <macros/>
+            <inventory/>
+        </host>
+    </hosts>
+</zabbix_export>

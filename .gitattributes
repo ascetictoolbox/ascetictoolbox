@@ -7348,3 +7348,5 @@ utils/wattsup/src/main/java/eu/ascetic/utils/execution/stream/FileGobbler.java -
 utils/wattsup/src/main/java/eu/ascetic/utils/execution/stream/RedirectGobbler.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/execution/stream/ScreenGobbler.java -text
 utils/wattsup/src/main/java/eu/ascetic/utils/execution/stream/StreamGobbler.java -text
+utils/zabbix[!!-~]configuration[!!-~]templates/zbx_export_hosts.xml -text
+utils/zabbix[!!-~]configuration[!!-~]templates/zbx_export_templates.xml -text
