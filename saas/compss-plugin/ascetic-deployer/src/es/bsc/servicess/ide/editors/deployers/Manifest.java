@@ -82,6 +82,7 @@ public class Manifest {
 	public static final String PM_APP_DIR_CONSTRAINT ="asceticPMAppDir";
 	public static final String PM_WORKING_DIR_CONSTRAINT ="asceticPMWorkingDir";
 	public static final String PM_USER_CONSTRAINT = "asceticPMUser";
+	public static final String PM_DEFAULT_METRICS = "asceticPMDefaultMetric";
 	
 	private static final String DISK_SUFFIX = "-disk";
 	private static final String IMAGE_SUFFIX = "-img";
@@ -97,7 +98,7 @@ public class Manifest {
 	 * @throws Exception 
 	 */
 	public void regeneratePackages(ProjectMetadata prMeta, PackageMetadata packMeta, 
-			HashMap<String, ServiceElement> allEls, AsceticProperties prop) throws Exception {
+			HashMap<String, ServiceElement> allEls, AsceticProperties prop, ApplicationProfile profile) throws Exception {
 		String[] oePacks = packMeta.getPackagesWithOrchestration();
 		String[] cePacks = packMeta.getPackagesWithCores();
 		if (oePacks == null || oePacks.length <= 0) {
@@ -108,11 +109,11 @@ public class Manifest {
 		}
 		createNewEmptyOVF(); 
 		for (String p : oePacks) {
-			addNewComponent(p, prMeta, packMeta, project, allEls, false, prop);
+			addNewComponent(p, prMeta, packMeta, project, allEls, false, prop, profile);
 		}
 		if (cePacks != null && cePacks.length > 0) {
 			for (String p : cePacks) {
-				addNewComponent(p, prMeta, packMeta, project, allEls, false, prop);
+				addNewComponent(p, prMeta, packMeta, project, allEls, false, prop, profile);
 			}
 		}else{
 			log.warn("No packages found generating only master");
@@ -126,22 +127,22 @@ public class Manifest {
 	 * 
 	 * @param component Virtual Machine component
 	 * @param prMeta Project metadata
-	 * @param p Package name
+	 * @param packName Package name
 	 * @param constEls Package elements constraints
 	 * @param master flag to indicate if component is a front-end
 	 * @throws Exception 
 	 */
 	public void setComponentDescription(VirtualSystem component,
-			ProjectMetadata prMeta, PackageMetadata packMeta, String p, IJavaProject project,
+			ProjectMetadata prMeta, PackageMetadata packMeta, String packName, IJavaProject project,
 			HashMap<String, ServiceElement> constEls, boolean master,
-			AsceticProperties op_prop) throws Exception {
+			AsceticProperties op_prop, ApplicationProfile profile) throws Exception {
 		String[] els;
 		if (master) {
 			Map<String, ServiceElement> map = CommonFormPage.getElements(
 					prMeta.getAllOrchestrationClasses(),ORCH_TYPE, project, prMeta);
 			els = map.keySet().toArray(new String[map.size()]);
 		} else {
-			els = packMeta.getElementsInPackage(p);
+			els = packMeta.getElementsInPackage(packName);
 		}
 		log.debug("Setting constraints");
 		Map<String, Integer> minCoreInstances = ProjectMetadataUtils.getMinElasticity(prMeta, constEls, els);
@@ -158,13 +159,13 @@ public class Manifest {
 		if (master)
 			addElements = false;
 		else{
-			String type = packMeta.getPackageType(p);
-			log.debug("Package "+ p +" has type "+ type);
+			String type = packMeta.getPackageType(packName);
+			log.debug("Package "+ packName +" has type "+ type);
 			if (type.equals(Constants.ORCH_PACK_TYPE))
 				addElements = false;
 		}
 				
-		setPMProperties(component, addElements, els);
+		setPMProperties(packName, component, addElements, els, profile);
 		/* TODO: Component affinity not supported by ASCETIC year 1
 		component.setAffinityConstraints("Low");
 		component.setAntiAffinityConstraints("Low");
@@ -178,7 +179,8 @@ public class Manifest {
 		 */
 	}
 
-	private void setPMProperties(VirtualSystem component, boolean addElements, String[] els) {
+	private void setPMProperties(String packName, VirtualSystem component, boolean addElements, 
+			String[] els, ApplicationProfile profile) {
 		ProductSection ps;
 		if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
 			setAsceticProductSection(component);
@@ -190,16 +192,16 @@ public class Manifest {
 			log.debug("Skipping element signatures generation");
 			signatures = "";
 		}else{
-			signatures = generateElementSignatures(els);
+			signatures = generateElementSignatures(packName, els, profile);
 			log.debug("Seting element signatures: "+ signatures);
 		}
 		ps.setAssociatePublicIp(true);
 		ps.addNewProperty(PM_ELEMENTS_CONSTRAINT, ProductPropertyType.STRING, signatures);
 		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER+COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH);
 		ps.addNewProperty(PM_APP_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
-		ps.addNewProperty(PM_WORKING_DIR_CONSTRAINT, ProductPropertyType.STRING, "/tmp");
+		ps.addNewProperty(PM_WORKING_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_WORKING_FOLDER);
 		ps.addNewProperty(PM_USER_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.ASCETIC_USER);
-		
+		ps.addNewProperty(PM_DEFAULT_METRICS, ProductPropertyType.STRING, profile.getDefaultMetrics(packName));
 	}
 
 
@@ -224,15 +226,17 @@ public class Manifest {
 	 * @param pr_meta 
 	 * @return Combined signature for all the elements 
 	 */
-	private static String generateElementSignatures(String[] els) {
+	private static String generateElementSignatures(String component, String[] els, ApplicationProfile profile) {
 		String signatures = new String();
 		boolean firstElement = true;
 		for (String s : els) {
 			if (firstElement){
-				signatures = signatures.concat(s);
+				signatures = signatures.concat(
+						s+"@"+profile.getWeight(s)+"@"+profile.getImplementationProfile(component, s));
 				firstElement = false;
 			}else
-				signatures = signatures.concat(";"+s);
+				signatures = signatures.concat(
+						";"+s+"@"+profile.getWeight(s)+"@"+profile.getImplementationProfile(component, s));
 		}
 		return signatures;
 	}
@@ -454,13 +458,12 @@ public class Manifest {
 
 	private static Integer getCPUCount(Map<String, String> maxConstraints,
 			Map<String, String> defResources) {
-		String cpuCount = maxConstraints.get(ConstraintDef.PROC_CPU_COUNT
-				.getName());
+		String cpuCount = maxConstraints.get(ConstraintDef.PROC_CU.getName());
 		Integer cpuc;
 		if (cpuCount != null) {
 			cpuc = new Integer(cpuCount);
 		} else {
-			String def = defResources.get(ConstraintDef.PROC_CPU_COUNT);
+			String def = defResources.get(ConstraintDef.PROC_CU);
 			if (def!=null){
 					cpuc = new Integer(def);
 			}else
@@ -525,9 +528,9 @@ public class Manifest {
 	
 	private static String getOperatingSystem(Map<String, String> maxConstraints,
 			Map<String, String> defResources) {
-		String os = maxConstraints.get(ConstraintDef.OS.getName());
+		String os = maxConstraints.get(ConstraintDef.OS_TYPE.getName());
 		if (os == null) {
-			os = defResources.get(ConstraintDef.OS);
+			os = defResources.get(ConstraintDef.OS_TYPE);
 		}
 		return os;
 	}
@@ -794,10 +797,10 @@ public class Manifest {
 	}
 	
 	public static Manifest newInstance(IJavaProject project, ProjectMetadata pr_meta, PackageMetadata packMeta, 
-			HashMap<String, ServiceElement> allEls, AsceticProperties prop) throws Exception{
+			HashMap<String, ServiceElement> allEls, AsceticProperties prop, ApplicationProfile profile) throws Exception{
 		Manifest m = new Manifest();
 		m.project = project;
-		m.regeneratePackages(pr_meta, packMeta, allEls, prop);
+		m.regeneratePackages(pr_meta, packMeta, allEls, prop, profile);
 		m.setServiceId(project.getProject().getName());
 		return m;
 	}
@@ -959,7 +962,7 @@ public class Manifest {
 	
 	private void addNewComponent(String p, ProjectMetadata prMeta, PackageMetadata packMeta, IJavaProject project,
 			HashMap<String, ServiceElement> allEls, boolean master,
-			AsceticProperties ascProp) throws Exception{
+			AsceticProperties ascProp, ApplicationProfile profile) throws Exception{
 		
 		String componentID = Manifest.generateManifestName(p);
 		try{
@@ -972,7 +975,7 @@ public class Manifest {
 			component.setName(componentID);
 			component.setInfo("Description of component "+ componentID);
 			setComponentDescription(component, prMeta, packMeta, p, project, 
-					allEls, master, ascProp);
+					allEls, master, ascProp, profile);
 			addComponent(component);
 		}
 		
@@ -1140,13 +1143,31 @@ public class Manifest {
 
 	public void setPowerBoundary(String power) {
 		ProductSection ps = getOrCreateGlobalProductSection();
-		ps.setEnergyOptimizationBoundary(power);
+		ps.setPowerRequirement(power);
 		
 	}
 	
 	public void setPriceBoundary(String price) {
 		ProductSection ps = getOrCreateGlobalProductSection();
-		ps.setCostOptimizationBoundary(price);
+		ps.setPriceRequirement(price);
+		
+	}
+	
+	public void setAppDuration(String duration) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setPerformanceOptimizationBoundary(duration);
+		
+	}
+	
+	public void setAppEnergy(String energy) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setEnergyOptimizationBoundary(energy);
+		
+	}
+	
+	public void setAppCost(String cost) {
+		ProductSection ps = getOrCreateGlobalProductSection();
+		ps.setCostOptimizationBoundary(cost);
 		
 	}
 	

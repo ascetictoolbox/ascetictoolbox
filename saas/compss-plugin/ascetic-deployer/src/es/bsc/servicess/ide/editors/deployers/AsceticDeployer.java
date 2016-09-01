@@ -97,6 +97,7 @@ public class AsceticDeployer extends Deployer {
 	private boolean toBeUpdated;
 	private boolean generating;
 	private AsceticProperties op_prop;
+	private ApplicationProfile profile;
 	
 	//Manifest
 	private Hyperlink link;
@@ -112,6 +113,7 @@ public class AsceticDeployer extends Deployer {
 	
 	private static final String PROPERTIES_FILENAME = "ascetic.properties";
 	private static final String METADATA_FILENAME = "optimis-metadata.xml";
+	private static final String PROFILE_FILENAME = "application.profile";
 	public static final String CREATE_PACKS_DEF_TITLE = "Package Creation";
 	public static final String CREATE_PACKS_DEF_QUESTION = " project has not packages created. Do you want to create it automatically?";
 	private static final String CREATE_IMAGES_DEF_TITLE = "Image creation";;
@@ -123,6 +125,7 @@ public class AsceticDeployer extends Deployer {
 	
 	private File propFile;
 	private File asceticMetaFile;
+	private File appProfileFile;
 	private Text cliPropText;
 	private Button cliPropButton;
 	
@@ -145,6 +148,8 @@ public class AsceticDeployer extends Deployer {
 				.getFile(PROPERTIES_FILENAME).getRawLocation().toFile();
 		asceticMetaFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
 				.getFile(METADATA_FILENAME).getRawLocation().toFile();
+		appProfileFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
+				.getFile(PROFILE_FILENAME).getRawLocation().toFile();
 		packSection = new PackagesSection(page.getToolkit(), page.getForm(), editor, 
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		imageSection = new ImagesSection(page.getToolkit(), editor, 
@@ -165,6 +170,8 @@ public class AsceticDeployer extends Deployer {
 				.getFile(PROPERTIES_FILENAME).getRawLocation().toFile();
 		asceticMetaFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
 				.getFile(METADATA_FILENAME).getRawLocation().toFile();
+		appProfileFile = editor.getProject().getProject().getFolder(METADATA_FOLDER)
+				.getFile(PROFILE_FILENAME).getRawLocation().toFile();
 		packSection = new PackagesSection(page.getToolkit(), page.getForm(), editor, 
 				Section.TWISTIE | Section.DESCRIPTION, asceticMetaFile, this);
 		imageSection = new ImagesSection(page.getToolkit(), editor, 
@@ -227,6 +234,7 @@ public class AsceticDeployer extends Deployer {
 					.getFolder(PACKAGES_FOLDER).getLocation()
 					.append(AsceticProperties.SERVICE_MANIFEST).toFile().exists())
 				readManifestFromFile();
+			profile = new ApplicationProfile(this.appProfileFile);
 			packSection.init();
 			imageSection.init();
 			deploymentSection.init();
@@ -872,8 +880,11 @@ public class AsceticDeployer extends Deployer {
 	
 	protected  void setManifest(PackageMetadata packMeta,
 			HashMap<String, ServiceElement> allEls) throws Exception {
-		this.manifest = Manifest.newInstance(getProject(), editor.getProjectMetadata(), packMeta, allEls, op_prop);
+		this.manifest = Manifest.newInstance(getProject(), editor.getProjectMetadata(), packMeta, allEls, op_prop, profile);
 		this.manifest.toFile();
+	}
+	public ApplicationProfile getProfile() {
+		return profile;
 	}
 	
 	

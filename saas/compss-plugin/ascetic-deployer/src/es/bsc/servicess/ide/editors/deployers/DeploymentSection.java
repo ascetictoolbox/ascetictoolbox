@@ -54,6 +54,9 @@ public class DeploymentSection extends ServiceEditorSection{
 	private Text maxPower;
 	private Text maxPrice;
 	private Button autoNegotiation;
+	private Text appDuration;
+	private Text energy;
+	private Text cost;
 	private static String[] items = new String[]{"Energy", "Cost", "Performance"};
 	private static Logger log = Logger.getLogger(DeploymentSection.class);
 	
@@ -108,18 +111,53 @@ public class DeploymentSection extends ServiceEditorSection{
 		secComp.setLayoutData(rd);
 		secComp.setLayout(new GridLayout(3, false));
 		secComp.setText("Deployment Properties");
-		toolkit.createLabel(secComp, "Max. Power Boundary", SWT.NONE);
-		maxPower = toolkit.createText(secComp, "",
-				SWT.SINGLE | SWT.BORDER);
-		rd = new GridData();
+		
+		addPowerBoundaries(secComp);
+		addPriceBoundaries(secComp);
+		addMaxDuration(secComp);
+		addMaxEnergy(secComp);
+		addMaxCost(secComp);
+		addOptimizationParameter(secComp);
+		
+	}
+
+	private void addOptimizationParameter(Group secComp) {
+		toolkit.createLabel(secComp, "Optimization Parameter", SWT.NONE);
+		optParam = new Combo(secComp, SWT.NONE);
+		GridData rd = new GridData(GridData.FILL_HORIZONTAL);
 		rd.grabExcessHorizontalSpace = true;
 		rd.minimumWidth = 400;
-		maxPower.setLayoutData(rd);
-		maxPower.addModifyListener(new ModifyListener() {
+		optParam.setLayoutData(rd);
+		optParam.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				deployer.getProperties().setOptimizationParameter(optParam.getText().trim());
+				try {
+					deployer.getProperties().save();
+				} catch (ConfigurationException e) {
+					log.error("Exception saving properties", e);
+					ErrorDialog.openError(getShell(),
+							"Saving ascetic properties", e.getMessage(), 
+							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
+				}
+			}
+		});
+		optParam.setItems(items);
+		
+	}
+
+	private void addMaxCost(Group secComp) {
+		toolkit.createLabel(secComp, " Max. Cost", SWT.NONE);
+		cost = toolkit.createText(secComp, "",
+				SWT.SINGLE | SWT.BORDER);
+		GridData rd = new GridData();
+		rd.grabExcessHorizontalSpace = true;
+		rd.minimumWidth = 400;
+		cost.setLayoutData(rd);
+		cost.addModifyListener(new ModifyListener() {
 	
 			@Override
 			public void modifyText(ModifyEvent arg0) {
-				deployer.getProperties().setPowerBoundary(Double.parseDouble(maxPower.getText().trim()));
+				deployer.getProperties().setMaxCost(Double.parseDouble(cost.getText().trim()));
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -131,11 +169,70 @@ public class DeploymentSection extends ServiceEditorSection{
 			}
 	
 		});
-		toolkit.createLabel(secComp, "W", SWT.NONE);
+		toolkit.createLabel(secComp, "€", SWT.NONE);
+		
+	}
+
+	private void addMaxEnergy(Group secComp) {
+		toolkit.createLabel(secComp, " Max. Energy", SWT.NONE);
+		energy = toolkit.createText(secComp, "",
+				SWT.SINGLE | SWT.BORDER);
+		GridData rd = new GridData();
+		rd.grabExcessHorizontalSpace = true;
+		rd.minimumWidth = 400;
+		energy.setLayoutData(rd);
+		energy.addModifyListener(new ModifyListener() {
+	
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				deployer.getProperties().setMaxEnergy(Double.parseDouble(energy.getText().trim()));
+				try {
+					deployer.getProperties().save();
+				} catch (ConfigurationException e) {
+					log.error("Exception saving properties", e);
+					ErrorDialog.openError(getShell(),
+							"Saving ascetic properties", e.getMessage(), 
+							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
+				}
+			}
+	
+		});
+		toolkit.createLabel(secComp, "W.h", SWT.NONE);
+		
+	}
+
+	private void addMaxDuration(Group secComp) {
+		toolkit.createLabel(secComp, "Max. Application Duration", SWT.NONE);
+		appDuration = toolkit.createText(secComp, "",
+				SWT.SINGLE | SWT.BORDER);
+		GridData rd = new GridData();
+		rd.grabExcessHorizontalSpace = true;
+		rd.minimumWidth = 400;
+		appDuration.setLayoutData(rd);
+		appDuration.addModifyListener(new ModifyListener() {
+	
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				deployer.getProperties().setMaxDuration(Long.parseLong(appDuration.getText().trim()));
+				try {
+					deployer.getProperties().save();
+				} catch (ConfigurationException e) {
+					ErrorDialog.openError(getShell(),
+							"Saving ascetic properties", e.getMessage(), 
+							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
+				}
+			}
+	
+		});
+		toolkit.createLabel(secComp, "secs.", SWT.NONE);
+		
+	}
+
+	private void addPriceBoundaries(Group secComp) {
 		toolkit.createLabel(secComp, "Max. Price Boundary", SWT.NONE);
 		maxPrice = toolkit.createText(secComp, "",
 				SWT.SINGLE | SWT.BORDER);
-		rd = new GridData();
+		GridData rd = new GridData();
 		rd.grabExcessHorizontalSpace = true;
 		rd.minimumWidth = 400;
 		maxPrice.setLayoutData(rd);
@@ -157,15 +254,21 @@ public class DeploymentSection extends ServiceEditorSection{
 		});
 		toolkit.createLabel(secComp, "€/h", SWT.NONE);
 		
-		toolkit.createLabel(secComp, "Optimization Parameter", SWT.NONE);
-		optParam = new Combo(secComp, SWT.NONE);
-		//rd = new GridData(GridData.FILL_HORIZONTAL);
+	}
+
+	private void addPowerBoundaries(Group secComp) {
+		toolkit.createLabel(secComp, "Max. Power Boundary", SWT.NONE);
+		maxPower = toolkit.createText(secComp, "",
+				SWT.SINGLE | SWT.BORDER);
+		GridData rd = new GridData();
 		rd.grabExcessHorizontalSpace = true;
 		rd.minimumWidth = 400;
-		optParam.setLayoutData(rd);
-		optParam.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				deployer.getProperties().setOptimizationParameter(optParam.getText().trim());
+		maxPower.setLayoutData(rd);
+		maxPower.addModifyListener(new ModifyListener() {
+	
+			@Override
+			public void modifyText(ModifyEvent arg0) {
+				deployer.getProperties().setPowerBoundary(Double.parseDouble(maxPower.getText().trim()));
 				try {
 					deployer.getProperties().save();
 				} catch (ConfigurationException e) {
@@ -175,8 +278,10 @@ public class DeploymentSection extends ServiceEditorSection{
 							new Status(Status.ERROR, Activator.PLUGIN_ID,"Exception saving properties", e));
 				}
 			}
+	
 		});
-		optParam.setItems(items);
+		toolkit.createLabel(secComp, "W", SWT.NONE);
+		
 	}
 
 	private void createApplicationSecurityWidgets(Composite comp) {
@@ -306,6 +411,19 @@ public class DeploymentSection extends ServiceEditorSection{
 			maxPrice.setText(Double.toString(price));
 		}
 		optParam.setText(deployer.getProperties().getOptimizationParameter());
+		Long duration = deployer.getProperties().getMaxDuration();
+		if (duration!=null){
+			appDuration.setText(Long.toString(duration));
+		}
+		Double maxEnergy = deployer.getProperties().getMaxEnergy();
+		if (maxEnergy!=null){
+			energy.setText(Double.toString(maxEnergy));
+		}
+		Double maxCost = deployer.getProperties().getMaxCost();
+		if (maxCost!=null){
+			cost.setText(Double.toString(maxCost));
+		}
+		
 	}
 	
 
@@ -353,6 +471,9 @@ public class DeploymentSection extends ServiceEditorSection{
 		manifest.setImageCaching(imageCache.getSelection());
 		manifest.setPowerBoundary(maxPower.getText().trim());
 		manifest.setPriceBoundary(maxPrice.getText().trim());
+		manifest.setAppDuration(appDuration.getText().trim());
+		manifest.setAppEnergy(energy.getText().trim());
+		manifest.setAppCost(cost.getText().trim());
 		manifest.setOptimizationParameter(optParam.getText().trim());
 	}
 	

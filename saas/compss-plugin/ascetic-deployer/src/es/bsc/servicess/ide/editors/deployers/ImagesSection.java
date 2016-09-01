@@ -424,7 +424,7 @@ public class ImagesSection extends ServiceEditorSection {
 		String[] cePacks = packMeta.getPackagesWithCores();
 		IFolder packageFolder = editor.getProject().getProject().
 				getFolder(OUTPUT_FOLDER).getFolder(PACKAGES_FOLDER);
-		ImageCreation.generateConfigurationFiles(allPacks, packageFolder, prMeta, manifest, deployer.getProperties(),monitor);
+		ImageCreation.generateConfigurationFiles(editor.getProject(), cePacks, packageFolder, prMeta, manifest, deployer.getProperties(),monitor);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
 		}

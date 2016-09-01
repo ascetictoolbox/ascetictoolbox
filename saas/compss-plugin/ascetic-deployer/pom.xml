@@ -18,12 +18,12 @@
 	<dependency>
 		<groupId>commons-io</groupId>
 		<artifactId>commons-io</artifactId>
-		<version>1.4</version>
+		<version>2.5</version>
 	</dependency>
 	<dependency>
 		<groupId>commons-configuration</groupId>
 		<artifactId>commons-configuration</artifactId>
-		<version>1.5</version>
+		<version>1.10</version>
 	</dependency>
 	<!-- dependency>
 		<groupId>com.sun.jersey</groupId>
@@ -54,6 +54,16 @@
 		<groupId>eu.ascetic.saas</groupId>
 		<artifactId>virtual-machine-image-constructor</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+		<dependency>
+		<groupId>es.bsc.compss</groupId>
+		<artifactId>compss-project-schema</artifactId>
+		<version>${compss-version}</version>
+	</dependency>
+	<dependency>
+		<groupId>es.bsc.compss</groupId>
+		<artifactId>compss-resources-schema</artifactId>
+		<version>${compss-version}</version>
 	</dependency>
   </dependencies>
 

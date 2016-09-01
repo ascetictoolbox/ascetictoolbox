@@ -15,81 +15,48 @@
  */
 package es.bsc.servicess.ide.editors.deployers;
 
-import integratedtoolkit.types.project.ProjectFile;
-import integratedtoolkit.types.project.jaxb.CloudProviderType;
-import integratedtoolkit.types.project.jaxb.CloudType;
-import integratedtoolkit.types.project.jaxb.ImageType;
-import integratedtoolkit.types.project.jaxb.InstancesListTypes;
-import integratedtoolkit.types.resources.ResourcesFile;
-import integratedtoolkit.types.resources.jaxb.ApplicationSoftwareType;
-import integratedtoolkit.types.resources.jaxb.CapabilitiesType;
-import integratedtoolkit.types.resources.jaxb.HostType;
-import integratedtoolkit.types.resources.jaxb.HostType.TaskCount;
-import integratedtoolkit.types.resources.jaxb.MemoryType;
-import integratedtoolkit.types.resources.jaxb.OSTypeType;
-import integratedtoolkit.types.resources.jaxb.OsType;
-import integratedtoolkit.types.resources.jaxb.ProcessorType;
-import integratedtoolkit.types.project.jaxb.ResourceType;
-import integratedtoolkit.types.resources.jaxb.StorageElementType;
 import integratedtoolkit.util.RuntimeConfigManager;
 import static es.bsc.servicess.ide.Constants.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
-import org.xml.sax.SAXException;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.multipart.FormDataMultiPart;
-
-import es.bsc.servicess.ide.ConstraintDef;
-import es.bsc.servicess.ide.IDEProperties;
 import es.bsc.servicess.ide.Logger;
 import es.bsc.servicess.ide.PackageMetadata;
 import es.bsc.servicess.ide.PackagingUtils;
 import es.bsc.servicess.ide.ProjectMetadata;
-import es.bsc.servicess.ide.editors.BuildingDeploymentFormPage;
 import es.bsc.servicess.ide.editors.CommonFormPage;
 import es.bsc.servicess.ide.editors.RuntimeConfigurationSection;
 import es.bsc.servicess.ide.model.Dependency;
 import es.bsc.servicess.ide.model.ServiceElement;
-import eu.ascetic.utils.ovf.api.VirtualSystem;
 import eu.ascetic.vmic.api.VmicApi;
-import eu.ascetic.vmic.api.core.ProgressException;
 import eu.ascetic.vmic.api.datamodel.ProgressDataFile;
 import eu.ascetic.vmic.api.datamodel.ProgressDataImage;
 
 public class ImageCreation {
 
-	private static Logger log = Logger.getLogger(ImageCreation.class);
+
 	public final static String IMAGE_DEPLOYMENT_FOLDER = "/ascetic_service/";
+	public final static String IMAGE_WORKING_FOLDER = "/tmp/";
+	public static final String ASCETIC_USER = "root";
+	public static final String ASCETIC_CONNECTOR = "integratedtoolkit.connectors.ascetic.AsceticConnector";
+	public static final String ASCETIC_SCHEDULER = "integratedtoolkit.scheduler.ascetic.AsceticScheduler";
+	public static final String ASCETIC_INTERACTIONS_JAR = "interaction.jar";
+	public static final String ASCETIC_CONNECTOR_JAR = "ascetic.jar";
 	private final static String MOUNT_POINT_VAR = "${MOUNT_POINT}";
 	private final static String WEBAPP_FOLDER_VAR = "${IMAGE_WEBAPP_FOLDER}";
 	private final static String CONTEXT_FOLDER = "/mnt/context";
-	public static final String ASCETIC_USER = "root";
-	//private static final String IMAGE_GAT_LOCATION = "/GAT";
 	private static final long CREATION_PULL_INTERVAL = 30000;
-	private static final String TMP_FOLDER= "/tmp";
-	//private static final String SHARED_FOLDER = null;
-	private static final String ASCETIC_CONNECTOR ="integratedtoolkit.connectors.ascetic.AsceticConnector";
+
+	private static Logger log = Logger.getLogger(ImageCreation.class);
 	
 	
 	public static void uploadOrchestrationPackages(VmicApi vmic,
@@ -133,14 +100,14 @@ public class ImageCreation {
 		monitor.beginTask("Uploading files for " + packName, 12);
 		// Uploading file
 		monitor.subTask("Uploading runtime configuration files orchestration elements");
-		f = packageFolder.getFile("project.xml");
+		f = packageFolder.getFile(PROJECT_FILENAME);
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
 		}
-		f = packageFolder.getFile("resources.xml");
+		f = packageFolder.getFile(RESOURCES_FILENAME);
 		log.debug("Uploading " + f.getLocation().toOSString());
 		uploadAndCopy(vmic, f.getLocation().toFile(), manifest, is, monitor);
 		monitor.worked(1);
@@ -175,13 +142,30 @@ public class ImageCreation {
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
+		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
 		
-		/*
 		file = new File(pr_meta.getRuntimeLocation()
-				+ COMPSS_RT_SCRIPTS_PATH + COMPSS_SYSTEM_PATH+ "worker.sh");
+				+ COMPSS_RUNTIME_PATH + ASCETIC_INTERACTIONS_JAR);
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
 		}
+		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
+		file = new File(pr_meta.getRuntimeLocation()
+				+ COMPSS_RT_CONNECTORS_PATH + ASCETIC_CONNECTOR_JAR);
+		if (f != null && f.exists()) {
+			uploadAndCopy(vmic, file, manifest, is, monitor);
+		}
+		monitor.worked(1);
+		if (monitor.isCanceled()){
+			throw new InterruptedException("Creation Cancelled");
+		}
+		/*
 		file = new File(pr_meta.getRuntimeLocation()
 				+ COMPSS_RT_SCRIPTS_PATH+COMPSS_SYSTEM_PATH+ "worker_java.sh");
 		if (f != null && f.exists()) {
@@ -196,12 +180,11 @@ public class ImageCreation {
 				+ COMPSS_RT_SCRIPTS_PATH+ COMPSS_SYSTEM_PATH+ "trace.sh");
 		if (f != null && f.exists()) {
 			uploadAndCopy(vmic, file, manifest, is, monitor);
-		}*/
-		monitor.worked(1);
+		}
 		monitor.worked(1);
 		if (monitor.isCanceled()){
 			throw new InterruptedException("Creation Cancelled");
-		}
+		}*/
 		monitor.subTask("Setting file permissions in core elements installations");
 		settingPermissions(new String[] { MOUNT_POINT_VAR+IMAGE_DEPLOYMENT_FOLDER + "*" },"+x",true,is);
 		settingPermissions(new String[] { MOUNT_POINT_VAR+"/root" },"+rx",false, is);
@@ -349,12 +332,12 @@ public class ImageCreation {
 	 * @param monitor Object to monitor the progress of the image creation
 	 * @throws Exception 
 	 */
-	public static void generateConfigurationFiles(final String[] packs, IFolder outFolder, 
+	public static void generateConfigurationFiles(IJavaProject project, final String[] packs, IFolder outFolder, 
 			ProjectMetadata prMeta,	Manifest manifest, AsceticProperties properties, IProgressMonitor monitor) throws Exception {
 		monitor.beginTask("Updating config file for the Ascetic Cloud", 2);
-		addCloudProviderToProject(packs, outFolder, prMeta, manifest, properties);
+		ProjectCloudSpecification.addCloudProviderToProject(packs, outFolder, prMeta, manifest, properties);
 		monitor.worked(1);
-		addCloudProviderToResources(packs, outFolder, prMeta, manifest, properties);
+		ResourcesCloudSpecification.addCloudProviderToResources(project, packs, outFolder, prMeta, manifest, properties);
 		monitor.done();
 		outFolder.refreshLocal(1, monitor);
 
@@ -383,183 +366,9 @@ public class ImageCreation {
 
 	}
 	
-	/**
-	 * Add the cloud provider description to the resources file
-	 * 
-	 * @param serviceName Name of the implemented service
-	 * @param packs Names of the service packages
-	 * @param packageFolder 
-	 * @param project 
-	 * @param prMeta 
-	 * @param manifest 
-	 * @throws Exception 
-	 */
-	private static void addCloudProviderToResources(String[] packs, IFolder packageFolder, 
-			ProjectMetadata prMeta, Manifest manifest, AsceticProperties properties)
-			throws Exception {
-		ResourcesFile res = new ResourcesFile(
-				new File(packageFolder.getProject().getLocation()
-						+ File.separator + File.separator
-						+ prMeta.getMainPackageFolder() + File.separator+ RESOURCES_FILENAME));
-		integratedtoolkit.types.resources.jaxb.CloudType cloud = res.addCloudProvider("Ascetic");
-		cloud.setConnector(ASCETIC_CONNECTOR);
-		cloud.setServer(properties.getDSLocation());
-		HashMap<String, String> shares = new HashMap<String, String>();
-		for (String p : packs) {
-			res.addImageToCloudProvider("Ascetic", Manifest.generateManifestImageName(p), shares);
-			VirtualSystem vs = manifest.getComponent(Manifest.generateManifestName(p));
-			addResourceTypeToResourceCloudProvider(cloud, vs.getName(),	"x86_64", (float) 1000, 1, vs.getVirtualHardwareSection().getNumberOfVirtualCPUs(), "Linux", 10.0f, (float)vs.getVirtualHardwareSection().getMemorySize(), new String[]{"Java"}, 0 , new String[0]);
-		}
-		File file = packageFolder.getFile("resources.xml").getRawLocation().toFile();
-		if (file.exists()) {
-			file.delete();
-		}
-		res.toFile(file);
-	}
-
-	private static void addResourceTypeToResourceCloudProvider(
-			integratedtoolkit.types.resources.jaxb.CloudType cloud,
-			String name, String proc_arch, Float proc_speed,
-			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
-			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) throws Exception{
-		integratedtoolkit.types.resources.jaxb.ResourceType res = createResourceType(name, proc_arch, proc_speed, proc_count, proc_cores, os_type,
-				storage_size, memory_size, appSoftware, taskCount, queues);
-		integratedtoolkit.types.resources.jaxb.InstanceTypesList list = cloud.getInstanceTypes();
-		if (list ==null){
-			list = new integratedtoolkit.types.resources.jaxb.InstanceTypesList();
-			cloud.setInstanceTypes(list);
-		}
-		list.getResource().add(res);
 	
-		
-	}
 
-	private static integratedtoolkit.types.resources.jaxb.ResourceType createResourceType(String name, String proc_arch, Float proc_speed,
-			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
-			Float memory_size, String[] appSoftware, Integer taskCount, String[] queues ) throws Exception{
-		integratedtoolkit.types.resources.jaxb.ResourceType res = new integratedtoolkit.types.resources.jaxb.ResourceType();
-		CapabilitiesType cap = createResourceCapabilities(name, proc_arch, proc_speed, proc_count, proc_cores, os_type, storage_size, memory_size, appSoftware);
-		HostType host = createResourceHost(taskCount, queues);
-		cap.setHost(host);
-		res.setCapabilities(cap);                       
-		return res;
-		
-	}
 	
-	private static HostType createResourceHost(Integer taskCount, String[] queues){
-		HostType host = new HostType();
-		if (taskCount!=null){
-			TaskCount tc = new TaskCount();
-			tc.setValue(taskCount);
-			host.setTaskCount(tc);
-		}
-		if(queues!=null&&queues.length>0){
-			for (String q:queues)
-				host.getQueue().add(q);
-		}
-		return host;
-	}
-	
-	private static CapabilitiesType createResourceCapabilities(String name, String proc_arch, Float proc_speed,
-			Integer proc_count, Integer proc_cores, String os_type, Float storage_size,
-		    Float memory_size, String[] appSoftware) throws Exception{
-		CapabilitiesType cap = new CapabilitiesType();
-		ProcessorType proc = new ProcessorType();
-		if (proc_arch != null)
-			proc.setArchitecture(proc_arch);
-		if (proc_speed != null)
-			proc.setSpeed(proc_speed);
-		if (proc_count != null)
-			proc.setCPUCount(proc_count);
-		if (proc_cores != null)
-			proc.setCoreCount(proc_cores);
-		else
-			throw new Exception("Number of cores should be defined");
-		cap.setProcessor(proc);
-		if (os_type!=null){
-			OsType os = new OsType();
-			os.setOSType(OSTypeType.fromValue(os_type));
-			cap.setOS(os);
-		}
-		if (storage_size!=null){
-			StorageElementType storage = new StorageElementType();
-			storage.setSize(storage_size.floatValue());
-			cap.setStorageElement(storage);
-		}
-		if (memory_size!=null){
-			MemoryType memory = new MemoryType();
-			memory.setPhysicalSize(memory_size.floatValue());
-			cap.setMemory(memory);
-		}
-		if(appSoftware!=null&&appSoftware.length>0){
-			ApplicationSoftwareType apps = new ApplicationSoftwareType();
-			for (String app:appSoftware)
-				apps.getSoftware().add(app);
-			cap.setApplicationSoftware(apps);
-		}
-		return cap;
-	}
-
-	/**
-	 * Add cloud provider description in the project configuration file
-	 * 
-	 * @param packs Names of the service packages
-	 * @param manifest 
-	 * @param properties 
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws CoreException
-	 * @throws TransformerException
-	 * @throws JAXBException 
-	 */
-	private static void addCloudProviderToProject(String[] packs, IFolder packageFolder, 
-			ProjectMetadata prMeta, Manifest manifest, AsceticProperties properties)
-			throws ParserConfigurationException, SAXException, IOException,
-			CoreException, TransformerException, JAXBException {
-		ProjectFile res = new ProjectFile(new File(packageFolder.getProject().getLocation()
-				+ File.separator + File.separator
-				+ prMeta.getMainPackageFolder() + File.separator+ "project.xml"));
-		/* 1.3 version for compiling */
-		CloudProviderType cloud = res.addCloudProvider("Ascetic");
-		cloud.setLimitOfVMs(manifest.getVMsToDeploy(true));
-		for (String p : packs) {
-			ImageType image = res.addImageToProvider("Ascetic", Manifest.generateManifestImageName(p), 
-					ASCETIC_USER, "/tmp", IMAGE_DEPLOYMENT_FOLDER+"scripts/system/");
-			image.setAppDir(IMAGE_DEPLOYMENT_FOLDER);
-			
-			addResourceTypeToProvider(cloud, Manifest.generateManifestName(p));
-		}
-		/* Updated version CloudProviderType cloud = res.addCloudProvider("Ascetic");
-		cloud.setLimitOfVMs(manifest.getVMsToDeploy(true));
-		for (String p : packs) {
-			ImageType image = res.addImageToProvider(cloud, Manifest.generateManifestImageName(p), 
-					ASCETIC_USER, "/tmp", IMAGE_DEPLOYMENT_FOLDER+"scripts/system/");
-			image.setAppDir(IMAGE_DEPLOYMENT_FOLDER);
-			res.addResourceTypeToProvider(cloud, Manifest.generateManifestName(p));
-		}*/
-		File file = packageFolder.getFile("project.xml").getRawLocation().toFile();
-		if (file.exists()) {
-			file.delete();
-		}
-		res.toFile(file);
-
-	}
-
-	private static void addResourceTypeToProvider(CloudProviderType cloud,
-			String manifestName) {
-		InstancesListTypes resList = cloud.getInstanceTypes();
-		if (resList==null){
-			 resList = new InstancesListTypes();
-			 cloud.setInstanceTypes(resList);
-		}
-		ResourceType res = new ResourceType();
-		res.setName(manifestName);
-		resList.getResource().add(res);
-
-		
-	}
-
 	/**
 	 * Create the runtime configuration properties file
 	 * 
@@ -572,26 +381,20 @@ public class ImageCreation {
 		RuntimeConfigManager oldConfig = RuntimeConfigurationSection.getProjectITConfigManager(project);
 		config.setLog4jConfiguration(IMAGE_DEPLOYMENT_FOLDER + File.separator+COMPSS_LOG4J_DEFAULT_NAME+"."+oldConfig.getLog4jConfiguration());
 		config.setGraph(oldConfig.isGraph());
-		config.setTracing(oldConfig.isTracing());
+		config.setTracing(oldConfig.getTracing());
 		config.setMonitorInterval(oldConfig.getMonitorInterval());
-		config.setScheduler("integratedtoolkit.components.scheduler.impl.AsceticScheduler");
+		config.setScheduler(ASCETIC_SCHEDULER);
 		String commAdaptor = oldConfig.getCommAdaptor();
 		if (commAdaptor!=null && !commAdaptor.isEmpty())
 			config.setCommAdaptor(commAdaptor);
 		config.setGATBrokerAdaptor("sshtrilead");
 		config.setGATFileAdaptor("sshtrilead");
-		config.setProjectFile(IMAGE_DEPLOYMENT_FOLDER + "/project.xml");
-		config.setProjectSchema(IMAGE_DEPLOYMENT_FOLDER + "/project_schema.xsd");
-		config.setResourcesFile(IMAGE_DEPLOYMENT_FOLDER + "/resources.xml");
-		config.setResourcesSchema(IMAGE_DEPLOYMENT_FOLDER
-				+ "/resource_schema.xsd");
+		config.setProjectFile(IMAGE_DEPLOYMENT_FOLDER + File.separator + PROJECT_FILENAME);
+		config.setProjectSchema(IMAGE_DEPLOYMENT_FOLDER + File.separator + COMPSS_PROJECT_SCHEMA_NAME);
+		config.setResourcesFile(IMAGE_DEPLOYMENT_FOLDER + File.separator + RESOURCES_FILENAME);
+		config.setResourcesSchema(IMAGE_DEPLOYMENT_FOLDER + File.separator + COMPSS_RESOURCE_SCHEMA_NAME);
 		config.setContext(CONTEXT_FOLDER);
-		//config.setManifestLocation(CONTEXT_FOLDER + "/ovf.xml");
 		config.setGATAdaptor(IMAGE_DEPLOYMENT_FOLDER +"/adaptors");
-		config.setScheduler("integratedtoolkit.components.scheduler.impl.AsceticScheduler");
-		/*config.setComponent(Manifest.generateManifestName(packageName));
-		config.setSchedulerComponent(Manifest.generateManifestName(schedulerPackage));
-		config.setMonitorLocation(TMP_FOLDER);*/
 		config.setWorkerCP(IMAGE_DEPLOYMENT_FOLDER);
 		config.save();
 	}

@@ -651,7 +651,7 @@ public class PackagesSection extends ServiceEditorSection{
 		if (deployer.getManifest() == null){
 			deployer.setManifest(packMeta, allEls);
 		}else{
-			deployer.getManifest().regeneratePackages(prMeta, packMeta, allEls, deployer.getProperties());
+			deployer.getManifest().regeneratePackages(prMeta, packMeta, allEls, deployer.getProperties(), deployer.getProfile());
 			deployer.getManifest().toFile();
 		}
 	}

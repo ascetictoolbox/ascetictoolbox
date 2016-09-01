@@ -3855,6 +3855,7 @@ saas/compss-plugin/ascetic-deployer/plugin.xml -text
 saas/compss-plugin/ascetic-deployer/pom.xml -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/AffinitySection.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/ApplicationManagerClient.java -text
+saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/ApplicationProfile.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/AsceticDeployer.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/AsceticDeploymentChecker.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/AsceticDeploymentException.java -text
@@ -3866,9 +3867,10 @@ saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/I
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/JSCHExecutionUtils.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/Manifest.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/PackagesSection.java -text
+saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/ProjectCloudSpecification.java -text
+saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/ResourcesCloudSpecification.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/SectionSaveResetButtonComposite.java -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/dialogs/AgreementSelectionDialog.java -text
-saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/log4j.properties -text
 saas/compss-plugin/ascetic-deployer/src/es/bsc/servicess/ide/editors/deployers/sm_default.properties -text
 saas/compss-plugin/pom.xml -text
 saas/programming_model/LICENSE -text

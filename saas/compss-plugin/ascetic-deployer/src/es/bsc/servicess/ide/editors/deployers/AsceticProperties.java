@@ -53,6 +53,9 @@ public class AsceticProperties {
 	private static final String POWER_BOUNDARY = "power.boundary";
 	private static final String PRICE_BOUNDARY = "price.boundary";
 	private static final String OPTIMIZATION_PARAMETER = "optimization.parameter";
+	private static final String MAX_DURATION = "max.app.duration";
+	private static final String MAX_ENERGY = "max.app.energy";
+	private static final String MAX_COST = "max.app.cost";
 	
 	private PropertiesConfiguration config;
 
@@ -217,4 +220,27 @@ public class AsceticProperties {
 		config.setProperty(OPTIMIZATION_PARAMETER, param);
 	}
 	
+	public long getMaxDuration() {
+		return config.getLong(MAX_DURATION);
+	}
+	
+	public void setMaxDuration(long duration) {
+		config.setProperty(MAX_DURATION, duration);
+	}
+	
+	public Double getMaxEnergy() {
+		return config.getDouble(MAX_ENERGY);
+	}
+	
+	public void setMaxEnergy(double energy) {
+		config.setProperty(MAX_ENERGY, energy);
+	}
+	
+	public Double getMaxCost() {
+		return config.getDouble(MAX_COST);
+	}
+	
+	public void setMaxCost(double cost) {
+		config.setProperty(MAX_COST, cost);
+	}
 }

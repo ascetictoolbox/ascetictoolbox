@@ -35,9 +35,9 @@
 		<uitest.vmparams>-Dtest.workspace=${test.basedir} -Xmx1024m
 			-XX:MaxPermSize=384m</uitest.vmparams>
 		<tycho-version>0.20.0</tycho-version>
-		<compss-version>1.2</compss-version>
-		<commons-configuration-version>1.5</commons-configuration-version>
-		<commons-io-version>1.4</commons-io-version>
+		<compss-version>1.4.rc05</compss-version>
+		<commons-configuration-version>1.10</commons-configuration-version>
+		<commons-io-version>2.5</commons-io-version>
 		<tycho-repo.url>https://oss.sonatype.org/content/groups/public/</tycho-repo.url>
 		<!-- Properties to enable jacoco code coverage analysis -->
 		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
@@ -54,7 +54,7 @@
 		<repository>
 			<id>compss-ide-repo</id>
 			<layout>p2</layout>
-			<url>http://compss.bsc.es/rc/ide</url>
+			<url>http://compss.bsc.es/rc/ide/2.0.0/</url>
 		</repository>
 		<!--repository>
 			<id>grid-repo</id>
