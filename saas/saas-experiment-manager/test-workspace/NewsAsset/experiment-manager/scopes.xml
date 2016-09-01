@@ -9,51 +9,25 @@
 
 	<util:map id="Scopes" map-class="java.util.HashMap">
 		<entry key="duration-estimation-deployment">
-			<ref bean="Scope.deployment.all"/>
+			<ref bean="Scopes.deployment.all"/>
 		</entry>
 		<entry key="energy-consumption-deployment">
-			<ref bean="Scope.deployment.single"/>
+			<ref bean="Scopes.deployment.all"/>
 		</entry>
 		<entry key="cost-estimation-deployment">
-			<ref bean="Scope.deployment.all"/>
+			<ref bean="Scopes.deployment.all"/>
 		</entry>
 		<entry key="energy-consumption-event">
-			<ref bean="Scope.event"/>
+			<ref bean="Scopes.event"/>
 		</entry>
 		<entry key="duration-estimation-event">
-			<ref bean="Scope.event"/>
+			<ref bean="Scopes.event"/>
 		</entry>
 		<entry key="cost-estimation-event">
-			<ref bean="Scope.event"/>
+			<ref bean="Scopes.event"/>
 		</entry>
 	</util:map>
 	
-	<bean id="Scope.event" class="eu.ascetic.saas.experimentmanager.models.EventScope" />
-	<bean id="Scope.deployment.all" class="eu.ascetic.saas.experimentmanager.models.DeploymentScope" />
-	
-	<bean id="Scope.deployment.single" class="eu.ascetic.saas.experimentmanager.models.ExplicitScope">
-		<property name="scopes" >
-			<list>
-				<bean class="eu.ascetic.saas.experimentmanager.models.Scope">
-					<property name="name" value="deployment"/>
-					<property name="description" value="Scope corresponding to the whole deployment"/>
-					<property name="scopableItems">
-						<list>
-							<bean class="eu.ascetic.saas.experimentmanager.models.ScopableItem">
-								<property name="location">
-									<util:map map-class="java.util.HashMap">
-										<entry key="appId" value="newsAsset" />
-										<entry key="deplId" value="490" />
-									</util:map>
-								</property>
-							</bean>
-						</list>
-					</property>
-					<property name="category" value="deployment"/>
-				</bean>
-			</list>
-		</property>
-	</bean>
-	
-	
+	<bean id="Scopes.event" class="eu.ascetic.saas.experimentmanager.models.EventScope" />
+	<bean id="Scopes.deployment.all" class="eu.ascetic.saas.experimentmanager.models.DeploymentScope" />
 </beans>

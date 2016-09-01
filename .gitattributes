@@ -6354,7 +6354,6 @@ saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/events.
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/experiments.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/kpis.xml -text
 saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/scopes.xml -text
-saas/saas-experiment-manager/test-workspace/NewsAsset/experiment-manager/scopes_old.xml -text svneol=unset#text/plain
 saas/saas-modelling/ascetic-deployment-profile/LICENSE.TXT -text
 saas/saas-modelling/ascetic-deployment-profile/model.profile.di -text
 saas/saas-modelling/ascetic-deployment-profile/model.profile.notation -text

@@ -93,13 +93,6 @@
 		<property name="query" value="//value/text()"/>
 	</bean>
 	
-	<bean id="SimpleEnergyEstimationDeployment" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
-		<property name="name" value="energy-consumption-deployment"/>
-		<property name="urlPattern" value="${urlToApplicationManager}/:appId/deployments/:deplId/energy-consumption"/>
-		<property name="format" value="XML"/>
-		<property name="query" value="//value/text()"/>
-	</bean>
-	
 	<bean id="SimpleDurationEstimation" class="eu.ascetic.saas.experimentmanager.models.WebserviceValue">
 		<property name="name" value="event-duration"/>
 		<property name="urlPattern" value="${durationPattern}"/>
@@ -119,6 +112,13 @@
 		<property name="name" value="cost-estimation-avg"/>
 		<property name="metric">
 			<ref bean="SimpleCostEstimation"/>
+		</property>
+	</bean>
+	
+	<bean id="EnergyMetricAvg" class="eu.ascetic.saas.experimentmanager.models.AggregatedMetric">
+		<property name="name" value="energy-estimation-avg"/>
+		<property name="metric">
+			<ref bean="SimpleEnergyEstimation"/>
 		</property>
 	</bean>
 	   

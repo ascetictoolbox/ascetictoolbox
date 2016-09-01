@@ -10,7 +10,10 @@
 
 	
 	<util:list id="Events" list-class="java.util.ArrayList">
-		<bean class="eu.ascetic.saas.experimentmanager.models.Event"><constructor-arg type="java.lang.String" value="Create-Object-Light-Load-9"/><constructor-arg type="java.lang.String" value=""/></bean>
+		<bean class="eu.ascetic.saas.experimentmanager.models.Event">
+		<constructor-arg type="java.lang.String" value="Create-Object-Light-Load"/>
+		<constructor-arg type="java.lang.String" value=""/>
+		</bean>
 		<bean class="eu.ascetic.saas.experimentmanager.models.Event"><constructor-arg type="java.lang.String" value="Update-Object-Light-Load-8"/><constructor-arg type="java.lang.String" value=""/></bean>
 		<bean class="eu.ascetic.saas.experimentmanager.models.Event"><constructor-arg type="java.lang.String" value="Get-Attachment-Contents-Light-Load-8"/><constructor-arg type="java.lang.String" value=""/></bean>
 		<bean class="eu.ascetic.saas.experimentmanager.models.Event"><constructor-arg type="java.lang.String" value="Simple-Search-Light-Load-8"/><constructor-arg type="java.lang.String" value=""/></bean>
