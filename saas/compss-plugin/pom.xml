@@ -56,11 +56,11 @@
 			<layout>p2</layout>
 			<url>http://compss.bsc.es/rc/ide/2.0.0/</url>
 		</repository>
-		<!--repository>
+		<repository>
 			<id>grid-repo</id>
 			<name>BSC Grid computing and Clusters group</name>
 			<url>http://compss.bsc.es/artifactory/grid-devel-repo</url>
-		</repository-->
+		</repository>
 	</repositories>
 	<!--pluginRepositories>
 		<pluginRepository>
