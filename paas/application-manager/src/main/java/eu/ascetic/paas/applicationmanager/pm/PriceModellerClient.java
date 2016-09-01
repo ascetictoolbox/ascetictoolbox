@@ -118,4 +118,15 @@ public class PriceModellerClient {
 			return -1.0;
 		}
 	}
+	
+	public double predictPriceForNextPeriod(int deplID, double duration) {
+		try {
+			return priceModeller.predictPriceforNextPeriod(deplID, duration);
+		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
+	}
 }

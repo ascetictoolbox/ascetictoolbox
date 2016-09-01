@@ -708,6 +708,35 @@ public class DeploymentRest extends AbstractRest {
 	}
 	
 	@GET
+	@Path("{deployment_id}/predicted-price-for-next-period")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getPredictedPriceForNextPeriod(@PathParam("application_name") String applicationName, 
+			                          @PathParam("deployment_id") String deploymentId,
+			                          @QueryParam("duration") String duration) throws InterruptedException {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/predicted-price-for-next-period?duration=" + duration);
+		
+		if(!isNumeric(duration)) {
+			return buildResponse(Status.BAD_REQUEST, "Duration must be a positive number!!!");
+		}
+		
+		double totalCost = priceModellerClient.predictPriceForNextPeriod(Integer.parseInt(deploymentId), Double.parseDouble(duration));
+		
+		Cost cost = new Cost();
+		cost.setCharges(totalCost);
+		cost.setEnergyValue(-1.0);
+		cost.setPowerValue(-1.0);
+		
+		String xml = XMLBuilder.getCostConsumptionForADeployment(cost, applicationName, deploymentId);
+		
+		return  buildResponse(Status.OK, xml);
+	}
+	
+	private boolean isNumeric(String str)
+	{
+	  return str.matches("\\d+(\\.\\d+)?");  //match a number and decimal.
+	}
+	
+	@GET
 	@Path("{deployment_id}/events/{event_id}/cost-estimation")
 	@Produces(MediaType.APPLICATION_XML)
 	public Response getCostEstimation(@PathParam("application_name") String applicationName, 

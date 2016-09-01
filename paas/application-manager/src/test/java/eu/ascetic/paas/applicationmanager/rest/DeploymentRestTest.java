@@ -1949,6 +1949,39 @@ public class DeploymentRestTest extends AbstractTest {
 		receiver.close();
 	}
 	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
+	public void getPredictedPriceForNextPeriod() throws Exception {
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		// Test that if the duration is lower than 0 or invalid number it returns an error
+		Response response = deploymentRest.getPredictedPriceForNextPeriod("asdf", "11", "aa");
+		assertEquals(400, response.getStatus());
+		assertEquals("Duration must be a positive number!!!", (String) response.getEntity());
+		
+		response = deploymentRest.getPredictedPriceForNextPeriod("asdf", "11", "");
+		assertEquals(400, response.getStatus());
+		assertEquals("Duration must be a positive number!!!", (String) response.getEntity());
+		
+		response = deploymentRest.getPredictedPriceForNextPeriod("asdf", "11", "-2");
+		assertEquals(400, response.getStatus());
+		assertEquals("Duration must be a positive number!!!", (String) response.getEntity());
+	
+		// Test that we can retrieve the price
+		PriceModellerClient pmc = mock(PriceModellerClient.class);
+		deploymentRest.priceModellerClient = pmc;
+		
+		when(pmc.predictPriceForNextPeriod(111, 22.3)).thenReturn(45.7);
+		
+		response = deploymentRest.getPredictedPriceForNextPeriod("asdf", "111", "22.3");
+		assertEquals(200, response.getStatus());
+		String entity = (String) response.getEntity();
+		Cost cost = ModelConverter.xmlCostToObject(entity);
+		assertEquals(45.7, cost.getCharges(), 0.001);
+		assertEquals(-1.0, cost.getEnergyValue(), 0.0001);
+		assertEquals(-1.0, cost.getPowerValue(), 0.0001);
+	}
+	
 	/**
 	 * It just reads a file form the disk... 
 	 * @param path
