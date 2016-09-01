@@ -283,7 +283,14 @@ public class OVFUtils {
 	}
 	
 	public static int getPriceSchema(ProductSection productSection) {
-                return productSection.getPriceSchema();
+		
+		try {
+			String priceSchema = "" +  productSection.getPriceSchema();
+			return Integer.parseInt(priceSchema);
+		} catch(NullPointerException ex) {
+			logger.info("No price schema in the ovf... returning -1" );
+			return -1;
+		}
 	}
 	
 	/**
