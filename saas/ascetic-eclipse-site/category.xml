@@ -3,7 +3,7 @@
    <feature url="features/ascetic.deployer.feature_0.0.1.qualifier.jar" id="ascetic.deployer.feature" version="0.0.1.qualifier">
       <category name="eu.ascetic.compss.ide.deployers"/>
    </feature>
-   <feature url="features/COMPSs-IDE-Core_1.3.0.qualifier.jar" id="COMPSs-IDE-Core" version="1.3.0.qualifier">
+   <feature url="features/COMPSs-IDE-Core_2.0.0.qualifier.jar" id="COMPSs-IDE-Core" version="2.0.0.qualifier">
       <category name="es.bsc.compss.ide.core"/>
    </feature>
    <category-def name="eu.ascetic.compss.ide.deployers" label="Ascetic-Deployer">
