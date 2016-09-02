@@ -6,7 +6,6 @@ import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.resources.ResourceDescription;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -39,8 +38,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
     public abstract LinkedList<SchedulingEvent<P, T>> process(
             LocalOptimizationState state,
             AsceticResourceScheduler<P, T> worker,
-            PriorityQueue<AllocatableAction> readyActions,
-            PriorityActionSet selectableActions,
             PriorityQueue<AllocatableAction> rescheduledActions
     );
 
@@ -63,8 +60,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
         public LinkedList<SchedulingEvent<P, T>> process(
                 LocalOptimizationState state,
                 AsceticResourceScheduler<P, T> worker,
-                PriorityQueue<AllocatableAction> readyActions,
-                PriorityActionSet selectableActions,
                 PriorityQueue<AllocatableAction> rescheduledActions
         ) {
             LinkedList<SchedulingEvent<P, T>> enabledEvents = new LinkedList<SchedulingEvent<P, T>>();
@@ -94,7 +89,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                         state.removeTmpGap(tmpGap);
                     }
                 } else {
-                    PriorityQueue<Gap> outGaps = fillGap(worker, tmpGap, readyActions, selectableActions, rescheduledActions, state);
+                    PriorityQueue<Gap> outGaps = fillGap(worker, tmpGap, rescheduledActions, state);
                     for (Gap outGap : outGaps) {
                         AllocatableAction pred = outGap.getOrigin();
                         if (pred != null) {
@@ -114,8 +109,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
         private PriorityQueue<Gap> fillGap(
                 AsceticResourceScheduler<P, T> worker,
                 Gap gap,
-                PriorityQueue<AllocatableAction> readyActions,
-                PriorityActionSet selectableActions,
                 PriorityQueue<AllocatableAction> rescheduledActions,
                 LocalOptimizationState state
         ) {
@@ -128,7 +121,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
             });
 
-            AllocatableAction gapAction = pollActionForGap(gap, worker, selectableActions);
+            AllocatableAction gapAction = state.pollActionForGap(gap);
 
             if (gapAction != null) {
                 //Compute method start
@@ -140,7 +133,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 if (gap.getInitialTime() != gapActionStart) {
                     Gap previousGap = new Gap(gap.getInitialTime(), gapActionStart, gap.getOrigin(), gap.getResources(), 0);
                     state.replaceTmpGap(gap, previousGap);
-                    availableGaps = fillGap(worker, previousGap, readyActions, selectableActions, rescheduledActions, state);
+                    availableGaps = fillGap(worker, previousGap, rescheduledActions, state);
                 } else {
                     availableGaps.add(gap);
                 }
@@ -179,7 +172,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
                 availableGaps.clear();
                 for (Gap eg : extendedGaps) {
-                    availableGaps.addAll(fillGap(worker, eg, readyActions, selectableActions, rescheduledActions, state));
+                    availableGaps.addAll(fillGap(worker, eg, rescheduledActions, state));
                 }
 
                 gapActionDSI.clearSuccessors();
@@ -187,12 +180,12 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
                 gapActionDSI.setOnOptimization(false);
                 //Release Data Successors
-                releaseSuccessors(gapActionDSI, worker, readyActions, selectableActions, expectedEnd);
+                state.releaseDataSuccessors(gapActionDSI, expectedEnd);
 
                 //Fill Post action gap space
                 Gap actionGap = new Gap(expectedEnd, gap.getEndTime(), gapAction, gapAction.getAssignedImplementation().getRequirements(), 0);
                 state.addTmpGap(actionGap);
-                availableGaps.addAll(fillGap(worker, actionGap, readyActions, selectableActions, rescheduledActions, state));
+                availableGaps.addAll(fillGap(worker, actionGap, rescheduledActions, state));
             } else {
                 availableGaps.add(gap);
             }
@@ -222,37 +215,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
             }
         }
 
-        private AllocatableAction pollActionForGap(Gap gap, AsceticResourceScheduler worker, PriorityActionSet selectableActions) {
-            AllocatableAction gapAction = null;
-            PriorityQueue<AllocatableAction> peeks = selectableActions.peekAll();
-            //Get Main action to fill the gap
-            while (!peeks.isEmpty() && gapAction == null) {
-                AllocatableAction candidate = peeks.poll();
-                //Check times
-                AsceticSchedulingInformation candidateDSI = (AsceticSchedulingInformation) candidate.getSchedulingInfo();
-                long start = candidateDSI.getExpectedStart();
-                if (start > gap.getEndTime()) {
-                    continue;
-                }
-                Implementation<T> impl = candidate.getAssignedImplementation();
-                Profile p = worker.getProfile(impl);
-                long expectedLength = p.getAverageExecutionTime();
-                if ((gap.getEndTime() - gap.getInitialTime()) < expectedLength) {
-                    continue;
-                }
-                if ((start + expectedLength) > gap.getEndTime()) {
-                    continue;
-                }
-
-                //Check description
-                if (gap.getResources().canHostDynamic(impl)) {
-                    selectableActions.removeFirst(candidate.getCoreId());
-                    gapAction = candidate;
-                }
-            }
-            return gapAction;
-
-        }
     }
 
     public static class End<P extends Profile, T extends WorkerResourceDescription> extends SchedulingEvent<P, T> {
@@ -270,47 +232,41 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
         public LinkedList<SchedulingEvent<P, T>> process(
                 LocalOptimizationState state,
                 AsceticResourceScheduler<P, T> worker,
-                PriorityQueue<AllocatableAction> readyActions,
-                PriorityActionSet selectableActions,
                 PriorityQueue<AllocatableAction> rescheduledActions
         ) {
+            System.out.println(this);
             LinkedList<SchedulingEvent<P, T>> enabledEvents = new LinkedList<SchedulingEvent<P, T>>();
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
             dsi.setOnOptimization(false);
 
-            //Move from readyActions to Ready
-            while (readyActions.size() > 0) {
-                AllocatableAction top = readyActions.peek();
-                AsceticSchedulingInformation topDSI = (AsceticSchedulingInformation) top.getSchedulingInfo();
-                long start = topDSI.getExpectedStart();
-                if (start > expectedTimeStamp) {
-                    break;
-                }
-                readyActions.poll();
-                selectableActions.offer(top);
-            }
+            //Move from readyActions to selectable
+            state.progressOnTime(expectedTimeStamp);
 
             //Detect released Actions
-            releaseSuccessors(dsi, worker, readyActions, selectableActions, expectedTimeStamp);
+            state.releaseDataSuccessors(dsi, expectedTimeStamp);
 
             //Get Top Action
-            AllocatableAction currentTop = selectableActions.peek();
-
+            AllocatableAction currentTop = state.getMostPrioritaryRunnableAction();
             if (state.getAction() != currentTop) {
                 state.replaceAction(currentTop);
             }
             state.releaseResources(expectedTimeStamp, action);
-            updateConsumptions(state, worker, action);
+            state.updateConsumptions(action);
 
             while (state.canActionRun()) {
-                selectableActions.removeFirst(currentTop.getCoreId());
+                state.removeMostPrioritaryRunnableAction(currentTop.getCoreId());
                 AsceticSchedulingInformation topDSI = (AsceticSchedulingInformation) currentTop.getSchedulingInfo();
                 topDSI.lock();
                 topDSI.setToReschedule(false);
-                SchedulingEvent se = new Start(state.getActionStartTime(), currentTop);
-                enabledEvents.addAll(se.process(state, worker, readyActions, selectableActions, rescheduledActions));
+                if (action.isToReleaseResources()) {
+                    SchedulingEvent se = new Start(state.getActionStartTime(), currentTop);
+                    enabledEvents.addAll(se.process(state, worker, rescheduledActions));
+                } else {
+                    SchedulingEvent se = new ResourceBlocked(state.getActionStartTime(), currentTop);
+                    enabledEvents.addAll(se.process(state, worker, rescheduledActions));
+                }
 
-                currentTop = selectableActions.peek();
+                currentTop = state.getMostPrioritaryRunnableAction();
                 state.replaceAction(currentTop);
             }
             return enabledEvents;
@@ -321,61 +277,41 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
         }
     }
 
-    private static void updateConsumptions(LocalOptimizationState state, AsceticResourceScheduler worker, AllocatableAction action) {
-        Implementation impl = action.getAssignedImplementation();
-        AsceticProfile p = (AsceticProfile) worker.getProfile(impl);
-        if (p != null) {
+    public static class ResourceBlocked<P extends Profile, T extends WorkerResourceDescription> extends SchedulingEvent<P, T> {
+
+        public ResourceBlocked(long timeStamp, AllocatableAction<P, T> action) {
+            super(timeStamp, action);
+        }
+
+        @Override
+        protected int getPriority() {
+            return 0;
+        }
+
+        @Override
+        public LinkedList<SchedulingEvent<P, T>> process(
+                LocalOptimizationState state,
+                AsceticResourceScheduler<P, T> worker,
+                PriorityQueue<AllocatableAction> rescheduledActions
+        ) {
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
-            long length = dsi.getExpectedEnd() - (dsi.getExpectedStart() < 0 ? 0 : dsi.getExpectedStart());
-            state.runImplementation(impl);
-            state.consumeEnergy(p.getPower() * length);
-            state.addCost(p.getPrice());
+            dsi.setOnOptimization(false);
+            dsi.clearPredecessors();
+            dsi.clearSuccessors();
+            dsi.setExpectedStart(Long.MAX_VALUE);
+            dsi.setExpectedEnd(Long.MAX_VALUE);
+            //Actions is registered as blocked because of lack of resources
+            state.resourceBlockedAction(action);
+
+            //Register all successors as Blocked Actions
+            state.blockDataSuccessors(dsi);
+			rescheduledActions.add(action);
+            return new LinkedList<SchedulingEvent<P, T>>();
+        }
+
+        public String toString() {
+            return action + " resourceBlocked";
         }
     }
 
-    public void releaseSuccessors(
-            AsceticSchedulingInformation dsi,
-            AsceticResourceScheduler worker,
-            PriorityQueue<AllocatableAction> readyActions,
-            PriorityActionSet selectableActions,
-            long timeLimit) {
-
-        LinkedList<AllocatableAction<P, T>> successors = dsi.getOptimizingSuccessors();
-        for (AllocatableAction successor : successors) {
-            AsceticSchedulingInformation<P, T> successorDSI = (AsceticSchedulingInformation<P, T>) successor.getSchedulingInfo();
-            int missingParams = 0;
-            long startTime = 0;
-            boolean retry = true;
-            while (retry) {
-                try {
-                    LinkedList<AllocatableAction> predecessors = successor.getDataPredecessors();
-                    for (AllocatableAction predecessor : predecessors) {
-                        AsceticSchedulingInformation predDSI = ((AsceticSchedulingInformation) predecessor.getSchedulingInfo());
-                        if (predecessor.getAssignedResource() != worker) {
-                            startTime = Math.max(startTime, predDSI.getExpectedEnd());
-                        } else {
-                            if (predDSI.isOnOptimization()) {
-                                missingParams++;
-                            } else {
-                                startTime = Math.max(startTime, predDSI.getExpectedEnd());
-                            }
-                        }
-                    }
-                    retry = false;
-                } catch (ConcurrentModificationException cme) {
-                    missingParams = 0;
-                    startTime = 0;
-                }
-            }
-            successorDSI.setExpectedStart(startTime);
-            if (missingParams == 0) {
-                if (successorDSI.getExpectedStart() <= timeLimit) {
-                    selectableActions.offer(successor);
-                } else {
-                    readyActions.add(successor);
-                }
-            }
-        }
-        dsi.clearOptimizingSuccessors();
-    }
 }
