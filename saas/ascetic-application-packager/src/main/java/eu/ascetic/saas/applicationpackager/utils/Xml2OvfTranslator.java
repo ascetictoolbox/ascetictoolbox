@@ -23,6 +23,7 @@ import eu.ascetic.saas.applicationpackager.xml.model.Node;
 import eu.ascetic.saas.applicationpackager.xml.model.NodeSlaTarget;
 import eu.ascetic.saas.applicationpackager.xml.model.SoftwareInstall;
 import eu.ascetic.saas.applicationpackager.xml.model.StorageResource;
+import eu.ascetic.saas.applicationpackager.xml.model.VmSlaInfo;
 import eu.ascetic.utils.ovf.api.Disk;
 import eu.ascetic.utils.ovf.api.DiskSection;
 import eu.ascetic.utils.ovf.api.Item;
@@ -99,15 +100,19 @@ public class Xml2OvfTranslator {
         
         //node applicationSLAInfo, get all SLATarget nodes
         ApplicationSlaInfo appSlaInfo = appCfg.getApplicationSLAInfo();
-        List<ApplicationSlaTarget> appSlaTargetList = appSlaInfo.getApplicationSlaTarget();
-        for (ApplicationSlaTarget applicationSlaTarget : appSlaTargetList){
-        	productSection.addSlaInfo(
-        			applicationSlaTarget.getSlaTerm(),
-        			applicationSlaTarget.getSlaMetricUnit(),
-        			OVFUtils.getComparatorOvfFormat(applicationSlaTarget.getComparator()),
-        			applicationSlaTarget.getBoundaryValue(),
-        			applicationSlaTarget.getSlaType());        	
-        }
+        if (appSlaInfo != null){
+        	List<ApplicationSlaTarget> appSlaTargetList = appSlaInfo.getApplicationSlaTarget();
+            if (appSlaTargetList != null){
+            	for (ApplicationSlaTarget applicationSlaTarget : appSlaTargetList){
+                	productSection.addSlaInfo(
+                			applicationSlaTarget.getSlaTerm(),
+                			applicationSlaTarget.getSlaMetricUnit(),
+                			OVFUtils.getComparatorOvfFormat(applicationSlaTarget.getComparator()),
+                			applicationSlaTarget.getBoundaryValue(),
+                			applicationSlaTarget.getSlaType());        	
+                }	
+            }        		
+        }        
         
 //        productSection.addNewProperty("asceticVmicMode", ProductPropertyType.STRING,
 //                appCfg.getMode());
@@ -178,17 +183,21 @@ public class Xml2OvfTranslator {
 		        }
 		        
 		        //<vmSLAInfo> node inside <node>
-		        List<NodeSlaTarget> nodeSlaTargetList = n.getVmSLAInfo().getNodeSlaTarget();
-		        if (nodeSlaTargetList != null){
-			        for (NodeSlaTarget nodeSlaTarget : nodeSlaTargetList){
-			        	productSection2.addSlaInfo(
-			        			nodeSlaTarget.getSlaTerm(),
-			        			nodeSlaTarget.getSlaMetricUnit(),
-			        			OVFUtils.getComparatorOvfFormat(nodeSlaTarget.getComparator()),
-			        			nodeSlaTarget.getBoundaryValue(),
-			        			nodeSlaTarget.getSlaType());
+		        VmSlaInfo vmSlaInfo = n.getVmSLAInfo();
+		        if (vmSlaInfo != null){
+		        	List<NodeSlaTarget> nodeSlaTargetList = vmSlaInfo.getNodeSlaTarget();
+		        	if (nodeSlaTargetList != null){
+				        for (NodeSlaTarget nodeSlaTarget : nodeSlaTargetList){
+				        	productSection2.addSlaInfo(
+				        			nodeSlaTarget.getSlaTerm(),
+				        			nodeSlaTarget.getSlaMetricUnit(),
+				        			OVFUtils.getComparatorOvfFormat(nodeSlaTarget.getComparator()),
+				        			nodeSlaTarget.getBoundaryValue(),
+				        			nodeSlaTarget.getSlaType());
+				        }
 			        }
 		        }
+		        		        
 		        
 		        //<vmAdaptationRules> node, composed by <adaptation-rule> list
 		        if (n.getVmAdaptationRules() != null && n.getVmAdaptationRules().getAdaptationRules() != null){
@@ -338,7 +347,6 @@ public class Xml2OvfTranslator {
         }
 
 	String s = ovfDefinition.toString();
-//culo
 //	s = Utils.replaceAmpersand(s);
 //	System.out.println("POST-REPLACE AMPERSAND HTML CODE:");
 	System.out.println(s);
