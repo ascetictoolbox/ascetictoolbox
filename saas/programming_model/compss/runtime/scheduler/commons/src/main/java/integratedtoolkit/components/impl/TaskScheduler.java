@@ -293,7 +293,8 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         }
     }
 
-    private final void increasedWorkerResources(ResourceScheduler worker, ResourceUpdate modification) {
+    
+	private final void increasedWorkerResources(ResourceScheduler<P, T> worker, ResourceUpdate<?> modification) {
         //Inspect blocked actions to be freed
         LinkedList<AllocatableAction<P, T>> stillBlocked = new LinkedList<AllocatableAction<P, T>>();
         for (AllocatableAction<P, T> action : blockedActions.removeAllCompatibleActions(worker.getResource())) {
@@ -335,7 +336,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         this.workerLoadUpdate(worker);
     }
 
-    private final void reduceWorkerResources(ResourceScheduler worker, ResourceUpdate modification) {
+    private final void reduceWorkerResources(ResourceScheduler<?, ?> worker, ResourceUpdate<?> modification) {
         worker.pendingModification(modification);
         ReduceWorkerAction action = new ReduceWorkerAction(generateSchedulingInformation(), worker, this, modification);
         try {
@@ -346,7 +347,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         }
     }
 
-    private final void reducedWorkerResources(ResourceScheduler worker, ResourceUpdate modification) {
+    private final void reducedWorkerResources(ResourceScheduler<P, T> worker, ResourceUpdate<?> modification) {
         
         if (worker.getExecutableCores().isEmpty()) {
             synchronized (workers) {

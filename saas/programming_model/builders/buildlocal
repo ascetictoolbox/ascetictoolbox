@@ -244,9 +244,9 @@ install() {
   echo "- Compile sources"
   cd ${sourcesDir}/compss/
   if [ "${user_exec}" == "${DEFAULT_USER}" ]; then
-    mvn -U clean package
+    mvn -Dmaven.test.skip=true -U clean package
   else 
-    sudo -E -u ${user_exec} mvn clean install
+    sudo -E -u ${user_exec} mvn -Dmaven.test.skip=true -U clean install
   fi
   cd ${scriptDir}
 
@@ -270,7 +270,7 @@ install() {
   if [ "${user_exec}" == "${DEFAULT_USER}" ]; then
     echo "- Clean sources"
     cd ${sourcesDir}/compss/
-    mvn -U clean
+    mvn clean
     cd ${scriptDir}
   fi
 
