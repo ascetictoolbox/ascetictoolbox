@@ -1982,6 +1982,39 @@ public class DeploymentRestTest extends AbstractTest {
 		assertEquals(-1.0, cost.getPowerValue(), 0.0001);
 	}
 	
+	@Test
+	public void getProviderId() {
+		// Preparations
+		Deployment deployment = new Deployment();
+		
+		DeploymentRest deploymentRest = new DeploymentRest();
+		int providerId = deploymentRest.getProviderId(deployment);
+		
+		assertEquals(-1, providerId);
+		
+		List<VM> vms = new ArrayList<VM>();
+		deployment.setVms(vms);
+		
+		providerId = deploymentRest.getProviderId(deployment);
+		assertEquals(-1, providerId);
+		
+		VM vm = new VM();
+		vms.add(vm);
+		
+		providerId = deploymentRest.getProviderId(deployment);
+		assertEquals(1, providerId);
+		
+		vm.setProviderId("asdf");
+		
+		providerId = deploymentRest.getProviderId(deployment);
+		assertEquals(1, providerId);
+		
+		vm.setProviderId("33");
+		
+		providerId = deploymentRest.getProviderId(deployment);
+		assertEquals(33, providerId);
+	}
+	
 	/**
 	 * It just reads a file form the disk... 
 	 * @param path

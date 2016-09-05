@@ -522,6 +522,33 @@ public class DeploymentRest extends AbstractRest {
 		return ids;
 	}
 	
+	/**
+	 * Returns the provider id of a deployment
+	 * @param deployment
+	 * @return It returns -1 if no VMs deployed, by defualt 1 or the provider id specified in the VMs
+	 */
+	protected int getProviderId(Deployment deployment) {
+		
+		List<VM> vms = deployment.getVms();
+		
+		if(vms == null || vms.size() == 0) {
+			return -1;
+		}
+		
+		VM vm = vms.get(0);
+		String providerId = vm.getProviderId();
+		
+		if(providerId == null) {
+			return 1;
+		}
+		
+		if(providerId.matches("\\d+")) {
+			return Integer.parseInt(providerId);
+		} else {
+			return 1;
+		}
+	}
+	
 	protected List<String> getVmsProviderIds(Deployment deployment) {
 		List<String> ids = new ArrayList<String>();
 		
@@ -749,11 +776,12 @@ public class DeploymentRest extends AbstractRest {
 		int deploymentIdInt = Integer.parseInt(deploymentId);
 		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
 		List<String> ids = getVmsIds(deployment);
+		String providerId = deployment.getProviderId();
 		
 		logger.debug("Connecting to Energy Modeller");
 
-		double energyEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
-		double powerEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
+		double energyEstimated = energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
+		double powerEstimated = energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
 		
 		// Getting from the queue the necessary variables to query the Price Modeller
 		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
