@@ -3622,6 +3622,9 @@ paas/virtual-machine-contextualizer/runtime/config.properties.example -text
 paas/virtual-machine-contextualizer/runtime/templates/patchs/qemu-0.15.1-scsi.patch -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_application -text
 paas/virtual-machine-contextualizer/runtime/templates/scripts/linux/context_network -text
+paas/virtual-machine-contextualizer/runtime/templates/scripts/linux_systemd/README.txt -text
+paas/virtual-machine-contextualizer/runtime/templates/scripts/linux_systemd/network_setup.sh -text
+paas/virtual-machine-contextualizer/runtime/templates/scripts/linux_systemd/vmc_network_setup.service -text
 paas/virtual-machine-contextualizer/runtime/virtual-machine-contextualizer.jar -text
 saas/SaaSMonitorController/LICENSE.TXT -text
 saas/SaaSMonitorController/WebContent/META-INF/MANIFEST.MF -text svneol=unset#text/plain

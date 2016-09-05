@@ -1,0 +1,17 @@
+[Unit]
+Description=VMC Contextulisation script for networking
+DefaultDependencies=no
+Before=network-pre.target
+Wants=network-pre.target
+Requires=local-fs.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/vmc/network_setup.sh
+TimeoutSec=0
+RemainAfterExit=no
+
+[Install]
+RequiredBy=local-fs.target
+WantedBy=network.target

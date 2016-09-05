@@ -1,0 +1,364 @@
+#!/bin/sh -
+# Copyright 2013 University of Leeds
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#  
+#       http://www.apache.org/licenses/LICENSE-2.0
+#  
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Author: Django Armstrong (een4dja@leeds.ac.uk)
+# Edited by: Richard Kavanagh (scsrek@leeds.ac.uk)
+# Version: 1.0.0
+
+# LIMITATIONS:
+# 1) The context CD ROM device must be connected at /dev/hdc
+# 2) Only a single network device (i.e. eth0) is supported.
+
+#######################
+###### Functions ######
+#######################
+
+# Generates a IP address from the last 4 bytes of a MAC address
+mac2ip() {
+  mac=$1
+  let ip_a=0x`echo $mac | cut -d: -f 3`
+  let ip_b=0x`echo $mac | cut -d: -f 4`
+  let ip_c=0x`echo $mac | cut -d: -f 5`
+  let ip_d=0x`echo $mac | cut -d: -f 6`
+  ip="$ip_a.$ip_b.$ip_c.$ip_d"
+  echo $ip
+}
+
+# Programmatic hostname generation useful for large clusters
+generate_hostname() {
+  IP=$1
+  N1="`echo $IP | cut -d '.' -f 1`"
+  N2="`echo $IP | cut -d '.' -f 2`"
+  N3="`echo $IP | cut -d '.' -f 3`"
+  N4="`echo $IP | cut -d '.' -f 4`"
+  echo "$BASE_HOSTNAME$N1-$N2-$N3-$N4"
+}
+
+# Generates resolve.conf for manually setting up DNS servers
+generate_resolv_conf() {
+  RESOLV_CONF="/etc/resolv.conf"
+  echo "search $STATIC_DNS_SEARCH" > $RESOLV_CONF
+  for i in `seq -w 1 ${#STATIC_DNS[*]}`
+  do
+    echo "nameserver ${STATIC_DNS[$i]}" >> $RESOLV_CONF
+  done
+}
+
+# Generate subnet from arguements: ip, netmask
+generate_subnet() {
+  ip=$1
+  nm=$2
+  
+  ip4="${ip##*.}" ; x="${ip%.*}"
+  ip3="${x##*.}" ; x="${x%.*}"
+  ip2="${x##*.}" ; x="${x%.*}"
+  ip1="${x##*.}"   
+  nm4="${nm##*.}" ; x="${nm%.*}"
+  nm3="${x##*.}" ; x="${x%.*}"
+  nm2="${x##*.}" ; x="${x%.*}"
+  nm1="${x##*.}"
+  let sn1="$ip1&$nm1"
+  let sn2="$ip2&$nm2"
+  let sn3="$ip3&$nm3"
+  let sn4="$ip1&$nm4"
+  subnet=$sn1.$sn2.$sn3.$sn4
+  echo $subnet
+}
+
+# Echo static network variables for debuging
+echo_static_network_vars() {
+  echo "Using static network variables from profile \"$1:\""
+  if [ "$STATIC_HOSTNAME" != "" ]
+  then
+    echo "STATIC HOSTNAME: $STATIC_HOSTNAME"
+  fi
+  echo "NETMASK: $STATIC_NETMASK"
+  echo "GATEWAY: $STATIC_GATEWAY"
+  echo "SUBNET: $STATIC_SUBNET"
+  for i in `seq -w 1 ${#STATIC_DNS[*]}`; do
+    echo "DNS$i: ${STATIC_DNS[$i]}"
+  done
+  echo "DNS SEARCH: $STATIC_DNS_SEARCH"
+  if [ "$EXTRA_HOSTS" != "" ]
+  then
+    for i in `seq -w 1 ${#EXTRA_HOSTS[*]}`; do
+      echo "EXTRA HOST$i: ${EXTRA_HOSTS[$i]}"
+    done
+  fi
+}
+
+#######################################
+###### Start of script execution ######
+#######################################
+
+##### Ethernet Device Variables #####
+DEV_MAC=`/sbin/ifconfig -a | grep "^eth" | sed 's/ *Link encap:Ethernet.*HWaddr /-/g' | tail -n 1`
+DEV=`echo $DEV_MAC | cut -d'-' -f 1`   
+MAC=`echo $DEV_MAC | cut -d'-' -f 2`
+MAC_FIRST_BYTE=`echo $MAC | cut -d':' -f 1`
+echo ""
+echo "Ethernet device at /dev/$DEV has MAC address: $MAC"
+
+##### Static networking variables #####
+# PROVIDER A) LEEDS: (10.*)
+if [ "`mac2ip $MAC | cut -d'.' -f1`" == "10" ]
+then
+  STATIC_HOSTNAME="" #Leave blank for IP generated name
+  STATIC_NETMASK="255.0.0.0"
+  STATIC_GATEWAY="10.0.0.254"
+  STATIC_SUBNET="10.0.0.0"
+  STATIC_DNS[1]="129.11.159.114"
+  STATIC_DNS_SEARCH="leeds.ac.uk"
+  EXTRA_HOSTS[1]="10.10.0.1 testnode1"
+  EXTRA_HOSTS[2]="10.10.0.2 testnode2"
+  EXTRA_HOSTS[3]="10.10.0.3 testnode3 testgrid3"
+  EXTRA_HOSTS[4]="10.10.0.4 testnode4 testgrid7"
+  EXTRA_HOSTS[5]="10.10.0.5 testnode5 testgrid8"
+  EXTRA_HOSTS[6]="10.10.0.6 testnode6 testgrid9"
+  EXTRA_HOSTS[7]="10.10.0.7 testnode7 testgrid12"
+  EXTRA_HOSTS[8]="10.10.0.8 testnode8 testgrid13"
+  echo_static_network_vars "PROVIDER A) LEEDS: (10.*)"
+else
+  echo "WARNING: Unknown Networking Environment (Ignore if using ISO or DHCP)!"
+fi
+
+##### Other variables #####
+BASE_HOSTNAME=VM #Used for generating a hostname from the VM's IP address
+
+##### Mount the context iso #####
+context_mount_dir=/tmp/context
+recontext_script_dir=$context_mount_dir/recontext-scripts
+actual_mount_dir=/mnt/context
+metadata_file=.metadata
+# WARNING: must always be the first CD ROM device (i.e. hdc)
+echo "Mounting context image from /dev/*..."
+if [ ! -d $context_mount_dir ]; then
+  mkdir $context_mount_dir
+fi
+
+if [ -e /dev/hdc ]; then
+  mount /dev/hdc $context_mount_dir # Old distro's not using libata and scsi emulation
+elif [ -e /dev/xvdc ]; then
+  mount /dev/xvdc $context_mount_dir # XEN-PV without cdrom support
+elif [ -e /dev/cdrom ]; then
+  mount /dev/cdrom $context_mount_dir # Scsi emulation via libata at /dev/sr*
+else
+  echo "Failed to mount context iso, no devices found from possible sources: hdc, xvdc or cdrom"
+fi
+
+##### Conditional context data mounting #####
+#First check the structure version of the context data
+if [ -f $context_mount_dir/$metadata_file ]; then
+    source $context_mount_dir/$metadata_file
+    echo "meta.data file found, context version is $version"
+    context_version=$version
+else
+    echo "meta.data file not found, context version assumed to be 1"
+    context_version=1
+fi
+
+# Check if fuse is available
+echo "Attempting to load fuse module"  2>&1 >> /var/log/ffs.log
+modprobe fuse  2>&1 >> /var/log/ffs.log
+fuse_rv="$?"
+echo "Fuse return value is: $fuse_rv"
+
+#Mount manually if fuse not found, or if context version is 1
+if [ "$fuse_rv" != "0" ] || [ "$context_version" == 1 ] ; then
+    echo "Failed to load fuse or context version = 1 (fuse: $fuse_rv, context_version: $context_version)"
+    ## Mount /mnt/context manually from $mount_dir/data
+    if [ ! -d $actual_mount_dir ]; then
+        mkdir $actual_mount_dir
+    fi
+    echo "Manually mounting $context_mount_dir/data to $actual_mount_dir"
+    mount $context_mount_dir/data $actual_mount_dir
+else
+    echo "Successfully loaded fuse and context_version > 1 (fuse: $fuse_rc, context_version: $context_version)"
+    sleep 1
+    echo "Mounting recontext"  2>&1 > /var/log/ffs.log
+    python $recontext_script_dir/ffs.py $actual_mount_dir >& /var/log/ffs.log &
+    echo "Starting automounter script" > /var/log/auto-mounter.log
+    sh $recontext_script_dir/auto-mounter.sh >& /var/log/auto-mounter.log &
+fi
+
+##### Define Config Files and Clean Up #####
+if [ -f /etc/redhat-release ]
+#### Redhat Configs ####
+then
+  echo "Detected Redhat based distro!"
+  LO_CONFIG_FILE="/etc/sysconfig/network-scripts/ifcfg-lo"
+  ETH_CONFIG_FILE="/etc/sysconfig/network-scripts/ifcfg-$DEV"
+  NETWORK_CONFIG="/etc/sysconfig/network"
+  # Remove the old configs
+  rm /etc/sysconfig/network-scripts/ifcfg-*
+fi
+if [ -f /etc/debian_version ]
+#### Debian Configs ####
+then
+  echo "Detected Debian based distro!"
+  INTERFACE_CONFIG_FILE="/etc/network/interfaces"
+fi
+#### Clean hosts file ####
+HOSTS_FILE="/etc/hosts"
+echo "127.0.0.1 localhost.localdomain localhost" > $HOSTS_FILE
+
+##### Setup loop back device #####
+if [ -f /etc/redhat-release ]
+#### Redhat Configs ####
+then
+  # Config for loopback device
+  echo "DEVICE=lo" > $LO_CONFIG_FILE
+  echo "IPADDR=127.0.0.1" >> $LO_CONFIG_FILE
+  echo "NETMAS=255.0.0.0" >> $LO_CONFIG_FILE
+  echo "NETWORK=127.0.0.0" >> $LO_CONFIG_FILE
+  echo "BROADCAST=127.255.255.255" >> $LO_CONFIG_FILE
+  echo "ONBOOT=yes" >> $LO_CONFIG_FILE
+  echo "NAME=loopback" >> $LO_CONFIG_FILE
+fi
+if [ -f /etc/debian_version ]
+#### Debian Configs ####
+then
+  # Config for loopback device
+  echo "auto lo" > $INTERFACE_CONFIG_FILE
+  echo "iface lo inet loopback" >> $INTERFACE_CONFIG_FILE
+  echo "" >> $INTERFACE_CONFIG_FILE
+fi
+
+##### Setup ethernet device #####  
+# WARNING: We only support a single network device...
+if [ $MAC_FIRST_BYTE == "0a" ] || [ $MAC_FIRST_BYTE == "0A" ] # Use DHCP if first byte of mac address is '0A'
+#### IP by DHCP ####
+then
+  echo "First byte of MAC is 0A, setting up DHCP network..."
+
+  ### Variables ###
+  IP="`mac2ip $MAC`"
+  DHCP_HOSTNAME="`generate_hostname $IP`"
+  ### Redhat Configs ###
+  if [ -f /etc/redhat-release ]
+  then
+    echo "DEVICE=$DEV" > $ETH_CONFIG_FILE
+    echo "ONBOOT=yes" >> $ETH_CONFIG_FILE
+    echo "BOOTPROTO=dhcp" >> $ETH_CONFIG_FILE
+        echo "PEERDNS=yes" >> $ETH_CONFIG_FILE
+  
+    # General networking config
+    echo "NETWORKING=yes" > $NETWORK_CONFIG
+    echo "HOSTNAME=$DHCP_HOSTNAME" >> $NETWORK_CONFIG # Use mac address to create unique hostname
+  fi 
+  ### Debian Configs ###
+  if [ -f /etc/debian_version ]
+  then
+    echo "auto $DEV" >> $INTERFACE_CONFIG_FILE
+    echo "iface $DEV inet dhcp" >> $INTERFACE_CONFIG_FILE   
+  fi 
+  # Set hostname
+  echo "$DHCP_HOSTNAME" > /etc/hostname
+  /bin/hostname $DHCP_HOSTNAME
+  echo "Generated hostname is: $DHCP_HOSTNAME"
+  
+#### Static IP ####
+else
+  echo "Setting up static network..."
+  ### Variables ###
+  # Support for fetching network variables via iso mounted ovf-env.xml
+  if [ -f /mnt/context/ovf-env.xml ]
+  then
+    echo "Found OVF network description at /mnt/context, using new static variables..."
+    STATIC_NETMASK=`cat /mnt/context/ovf-env.xml | grep mask | cut -d'"' -f4`
+    STATIC_GATEWAY=`cat /mnt/context/ovf-env.xml | grep gw | cut -d'"' -f4`
+    IP=`cat /mnt/context/ovf-env.xml | grep ip | cut -d'"' -f4`
+    STATIC_SUBNET=`generate_subnet $IP $STATIC_NETMASK`
+    unset STATIC_DNS
+    STATIC_DNS[1]=`cat /mnt/context/ovf-env.xml | grep dns1 | cut -d'"' -f4`
+    STATIC_DNS[2]=`cat /mnt/context/ovf-env.xml | grep dns2 | cut -d'"' -f4`
+    STATIC_HOSTNAME=""
+    STATIC_DNS_SEARCH="vm.local"
+    EXTRA_HOSTS=""
+    echo_static_network_vars "OVF Network Description"
+  else
+    # Get IP from mac address instead
+    IP=`mac2ip $MAC`
+  fi
+  echo "IP Address is: $IP"
+  CLASS_C_NETWORK=`echo $IP | cut -d'.' -f 1,2,3`
+  
+  ### Set Hostname ###
+  if [ "$STATIC_HOSTNAME" == "" ]
+  then
+    # Generate it
+    generate_hostname $IP > /etc/hostname
+  else
+    # Use the static name
+    echo $STATIC_HOSTNAME > /etc/hostname
+  fi
+  # Force OS to update it
+  /bin/hostname `cat /etc/hostname`
+  echo "Generated hostname is: `cat /etc/hostname`"
+  
+  ### Redhat Configs ###
+  if [ -f /etc/redhat-release ]
+  then 
+    # Config for eth0
+    echo "DEVICE=$DEV" > $ETH_CONFIG_FILE
+    echo "ONBOOT=yes" >> $ETH_CONFIG_FILE
+    echo "BOOTPROTO=static" >> $ETH_CONFIG_FILE
+    echo "IPADDR=$IP" >> $ETH_CONFIG_FILE
+    echo "NETMASK=$STATIC_NETMASK" >> $ETH_CONFIG_FILE
+    # General networking config
+    echo "NETWORKING=yes" > $NETWORK_CONFIG
+    echo "GATEWAY=$STATIC_GATEWAY" >> $NETWORK_CONFIG
+    echo "HOSTNAME=`cat /etc/hostname`" >> $NETWORK_CONFIG
+      
+    # DNS to resolv.conf
+    generate_resolv_conf   
+  fi 
+  ### Debian Configs ###
+  if [ -f /etc/debian_version ]
+  then
+    echo "auto $DEV" >> $INTERFACE_CONFIG_FILE
+    echo "iface $DEV inet static" >> $INTERFACE_CONFIG_FILE
+    echo "  address $IP" >> $INTERFACE_CONFIG_FILE
+    echo "  network $STATIC_SUBNET" >> $INTERFACE_CONFIG_FILE
+    echo "  netmask $STATIC_NETMASK" >> $INTERFACE_CONFIG_FILE
+    echo "  gateway $STATIC_GATEWAY" >> $INTERFACE_CONFIG_FILE
+    echo -ne "  dns-nameservers " >> $INTERFACE_CONFIG_FILE
+    for i in `seq -w 1 ${#STATIC_DNS[*]}`; do
+      echo -ne " ${STATIC_DNS[$i]}" >> $INTERFACE_CONFIG_FILE
+    done
+    echo "" >> $INTERFACE_CONFIG_FILE
+    echo "  dns-search $STATIC_DNS_SEARCH" >> $INTERFACE_CONFIG_FILE
+    
+    # DNS to resolv.conf just in case
+    generate_resolv_conf
+  fi
+  ### Generate hosts file (Useful for creating large clusters of machines)
+  for n in `seq -w 01 254` # Generate 254 hosts on first class C subnet
+  do
+    n2=`echo $n | sed 's/^0*//'`
+    echo ${CLASS_C_NETWORK}.$n2 $(generate_hostname ${CLASS_C_NETWORK}.$n2) >> $HOSTS_FILE
+  done
+fi
+  
+##### Add additional static hosts
+if [ ${#EXTRA_HOSTS[*]} -ne 0 ]
+then
+  for i in `seq -w 1 ${#EXTRA_HOSTS[*]}`
+  do
+    echo ${EXTRA_HOSTS[$i]} >> $HOSTS_FILE
+  done
+fi
+
+exit 0
+
