@@ -168,28 +168,30 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return billing.predictPriceofNextHour(depl);
 	}
 	
-	public double getAppPredictedCharges(int deplID, int scheme, double IaaSCharges, LinkedList<VMinfo> VMs){
-		DeploymentInfo deployment = new DeploymentInfo(deplID);
+	public double getAppPredictedCharges(int scheme, LinkedList<VMinfo> VMs){
+		//Re-check this function
+		DeploymentInfo deployment = new DeploymentInfo();
 			deployment.setVMs(VMs);
 			double charges = billing.predictCharges(deployment, null);
 			List<Integer> vms = new ArrayList<>();
 			for (int i=0;i<VMs.size();i++){
 				vms.add(VMs.get(i).getVMid());
 			}
+			/*
 			try{
 				producer.sendToQueue("PMPREDICTION",VMs.getLast().getIaaSProvider().getID(), deplID, vms, Unit.CHARGES, charges);	
 			}
 			catch(Exception ex){
 				//	System.out.println("PM: Could not send message to queue");
 					logger.error("PM: Could not send message to queue");
-			}
+			}*/
 			return charges;
 	}
 	
 
 	
-	public double getAppPredictedPrice(int deplID, int scheme, double IaaSCharges, double duration, LinkedList<VMinfo> VMs){
-		double charges = getAppPredictedCharges(deplID, scheme, IaaSCharges, VMs);
+	public double getAppPredictedPrice(int scheme,  double duration, LinkedList<VMinfo> VMs){
+		double charges = getAppPredictedCharges(scheme, VMs);
 		double totalDurationOfApp = 0;
 		List<Integer> vms = new ArrayList<>();
 				for (int i=0;i<VMs.size();i++){
@@ -197,13 +199,14 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 					vms.add(VMs.get(i).getVMid());
 				}
 				double price = charges / totalDurationOfApp;
+				/*
 				try{
 					producer.sendToQueue("PMPREDICTION", VMs.getLast().getIaaSProvider().getID(), deplID, vms, Unit.PRICEHOUR, price);	
 				}
 				catch(Exception ex){
 					//System.out.println("PM: Could not send message to queue");
 					logger.error("PM: Could not send message to queue");
-			}
+			}*/
 		return price;
 
 	}

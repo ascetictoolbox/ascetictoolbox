@@ -113,6 +113,10 @@ public class DeploymentInfo {
 	public DeploymentInfo(int deplID) {
 		this.deploymentId=deploymentId;
 	}
+	public DeploymentInfo() {
+		this.deploymentId=101;
+	}
+
 	public void setProducer (PricingModellerQueueServiceManager producer){
 	//	System.out.println("Deployment info: I have the producer");
 		this.producer = producer;
