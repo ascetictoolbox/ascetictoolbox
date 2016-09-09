@@ -389,7 +389,7 @@ public class NegotiationManagerImpl implements NegotiationManager {
 							SimpleDomainExpr sde = (SimpleDomainExpr)tce.getDomain();
 
 							CONST originalValue = (CONST) sde.getValue();
-							Integer mathValue = Integer.parseInt(originalValue.getValue());
+							Double mathValue = Double.parseDouble(originalValue.getValue());
 
 							mathValue = mathValue / ovfParser.getVirtualSystems().length;
 
