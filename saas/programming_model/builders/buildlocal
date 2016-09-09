@@ -466,7 +466,7 @@ install() {
   fi
 
   # ADD MONITOR SCRIPT TO ETC
-  if [ "$monitor" == "true" ]; then 
+  #if [ "$monitor" == "true" ]; then 
     #echo "- Add monitor script to init.d"
     #sudo cp ${tmpDir}/compss/tools/monitor/scripts/compss-monitor /etc/init.d/compss-monitor
     #sudo chmod 755 /etc/init.d/compss-monitor
@@ -479,7 +479,7 @@ install() {
       # Debian based distrs
       #sudo update-rc.d compss-monitor defaults
     #fi
-  fi
+  #fi
  
   # ERASE TMP FILES
   echo "- Erase tmp files"
