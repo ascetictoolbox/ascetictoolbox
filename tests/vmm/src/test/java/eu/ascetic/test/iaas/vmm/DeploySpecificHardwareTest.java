@@ -46,7 +46,7 @@ public class DeploySpecificHardwareTest  extends VmmTestBase{
             hostname = "wally152";
             cpuExpectedModel = "Intel Xeon E312xx (Sandy Bridge)";
         } else if(environment.equals("stable")){
-            hostname = "wally157";
+            hostname = "wally158";
             cpuExpectedModel = "Intel Xeon E312xx (Sandy Bridge)";
         } else{
             throw new Exception("Environment must be defined on testHwInfo()");

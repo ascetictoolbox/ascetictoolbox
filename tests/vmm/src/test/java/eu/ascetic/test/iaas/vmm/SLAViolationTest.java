@@ -64,7 +64,7 @@ public class SLAViolationTest extends VmmTestBase implements MessageListener{
         } else if(environment.equals("test")){
             sourceHostname = "wally152";
         } else if(environment.equals("stable")){
-            sourceHostname = "wally157";
+            sourceHostname = "wally158";
         } else{
             throw new Exception("Environment must be defined on testHwInfo()");
         }
@@ -111,8 +111,8 @@ public class SLAViolationTest extends VmmTestBase implements MessageListener{
             sourceHostname = "wally152";
             targetHostname = "wally153"; 
         } else if(environment.equals("stable")){
-            targetHostname = "wally158";
-            sourceHostname = "wally157";
+            targetHostname = "wally161";
+            sourceHostname = "wally158";
         } else{
             throw new Exception("Environment must be defined on testHwInfo()");
         }
