@@ -118,6 +118,10 @@ public class VM {
     public String getComponentId() {
         return vm.getOvfId();
     }
+    
+    public int getAMId() {
+        return vm.getId();
+    }
 
     public ResourceDescription getDescription() {
         return description;

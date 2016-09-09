@@ -267,6 +267,12 @@ public class Ascetic {
         int currentVMs = VM.getComponentCount(componentName);
         return Configuration.withinBoundaries(componentName, currentVMs - 1);
     }
+    
+    public static int getVMId(Worker w){
+    	String IPv4 = w.getName();
+        VM vm = resources.get(IPv4);
+        return vm.getAMId();
+    }
 
     private static class AsceticMonitor extends Thread {
 
@@ -283,6 +289,12 @@ public class Ascetic {
                     //Interupted. Do nothing
                 }
             }
+            System.out.println("***** Ascetic Monitoring stopped ******");
+            System.out.println("-Elapsed Time: "+ Ascetic.getAccumulatedTime());
+            System.out.println("-Total Cost: "+ Ascetic.getAccumulatedCost());
+            System.out.println("-Total Energy: "+ Ascetic.getAccumulatedEnergy());
+            System.out.println("***************************************");
         }
     }
+    
 }
