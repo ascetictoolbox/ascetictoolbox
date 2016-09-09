@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class VerticalScalabilityTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("VerticalScalabilityTest");
 
-    public void testDeployAndScaleConfirmManually() throws Exception {
+    /*public void testDeployAndScaleConfirmManually() throws Exception {
         VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
         
         VmRequirements vmScaleRequirements = new VmRequirements( 2, 512, 2, 32);
@@ -91,9 +91,9 @@ public class VerticalScalabilityTest extends VmmTestBase{
         assertEquals(vmScaleRequirements.getDiskGb(), vmScalated.getDiskGb());
         assertEquals(vmScaleRequirements.getRamMb(), vmScalated.getRamMb());
         assertEquals(vmScaleRequirements.getSwapMb(), vmScalated.getSwapMb());
-    }
+    }*/
     
-    public void testDeployAndScaleAutoConfirm() throws Exception {
+    /*public void testDeployAndScaleAutoConfirm() throws Exception {
         VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
         
         VmRequirements vmScaleRequirements = new VmRequirements( 2, 512, 2, 32);
@@ -139,5 +139,5 @@ public class VerticalScalabilityTest extends VmmTestBase{
         assertEquals(vmScaleRequirements.getDiskGb(), vmScalated.getDiskGb());
         assertEquals(vmScaleRequirements.getRamMb(), vmScalated.getRamMb());
         assertEquals(vmScaleRequirements.getSwapMb(), vmScalated.getSwapMb());
-    }
+    }*/
 }
