@@ -89,6 +89,10 @@ public class Manifest {
 	private static final String ASCETIC_APPMAN_PROP = "asceticAppManagerURL";
 	private static final String ASCETIC_APPMON_PROP = "asceticAppMonitorURL";
 	private static final String ASCETIC_IMAGE_CACHE_PROP = "asceticCacheImage";
+	private static final String POWER_APP_SLA_TERM = "power_per_app";
+	private static final String PRICE_APP_SLA_TERM = "price_per_app";
+	private static final String ASCETIC_SLA_INFO_NUMBER = "asceticSlaInfoNumber";
+	//private static final int SLA_MAX_TERMS = 2;
 	private IJavaProject project;
 	private OvfDefinition ovf;
 	
@@ -197,7 +201,7 @@ public class Manifest {
 		}
 		ps.setAssociatePublicIp(true);
 		ps.addNewProperty(PM_ELEMENTS_CONSTRAINT, ProductPropertyType.STRING, signatures);
-		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER+COMPSS_SCRIPTS_PATH+COMPSS_SYSTEM_PATH);
+		ps.addNewProperty(PM_INSTALL_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
 		ps.addNewProperty(PM_APP_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_DEPLOYMENT_FOLDER);
 		ps.addNewProperty(PM_WORKING_DIR_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.IMAGE_WORKING_FOLDER);
 		ps.addNewProperty(PM_USER_CONSTRAINT, ProductPropertyType.STRING, ImageCreation.ASCETIC_USER);
@@ -1141,17 +1145,38 @@ public class Manifest {
 		
 	}
 
+	public void deleteSlaTerms(){
+		ProductSection ps = getOrCreateGlobalProductSection();
+		for (int index=0; index < getSLATermsNumber(ps); index++){
+			log.debug("Removing SLA term "+index);
+			ps.removeSlaInfo(index);
+		}
+	}
+	
 	public void setPowerBoundary(String power) {
 		ProductSection ps = getOrCreateGlobalProductSection();
+		log.debug("Adding Power SLA term ");
+		ps.addSlaInfo(POWER_APP_SLA_TERM, "Watt", "LTE", power, "violation");
 		ps.setPowerRequirement(power);
 		
 	}
 	
 	public void setPriceBoundary(String price) {
 		ProductSection ps = getOrCreateGlobalProductSection();
+		log.debug("Adding Price SLA term ");
+		ps.addSlaInfo(PRICE_APP_SLA_TERM, "Euro/Hour", "LTE", price, "violation");
 		ps.setPriceRequirement(price);
 		
 	}
+	private int getSLATermsNumber(ProductSection ps) {
+        ProductProperty productProperty = ps.getPropertyByKey(ASCETIC_SLA_INFO_NUMBER);
+        if (productProperty == null) {
+            return 0;
+        } else {
+            return ((Integer) productProperty.getValueAsJavaObject());
+        }
+    }
+
 	
 	public void setAppDuration(String duration) {
 		ProductSection ps = getOrCreateGlobalProductSection();

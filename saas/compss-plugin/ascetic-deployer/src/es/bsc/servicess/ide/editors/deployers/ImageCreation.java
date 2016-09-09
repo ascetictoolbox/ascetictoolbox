@@ -380,6 +380,7 @@ public class ImageCreation {
 		RuntimeConfigManager config = new RuntimeConfigManager(file);
 		RuntimeConfigManager oldConfig = RuntimeConfigurationSection.getProjectITConfigManager(project);
 		config.setLog4jConfiguration(IMAGE_DEPLOYMENT_FOLDER + File.separator+COMPSS_LOG4J_DEFAULT_NAME+"."+oldConfig.getLog4jConfiguration());
+		config.setProperty("log4j.configuration", IMAGE_DEPLOYMENT_FOLDER + File.separator+COMPSS_LOG4J_DEFAULT_NAME+"."+oldConfig.getLog4jConfiguration());
 		config.setGraph(oldConfig.isGraph());
 		config.setTracing(oldConfig.getTracing());
 		config.setMonitorInterval(oldConfig.getMonitorInterval());

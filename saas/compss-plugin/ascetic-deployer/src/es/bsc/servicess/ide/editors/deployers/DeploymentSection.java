@@ -469,6 +469,7 @@ public class DeploymentSection extends ServiceEditorSection{
 
 	public void setDeploymentOptionsInManifest(Manifest manifest) {
 		manifest.setImageCaching(imageCache.getSelection());
+		manifest.deleteSlaTerms();
 		manifest.setPowerBoundary(maxPower.getText().trim());
 		manifest.setPriceBoundary(maxPrice.getText().trim());
 		manifest.setAppDuration(appDuration.getText().trim());
