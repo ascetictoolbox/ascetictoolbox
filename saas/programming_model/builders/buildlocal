@@ -244,9 +244,9 @@ install() {
   echo "- Compile sources"
   cd ${sourcesDir}/compss/
   if [ "${user_exec}" == "${DEFAULT_USER}" ]; then
-    mvn -Dmaven.test.skip=true -U clean package
+    mvn  -Dmaven.wagon.http.ssl.insecure=true -Dmaven.test.skip=true -U clean package
   else 
-    sudo -E -u ${user_exec} mvn -Dmaven.test.skip=true -U clean install
+    sudo -E -u ${user_exec} mvn  -Dmaven.wagon.http.ssl.insecure=true -Dmaven.test.skip=true -U clean install
   fi
   cd ${scriptDir}
 
