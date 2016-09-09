@@ -385,6 +385,7 @@ public class PaasViolationChecker implements Runnable {
 
 
 								for (MeasurableAgreementTerm m:terms) {
+									logger.debug("m.getName(): "+m.getName());
 									boolean violated = false;
 
 
@@ -396,6 +397,8 @@ public class PaasViolationChecker implements Runnable {
 									Double marginOfError = new Double(properties.getProperty(MARGIN_OF_ERROR));
 
 									for (String monitorableTerm:monitorableTerms) {
+										logger.debug("Found monitorable term "+monitorableTerm);
+										
 										if (m.getName().equalsIgnoreCase(monitorableTerm)) {
 
 											//gestione particolare termine parametrico
@@ -419,6 +422,7 @@ public class PaasViolationChecker implements Runnable {
 											}
 
 											if (measuredTerms.containsKey(monitorableTerm)) {
+												logger.debug("measuredTerms.containsKey(monitorableTerm)");
 												if (m.getOperator().equals(AsceticAgreementTerm.operatorType.EQUALS)) {
 													if (!m.getValue().equals(new Double(measuredTerms.get(monitorableTerm)))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
@@ -687,7 +691,7 @@ public class PaasViolationChecker implements Runnable {
 
 		try{
 
-			AmqpMessageProducer producer = new AmqpMessageProducer("192.168.3.16:5673", "guest", "guest", "paas-slam.monitoring."+slaId+"."+appId+".violationNotified", true);
+			AmqpMessageProducer producer = new AmqpMessageProducer("192.168.3.222:5673", "guest", "guest", "paas-slam.monitoring."+slaId+"."+appId+".violationNotified", true);
 
 			producer.sendMessage(violationMessage);
 
@@ -1021,10 +1025,29 @@ public class PaasViolationChecker implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		PaasViolationChecker p = new PaasViolationChecker(null, null, null, null, null, false);
-		p.notifyViolation("prova");
+		logger.info("Getting SLA...(SLA ID "+"b467bd04-c1b2-4ec4-a198-f3de1091df1c"+")");
+		SLA sla = null;
+		GetSLAClient gsc = new GetSLAClient("http://192.168.3.222:8080/services/BusinessManager_Reporting?wsdl","b467bd04-c1b2-4ec4-a198-f3de1091df1c");
+		try {
+			sla = gsc.getSLA();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
+		if (sla!=null) {
+			logger.info("Comparing measurement with the threshold...");
+			List<MeasurableAgreementTerm> terms = gsc.getMeasurableTerms(sla);
+
+
+
+			for (MeasurableAgreementTerm m:terms) {
+				System.out.println("m.getName(): "+m.getName());
+			}
+		}
+	}
 
 
 	}
 
-}
+

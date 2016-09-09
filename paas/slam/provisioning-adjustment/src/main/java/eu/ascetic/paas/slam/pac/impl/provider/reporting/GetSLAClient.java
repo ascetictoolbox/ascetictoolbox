@@ -188,6 +188,7 @@ public class GetSLAClient {
 						for (Guaranteed guarantee : term.getGuarantees()) {
 
 							if (guarantee instanceof Guaranteed.State) {
+								System.out.println(guarantee);
 
 								ConstraintExpr ce = ((State) guarantee).getState();
 								if (!(ce instanceof TypeConstraintExpr))
@@ -203,14 +204,14 @@ public class GetSLAClient {
 									if (ssTermName == null)
 										continue;
 									ValueExpr[] parameters = ((FunctionalExpr)expr).getParameters();
-									if (parameters == null || parameters.length == 0)
-										continue;
-									vsName = parameters[0].toString();
+									if (parameters == null || parameters.length == 0) {
+										//commentato per gestire termini applicativi senza parametri (i.e. power_usage_per_app)
+										//continue;
+									}
+									else vsName = parameters[0].toString();
 								}
 
 								String termName = ssTermName.substring(ssTermName.indexOf('#') + 1);
-
-
 
 								DomainExpr de = tce.getDomain();
 								if (de instanceof SimpleDomainExpr)

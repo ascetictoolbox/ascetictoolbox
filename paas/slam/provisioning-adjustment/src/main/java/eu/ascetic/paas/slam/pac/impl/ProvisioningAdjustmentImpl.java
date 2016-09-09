@@ -202,7 +202,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	private void retrieveApplicationEvents() {
 		try{
 
-			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.16:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
+			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.222:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
 
 
 
