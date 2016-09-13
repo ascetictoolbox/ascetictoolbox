@@ -20,7 +20,7 @@ package eu.ascetic.asceticarchitecture.paas.type;
 
 public class IaaSProvider {
 	
-	int IaaSID;
+	String IaaSID;
 	
 	ResourceDistribution distribution= new ResourceDistribution();
 	
@@ -33,11 +33,12 @@ public class IaaSProvider {
 	double EnergyPrice;
 	double oldEnergyPrice = 0.008;
 	
-	public IaaSProvider(int id) {
+	public IaaSProvider(String id) {
 		
 		IaaSID = id;
 		distribution.setDistribution(0.6, 0.3, 0.1); 
-		int even= IaaSID%2;
+		int IaaSid = Integer.parseInt(IaaSID);
+		int even= IaaSid%2;
 		if (even == 0){
 			staticResourcePrice = 0.14;}
 			else{
@@ -89,7 +90,7 @@ public class IaaSProvider {
 		return EnergyPrice;
 	}
 	
-	public int getID(){
+	public String getID(){
 		return IaaSID;
 	}
 

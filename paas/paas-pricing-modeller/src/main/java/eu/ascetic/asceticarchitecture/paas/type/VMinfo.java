@@ -55,7 +55,7 @@ public class VMinfo extends VMBasic{
 	*/
 	
 	///For prediction
-	public VMinfo (int VMid, double RAM, double CPU, double storage, long predictedDuration, int scheme, int IaaSProviderID){
+	public VMinfo (int VMid, double RAM, double CPU, double storage, long predictedDuration, int scheme, String IaaSProviderID){
 		this.VMid= VMid; 
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
@@ -76,7 +76,7 @@ public class VMinfo extends VMBasic{
 	
 	
 	//For deployment
-	public VMinfo (int VMid, double RAM, double CPU, double storage, int scheme, int IaaSProviderID){
+	public VMinfo (int VMid, double RAM, double CPU, double storage, int scheme, String IaaSProviderID){
 		this.VMid= VMid; 
 		this.RAM = RAM/1024;
 		this.CPU = CPU;

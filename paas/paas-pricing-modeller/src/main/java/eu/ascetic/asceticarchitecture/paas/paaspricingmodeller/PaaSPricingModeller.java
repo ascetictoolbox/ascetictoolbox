@@ -237,7 +237,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 */
 	public double getEventPredictedCharges(int deplID, int CPU, int RAM, double storage, double energy, int schemeId, long duration, int numberOfevents) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
-		deployment.setIaaSProvider(1); 
+		deployment.setIaaSProvider("test1"); 
 		VMinfo VM = new VMinfo(RAM, CPU, storage,duration);
 		VM.setEnergyPredicted(energy);
 		VM.setNumberOfEvents(numberOfevents);
@@ -261,7 +261,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 */
 	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
-		deployment.setIaaSProvider(1); 
+		deployment.setIaaSProvider("test1"); 
 		deployment.setVMs(VMs);
 		deployment.setEnergy(energy);
 		double charges = billing.predictAppEventCharges(deployment);

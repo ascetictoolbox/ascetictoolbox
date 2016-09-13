@@ -61,7 +61,7 @@ public class PricingModellerQueueServiceManager {
 		
 	}	
 
-	public void sendToQueue(String queue,int providerid,int deploymentid, List<Integer> vms, ApplicationMessage.Unit unit, double value){
+	public void sendToQueue(String queue,String providerid,int deploymentid, List<Integer> vms, ApplicationMessage.Unit unit, double value){
 		ApplicationMessage message= new ApplicationMessage();
 		
 		message.setAppMessage(deploymentid, unit, value, vms);
@@ -82,7 +82,7 @@ public class PricingModellerQueueServiceManager {
 	
 	public void createConsumers(String appTopic, String measurementsTopic){
 
-		 System.out.println("Registering consumer for application " + appTopic + " and for price measurements "+measurementsTopic);
+		 System.out.println("Registering pricing consumer for application " + appTopic + " and for price measurements "+measurementsTopic);
 		
         MessageListener appListener = new MessageListener() {
         
@@ -96,27 +96,35 @@ public class PricingModellerQueueServiceManager {
 	                    System.out.println("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
-	                    System.out.println("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
+	                    System.out.println("Received " +topic[6] + topic[5]+topic[3]+topic[1]);
 	                    String payload = textMessage.getText();
 	                    String[] text = payload.split(",");
 	                    
-	                    int i =0;
-
 	                    int vmid = Integer.parseInt(topic[5]);
 	                    int depid = Integer.parseInt(topic[3]);
 	                    
 	                    if (topic[6].equals("DEPLOYED")){
 	                    	////HERE I SHOULD TAKE THE CHARS OF THE VM
-	                    //	String[] text2 = text[2].split(":");
-	                    	
+	                    	String[] text2 = text[7].split(":");
+	                        String IaaSProviderID = text2[1];
+	                        text2 = text[10].split(":");
+	                        int CPU = Integer.parseInt(text2[1]);
+	                        text2 = text[11].split(":");
+	                        int RAM = Integer.parseInt(text2[1]);
+	                        text2 = text[13].split(":");
+	                        int storage = Integer.parseInt(text2[1]);
+	                        text2 = text[14].split(":");
+	                        String[] text3 = text2[1].split("}");
+	                        int scheme = Integer.parseInt(text3[0]);
+	                        
 	                    	if (allAppIDs.contains(depid)){
-	                    	//-------------	VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
-	                    ///		prmodeller.addVM(depid, VM);
+	                    		VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
+	                    		prmodeller.addVM(depid, VM);
 	                    	}
 	                    	else {
-	                    	//==========	VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
+	                    		VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
 	                    		LinkedList<VMinfo> list = new LinkedList<>();
-	                   ///---         list.add(VM);
+	                    		list.add(VM);
 	                    		prmodeller.initializeApp(topic[1], depid, list);
 	                    	}
 	                    		
@@ -128,7 +136,18 @@ public class PricingModellerQueueServiceManager {
 	                    }
 	                    
 	                    if (topic[6].equals("RESIZE")){
-	                ///    	prmodeller.resizeVM(depid, vmid, CPU, RAM, storage);
+	                    	String[] text2 = text[7].split(":");
+	                        String IaaSProviderID = text2[1];
+	                        text2 = text[10].split(":");
+	                        int CPU = Integer.parseInt(text2[1]);
+	                        text2 = text[11].split(":");
+	                        int RAM = Integer.parseInt(text2[1]);
+	                        text2 = text[13].split(":");
+	                        int storage = Integer.parseInt(text2[1]);
+	                        text2 = text[14].split(":");
+	                        String[] text3 = text2[1].split("}");
+	                        int scheme = Integer.parseInt(text3[0]);
+	                    	prmodeller.resizeVM(depid, vmid, CPU, RAM, storage);
 	                    }
 	                	 
 	                }
@@ -142,7 +161,7 @@ public class PricingModellerQueueServiceManager {
 	   
 		
 	    logger.debug("Received "+appTopic);
-	   logger.debug("Received "+appListener);
+	    logger.debug("Received "+appListener);
 	    logger.debug("Received "+queuePublisher);
 		queuePublisher.registerListener(appTopic,appListener);
 		

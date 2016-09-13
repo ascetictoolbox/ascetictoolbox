@@ -79,8 +79,8 @@ public class PaaSPricingModellerTest{
     	//System.out.println(prmodeller.getEventPredictedCharges(1, 2, 2048, 40000.0, 51.7, 1, (long)6635.77, 2));
 
     
-    	VMinfo vm1 = new VMinfo(0,1024, 2, 50000, 3600,0);
-    	VMinfo vm2 = new VMinfo(1,1024, 2, 50000, 3600, 1);
+    	VMinfo vm1 = new VMinfo(0,1024, 2, 50000, 3600,"0");
+    	VMinfo vm2 = new VMinfo(1,1024, 2, 50000, 3600, "1");
     	LinkedList<VMinfo> test = new LinkedList<>();
         test.add(vm1);
         test.add(vm2);

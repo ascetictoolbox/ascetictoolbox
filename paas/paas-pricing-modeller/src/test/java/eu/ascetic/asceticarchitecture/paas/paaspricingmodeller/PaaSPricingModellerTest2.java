@@ -62,11 +62,11 @@ public class PaaSPricingModellerTest2{
     @Test
     public void testPriceEstimationBasic() throws Exception{
     	PaaSPricingModeller paasmodeller = new PaaSPricingModeller();
-    	VMinfo vm1 = new VMinfo(1,7680, 2, 32000, 0, 1);
+    	VMinfo vm1 = new VMinfo(1,7680, 2, 32000, 0, "1");
     	Thread.sleep(10000);
-    	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 0, 1);
+    	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 0, "1");
     	Thread.sleep(10000);
-    	VMinfo vm3 = new VMinfo(3,7680, 2, 32000, 0, 1);
+    	VMinfo vm3 = new VMinfo(3,7680, 2, 32000, 0, "1");
     	Thread.sleep(10000);
     	LinkedList<VMinfo> test = new LinkedList<>();
         test.add(vm1);

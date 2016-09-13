@@ -69,8 +69,8 @@ public class PaaSPricingModellerTestqueue{
 	//	PricingModellerQueueServiceManager  producer1;
 	//	producer1 = new PricingModellerQueueServiceManager(PMqueue1);
       //  VMinfo vm1 = new VMinfo(1,7680, 2, 32000, 10, 1, 0);
-		VMinfo vm1 = new VMinfo(1, 7680, 2, 32000, 60, 0, 0);
-    	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 10, 1, 0);
+		VMinfo vm1 = new VMinfo(1, 7680, 2, 32000, 60, 0, "0");
+    	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 10, 1, "0");
     	
     	LinkedList<VMinfo> test = new LinkedList<>();
         test.add(vm1);

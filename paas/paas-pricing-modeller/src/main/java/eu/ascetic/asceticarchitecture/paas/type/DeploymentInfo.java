@@ -236,7 +236,7 @@ public class DeploymentInfo {
 		return predictedInfo.getPredictedCharges();
 	}
 
-	public void setIaaSProvider(int i) {
+	public void setIaaSProvider(String i) {
 		this.IaaS = new IaaSProvider(i);
 		
 	}

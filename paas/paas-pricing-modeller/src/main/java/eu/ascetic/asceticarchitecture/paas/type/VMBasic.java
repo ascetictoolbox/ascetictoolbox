@@ -57,7 +57,7 @@ public class VMBasic {
 	
 	static EnergyInfo energyInfo = new EnergyInfo();
 	
-	static HashMap<Integer,IaaSProvider> IaaSProviders = new HashMap<Integer,IaaSProvider>();
+	static HashMap<String,IaaSProvider> IaaSProviders = new HashMap<String,IaaSProvider>();
 	
 	//double energyPredicted;
 	Timer timer;
