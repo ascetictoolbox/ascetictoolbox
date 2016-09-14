@@ -3,6 +3,9 @@ package eu.ascetic.paas.applicationmanager.slam;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_OVF;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA_OPERATOR;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_POWER_CONSUMPTION_OVF;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_POWER_CONSUMPTION_SLA;
+import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.APP_POWER_CONSUMPTION_SLA_OPERATOR;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.POWER_USAGE_PER_VM_OVF;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.POWER_USAGE_PER_VM_SLA;
 import static eu.ascetic.paas.applicationmanager.slam.OVFToSLANames.POWER_USAGE_PER_VM_SLA_OPERATOR;
@@ -107,10 +110,48 @@ public class SLATemplateCreator {
 		
 		//We verify that the values are the right ones parsing the SLATemplate with different libs...
 		
+		//Add simple agreement to have at least one if no agreements were previously added:
+		
+		AgreementTerm[] agreementTerms = slaTemplate.getAgreementTerms();
+		if(agreementTerms == null || agreementTerms.length == 0) {
+			addSimpleAgreementTermForApp(slaTemplate, ovf);
+		}
+		
 		
 		return slaTemplate;
 	}
 	
+	private static void addSimpleAgreementTermForApp(SLATemplate slaTemplate, OvfDefinition ovf) {
+
+		// ID for the agreement term
+		ID id = new ID("App Guarantees");
+
+		// We add the TypeConstraintExpre
+		ValueExpr[] valueExpre = new ValueExpr[0];
+		FunctionalExpr powerUsagePerAppFuncExpr = new FunctionalExpr(new STND(APP_POWER_CONSUMPTION_SLA_OPERATOR), valueExpre);
+
+
+		SimpleDomainExpr simpleDomainExprAppPower = new SimpleDomainExpr(
+				new CONST(
+						"0.0", 
+						new STND(METRIC_UNITS.get("Watt"))),
+				new STND(COMPARATORS.get("GTE")));
+
+		TypeConstraintExpr typeConstraintExprPowerApp = new TypeConstraintExpr(powerUsagePerAppFuncExpr, simpleDomainExprAppPower);
+
+		Guaranteed.State powerUsagePerAppGuarantee = new Guaranteed.State(new ID(APP_POWER_CONSUMPTION_SLA), typeConstraintExprPowerApp);
+
+		Guaranteed[] guarantees = new Guaranteed[1];
+		guarantees[0] = powerUsagePerAppGuarantee;
+
+		VariableDeclr[] vars = new VariableDeclr[0];
+
+		AgreementTerm agreementTerm = new AgreementTerm(id, null, vars, guarantees);
+
+		// Now we add this agreement terms to the others ones that there are in teh SLATemplate
+		addAgreementTerm(slaTemplate, agreementTerm); 
+	}
+
 	private static void addVMSpecificAgreementTerms(SLATemplate slaTemplate, OvfDefinition ovf) {
 		// We need to go over all VMs
 		VirtualSystem[] virtualSystemArray = ovf.getVirtualSystemCollection().getVirtualSystemArray();

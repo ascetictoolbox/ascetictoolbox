@@ -28,14 +28,14 @@ public class Dictionary {
 	// SLA
 	public static final String SLA_XMLNS = "http://www.slaatsoi.eu/slamodel";
 	
-	public static String DISK_SIZE_UNIT_GBYTE =  "byte * 2^30";
-	public static String DISK_SIZE_UNIT_MBYTE =  "byte * 2^20";
-	public static String DISK_SIZE_UNIT_KBYTE =  "byte * 2^10";
+	public static final String DISK_SIZE_UNIT_GBYTE =  "byte * 2^30";
+	public static final String DISK_SIZE_UNIT_MBYTE =  "byte * 2^20";
+	public static final String DISK_SIZE_UNIT_KBYTE =  "byte * 2^10";
 	
 	// Events
-	public static String DEPLOYMENT_EVENT_TOPIC = "topic.deployment.status";
+	public static final String DEPLOYMENT_EVENT_TOPIC = "topic.deployment.status";
 	
 	// VM States
-	public static String STATE_VM_ACTIVE = "ACTIVE";
-	public static String STATE_VM_DELETED = "DELETED";
+	public static final String STATE_VM_ACTIVE = "ACTIVE";
+	public static final String STATE_VM_DELETED = "DELETED";
 }

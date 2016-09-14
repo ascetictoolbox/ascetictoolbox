@@ -56,6 +56,8 @@ import eu.slaatsoi.slamodel.SLATemplateDocument;
 public class SLATemplateCreatorTest {
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
+	private String aAOvfFile = "na-ovf.xml";
+	private String aAfString;
 	private String ovfSelfAdaptationFile = "output-file-ovf-appPackager.ovf";
 	private String ovfSelfAdaptationString;
 	private MockWebServer mServer;
@@ -76,6 +78,8 @@ public class SLATemplateCreatorTest {
 		threeTierWebAppOvfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		file = new File(this.getClass().getResource( "/" + ovfSelfAdaptationFile ).toURI());		
 		ovfSelfAdaptationString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		file = new File(this.getClass().getResource( "/" + aAOvfFile ).toURI());		
+		aAfString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 		mServer = new MockWebServer();
 		mServer.start();
 		mBaseURL = "http://localhost:";
@@ -95,8 +99,7 @@ public class SLATemplateCreatorTest {
 		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition,  "http://localhost/application-manager/appid/deployments/111/ovf");
 		
 		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
-		SLATemplateDocument slaTemplateRendered =
-		SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+		SLATemplateDocument slaTemplateRendered = SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
 		
 		String slaTemplateString = slaTemplateRendered.toString();
 		
@@ -359,7 +362,7 @@ public class SLATemplateCreatorTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void verifyGenerateSLATemplate() throws Exception {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
 
@@ -369,13 +372,39 @@ public class SLATemplateCreatorTest {
 		//assertEquals("1", slaTemplate.getModelVersion());
 
 		System.out.println(slaTemplate);
+		System.out.println("##########################################################################################");
+		System.out.println("##########################################################################################");
+		System.out.println("##########################################################################################");
 
 		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
-		SLATemplateDocument slaTemplateRendered =
-		SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+		SLATemplateDocument slaTemplateRendered = SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
 
 		System.out.println("SLA rendered as XML:");
 		System.out.println(slaTemplateRendered.toString());
+		
+		
+		ovfDefinition = OVFUtils.getOvfDefinition(aAfString);
+
+		slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.222/application-manager/applications/newsAsset/deployments/490/ovf");
+
+		assertEquals("ASCETiC-SLaTemplate-Example-01", slaTemplate.getUuid().getValue());
+		//assertEquals("1", slaTemplate.getModelVersion());
+
+		System.out.println(slaTemplate);
+		System.out.println("##########################################################################################");
+		System.out.println("##########################################################################################");
+		System.out.println("##########################################################################################");
+
+		slasoiTemplateRenderer = new SLASOITemplateRenderer();
+		slaTemplateRendered = SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+
+		System.out.println("SLA rendered as XML:");
+		System.out.println(slaTemplateRendered.toString());
+		
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		System.out.println("##########################################################################################");
+		System.out.println("##########################################################################################");
+
 	}
 	
 	

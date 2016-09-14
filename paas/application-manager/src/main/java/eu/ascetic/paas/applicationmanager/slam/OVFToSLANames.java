@@ -31,6 +31,9 @@ public class OVFToSLANames {
 	public static final String APP_ENERGY_CONSUMPTION_OVF = "app_energy_consumption";
 	public static final String APP_ENERGY_CONSUMPTION_SLA = "Energy_Usage_per_app";
 	public static final String APP_ENERGY_CONSUMPTION_SLA_OPERATOR = "http://www.slaatsoi.org/resources#energy_usage_per_app";
+	public static final String APP_POWER_CONSUMPTION_OVF = "app_power_consumption";
+	public static final String APP_POWER_CONSUMPTION_SLA = "Power_Usage_per_app";
+	public static final String APP_POWER_CONSUMPTION_SLA_OPERATOR = "http://www.slaatsoi.org/resources#power_usage_per_app";
 	
 	// VM WORDS
 	public static final String VM_GUARANTEES = "_Guarantees";
