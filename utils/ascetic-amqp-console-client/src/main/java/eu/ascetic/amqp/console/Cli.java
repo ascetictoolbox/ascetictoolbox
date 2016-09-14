@@ -1,5 +1,10 @@
 package eu.ascetic.amqp.console;
 
+import java.io.IOException;
+
+import javax.jms.JMSException;
+import javax.naming.NamingException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -54,7 +59,7 @@ public class Cli {
 		options.addOption("q", "queue", true, "Specifies the queue to which subscribe. Wildcards are valid.");
 	}
 	
-	public void parse() throws Exception {
+	public void parse() throws NamingException, JMSException, IOException  {
 		CommandLineParser parser = new DefaultParser();;
 		CommandLine cmd = null;
 		
@@ -94,7 +99,7 @@ public class Cli {
 
 	}
 	
-	protected void listen() throws Exception {
+	protected void listen() throws NamingException, JMSException, IOException  {
 		if(topic != null) {
 			AmqpMessageReceiver receiver = new AmqpMessageReceiver(host, user, password,  topic, true);
 			TopicListener topicListener = new TopicListener();
