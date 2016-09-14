@@ -652,7 +652,7 @@ public class IaasViolationChecker implements Runnable {
 		/*
 		 * verify if the same violation has been notified recently
 		 */
-		long millis = System.currentTimeMillis() % 1000;
+		long millis = System.currentTimeMillis() / 1000;
 		if (violationNotificationTime!=0) {	
 			if (millis-violationNotificationTime<new Long(properties.getProperty(NOTIFICATION_INTERVAL))) {
 				logger.info("The violation has already been notified recently, skipping...");
