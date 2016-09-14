@@ -39,9 +39,11 @@ public class AmqpMessageProducer extends AmqpAbstract {
 	 * @param user username to connect to the broker, if <code>null</code> is set to "guest" by defualt.
 	 * @param password password to connect to the broker, if <code>null</code> is set to "guest" by defualt.
 	 * @param queueOrTopic queue or topic to which to send messages
+	 * @throws JMSException 
+	 * @throws NamingException 
 	 * @throws Exception
 	 */
-	public AmqpMessageProducer(String user, String password, String queueOrTopic) throws Exception {
+	public AmqpMessageProducer(String user, String password, String queueOrTopic) throws NamingException, JMSException {
 		super(user, password, queueOrTopic);
 		
 		createProducer();
@@ -54,9 +56,11 @@ public class AmqpMessageProducer extends AmqpAbstract {
 	 * @param password to connect to the AMQP Broker, if <code>null</code>, it is set to "guest"
 	 * @param queueOrTopicName queue or topic name to subscribe to
 	 * @param topic <code>true</code> if it is a topic, <code>false</code> if it iw a queue
+	 * @throws JMSException 
+	 * @throws NamingException 
 	 * @throws Exception
 	 */
-	public AmqpMessageProducer(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
+	public AmqpMessageProducer(String url, String user, String password, String queueOrTopicName, boolean topic) throws NamingException, JMSException {
 		super(url, user, password, queueOrTopicName, topic);
 
 		createProducer();
@@ -72,9 +76,10 @@ public class AmqpMessageProducer extends AmqpAbstract {
 	/**
 	 * It sends a message to the Message Queue for an specific topic
 	 * @param message text message to be sent.
+	 * @throws JMSException 
 	 * @throws Exception
 	 */
-	public void sendMessage(String message) throws Exception {
+	public void sendMessage(String message) throws JMSException  {
 		logger.info("Sending message to queue/topic: " + queueOrTopic);
 		logger.debug("Message: " + message);
 		
