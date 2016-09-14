@@ -325,6 +325,7 @@ public class NegotiationManagerImpl implements NegotiationManager {
 				//termini da nascondere (no translation)
 				if (terms[i].toString().contains("power_usage_per_event")
 				|| terms[i].toString().contains("energy_usage_per_event")
+				|| terms[i].toString().contains("app_price_for_next_hour")
 				|| terms[i].toString().contains("aggregated_event_metric_over_period")) 
 				{
 					logger.debug("Found a PaaS layer term. Hiding...");
