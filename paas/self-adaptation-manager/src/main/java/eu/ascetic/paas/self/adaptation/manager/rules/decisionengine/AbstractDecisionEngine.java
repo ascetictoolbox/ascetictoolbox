@@ -77,7 +77,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         String applicationID = response.getApplicationId();
         String deploymentID = response.getDeploymentId();
         SLALimits limits = actuator.getSlaLimits(applicationID, deploymentID);
-        if (limits != null) {
+        if (limits != null && limits.getPower() != null) {
             if (totalMeasuredPower + averagePower > Double.parseDouble(limits.getPower())) {
                 return false;
             }
