@@ -10,6 +10,7 @@ import javax.jms.JMSException;
 import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * 
@@ -43,7 +44,7 @@ public abstract class AmqpAbstract {
 	protected Destination queue;
 	protected String queueOrTopic;
 	
-	public AmqpAbstract(String user, String password, String queueOrTopic) throws Exception {
+	public AmqpAbstract(String user, String password, String queueOrTopic) throws NamingException, JMSException {
 		this.queueOrTopic = queueOrTopic;
 		
 		if(user != null) {
