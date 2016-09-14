@@ -80,11 +80,21 @@ public class Cli {
 				System.out.println("Please, check the help: '-h' or '--help' for more information.");
 			}
 			else {
-				if(cmd.hasOption("u")) this.user = cmd.getOptionValue("u");
-				if(cmd.hasOption("p")) this.password = cmd.getOptionValue("p");
-				if(cmd.hasOption("t")) this.topic = cmd.getOptionValue("t");
-				if(cmd.hasOption("q")) this.queue = cmd.getOptionValue("q");
-				if(cmd.hasOption("s")) this.host = cmd.getOptionValue("s");
+				if(cmd.hasOption("u")) {
+					this.user = cmd.getOptionValue("u");
+				}
+				if(cmd.hasOption("p")) {
+					this.password = cmd.getOptionValue("p");
+				}
+				if(cmd.hasOption("t")) {
+					this.topic = cmd.getOptionValue("t");
+				}
+				if(cmd.hasOption("q")) {
+					this.queue = cmd.getOptionValue("q");
+				}
+				if(cmd.hasOption("s")) {
+					this.host = cmd.getOptionValue("s");
+				}
 				
 				logger.debug("Host: " + this.host + " User: " + this.user + " password: " + password + " topic: " + topic + " queue: " + queue);
 				
