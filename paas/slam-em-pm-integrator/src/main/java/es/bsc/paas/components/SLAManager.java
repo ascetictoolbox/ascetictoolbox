@@ -37,7 +37,7 @@ public class SLAManager {
             .append("\",\"DeploymentId\":\"")
             .append(deploymentId)
             .append("\",\"Timestamp\":")
-            .append(System.currentTimeMillis())
+            .append(referredtimestamp)
             .append(",\"data\":{\"energyEstimation\":")
             .append(energyEstimation)
             .append(",\"powerEstimation\":")
