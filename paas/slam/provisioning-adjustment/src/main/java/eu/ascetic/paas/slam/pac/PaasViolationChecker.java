@@ -98,6 +98,7 @@ public class PaasViolationChecker implements Runnable {
 	private boolean recovered;
 
 	public long violationNotificationTime = 0;
+	public long warningNotificationTime = 0;
 
 	public PaasViolationChecker(Properties properties, String topicId, String appId, String deploymentId, String slaId, boolean recovered) {
 		super();
@@ -429,12 +430,12 @@ public class PaasViolationChecker implements Runnable {
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
-													if (!(m.getValue() <(new Double(measuredTerms.get(monitorableTerm)  + marginOfError)))) {
+													if (!(m.getValue() <(new Double(measuredTerms.get(monitorableTerm))  + marginOfError))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
-													if (!(m.getValue()+marginOfError <=(new Double(measuredTerms.get(monitorableTerm) + marginOfError)))) {
+													if (!(m.getValue()+marginOfError <=(new Double(measuredTerms.get(monitorableTerm)) + marginOfError))) {
 														logger.debug("Violation detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
@@ -491,7 +492,7 @@ public class PaasViolationChecker implements Runnable {
 												violationMessage.setAlert(alert);
 
 												ViolationMessageTranslator vmt = new ViolationMessageTranslator();
-												notifyViolation(vmt.toXML(violationMessage));
+												notifyViolation(vmt.toXML(violationMessage), "violation");
 											}
 										}
 									}
@@ -673,18 +674,35 @@ public class PaasViolationChecker implements Runnable {
 	/**
 	 * 3. Writes a violation to the message queue
 	 */
-	private void notifyViolation(String violationMessage) {
+	private void notifyViolation(String violationMessage, String type) {
+		
+		if (type.equalsIgnoreCase("violation")) {
 		/*
 		 * verify if the same violation has been notified recently
 		 */
-		long millis = System.currentTimeMillis() % 1000;
+		long seconds = System.currentTimeMillis() / 1000;
 		if (violationNotificationTime!=0) {	
-			if (millis-violationNotificationTime<new Long(properties.getProperty(NOTIFICATION_INTERVAL))) {
-				logger.info("The violation has already been notified recently, skipping...");
+			if (seconds-violationNotificationTime<new Long(properties.getProperty(NOTIFICATION_INTERVAL))) {
+				logger.info("Seconds: "+seconds+", violationNotificationTime: "+violationNotificationTime+": The violation has already been notified recently, skipping...");
 				return;
 			}
 		}
-		violationNotificationTime = millis;
+		violationNotificationTime = seconds;
+		}
+		
+		else {
+			/*
+			 * verify if the same violation has been notified recently
+			 */
+			long seconds = System.currentTimeMillis() / 1000;
+			if (warningNotificationTime!=0) {	
+				if (seconds-warningNotificationTime<new Long(properties.getProperty(NOTIFICATION_INTERVAL))) {
+					logger.info("Seconds: "+seconds+", warningNotificationTime: "+warningNotificationTime+": The warning has already been notified recently, skipping...");
+					return;
+				}
+			}
+			warningNotificationTime = seconds;	
+		}
 		/*
 		 * 
 		 */
@@ -956,12 +974,12 @@ public class PaasViolationChecker implements Runnable {
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER)) {
-													if (!(m.getValue() <(new Double(measuredTerms.get(monitorableTerm)  + marginOfError)))) {
+													if (!(m.getValue() <(new Double(measuredTerms.get(monitorableTerm))  + marginOfError))) {
 														logger.debug("Warning detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
 												else if (m.getOperator().equals(AsceticAgreementTerm.operatorType.GREATER_EQUAL)) {
-													if (!(m.getValue()+marginOfError <=(new Double(measuredTerms.get(monitorableTerm) + marginOfError)))) {
+													if (!(m.getValue()+marginOfError <=(new Double(measuredTerms.get(monitorableTerm)) + marginOfError))) {
 														logger.debug("Warning detected. Value: "+measuredTerms.get(monitorableTerm)+" Condition: "+m); violated = true;
 													}
 												}
@@ -999,7 +1017,7 @@ public class PaasViolationChecker implements Runnable {
 												violationMessage.setAlert(alert);
 	
 												ViolationMessageTranslator vmt = new ViolationMessageTranslator();
-												notifyViolation(vmt.toXML(violationMessage));
+												notifyViolation(vmt.toXML(violationMessage),"warning");
 											}
 										}
 									}
