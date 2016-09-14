@@ -38,9 +38,11 @@ public class AmqpMessageReceiver extends AmqpAbstract {
 	 * @param user to connect to the AMQP Broker, if <code>null</code>, it is set to "guest"
 	 * @param password to connect to the AMQP Broker, if <code>null</code>, it is set to "guest"
 	 * @param queueOrTopic to subscribe, it should be the JNDI name of the jndi.properties file.
+	 * @throws JMSException 
+	 * @throws NamingException 
 	 * @throws Exception
 	 */
-	public AmqpMessageReceiver(String user, String password, String queueOrTopic) throws Exception {
+	public AmqpMessageReceiver(String user, String password, String queueOrTopic) throws NamingException, JMSException {
 		super(user, password, queueOrTopic);
 	}
 	
@@ -51,9 +53,11 @@ public class AmqpMessageReceiver extends AmqpAbstract {
 	 * @param password to connect to the AMQP Broker, if <code>null</code>, it is set to "guest"
 	 * @param queueOrTopicName queue or topic name to subscribe to
 	 * @param topic <code>true</code> if it is a topic, <code>false</code> if it iw a queue
+	 * @throws JMSException 
+	 * @throws NamingException 
 	 * @throws Exception
 	 */
-	public AmqpMessageReceiver(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
+	public AmqpMessageReceiver(String url, String user, String password, String queueOrTopicName, boolean topic) throws NamingException, JMSException  {
 		super(url, user, password, queueOrTopicName, topic);
 	}
 
