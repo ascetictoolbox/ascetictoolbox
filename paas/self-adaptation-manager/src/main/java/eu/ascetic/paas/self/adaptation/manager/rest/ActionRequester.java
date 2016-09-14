@@ -349,7 +349,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         RestVMClient client = new RestVMClient(applicationId, deploymentId);
         String response = client.getPowerEstimation(String.class, vmID);
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Deployment.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(PowerMeasurement.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             PowerMeasurement measurement = (PowerMeasurement) jaxbUnmarshaller.unmarshal(new StringReader(response));
             return measurement.getValue();
@@ -358,7 +358,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         } finally {
             client.close();
         }
-        return 0.0;
+        return -1;
     }
 
     @Override
