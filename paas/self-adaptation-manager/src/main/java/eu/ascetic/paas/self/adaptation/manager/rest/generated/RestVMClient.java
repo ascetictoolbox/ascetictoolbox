@@ -19,6 +19,11 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Jersey REST client generated for REST resource:VMRest
@@ -36,18 +41,33 @@ import com.sun.jersey.api.client.WebResource;
 public class RestVMClient {
     private WebResource webResource;
     private final Client client; //http://localhost:8080//webresources
-    private static final String BASE_URI = "http://192.168.3.16/application-manager/";
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
+    private static String baseUri = "http://192.168.3.16/application-manager/";
 
     public RestVMClient(String applicationName, String deploymentId) {
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            baseUri = config.getString("paas.self.adaptation.manager.application.manager.rest.uri", baseUri);
+            config.setProperty("paas.self.adaptation.manager.application.manager.rest.uri", baseUri);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(RestDeploymentClient.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
+        }        
         com.sun.jersey.api.client.config.ClientConfig config = new com.sun.jersey.api.client.config.DefaultClientConfig();
         client = Client.create(config);
         String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments/{1}/vms", new Object[]{applicationName, deploymentId});
-        webResource = client.resource(BASE_URI).path(resourcePath);
+        webResource = client.resource(baseUri).path(resourcePath);
     }
 
     public void setResourcePath(String applicationName, String deploymentId) {
         String resourcePath = java.text.MessageFormat.format("applications/{0}/deployments/{1}/vms", new Object[]{applicationName, deploymentId});
-        webResource = client.resource(BASE_URI).path(resourcePath);
+        webResource = client.resource(baseUri).path(resourcePath);
     }
 
     public <T> T getEnergySample(Class<T> responseType, String vmId, String eventId, String startTime, String interval, String endTime) throws UniformInterfaceException {
