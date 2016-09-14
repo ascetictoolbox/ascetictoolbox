@@ -66,7 +66,7 @@ public abstract class AmqpAbstract {
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}
 	
-	public AmqpAbstract(String url, String user, String password, String queueOrTopicName, boolean topic) throws Exception {
+	public AmqpAbstract(String url, String user, String password, String queueOrTopicName, boolean topic) throws NamingException, JMSException {
 
 		if(user != null) {
 			this.user = user;
