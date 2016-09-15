@@ -80,12 +80,11 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
             for (Gap tmpGap : tmpGaps) {
                 AllocatableAction gapAction = tmpGap.getOrigin();
-                if (tmpGap.getInitialTime() == tmpGap.getEndTime()) {
+                if (expectedTimeStamp == tmpGap.getEndTime()) {
                     if (gapAction != null) {
                         AsceticSchedulingInformation gapActionDSI = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
                         gapActionDSI.addSuccessor(action);
                         dsi.addPredecessor(tmpGap);
-                        //System.out.println(gapAction + "->" + action);
                         state.removeTmpGap(tmpGap);
                     }
                 } else {
@@ -96,7 +95,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                             AsceticSchedulingInformation predDSI = (AsceticSchedulingInformation) pred.getSchedulingInfo();
                             predDSI.addSuccessor(action);
                             dsi.addPredecessor(outGap);
-                            //System.out.println(gapAction + "->" + action);
                         }
                         state.removeTmpGap(outGap);
                     }
@@ -112,7 +110,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 PriorityQueue<AllocatableAction> rescheduledActions,
                 LocalOptimizationState state
         ) {
-        	System.out.println("Filling Gaps in " + worker.getName() +" with gap: " + gap.toString());
             //Find  selected action predecessors
             PriorityQueue<Gap> availableGaps = new PriorityQueue(1, new Comparator<Gap>() {
                 @Override
@@ -149,23 +146,21 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 ResourceDescription desc = gapAction.getAssignedImplementation().getRequirements().copy();
                 while (!desc.isDynamicUseless()) {
                     Gap peekGap = availableGaps.peek();
-                    if (peekGap!= null){
-                    	AllocatableAction peekAction = peekGap.getOrigin();
-                    	if (peekAction != null) {
-                    		AsceticSchedulingInformation predActionDSI = (AsceticSchedulingInformation) peekAction.getSchedulingInfo();
-                    		gapActionDSI.addPredecessor(peekGap);
-                    		predActionDSI.addSuccessor(gapAction);
-                    		//System.out.println(peekAction + "->" + gapAction);
-                    	}
-                    	ResourceDescription.reduceCommonDynamics(desc, peekGap.getResources());
-                    	if (peekGap.getResources().isDynamicUseless()) {
-                    		availableGaps.poll();
-                    		state.removeTmpGap(gap);
-                    	}
-                    }else{
-                    	System.out.println("****** Peek in availableGaps return a null");
-                    	//I have added this if not if remains in the while
-                    	break;
+                    if (peekGap != null) {
+                        AllocatableAction peekAction = peekGap.getOrigin();
+                        if (peekAction != null) {
+                            AsceticSchedulingInformation predActionDSI = (AsceticSchedulingInformation) peekAction.getSchedulingInfo();
+                            gapActionDSI.addPredecessor(peekGap);
+                            predActionDSI.addSuccessor(gapAction);
+                        }
+                        ResourceDescription.reduceCommonDynamics(desc, peekGap.getResources());
+                        if (peekGap.getResources().isDynamicUseless()) {
+                            availableGaps.poll();
+                            state.removeTmpGap(gap);
+                        }
+                    } else {
+                        //I have added this if not if remains in the while
+                        break;
                     }
                 }
 
@@ -241,7 +236,6 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 AsceticResourceScheduler<P, T> worker,
                 PriorityQueue<AllocatableAction> rescheduledActions
         ) {
-            System.out.println(this);
             LinkedList<SchedulingEvent<P, T>> enabledEvents = new LinkedList<SchedulingEvent<P, T>>();
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
             dsi.setOnOptimization(false);
@@ -312,7 +306,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
             //Register all successors as Blocked Actions
             state.blockDataSuccessors(dsi);
-			rescheduledActions.add(action);
+            rescheduledActions.add(action);
             return new LinkedList<SchedulingEvent<P, T>>();
         }
 

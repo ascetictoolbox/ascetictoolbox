@@ -9,7 +9,6 @@ import integratedtoolkit.types.WorkloadState;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
-import integratedtoolkit.util.CloudManager;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ResourceManager;
 import integratedtoolkit.util.ResourceOptimizer;
@@ -18,7 +17,7 @@ import java.util.LinkedList;
 
 public class AsceticResourceOptimizer extends ResourceOptimizer {
 
-    private static long CREATION_TIME = 0l;
+    private static final long CREATION_TIME = 0l;
 
     public AsceticResourceOptimizer(AsceticScheduler ts) {
         super(ts);
@@ -87,8 +86,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             Action action = this.selectBestAction(actualAction, actions, timeBudget, energyBudget, costBudget);
             addToLog("Action to perform: " + action.title + "\n");
 //printLog();
-            System.out.println("Performing "+action.title);
-            super.logger.debug("ASCETIC: Performing "+action.title);
+            System.out.println("Performing " + action.title);
+            super.logger.debug("ASCETIC: Performing " + action.title);
             action.perform();
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,21 +108,21 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
         }
 
-        for (int i = 0; i < allResources.length; i++) {
-            Resource excludedWorker = allResources[i];
-            if (!(excludedWorker.worker.hasPendingModifications()) && Ascetic.canTerminateVM(excludedWorker.worker.getResource())) {
-                Resource[] resources = new Resource[allResources.length - 1];
-                System.arraycopy(allResources, 0, resources, 0, i);
-                System.arraycopy(allResources, i + 1, resources, i, resources.length - i);
-                long time = excludedWorker.startTime;
-                double energy = excludedWorker.idlePower * time + excludedWorker.startEnergy;
-                double cost = excludedWorker.startCost;
-                ConfigurationCost cc = simulate(load, resources, time, energy, cost);
-                Action a = new Action.Remove(excludedWorker, cc);
-                addToLog(a.toString());
-                actions.add(a);
+            for (int i = 0; i < allResources.length; i++) {
+                Resource excludedWorker = allResources[i];
+                if (!(excludedWorker.worker.hasPendingModifications()) && Ascetic.canTerminateVM(excludedWorker.worker.getResource())) {
+                    Resource[] resources = new Resource[allResources.length - 1];
+                    System.arraycopy(allResources, 0, resources, 0, i);
+                    System.arraycopy(allResources, i + 1, resources, i, resources.length - i);
+                    long time = excludedWorker.startTime;
+                    double energy = excludedWorker.idlePower * time + excludedWorker.startEnergy;
+                    double cost = excludedWorker.startCost;
+                    ConfigurationCost cc = simulate(load, resources, time, energy, cost);
+                    Action a = new Action.Remove(excludedWorker, cc);
+                    addToLog(a.toString());
+                    actions.add(a);
+                }
             }
-        }
         return actions;
     }
 
@@ -162,20 +161,26 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.time < rCost.time) {
             if (cCost.energy > energyBudget) {
                 addToLog("\t\t Surpasses the energy budget\n");
-            } else if (cCost.cost > costBudget) {
-                addToLog("\t\t Surpasses the cost budget\n");
+            } else {
+                if (cCost.cost > costBudget) {
+                    addToLog("\t\t Surpasses the cost budget\n");
+                }
             }
             return cCost.energy <= energyBudget && cCost.cost <= costBudget;
-        } else if (cCost.time == rCost.time) {
-            if (cCost.energy < rCost.energy) {
-                return cCost.cost <= costBudget;
-            } else if (cCost.energy == rCost.energy) {
-                return cCost.cost < rCost.cost;
-            } else {
-                addToLog("\t\t Energy's higher than the currently selected option\n");
-            }
         } else {
-            addToLog("\t\t Time's higher than the currently selected option\n");
+            if (cCost.time == rCost.time) {
+                if (cCost.energy < rCost.energy) {
+                    return cCost.cost <= costBudget;
+                } else {
+                    if (cCost.energy == rCost.energy) {
+                        return cCost.cost < rCost.cost;
+                    } else {
+                        addToLog("\t\t Energy's higher than the currently selected option\n");
+                    }
+                }
+            } else {
+                addToLog("\t\t Time's higher than the currently selected option\n");
+            }
         }
         return false;
     }
@@ -186,20 +191,26 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.cost < rCost.cost) {
             if (cCost.energy > energyBudget) {
                 addToLog("\t\t Surpasses the energy budget " + cCost.energy + " > " + energyBudget + "\n");
-            } else if (cCost.time > timeBudget) {
-                addToLog("\t\t Surpasses the time budget " + cCost.time + " > " + timeBudget + "\n");
+            } else {
+                if (cCost.time > timeBudget) {
+                    addToLog("\t\t Surpasses the time budget " + cCost.time + " > " + timeBudget + "\n");
+                }
             }
             return cCost.energy <= energyBudget && cCost.time <= timeBudget;
-        } else if (cCost.cost == rCost.cost) {
-            if (cCost.time < rCost.time) {
-                return cCost.energy <= energyBudget;
-            } else if (cCost.time == rCost.time) {
-                return cCost.energy < rCost.energy;
-            } else {
-                addToLog("\t\t Time's higher than the currently selected option\n");
-            }
         } else {
-            addToLog("\t\t Cost's higher than the currently selected option\n");
+            if (cCost.cost == rCost.cost) {
+                if (cCost.time < rCost.time) {
+                    return cCost.energy <= energyBudget;
+                } else {
+                    if (cCost.time == rCost.time) {
+                        return cCost.energy < rCost.energy;
+                    } else {
+                        addToLog("\t\t Time's higher than the currently selected option\n");
+                    }
+                }
+            } else {
+                addToLog("\t\t Cost's higher than the currently selected option\n");
+            }
         }
         return false;
     }
@@ -210,20 +221,26 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.energy < rCost.energy) {
             if (cCost.time > timeBudget) {
                 addToLog("\t\t Surpasses the time budget\n");
-            } else if (cCost.cost > costBudget) {
-                addToLog("\t\t Surpasses the cost budget\n");
+            } else {
+                if (cCost.cost > costBudget) {
+                    addToLog("\t\t Surpasses the cost budget\n");
+                }
             }
             return cCost.time <= timeBudget && cCost.cost <= costBudget;
-        } else if (cCost.energy == rCost.energy) {
-            if (cCost.time < rCost.time) {
-                return cCost.cost <= costBudget;
-            } else if (cCost.time == rCost.time) {
-                return cCost.cost < rCost.cost;
-            } else {
-                addToLog("\t\t Time's higher than the currently selected option\n");
-            }
         } else {
-            addToLog("\t\t Energy's higher than the currently selected option\n");
+            if (cCost.energy == rCost.energy) {
+                if (cCost.time < rCost.time) {
+                    return cCost.cost <= costBudget;
+                } else {
+                    if (cCost.time == rCost.time) {
+                        return cCost.cost < rCost.cost;
+                    } else {
+                        addToLog("\t\t Time's higher than the currently selected option\n");
+                    }
+                }
+            } else {
+                addToLog("\t\t Energy's higher than the currently selected option\n");
+            }
         }
         return false;
     }
@@ -501,7 +518,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
 
             public void perform() {
-            	logger.debug("ASCETIC: Performing Add action "+this);
+                logger.debug("ASCETIC: Performing Add action " + this);
                 System.out.println("Performing " + this);
                 ResourceManager.createResources("Ascetic", component, component + "-img");
             }
@@ -518,7 +535,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
 
             public void perform() {
-            	logger.debug("ASCETIC: Performing Remove action "+this);
+                logger.debug("ASCETIC: Performing Remove action " + this);
                 CloudMethodWorker worker = (CloudMethodWorker) res.worker.getResource();
                 CloudMethodResourceDescription reduction = new CloudMethodResourceDescription((CloudMethodResourceDescription) worker.getDescription());
                 ResourceManager.reduceCloudWorker(worker, reduction, new LinkedList());

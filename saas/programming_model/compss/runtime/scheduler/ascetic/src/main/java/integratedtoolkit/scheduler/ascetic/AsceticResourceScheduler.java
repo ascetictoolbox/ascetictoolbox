@@ -367,7 +367,6 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 			Comparator<AllocatableAction> selectionComparator,
 			Comparator<AllocatableAction> donorComparator
 	) {
-
 		LocalOptimizationState state = new LocalOptimizationState(updateId, this, getReadyComparator(), selectionComparator);
 		PriorityQueue<AllocatableAction> actions = new PriorityQueue<AllocatableAction>(1, donorComparator);
 
@@ -444,21 +443,21 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 	public LinkedList<AllocatableAction> scanActions(LocalOptimizationState state) {
 		LinkedList<AllocatableAction> runningActions = new LinkedList<AllocatableAction>();
 		PriorityQueue<AllocatableAction> actions = new PriorityQueue<AllocatableAction>(1, getScanComparator());
-		
+        
 		for (AllocatableAction gapAction : dataBlockedActions) {
 			AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
 			dsi.lock();
 			dsi.setOnOptimization(true);
 			actions.add(gapAction);
 		}
-		
+        
 		for (AllocatableAction gapAction : resourceBlockedActions) {
 			AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
 			dsi.lock();
 			dsi.setOnOptimization(true);
 			actions.add(gapAction);
 		}
-
+        
 		for (Gap g : gaps) {
 			AllocatableAction gapAction = g.getOrigin();
 			if (gapAction != null) {
@@ -648,7 +647,6 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 		 * dependencies with other actions in the resource) are already locked 
 		 * to avoid their start without being on the runningActions set.
 		 */
-
 		Gap gap = state.peekFirstGap();
 		ResourceDescription gapResource = gap.getResources();
 		PriorityQueue<SchedulingEvent<P, T>> schedulingQueue = new PriorityQueue<SchedulingEvent<P, T>>();
@@ -728,7 +726,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 			AllocatableAction action,
 			LocalOptimizationState state
 	) {
-		System.out.println("managing Action: " +action.toString());
+        
 		Implementation impl = action.getAssignedImplementation();
 		AsceticSchedulingInformation actionDSI = (AsceticSchedulingInformation) action.getSchedulingInfo();
 
