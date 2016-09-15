@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 public class WorkerStarter extends Thread {
 
+    private static final long BOOT_TIMEOUT = 60_000;
     private final VM vm;
 
     public WorkerStarter(VM vm) {
@@ -38,11 +39,16 @@ public class WorkerStarter extends Thread {
     public void run() {
         NIOConfiguration conf = vm.getConfiguration();
         String user = conf.getUser();
+        long startTime = System.currentTimeMillis();
         while (!connectionAvailable(vm.getIPv4(), user)) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 //DO NOTHING AND CHECK AGAIN IF NODE IS AVAILABLE
+            }
+            if (System.currentTimeMillis() - startTime > BOOT_TIMEOUT) {
+                System.out.println(vm.getIPv4() + "dismissed because of boot timeout.");
+                return;
             }
         }
 

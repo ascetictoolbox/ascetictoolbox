@@ -37,8 +37,10 @@ public class AppManager {
                     vm = new VM(rvm);
                     vm.updateConsumptions(this);
                     detectedVMs.put(IPv4, vm);
-                    if (!vm.getCompatibleImplementations().isEmpty()){
-                    	newResources.add(vm);
+                    if (!vm.getCompatibleImplementations().isEmpty()) {
+                        newResources.add(vm);
+                    } else {
+                        System.out.println(vm.getIPv4() + " dismissed because it has no compatible Implementations.");
                     }
                 }
             }
@@ -61,11 +63,13 @@ public class AppManager {
     }
 
     public double getAccumulatedEnergy() throws ApplicationUploaderException {
-        return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
+        return 0;
+        //return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
     }
 
     public double getAccumulatedCost() throws ApplicationUploaderException {
-        return uploader.getDeploymentCostConsumption(applicationId, deploymentId);
+        return 0;
+        //return uploader.getDeploymentCostConsumption(applicationId, deploymentId);
 
     }
 
