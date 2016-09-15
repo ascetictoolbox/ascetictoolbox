@@ -3,6 +3,7 @@ package integratedtoolkit.connectors.ascetic;
 import java.util.HashMap;
 
 import eu.ascetic.saas.application_uploader.ApplicationUploader;
+import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.ascetic.Configuration;
 import integratedtoolkit.connectors.Connector;
@@ -72,8 +73,19 @@ public class AsceticConnector implements Cost, Connector {
         }
 
         public void run() {
-            System.out.println("Requesting a " + rR.getRequested().getType() + " instance "
+        	System.out.println("Requesting a " + rR.getRequested().getType() + " instance "
                     + "with image " + rR.getRequested().getImage().getImageName() + " to the APP_MANAGER");
+        	String applicationId = Configuration.getApplicationId();
+            String deploymentId = Configuration.getDeploymentId();
+            String amEndpoint = Configuration.getApplicationManagerEndpoint();
+        	/*ApplicationUploader uploader = new ApplicationUploader(amEndpoint);
+        	try {
+				uploader.addNewVM(applicationId, deploymentId, rR.getRequested().getType());
+			} catch (ApplicationUploaderException e) {
+				System.err.println("Error creating new VM "+ rR.getRequested().getType());
+				e.printStackTrace();
+			}*/
+            
         }
     }
 
@@ -113,35 +125,21 @@ public class AsceticConnector implements Cost, Connector {
              }
 */
              System.out.println("Requesting destruction of " + worker.getName() + " to the APP_MANAGER");
-
+             String applicationId = Configuration.getApplicationId();
+             String deploymentId = Configuration.getDeploymentId();
+             String amEndpoint = Configuration.getApplicationManagerEndpoint();
+         	 ApplicationUploader uploader = new ApplicationUploader(amEndpoint);
+         	 /*String vmId = Integer.toString(Ascetic.getVMId(worker));
+         	 try {
+				uploader.deleteVM(applicationId, deploymentId, vmId);
+ 			 } catch (ApplicationUploaderException e) {
+ 				System.err.println("Error deleting VM "+ worker.getName() + "(Id:"+vmId+")" );
+ 				e.printStackTrace();
+ 			 }*/
         }
     }
 
-    public void destroy(Object envId) throws ConnectorException {
-        /*    try {
-         eu.ascetic.paas.applicationmanager.model.VM vmd = appUploaderClient.getVM(applicationId, deploymentId, ((Integer) envId).toString());
 
-         //appUploaderClient.deleteVM(applicationId, deploymentId, ((Integer) envId).toString());
-         Ascetic.removeResource(vmd.getIp());
-         } catch (ApplicationUploaderException e) {
-         logger.error("Error deleting VM " + envId, e);
-         throw new ConnectorException(e);
-
-         }
-         */
-    }
-
-    public Object create(String name, CloudMethodResourceDescription rd)
-            throws ConnectorException {
-        /*try {
-         eu.ascetic.paas.applicationmanager.model.VM vm = appUploaderClient.addNewVM(applicationId, deploymentId, rd.getType());
-         return vm.getId();
-         } catch (ApplicationUploaderException e) {
-         logger.error("Error creating VM " + rd.getType() + " for application " + applicationId + " and deployment " + deploymentId, e);
-         throw new ConnectorException(e);
-         }*/
-        return "TEST";
-    }
 
 
 
