@@ -1,0 +1,329 @@
+<ovf:Envelope xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 ../dsp8023.xsd" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData">
+  <ovf:References>
+    <ovf:File ovf:id="NA-HAProxy-img" ovf:href="/mnt/cephfs/ascetic/vmic/base-images/test/news-asset/na-haproxy.raw.img"/>
+    <ovf:File ovf:id="NA-HAProxy-iso" ovf:href="/mnt/cephfs/ascetic/vmc/repository/newsAsset/NA-HAProxy.iso"/>
+    <ovf:File ovf:id="NA-Oracle-img" ovf:href="/mnt/cephfs/ascetic/vmic/base-images/test/news-asset/na-oracle.raw.img"/>
+    <ovf:File ovf:id="NA-Oracle-iso" ovf:href="/mnt/cephfs/ascetic/vmc/repository/newsAsset/NA-Oracle.iso"/>
+    <ovf:File ovf:id="NA-Files-img" ovf:href="/mnt/cephfs/ascetic/vmic/base-images/test/news-asset/na-files.raw.img"/>
+    <ovf:File ovf:id="NA-Files-iso" ovf:href="/mnt/cephfs/ascetic/vmc/repository/newsAsset/NA-Files.iso"/>
+    <ovf:File ovf:id="NA-Server-img" ovf:href="/mnt/cephfs/ascetic/vmic/base-images/test/news-asset/na-server.raw.img"/>
+    <ovf:File ovf:id="NA-Server-iso" ovf:href="/mnt/cephfs/ascetic/vmc/repository/newsAsset/NA-Server.iso"/>
+    <ovf:File ovf:id="NA-HAProxy-iso" ovf:href="/DFS/ascetic/vm-images/vmc/repository/newsAsset/NA-HAProxy.iso"/>
+    <ovf:File ovf:id="NA-Server-iso" ovf:href="/DFS/ascetic/vm-images/vmc/repository/newsAsset/NA-Server.iso"/>
+    <ovf:File ovf:id="NA-Oracle-iso" ovf:href="/DFS/ascetic/vm-images/vmc/repository/newsAsset/NA-Oracle.iso"/>
+    <ovf:File ovf:id="NA-Files-iso" ovf:href="/DFS/ascetic/vm-images/vmc/repository/newsAsset/NA-Files.iso"/>
+  </ovf:References>
+  <ovf:DiskSection>
+    <ovf:Info>List of the virtual disks used.</ovf:Info>
+    <ovf:Disk ovf:diskId="NA-HAProxy-img-disk" ovf:fileRef="NA-HAProxy-img" ovf:format="raw" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="40"/>
+    <ovf:Disk ovf:diskId="NA-Oracle-img-disk" ovf:fileRef="NA-Oracle-img" ovf:format="raw" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="40"/>
+    <ovf:Disk ovf:diskId="NA-Files-img-disk" ovf:fileRef="NA-Files-img" ovf:format="raw" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="40"/>
+    <ovf:Disk ovf:diskId="NA-Server-img-disk" ovf:fileRef="NA-Server-img" ovf:format="raw" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="40"/>
+    <ovf:Disk ovf:diskId="NA-HAProxy-iso-disk" ovf:fileRef="NA-HAProxy-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="1" ovf:populatedSize="0"/>
+    <ovf:Disk ovf:diskId="NA-Oracle-iso-disk" ovf:fileRef="NA-Oracle-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="1" ovf:populatedSize="0"/>
+    <ovf:Disk ovf:diskId="NA-Files-iso-disk" ovf:fileRef="NA-Files-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="1" ovf:populatedSize="0"/>
+    <ovf:Disk ovf:diskId="NA-Server-iso-disk" ovf:fileRef="NA-Server-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="1" ovf:populatedSize="0"/>
+    <ovf:Disk ovf:diskId="NA-HAProxy-iso-disk" ovf:fileRef="NA-HAProxy-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="4" ovf:populatedSize="421888"/>
+    <ovf:Disk ovf:diskId="NA-Server-iso-disk" ovf:fileRef="NA-Server-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="4" ovf:populatedSize="421888"/>
+    <ovf:Disk ovf:diskId="NA-Oracle-iso-disk" ovf:fileRef="NA-Oracle-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="4" ovf:populatedSize="421888"/>
+    <ovf:Disk ovf:diskId="NA-Files-iso-disk" ovf:fileRef="NA-Files-iso" ovf:format="http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf" ovf:capacityAllocationUnits="byte * 2^30" ovf:capacity="4" ovf:populatedSize="421888"/>
+  </ovf:DiskSection>
+  <ovf:VirtualSystemCollection ovf:id="newsAsset">
+    <ovf:Info>NA-HAProxy Virtual System</ovf:Info>
+    <ovf:ProductSection>
+      <ovf:Info>Product configuration for then entire VirtualSystemCollection.</ovf:Info>
+      <ovf:Product>product</ovf:Product>
+      <ovf:Version>1.0</ovf:Version>
+      <ovf:Property ovf:key="asceticVmicMode" ovf:type="uint32" ovf:value="online"/>
+      <ovf:Property ovf:key="asceticDeploymentId" ovf:type="string" ovf:value="490"/>
+    </ovf:ProductSection>
+    <ovf:VirtualSystem ovf:id="NA-HAProxy">
+      <ovf:Info>HAProxyTest Virtual System</ovf:Info>
+      <ovf:Name>NA_HAProxy</ovf:Name>
+      <ovf:OperatingSystemSection ovf:id="36" ovf:version="debian-7">
+        <ovf:Info>Description of NA-HAProxy Operating System.</ovf:Info>
+      </ovf:OperatingSystemSection>
+      <ovf:ProductSection>
+        <ovf:Info>Product configuration for the NA-HAProxy VirtualSystem.</ovf:Info>
+        <ovf:Product>NA-HAProxy</ovf:Product>
+        <ovf:Version>2.0</ovf:Version>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyNumber" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_0" ovf:type="string" ovf:value="HAProxy"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_0" ovf:type="string" ovf:value="http://localhost:8080/haproxy.tar.gz"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_0" ovf:type="string" ovf:value=""/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="chef-cookbook"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_0" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_0_0" ovf:type="string" ovf:value="HAProxy"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="test1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="value1"/>
+      </ovf:ProductSection>
+      <ovf:VirtualHardwareSection>
+        <ovf:Info>Description of virtual hardware requirements.</ovf:Info>
+        <ovf:Item>
+          <rasd:Description>Number of virtual CPUs</rasd:Description>
+          <rasd:ElementName>virtual CPU</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:ResourceType>3</rasd:ResourceType>
+          <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+          <rasd:Description>CPU Speed</rasd:Description>
+          <rasd:ElementName>1000MHz CPU speed reservation</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:Reservation>1000</rasd:Reservation>
+          <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+          <rasd:ResourceType>3</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+          <rasd:Description>Memory Size</rasd:Description>
+          <rasd:ElementName>2G of memory</rasd:ElementName>
+          <rasd:InstanceID>2</rasd:InstanceID>
+          <rasd:ResourceType>4</rasd:ResourceType>
+          <rasd:VirtualQuantity>2048</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM Disk</rasd:Description>
+          <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-HAProxy-img-disk</rasd:HostResource>
+          <rasd:InstanceID>4</rasd:InstanceID>
+          <rasd:ResourceType>17</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-HAProxy-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>5</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-HAProxy-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>6</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+      </ovf:VirtualHardwareSection>
+    </ovf:VirtualSystem>
+    <ovf:VirtualSystem ovf:id="NA-Oracle">
+      <ovf:Info>NA-Oracle Virtual System</ovf:Info>
+      <ovf:Name>NA_Oracle</ovf:Name>
+      <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
+        <ovf:Info>Description of NA-Oracle Operating System.</ovf:Info>
+      </ovf:OperatingSystemSection>
+      <ovf:ProductSection>
+        <ovf:Info>Product configuration for the NA-Oracle VirtualSystem.</ovf:Info>
+        <ovf:Product>NA-Oracle</ovf:Product>
+        <ovf:Version>2.0</ovf:Version>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyNumber" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_0" ovf:type="string" ovf:value="NewsAssetOracle"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_0" ovf:type="string" ovf:value="http://localhost:8080/na-oracle.tar.gz"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_0" ovf:type="string" ovf:value=""/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="chef-cookbook"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_0" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_0_0" ovf:type="string" ovf:value="NewsAssetOracle"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="test2"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="value2"/>
+      </ovf:ProductSection>
+      <ovf:VirtualHardwareSection>
+        <ovf:Info>Description of virtual hardware requirements.</ovf:Info>
+        <ovf:Item>
+          <rasd:Description>Number of virtual CPUs</rasd:Description>
+          <rasd:ElementName>virtual CPU</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:ResourceType>3</rasd:ResourceType>
+          <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+          <rasd:Description>CPU Speed</rasd:Description>
+          <rasd:ElementName>2GHz CPU speed reservation</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:Reservation>2000</rasd:Reservation>
+          <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+          <rasd:ResourceType>3</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+          <rasd:Description>Memory Size</rasd:Description>
+          <rasd:ElementName>8GB of memory</rasd:ElementName>
+          <rasd:InstanceID>2</rasd:InstanceID>
+          <rasd:ResourceType>4</rasd:ResourceType>
+          <rasd:VirtualQuantity>8192</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM Disk</rasd:Description>
+          <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Oracle-img-disk</rasd:HostResource>
+          <rasd:InstanceID>4</rasd:InstanceID>
+          <rasd:ResourceType>17</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Oracle-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>5</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Oracle-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>6</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+      </ovf:VirtualHardwareSection>
+    </ovf:VirtualSystem>
+    <ovf:VirtualSystem ovf:id="NA-Files">
+      <ovf:Info>NA-Files Virtual System</ovf:Info>
+      <ovf:Name>NA_File_Server</ovf:Name>
+      <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
+        <ovf:Info>Description of NA-Files Operating System.</ovf:Info>
+      </ovf:OperatingSystemSection>
+      <ovf:ProductSection>
+        <ovf:Info>Product configuration for the NA-Files VirtualSystem.</ovf:Info>
+        <ovf:Product>NA-Files</ovf:Product>
+        <ovf:Version>2.0</ovf:Version>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyNumber" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_0" ovf:type="string" ovf:value="NewsAssetFiles"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_0" ovf:type="string" ovf:value="http://localhost:8080/na-files.tar.gz"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_0" ovf:type="string" ovf:value=""/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="chef-cookbook"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_0" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_0_0" ovf:type="string" ovf:value="NewsAssetFiles"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="test2"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="value2"/>
+      </ovf:ProductSection>
+      <ovf:VirtualHardwareSection>
+        <ovf:Info>Description of virtual hardware requirements.</ovf:Info>
+        <ovf:Item>
+          <rasd:Description>Number of virtual CPUs</rasd:Description>
+          <rasd:ElementName>virtual CPU</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:ResourceType>3</rasd:ResourceType>
+          <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+          <rasd:Description>CPU Speed</rasd:Description>
+          <rasd:ElementName>2GHz CPU speed reservation</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:Reservation>2000</rasd:Reservation>
+          <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+          <rasd:ResourceType>3</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+          <rasd:Description>Memory Size</rasd:Description>
+          <rasd:ElementName>8GB of memory</rasd:ElementName>
+          <rasd:InstanceID>2</rasd:InstanceID>
+          <rasd:ResourceType>4</rasd:ResourceType>
+          <rasd:VirtualQuantity>8192</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM Disk</rasd:Description>
+          <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Files-img-disk</rasd:HostResource>
+          <rasd:InstanceID>4</rasd:InstanceID>
+          <rasd:ResourceType>17</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Files-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>5</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Files-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>6</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+      </ovf:VirtualHardwareSection>
+    </ovf:VirtualSystem>
+    <ovf:VirtualSystem ovf:id="NA-Server">
+      <ovf:Info>NA-Server Virtual System</ovf:Info>
+      <ovf:Name>NA_Application_Server</ovf:Name>
+      <ovf:OperatingSystemSection ovf:id="69" ovf:version="2003">
+        <ovf:Info>Description of NA-Server Operating System.</ovf:Info>
+      </ovf:OperatingSystemSection>
+      <ovf:ProductSection>
+        <ovf:Info>Product configuration for the NA-Server VirtualSystem.</ovf:Info>
+        <ovf:Product>NA-Server</ovf:Product>
+        <ovf:Version>2.0</ovf:Version>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="2"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="10"/>
+        <ovf:Property ovf:key="asceticCacheImage" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyNumber" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyId_0" ovf:type="string" ovf:value="NewsAssetServer"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyPackageUri_0" ovf:type="string" ovf:value="http://localhost:8080/na-server.tar.gz"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyInstallScriptUri_0" ovf:type="string" ovf:value=""/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyType_0" ovf:type="string" ovf:value="chef-cookbook"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeNumber_0" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeId_0_0" ovf:type="string" ovf:value="NewsAssetOracle"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeName_0_0" ovf:type="string" ovf:value="test3"/>
+        <ovf:Property ovf:key="asceticSoftwareDependencyAttributeValue_0_0" ovf:type="string" ovf:value="value3"/>
+      </ovf:ProductSection>
+      <ovf:VirtualHardwareSection>
+        <ovf:Info>Description of virtual hardware requirements.</ovf:Info>
+        <ovf:Item>
+          <rasd:Description>Number of virtual CPUs</rasd:Description>
+          <rasd:ElementName>virtual CPU</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:ResourceType>3</rasd:ResourceType>
+          <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>hertz * 2^20</rasd:AllocationUnits>
+          <rasd:Description>CPU Speed</rasd:Description>
+          <rasd:ElementName>2GHz CPU speed reservation</rasd:ElementName>
+          <rasd:InstanceID>1</rasd:InstanceID>
+          <rasd:Reservation>2000</rasd:Reservation>
+          <rasd:ResourceSubType>cpuspeed</rasd:ResourceSubType>
+          <rasd:ResourceType>3</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+          <rasd:Description>Memory Size</rasd:Description>
+          <rasd:ElementName>8GB of memory</rasd:ElementName>
+          <rasd:InstanceID>2</rasd:InstanceID>
+          <rasd:ResourceType>4</rasd:ResourceType>
+          <rasd:VirtualQuantity>8192</rasd:VirtualQuantity>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM Disk</rasd:Description>
+          <rasd:ElementName>VM Disk Drive 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Server-img-disk</rasd:HostResource>
+          <rasd:InstanceID>4</rasd:InstanceID>
+          <rasd:ResourceType>17</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Server-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>5</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+        <ovf:Item>
+          <rasd:Description>VM CDROM</rasd:Description>
+          <rasd:ElementName>Context Base CD 1</rasd:ElementName>
+          <rasd:HostResource>ovf:/disk/NA-Server-iso-disk</rasd:HostResource>
+          <rasd:InstanceID>6</rasd:InstanceID>
+          <rasd:ResourceType>15</rasd:ResourceType>
+        </ovf:Item>
+      </ovf:VirtualHardwareSection>
+    </ovf:VirtualSystem>
+  </ovf:VirtualSystemCollection>
+</ovf:Envelope>
