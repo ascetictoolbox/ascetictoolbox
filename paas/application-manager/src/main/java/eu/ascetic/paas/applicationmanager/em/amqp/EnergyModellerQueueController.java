@@ -96,7 +96,7 @@ public class EnergyModellerQueueController {
 		logger.info("Message recieved from PaaS Energy Modeller, type: " + type + " message: " + emMessage);
 		if(type != null && type.equals(MEASUREMENTS)) {
 			measurementMessages.put(generateKey(emMessage), emMessage);
-		} else if (type.equals(PREDICTIONS)) {
+		} else if (type != null && type.equals(PREDICTIONS)) {
 			predictionsMessages.put(generateKey(emMessage), emMessage);
 		}
  	}
