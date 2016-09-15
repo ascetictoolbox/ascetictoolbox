@@ -27,7 +27,8 @@ import javax.naming.NamingException;
  * This decision engine uses a more system aware approach to better decide what
  * the magnitude of an adaptation should be used will be. It may also have to
  * decide to which VM this adaptation should occur.
- *
+ * @deprecated This class is no longer going to be used. The generated clients in
+ * the rest generated package will now be used instead.
  * @author Richard Kavanagh
  */
 public class ApplicationMonitorAwareDecisionEngine extends AbstractDecisionEngine {
