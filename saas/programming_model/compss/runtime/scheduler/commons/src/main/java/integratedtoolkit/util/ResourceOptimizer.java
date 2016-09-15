@@ -32,7 +32,7 @@ public class ResourceOptimizer extends Thread {
 
     // Loggers
     private static final Logger resourcesLogger = Logger.getLogger(Loggers.RESOURCES);
-    private static final Logger logger = Logger.getLogger(Loggers.RM_COMP);
+    protected static final Logger logger = Logger.getLogger(Loggers.RM_COMP);
     private static final boolean debug = logger.isDebugEnabled();
 
     // Sleep times

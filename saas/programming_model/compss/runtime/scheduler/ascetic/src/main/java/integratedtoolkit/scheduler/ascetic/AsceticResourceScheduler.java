@@ -728,6 +728,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 			AllocatableAction action,
 			LocalOptimizationState state
 	) {
+		System.out.println("managing Action: " +action.toString());
 		Implementation impl = action.getAssignedImplementation();
 		AsceticSchedulingInformation actionDSI = (AsceticSchedulingInformation) action.getSchedulingInfo();
 

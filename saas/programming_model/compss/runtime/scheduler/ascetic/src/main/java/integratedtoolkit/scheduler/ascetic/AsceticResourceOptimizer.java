@@ -88,6 +88,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             addToLog("Action to perform: " + action.title + "\n");
 //printLog();
             System.out.println("Performing "+action.title);
+            super.logger.debug("ASCETIC: Performing "+action.title);
             action.perform();
         } catch (Exception e) {
             e.printStackTrace();
@@ -500,6 +501,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
 
             public void perform() {
+            	logger.debug("ASCETIC: Performing Add action "+this);
                 System.out.println("Performing " + this);
                 ResourceManager.createResources("Ascetic", component, component + "-img");
             }
@@ -516,6 +518,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
 
             public void perform() {
+            	logger.debug("ASCETIC: Performing Remove action "+this);
                 CloudMethodWorker worker = (CloudMethodWorker) res.worker.getResource();
                 CloudMethodResourceDescription reduction = new CloudMethodResourceDescription((CloudMethodResourceDescription) worker.getDescription());
                 ResourceManager.reduceCloudWorker(worker, reduction, new LinkedList());

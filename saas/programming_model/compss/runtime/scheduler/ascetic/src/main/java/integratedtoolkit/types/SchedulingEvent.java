@@ -112,6 +112,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 PriorityQueue<AllocatableAction> rescheduledActions,
                 LocalOptimizationState state
         ) {
+        	System.out.println("Filling Gaps in " + worker.getName() +" with gap: " + gap.toString());
             //Find  selected action predecessors
             PriorityQueue<Gap> availableGaps = new PriorityQueue(1, new Comparator<Gap>() {
                 @Override
@@ -148,17 +149,23 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
                 ResourceDescription desc = gapAction.getAssignedImplementation().getRequirements().copy();
                 while (!desc.isDynamicUseless()) {
                     Gap peekGap = availableGaps.peek();
-                    AllocatableAction peekAction = peekGap.getOrigin();
-                    if (peekAction != null) {
-                        AsceticSchedulingInformation predActionDSI = (AsceticSchedulingInformation) peekAction.getSchedulingInfo();
-                        gapActionDSI.addPredecessor(peekGap);
-                        predActionDSI.addSuccessor(gapAction);
-                        //System.out.println(peekAction + "->" + gapAction);
-                    }
-                    ResourceDescription.reduceCommonDynamics(desc, peekGap.getResources());
-                    if (peekGap.getResources().isDynamicUseless()) {
-                        availableGaps.poll();
-                        state.removeTmpGap(gap);
+                    if (peekGap!= null){
+                    	AllocatableAction peekAction = peekGap.getOrigin();
+                    	if (peekAction != null) {
+                    		AsceticSchedulingInformation predActionDSI = (AsceticSchedulingInformation) peekAction.getSchedulingInfo();
+                    		gapActionDSI.addPredecessor(peekGap);
+                    		predActionDSI.addSuccessor(gapAction);
+                    		//System.out.println(peekAction + "->" + gapAction);
+                    	}
+                    	ResourceDescription.reduceCommonDynamics(desc, peekGap.getResources());
+                    	if (peekGap.getResources().isDynamicUseless()) {
+                    		availableGaps.poll();
+                    		state.removeTmpGap(gap);
+                    	}
+                    }else{
+                    	System.out.println("****** Peek in availableGaps return a null");
+                    	//I have added this if not if remains in the while
+                    	break;
                     }
                 }
 
