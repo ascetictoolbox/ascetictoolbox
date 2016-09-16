@@ -481,10 +481,12 @@ public class VMRest extends AbstractRest {
 		List<String> ids = new ArrayList<String>();
 		ids.add("" + vm.getId());
 		
+		String providerId = vm.getProviderId();
+		
 		logger.debug("Connecting to Energy Modeller");
 
-		double energyEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
-		double powerEstimated = energyModeller.estimate(null,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
+		double energyEstimated = energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, Unit.ENERGY, 0l);
+		double powerEstimated = energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
 		
 		// Getting from the queue the necessary variables to query the Price Modeller
 		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
