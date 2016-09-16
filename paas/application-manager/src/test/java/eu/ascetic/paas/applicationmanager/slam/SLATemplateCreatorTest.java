@@ -149,10 +149,11 @@ public class SLATemplateCreatorTest {
 		assertEquals("OVFAppliance", slat.getInterfaceDeclrs().get(0).getIntf().getInterfaceResourceType().getName());
 		
 		// We have to have 4 Agreement Terms
-		assertEquals(5, slat.getAgreemenTerms().size());
+		assertEquals(7, slat.getAgreemenTerms().size());
 		
 		// We verify the application guarantees
 		assertEquals("App Guarantees", slat.getAgreemenTerms().get(0).getId());
+		// Energy App Guarantees
 		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA, slat.getAgreemenTerms().get(0).getGuaranteed().getState().getId());
 		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA_OPERATOR, 
 				     slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
@@ -162,41 +163,61 @@ public class SLATemplateCreatorTest {
 				     slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
 		assertEquals(OVFToSLANames.METRIC_UNITS.get("WattHour"),
 			         slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
-		
-		// We verify that we add the Agreement Terms per VM
-		assertEquals("NA-HAProxy_Guarantees", slat.getAgreemenTerms().get(1).getId());
-		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getVar());
-		assertEquals("http://www.slaatsoi.org/coremodel#subset_of", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getOperator());
-		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(1).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameters().get(0).getId());
-		assertEquals("Power_Usage_for_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getId());
-		assertEquals(OVFToSLANames.POWER_USAGE_PER_VM_SLA_OPERATOR, slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
-		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameters().get(0).getId());
-		assertEquals(OVFToSLANames.COMPARATORS.get("LT"),
-			     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
-		assertEquals("50",
-			     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+		// Power App Guarantees
+		assertEquals(OVFToSLANames.APP_POWER_CONSUMPTION_SLA, slat.getAgreemenTerms().get(1).getGuaranteed().getState().getId());
+		assertEquals(OVFToSLANames.APP_POWER_CONSUMPTION_SLA_OPERATOR, 
+				     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals(OVFToSLANames.COMPARATORS.get("LTE"),
+				     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+		assertEquals("2000",
+				     slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
 		assertEquals(OVFToSLANames.METRIC_UNITS.get("Watt"),
-		         slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
+			         slat.getAgreemenTerms().get(1).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
+		// Price Per Hour App Guarantees
+		assertEquals(OVFToSLANames.APP_PRICE_PER_HOUR_SLA, slat.getAgreemenTerms().get(2).getGuaranteed().getState().getId());
+		assertEquals(OVFToSLANames.APP_PRICE_PER_HOUR_SLA_OPERATOR, 
+				     slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals(OVFToSLANames.COMPARATORS.get("LTE"),
+				     slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+		assertEquals("2000",
+				     slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+		assertEquals(OVFToSLANames.METRIC_UNITS.get("EUR"),
+			         slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
+		
+		// We verify that we add the Agreement Terms per VM
+		assertEquals("NA-HAProxy_Guarantees", slat.getAgreemenTerms().get(3).getId());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(3).getVariableDeclr().getVar());
+		assertEquals("http://www.slaatsoi.org/coremodel#subset_of", slat.getAgreemenTerms().get(3).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getOperator());
+		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(3).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameters().get(0).getId());
+		assertEquals("Power_Usage_for_NA-HAProxy", slat.getAgreemenTerms().get(3).getGuaranteed().getState().getId());
+		assertEquals(OVFToSLANames.POWER_USAGE_PER_VM_SLA_OPERATOR, slat.getAgreemenTerms().get(3).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(3).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameters().get(0).getId());
+		assertEquals(OVFToSLANames.COMPARATORS.get("LT"),
+			     slat.getAgreemenTerms().get(3).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+		assertEquals("50",
+			     slat.getAgreemenTerms().get(3).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+		assertEquals(OVFToSLANames.METRIC_UNITS.get("Watt"),
+		         slat.getAgreemenTerms().get(3).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
 		
 		
 		// We verify that we add the Agreement Terms per VM
-		assertEquals("NA-HAProxy_Guarantees", slat.getAgreemenTerms().get(2).getId());
-		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(2).getVariableDeclr().getVar());
-		assertEquals("http://www.slaatsoi.org/coremodel#subset_of", slat.getAgreemenTerms().get(2).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getOperator());
-		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(2).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameters().get(0).getId());
-		assertEquals("Energy_Usage_for_NA-HAProxy", slat.getAgreemenTerms().get(2).getGuaranteed().getState().getId());
-		assertEquals(OVFToSLANames.ENERGY_USAGE_PER_VM_SLA_OPERATOR, slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
-		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameters().get(0).getId());
+		assertEquals("NA-HAProxy_Guarantees", slat.getAgreemenTerms().get(4).getId());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(4).getVariableDeclr().getVar());
+		assertEquals("http://www.slaatsoi.org/coremodel#subset_of", slat.getAgreemenTerms().get(4).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getOperator());
+		assertEquals("OVF-Item-NA-HAProxy", slat.getAgreemenTerms().get(4).getVariableDeclr().getExpr().getValueExpr().getFuncExpr().getParameters().get(0).getId());
+		assertEquals("Energy_Usage_for_NA-HAProxy", slat.getAgreemenTerms().get(4).getGuaranteed().getState().getId());
+		assertEquals(OVFToSLANames.ENERGY_USAGE_PER_VM_SLA_OPERATOR, slat.getAgreemenTerms().get(4).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals("VM_of_type_NA-HAProxy", slat.getAgreemenTerms().get(4).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getParameters().get(0).getId());
 		assertEquals(OVFToSLANames.COMPARATORS.get("LT"),
-			     slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+			     slat.getAgreemenTerms().get(4).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
 		assertEquals("50",
-			     slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+			     slat.getAgreemenTerms().get(4).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
 		assertEquals(OVFToSLANames.METRIC_UNITS.get("WattHour"),
-		         slat.getAgreemenTerms().get(2).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
+		         slat.getAgreemenTerms().get(4).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
 		
 		
 		// We verify the Aggregated Guarantees
-		AgreementTerm agreementTerm =  slat.getAgreemenTerms().get(3);
+		AgreementTerm agreementTerm =  slat.getAgreemenTerms().get(5);
 		assertEquals("Aggregated Guarantees", agreementTerm.getId());
 		//assertEquals("violation_type", agreementTerm.getGuaranteed().getEntry().getKey());
 		//assertEquals("information", agreementTerm.getGuaranteed().getEntry().getValue());
@@ -232,7 +253,7 @@ public class SLATemplateCreatorTest {
 		assertEquals("0.7", simpleDomainExpr.getValue().getConstVariable().getValue());
 		
 		
-		agreementTerm =  slat.getAgreemenTerms().get(4);
+		agreementTerm =  slat.getAgreemenTerms().get(6);
 		assertEquals("Aggregated Guarantees", agreementTerm.getId());
 		//assertEquals("violation_type", agreementTerm.getGuaranteed().getEntry().getKey());
 		//assertEquals("information", agreementTerm.getGuaranteed().getEntry().getValue());

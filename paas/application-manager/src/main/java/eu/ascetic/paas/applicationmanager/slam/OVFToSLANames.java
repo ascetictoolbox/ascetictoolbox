@@ -34,6 +34,9 @@ public class OVFToSLANames {
 	public static final String APP_POWER_CONSUMPTION_OVF = "app_power_consumption";
 	public static final String APP_POWER_CONSUMPTION_SLA = "Power_Usage_per_app";
 	public static final String APP_POWER_CONSUMPTION_SLA_OPERATOR = "http://www.slaatsoi.org/resources#power_usage_per_app";
+	public static final String APP_PRICE_PER_HOUR_OVF = "app_price_for_next_hour";
+	public static final String APP_PRICE_PER_HOUR_SLA = "App_Price_for_next_hour";
+	public static final String APP_PRICE_PER_HOUR_SLA_OPERATOR = "http://www.slaatsoi.org/resources#app_price_for_next_hour";
 	
 	// VM WORDS
 	public static final String VM_GUARANTEES = "_Guarantees";
@@ -61,7 +64,8 @@ public class OVFToSLANames {
 	// Metric Units
 	public static final Map<String, String> METRIC_UNITS = ImmutableMap.of(  
 				"WattHour", "http://www.w3.org/2001/XMLSchema#watthour",
-				"Watt", "http://www.w3.org/2001/XMLSchema#watt"
+				"Watt", "http://www.w3.org/2001/XMLSchema#watt",
+				"EUR", "http://www.w3.org/2001/XMLSchema#eur"
 			);
 	
 	// Metric Units

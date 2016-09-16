@@ -25,12 +25,17 @@
       <ovf:Property ovf:key="asceticSlaInfoComparator_0" ovf:type="string" ovf:value="LTE"/>
       <ovf:Property ovf:key="asceticSlaInfoBoundaryValue_0" ovf:type="string" ovf:value="1.0"/>
       <ovf:Property ovf:key="asceticSlaInfoSlaType_0" ovf:type="string" ovf:value="violation"/>
-      <ovf:Property ovf:key="asceticSlaInfoNumber" ovf:type="uint32" ovf:value="2"/>
+      <ovf:Property ovf:key="asceticSlaInfoNumber" ovf:type="uint32" ovf:value="3"/>
       <ovf:Property ovf:key="asceticSlaInfoSlaTerm_1" ovf:type="string" ovf:value="energy_usage_per_app"/>
       <ovf:Property ovf:key="asceticSlaInfoMetricUnit_1" ovf:type="string" ovf:value="WattHour"/>
       <ovf:Property ovf:key="asceticSlaInfoComparator_1" ovf:type="string" ovf:value="LTE"/>
       <ovf:Property ovf:key="asceticSlaInfoBoundaryValue_1" ovf:type="string" ovf:value="500.0"/>
       <ovf:Property ovf:key="asceticSlaInfoSlaType_1" ovf:type="string" ovf:value="violation"/>
+      <ovf:Property ovf:key="asceticSlaInfoSlaTerm_2" ovf:type="string" ovf:value="app_power_consumption"/>
+      <ovf:Property ovf:key="asceticSlaInfoMetricUnit_2" ovf:type="string" ovf:value="Watt"/>
+      <ovf:Property ovf:key="asceticSlaInfoComparator_2" ovf:type="string" ovf:value="LTE"/>
+      <ovf:Property ovf:key="asceticSlaInfoBoundaryValue_2" ovf:type="string" ovf:value="2000"/>
+      <ovf:Property ovf:key="asceticSlaInfoSlaType_2" ovf:type="string" ovf:value="violation"/>
     </ovf:ProductSection>
     <ovf:VirtualSystem ovf:id="NA-HAProxy">
       <ovf:Info>NA-HAProxyTest Virtual System</ovf:Info>
