@@ -36,6 +36,7 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.Gene
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.QueueInitializator;
 import eu.ascetic.asceticarchitecture.paas.type.DeploymentInfo;
+import eu.ascetic.asceticarchitecture.paas.type.VMBasic;
 import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
@@ -165,11 +166,22 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		for (int x =0; x<allVMs; x++){
 			depl.getVM(x).resetCurrentCharges();
 		}
-		return billing.predictPriceofNextHour(depl);
+		return billing.predictPriceofNextHour(depl, duration);
+	}
+	
+	public double predictAppPriceforNextHour(int depID, LinkedList<VMinfo> VMs){
+		DeploymentInfo depl = billing.getApp(depID);
+		double price = 0.0;
+		price = billing.predictPriceofNextHour(depl, 3600);
+		VMinfo VM;
+		for (int i=0;i<VMs.size();i++){
+			VM = VMs.get(i);
+			price = price +billing.getVMPredictedPrice(VM, 3600);
+		}
+		return price;		
 	}
 	
 	public double getAppPredictedCharges(int scheme, LinkedList<VMinfo> VMs){
-		//Re-check this function
 		DeploymentInfo deployment = new DeploymentInfo();
 			deployment.setVMs(VMs);
 			double charges = billing.predictCharges(deployment, null);
@@ -187,9 +199,10 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 			}*/
 			return charges;
 	}
-	
 
 	
+
+
 	public double getAppPredictedPrice(int scheme,  double duration, LinkedList<VMinfo> VMs){
 		double charges = getAppPredictedCharges(scheme, VMs);
 		double totalDurationOfApp = 0;

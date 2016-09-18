@@ -54,6 +54,7 @@ ResourceDistribution distribution = new ResourceDistribution();
 	@Override 
 	public double predictTotalCharges(VMinfo vm, boolean energySet) {
 		Charges b = predictResourcesCharges(vm, getDistribution(vm), getResourcePrice(vm));
+		
 		//double temp = (double) Math.round(b.getChargesOnly()*1000)/1000; 
 		double temp = (double) Math.round(b.getChargesOnly()*1000) / 1000;
 	//	System.out.println("Pricing A: " + temp +" " + b.getChargesOnly() + " " + vm.getProducer());
@@ -70,6 +71,7 @@ ResourceDistribution distribution = new ResourceDistribution();
 	@Override 
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		double price = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
+	//	System.out.println("Pricing A:"+price);
 		VM.setCurrentPrice(price);
 		try{
 			VM.getProducer().sendToQueue("PMPREDICTION",  VM.getDepID(), VM.getVMid(),VM.getSchemeID(), Unit.PRICEHOUR, VM.getCurrentprice());
@@ -78,6 +80,7 @@ ResourceDistribution distribution = new ResourceDistribution();
 		//	System.out.println("PM: Could not send message to queue");
 			 logger.error("PM: Could not set producer");
 		}
+	//	System.out.println("Pricing A: "+  VM.getCurrentprice() + " with price " + getResourcePrice(VM));
 		return VM.getCurrentprice();
 	}
 

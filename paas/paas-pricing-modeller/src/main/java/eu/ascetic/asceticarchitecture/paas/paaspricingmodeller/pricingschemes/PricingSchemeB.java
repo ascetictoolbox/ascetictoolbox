@@ -60,6 +60,8 @@ public double predictTotalCharges(VMinfo vm, boolean energySet){
 	@Override 
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		double price1 = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
+
+	//	System.out.println("Pricing B: "+ price1);
 		double price2 = predictEnergyPrice (VM, duration);
 		VM.setCurrentPrice(price1+price2);
 		try{
@@ -69,6 +71,7 @@ public double predictTotalCharges(VMinfo vm, boolean energySet){
 		//	System.out.println("PM: Could not send message to queue");
 			 logger.error("PM: Could not send message to queue");
 		}
+//		System.out.println("Pricing B: "+ VM.getCurrentprice() + " with price " + getResourcePrice(VM));
 		return VM.getCurrentprice();
 	}
 

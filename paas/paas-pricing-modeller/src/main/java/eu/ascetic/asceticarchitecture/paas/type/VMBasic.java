@@ -145,7 +145,7 @@ public class VMBasic {
 		return applicationID;
 	}
 	public double getRAM(){
-		System.out.println("RAM:" + RAM );
+	//	System.out.println("RAM:" + RAM );
 		return RAM;
 	}
 	

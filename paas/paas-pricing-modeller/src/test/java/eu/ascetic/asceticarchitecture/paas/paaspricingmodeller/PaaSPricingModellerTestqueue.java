@@ -85,17 +85,22 @@ public class PaaSPricingModellerTestqueue{
   //      producer1.createConsumers("Pricing", "PMPREDICTION.DEPLOYMENTID.1.VMID.1.PRICEHOUR");
      //   System.out.println("Charges predicted " +prmodeller.getAppTotalPredictedCharges(1, test));
       //  System.out.println("Charges predicted " +prmodeller.getAppAveragePredictedPrice(1, test));
-     //  prmodeller.initializeApp("eleni",1, test);
+       prmodeller.initializeApp("eleni",1, test);
      //   producer1.createConsumers("Pricing", "PMBILLING.DEPLOYMENTID.1.VMID.2.CHARGES");
-      //  Thread.sleep(40000);
+        Thread.sleep(40000);
         System.out.println("-------------------------------------------------------------------------------------------------");
-     //   prmodeller.addVM(1, vm2);
+        VMinfo vm3 = new VMinfo(3,7680, 2, 32000, 10, 1, "0");
+    	
+    	LinkedList<VMinfo> test1 = new LinkedList<>();
+        test1.add(vm3);
+        System.out.println(prmodeller.predictAppPriceforNextHour(1, test1));
+        //   prmodeller.addVM(1, vm2);
      //   Thread.sleep(10000);
      //   prmodeller.getCostlyVMs(1);
     //    System.out.println("-------------------------------------------------------------------------------------------------");
      //   prmodeller.resizeVM(1, 1, 4, 15960, 64000);
      //   prmodeller.removeVM(1, 1);
-        System.out.println("charges: "+ prmodeller.getEventPredictedChargesOfApp(1, test, 3000));
+     //   System.out.println("charges: "+ prmodeller.getEventPredictedChargesOfApp(1, test, 3000));
       System.out.println("-------------------------------------------------------------------------------------------------");
      //   energyPerVM.put(1, 100.00);
      //   energyPerVM.put(2, 1000.00);

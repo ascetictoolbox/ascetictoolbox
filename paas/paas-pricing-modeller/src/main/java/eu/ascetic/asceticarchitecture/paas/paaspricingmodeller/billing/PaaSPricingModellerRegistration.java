@@ -146,7 +146,7 @@ public class PaaSPricingModellerRegistration {
 					//	System.out.println("PM: Could not set producer");
 						// logger.error("PM: Could not set producer");
 					}
-					System.out.println("Billing: VM with ID: " + app.getVM(i).getVMid() + " has been registered in static");
+				//	System.out.println("Billing: VM with ID: " + app.getVM(i).getVMid() + " has been registered in static");
 	            
 				} else {
 					registeredDynamicEnergyPricesVMs.put(app.getVM(i).getVMid(), app.getVM(i));
@@ -173,10 +173,10 @@ public class PaaSPricingModellerRegistration {
 				//	System.out.println("PM: Could not set producer");
 					// logger.error("PM: Could not set producer");
 				}
-				predictPriceofNextHour(app);}
+				predictPriceofNextHour(app, 3600);}
 	}
 	
-	 public double predictPriceofNextHour(DeploymentInfo depl){
+	 public double predictPriceofNextHour(DeploymentInfo depl, double duration){
 		 double price=0.0;
 		 List <Integer> vm = new ArrayList<Integer>();
 		 for (int i=0; i<depl.getNumberOfVMs();i++){
@@ -184,7 +184,7 @@ public class PaaSPricingModellerRegistration {
          	 VMinfo VM = depl.getVM(i);
          	 if (VM.isActive()){
          		 vm.add(VMid);                       
-         		 price = price + getVMPredictedPrice(VM);
+         		 price = price + getVMPredictedPrice(VM, duration);
          	//	 System.out.println("Billing: updating price of VM "+VM.getVMid()+" with "+ VM.getCurrentprice());
          		// logger.error("PM: Could not set producer");
          	 }
@@ -206,11 +206,10 @@ public class PaaSPricingModellerRegistration {
 	 }
 	 
 
-	private double getVMPredictedPrice(VMinfo VM) {
+	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		 PaaSPricingModellerPricingScheme scheme = VM.getScheme();
 	      //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
-/////////////////////////////////////////CHANGE THIS HERE!!!!!!!!!!!!!!!!!!!!!!!!!
-	     return scheme.getVMPredictedPrice(VM, 90);
+	     return scheme.getVMPredictedPrice(VM, duration);
 	}
 	
 	public void registerApp(String appID, int deplID, int schemeID) {

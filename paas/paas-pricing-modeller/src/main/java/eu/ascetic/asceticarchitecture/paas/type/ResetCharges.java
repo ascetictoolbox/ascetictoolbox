@@ -48,7 +48,7 @@ public class ResetCharges extends TimerTask{
 				for (int x =0; x<allVMs; x++){
 					depl.getVM(x).resetCurrentCharges();
 				}
-				billing.predictPriceofNextHour(depl);
+				billing.predictPriceofNextHour(depl,3600);
 				depl.setChanging(false);
 				depl.getLock().notifyAll();
 			}
