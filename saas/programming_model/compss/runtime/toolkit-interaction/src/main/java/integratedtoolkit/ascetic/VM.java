@@ -2,7 +2,9 @@ package integratedtoolkit.ascetic;
 
 import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
+import eu.ascetic.utils.ovf.api.VirtualSystem;
 import integratedtoolkit.scheduler.types.AllocatableAction;
+import integratedtoolkit.types.resources.components.Processor;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.nio.master.configuration.NIOConfiguration;
@@ -13,9 +15,11 @@ import integratedtoolkit.types.resources.ResourceDescription;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.util.CloudManager;
 import integratedtoolkit.util.CoreManager;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.TreeMap;
+
 import org.apache.log4j.Logger;
 
 public class VM {
@@ -65,6 +69,7 @@ public class VM {
         description = new CloudMethodResourceDescription(rd);
         description.setType(ovfId);
         description.setImage(CloudManager.getProvider("Ascetic").getImage(ovfId));
+        updateComponentDescription(vm, description);
         configuration = new NIOConfiguration(Configuration.getComponentProperties(ovfId));
         configuration.setLimitOfTasks(rd.getProcessors().get(0).getComputingUnits());
         configuration.setTotalComputingUnits(rd.getProcessors().get(0).getComputingUnits());
@@ -157,6 +162,26 @@ public class VM {
                 }
             }
             lastUpdate = System.currentTimeMillis();
+        }
+    }
+    
+    private static void updateComponentDescription(eu.ascetic.paas.applicationmanager.model.VM vm, CloudMethodResourceDescription rd) {
+        int coreCount = vm.getCpuActual();
+        if (coreCount > 0) {
+        	System.out.println("Updating coreCount to "+coreCount);
+            Processor proc = rd.getProcessors().get(0);
+            proc.setComputingUnits(coreCount);
+        }
+        
+        long memory = vm.getRamActual();
+        if (memory > 0) {
+        	System.out.println("Updating memory to "+memory);
+            rd.setMemorySize((float) memory / 1024f);
+        }
+        long storage = vm.getDiskActual();
+        if (storage > 0) {
+        	System.out.println("Updating storage to "+storage);
+            rd.setStorageSize(storage);
         }
     }
 
