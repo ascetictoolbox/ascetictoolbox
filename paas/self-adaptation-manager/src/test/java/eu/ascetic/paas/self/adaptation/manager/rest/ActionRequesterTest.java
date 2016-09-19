@@ -53,7 +53,7 @@ public class ActionRequesterTest {
         String application = "threeTierWebApp";
         String deployment = "100";
         String vmID = "1686";
-        VM result = ActionRequester.getVM(application, deployment, vmID);
+        VM result = new ActionRequester().getVM(application, deployment, vmID);
         assert (result != null);
         printVM(result);
     }
@@ -72,6 +72,7 @@ public class ActionRequesterTest {
         for (String type : result) {
             System.out.println(type);
         }
+        System.out.println("Result Size" + result.size());
     }
 
     /**

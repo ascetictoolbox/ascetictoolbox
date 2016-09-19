@@ -90,6 +90,11 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     public String getOvf(String applicationId, String deploymentId) {
         return null;
     }
+    
+    @Override
+    public VM getVM(String application, String deployment, String vmID) {
+        return null;
+    }
 
     /**
      * This sends a message to the topic of the message queue of the actuator

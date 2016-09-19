@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
 import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import java.util.Collections;
@@ -84,9 +85,11 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
     private Integer getHighestPoweredVM(Response response, List<Integer> vmIds) {
         Integer answer = null;
         double answerPower = Double.MAX_VALUE;
+        String vmType = response.getAdaptationDetail("VM_TYPE");
         for (Integer vmId : vmIds) {
             double currentValue = getActuator().getPowerUsageVM(response.getApplicationId(), response.getDeploymentId(), "" + vmId);
-            if (currentValue < answerPower) {
+            VM vm = getActuator().getVM(response.getApplicationId(), response.getDeploymentId(), vmId + "");
+            if (currentValue < answerPower && (vmType == null || vm.getOvfId().equals(vmType))) {
                 answer = vmId;
                 answerPower = currentValue;
             }
@@ -109,7 +112,15 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
         if (!vmOvfTypes.isEmpty()) {
             Collections.shuffle(vmOvfTypes);
-            String vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
+            //Give preference to any VM type specified in the rule.
+            String vmType = response.getAdaptationDetail("VM_TYPE");
+            String vmTypeToAdd = "";
+            //Check that the preferential type can be added
+            if (vmType != null && vmOvfTypes.contains(vmType)) {
+                vmTypeToAdd = vmType;
+            } else { //If no preference is given then pick the best alternative
+                pickLowestAveragePower(response, vmOvfTypes);
+            }
             response.setAdaptationDetails(vmTypeToAdd);
             if (getCanVmBeAdded(response, vmTypeToAdd)) {
                 return response;

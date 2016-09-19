@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.List;
 
@@ -36,7 +37,17 @@ public interface ActuatorInvoker {
      * reported by this actuator then null is returned instead.
      */
     public abstract String getOvf(String applicationId, String deploymentId);
-
+    
+    /**
+     * This gets a VM given its application, deployment and VM ids.
+     *
+     * @param application The application ID
+     * @param deployment The deployment ID
+     * @param vmID The VM id
+     * @return The VM given the id values specified.
+     */
+    public VM getVM(String application, String deployment, String vmID);
+    
     /**
      * This lists which VMs can be added to a deployment in order to make it
      * scale.

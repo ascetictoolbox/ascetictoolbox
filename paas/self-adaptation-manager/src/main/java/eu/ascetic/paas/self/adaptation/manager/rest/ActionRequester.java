@@ -89,7 +89,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param vmID The VM id
      * @return The VM given the id values specified.
      */
-    public static VM getVM(String application, String deployment, String vmID) {
+    public VM getVM(String application, String deployment, String vmID) {
         /**
          * An example url is:
          * http://192.168.3.16/application-manager/applications/threeTierWebApp/deployments/100/vms/
