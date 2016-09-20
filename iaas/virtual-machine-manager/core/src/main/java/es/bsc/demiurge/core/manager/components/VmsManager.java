@@ -214,7 +214,11 @@ public class VmsManager {
 //			AFAIK this is not anymore needed for ascetic y2
 //            setAsceticInitScript(vmToDeploy);
 
-
+            
+            for(VmmListener vml : listeners) {
+				vml.onPreVmDeployment(vmToDeploy);
+			}
+            
             String vmId;
             if (Config.INSTANCE.deployVmWithVolume) {
                 vmId = deployVmWithVolume(vmToDeploy, hostForDeployment, originalVmInitScript);

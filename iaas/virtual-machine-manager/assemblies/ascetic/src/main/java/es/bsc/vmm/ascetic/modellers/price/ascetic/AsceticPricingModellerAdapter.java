@@ -26,6 +26,7 @@ import es.bsc.demiurge.core.models.scheduling.DeploymentPlan;
 import es.bsc.demiurge.core.models.scheduling.VmAssignmentToHost;
 import es.bsc.demiurge.core.models.vms.Vm;
 import es.bsc.demiurge.core.models.vms.VmDeployed;
+import es.bsc.vmm.ascetic.mq.ActiveMqAdapter;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.IaaSPricingModeller;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.billing.IaaSPricingModellerBilling;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.energyprovider.EnergyProvider;
@@ -33,6 +34,7 @@ import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.pricingschemesrep
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.types.EnergyPrediction;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import com.google.gson.Gson;
 
 
 import java.util.List;
@@ -51,12 +53,12 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
     enough for now. It is important to take into account that this ignores the fact that VMs that are given a host
     with more available resources will take less time to complete its execution.
      */
-
-
-
+    
     private static final long FIXED_DURATION_SEC = 3600;
     private static IaaSPricingModeller pricingModeller;
-
+    private ActiveMqAdapter activeMqAdapter = new ActiveMqAdapter();
+    
+    private final Gson gson = new Gson();
 	private Logger log = LogManager.getLogger(AsceticPricingModellerAdapter.class);
 
     public AsceticPricingModellerAdapter(AsceticEnergyModellerAdapter energyModeller) {
@@ -197,6 +199,20 @@ public class AsceticPricingModellerAdapter implements PricingModeller {
 
 	@Override
 	public void onPreVmDeployment(Vm vm) {
-		// do nothing
+        try { // we update prices before every VM deployment
+            //pricingModeller.changeEnergyPrice();
+            publishMessage(VMM_PRICE_TOPIC_NAME, pricingModeller.getEnergyPrice());
+        }
+        catch (Exception e) {
+            log.warn("Could not update prices on preDeployment step!\n" + e.getMessage());
+        }
 	}
+    
+    private void publishMessage(String topic, Object messageObject) {
+		String json = gson.toJson(messageObject, messageObject.getClass());
+		log.debug(topic+"\n"+json);
+		activeMqAdapter.publishMessage(topic, json);
+	}
+    
+    private static final String VMM_PRICE_TOPIC_NAME = "virtual-machine-manager.price";
 }

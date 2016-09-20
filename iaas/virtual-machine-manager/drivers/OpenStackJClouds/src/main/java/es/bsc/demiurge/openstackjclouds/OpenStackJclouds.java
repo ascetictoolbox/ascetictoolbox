@@ -448,7 +448,7 @@ public class OpenStackJclouds implements CloudMiddleware {
             return glanceConnector.createImageFromUrl(new ImageToUpload(vm.getImage(), vm.getImage()));
         }
         else { // If the VM description contains the ID of an image, return it unless there is an error
-            String imageId = vm.getImage();
+            String imageId = vm.getImage().trim();
             if (!existsImageWithId(imageId)) {
                 throw new IllegalArgumentException("There is not an image with the specified ID");
             }

@@ -87,7 +87,7 @@ public class OpenStackGlance {
                 log.debug("Creating image from non-valid URL " + imageToUpload.getUrl() + "\nGlance command output:\n"+glanceCommandOutput);
                 String outputIdLine = glanceCommandOutput.split(System.getProperty("line.separator"))[9];
                 String id = outputIdLine.split("\\|")[2]; // Get the line where that specifies the ID
-                return id.substring(1, id.length() - 1); // Remove first and last characters (spaces)
+                return id.trim(); // Remove spaces and tabs
             } catch (Exception e) {
                 throw new CloudMiddlewareException("Error creating image from " + imageToUpload.getUrl()+ ": " + e.getMessage(),e);
             }

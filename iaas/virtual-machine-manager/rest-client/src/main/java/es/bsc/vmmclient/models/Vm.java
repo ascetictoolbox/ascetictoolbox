@@ -254,6 +254,26 @@ public class Vm {
         this.slaId = slaId;
         this.preferredHost = preferredHost;
     }
+    
+    public Vm(String name, String image, VmRequirements vmDeployRequirements,
+              String initScript, String applicationId, String ovfId, String slaId, String preferredHost, boolean needsFloatingIp) {
+        this.name = name;
+        this.image = image;
+        this.cpus = vmDeployRequirements.getCpus();
+        this.ramMb = vmDeployRequirements.getRamMb();
+        this.diskGb = vmDeployRequirements.getDiskGb();
+        this.swapMb = vmDeployRequirements.getSwapMb();
+        this.processorArchitecture = vmDeployRequirements.getProcessorArchitecture();
+        this.processorBrand = vmDeployRequirements.getProcessorBrand();
+        this.processorModel = vmDeployRequirements.getProcessorModel();
+        this.diskType = vmDeployRequirements.getDiskType();
+        this.initScript = initScript;
+        this.applicationId = applicationId;
+        this.ovfId = ovfId;
+        this.slaId = slaId;
+        this.preferredHost = preferredHost;
+        this.needsFloatingIp = needsFloatingIp;
+    }
 
     public String getName() {
         return name;
