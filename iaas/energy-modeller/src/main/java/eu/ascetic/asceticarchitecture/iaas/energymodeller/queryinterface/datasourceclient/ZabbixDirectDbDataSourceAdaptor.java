@@ -441,7 +441,7 @@ public class ZabbixDirectDbDataSourceAdaptor extends MySqlDatabaseConnector impl
             return null;
         }
         try (PreparedStatement preparedStatement = connection.prepareStatement(ALL_ZABBIX_HOSTS + FILTER_BY_GROUP)) {
-            preparedStatement.setString(1, hostGroup);
+            preparedStatement.setString(1, generalPowerConsumer);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 ArrayList<ArrayList<Object>> results = resultSetToArray(resultSet);
                 for (ArrayList<Object> storageData : results) {

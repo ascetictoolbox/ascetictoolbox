@@ -280,7 +280,7 @@ public class DataGatherer implements Runnable {
                 List<EnergyUsageSource> energyConsumers = datasource.getHostAndVmList();
                 List<Host> hostList = getHostList(energyConsumers);
                 refreshKnownHostList(hostList);
-                List<GeneralPurposePowerConsumer> generalPurposeList = getGeneralPurposeNodeList(energyConsumers);
+                List<GeneralPurposePowerConsumer> generalPurposeList = datasource.getGeneralPowerConsumerList();
                 refreshKnownGeneralPurposeNodesList(generalPurposeList);
                 List<VmDeployed> vmList = getVMList(energyConsumers);
                 refreshKnownVMList(vmList);
@@ -361,11 +361,11 @@ public class DataGatherer implements Runnable {
                     workloadCache.addVMToStatistics(vmMeasurements);
                 }
                 fraction.setFraction(vmMeasurements);
+                fraction.setHostPowerOffset(hostOffset);
                 Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Writing out vm information");
                 database.writeHostVMHistoricData(host, measurement.getClock(), fraction);
                 if (vmUsageLogger != null) {
                     Logger.getLogger(DataGatherer.class.getName()).log(Level.FINE, "Data gatherer: Logging out to Zabbix file");
-                    fraction.setHostPowerOffset(hostOffset);
                     vmUsageLogger.printToFile(vmUsageLogger.new Pair(measurement, fraction));
                 }
             }
