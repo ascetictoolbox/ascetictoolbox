@@ -33,7 +33,7 @@ public class VMinfo extends VMBasic{
 		
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
-		this.storage = storage/1000;
+		this.storage = storage;
 		this.predictedDuration=predictedDuration;
 		time = new TimeParameters();
 		this.scheme = initializeScheme(0);
@@ -59,7 +59,7 @@ public class VMinfo extends VMBasic{
 		this.VMid= VMid; 
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
-		this.storage = storage/1000;
+		this.storage = storage;
 		this.predictedDuration=predictedDuration;
 		this.schemeID = scheme;
 		time = new TimeParameters();
@@ -80,7 +80,8 @@ public class VMinfo extends VMBasic{
 		this.VMid= VMid; 
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
-		this.storage = storage/1000;
+		this.storage = storage;
+	//	this.storage = storage/1000;
 		this.schemeID = scheme;
 		time = new TimeParameters();
 		this.scheme = initializeScheme(schemeID);

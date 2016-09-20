@@ -96,7 +96,7 @@ public class PricingModellerQueueServiceManager {
 	                    System.out.println("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
-	                    System.out.println("Received " +topic[6] + topic[5]+topic[3]+topic[1]);
+	                   // System.out.println("Received " +topic[6] + topic[5]+topic[3]+topic[1]);
 	                    String payload = textMessage.getText();
 	                    String[] text = payload.split(",");
 	                    
@@ -108,14 +108,14 @@ public class PricingModellerQueueServiceManager {
 	                    	String[] text2 = text[7].split(":");
 	                        String IaaSProviderID = text2[1];
 	                        text2 = text[10].split(":");
-	                        int CPU = Integer.parseInt(text2[1]);
+	                        int CPU = Integer.parseInt(text2[1].trim());
 	                        text2 = text[11].split(":");
-	                        int RAM = Integer.parseInt(text2[1]);
+	                        int RAM = Integer.parseInt(text2[1].trim());
 	                        text2 = text[13].split(":");
-	                        int storage = Integer.parseInt(text2[1]);
+	                        int storage = Integer.parseInt(text2[1].trim());
 	                        text2 = text[14].split(":");
 	                        String[] text3 = text2[1].split("}");
-	                        int scheme = Integer.parseInt(text3[0]);
+	                        int scheme = Integer.parseInt(text3[0].trim());
 	                        
 	                    	if (allAppIDs.contains(depid)){
 	                    		VMinfo VM = new VMinfo(vmid, RAM, CPU, storage, scheme, IaaSProviderID);
