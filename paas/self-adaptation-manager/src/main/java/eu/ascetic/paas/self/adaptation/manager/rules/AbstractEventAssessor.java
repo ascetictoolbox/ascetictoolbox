@@ -97,7 +97,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             config.setProperty("paas.self.adaptation.manager.response.broadcast.queue", responseBroadcastQueueName);
             try {
                 responseBroadcaster = new ResponseHistoryBroadcaster(responseBroadcastQueueName);
-                responseBroadcasterThread = new Thread(responseHistoryLogger);
+                responseBroadcasterThread = new Thread(responseBroadcaster);
                 responseBroadcasterThread.setDaemon(true);
                 responseBroadcasterThread.start();
             } catch (JMSException | NamingException ex) {
@@ -181,6 +181,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 answer = decisionEngine.decide(answer);
                 if (actuator != null && answer.isPossibleToAdapt()) {
                     actuator.actuate(answer);
+                    Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "Actuator - Performing Work");                    
                     responseBroadcaster.broadcastChange(answer);
                 }
                 if (logging) {
