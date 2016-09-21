@@ -17,6 +17,7 @@ package eu.ascetic.paas.self.adaptation.manager;
 
 import eu.ascetic.paas.self.adaptation.manager.activemq.listener.EventHistoryListener;
 import eu.ascetic.paas.self.adaptation.manager.activemq.listener.SlaManagerListener;
+//import eu.ascetic.paas.self.adaptation.manager.actuator.OpenNebulaActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.rest.ActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.rules.AbstractEventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
@@ -43,6 +44,15 @@ public class SelfAdaptationManager {
     private static final String DEFAULT_EVENT_ASSESSOR_PACKAGE
             = "eu.ascetic.paas.self.adaptation.manager.rules";
     private String eventAssessorName = "FuzzyEventAssessor";
+    protected String vmmUser = "guest";
+    protected String vmmPassword = "guest";
+    /**
+     * Example urls: 
+     * Y2: Stable: 192.168.3.222:5673 
+     * Y2: Testing: 192.168.3.16:5673 
+     * Y1: 10.4.0.16:5672
+     */
+    protected String vmmUrl = "192.168.3.222:5673";  
 
     /**
      * This creates a new instance of the self-adaptation manager.
@@ -64,15 +74,22 @@ public class SelfAdaptationManager {
             config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
             eventAssessorName = config.getString("paas.self.adaptation.manager.event.assessor", eventAssessorName);
             config.setProperty("paas.self.adaptation.manager.event.assessor", eventAssessorName);
+            vmmUser = config.getString("paas.self.adaptation.manager.activemq.vmm.username", vmmUser);
+            config.setProperty("paas.self.adaptation.manager.activemq.vmm.username", vmmUser);
+            vmmPassword = config.getString("paas.self.adaptation.manager.activemq.vmm.password", vmmPassword);
+            config.setProperty("paas.self.adaptation.manager.activemq.vmm.password", vmmPassword);
+            vmmUrl = config.getString("paas.self.adaptation.manager.activemq.vmm.url", vmmUrl);
+            config.setProperty("paas.self.adaptation.manager.activemq.vmm.url", vmmUrl);            
         } catch (ConfigurationException ex) {
             Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
         setEventAssessor(eventAssessorName);
         EventListener listener = new SlaManagerListener();
-        EventListener iaasListener = new EventHistoryListener();
+        EventListener iaasListener = new EventHistoryListener(vmmUser, vmmPassword, vmmUrl);
         listeners.add(listener);
         listeners.add(iaasListener);
         actuator = new ActionRequester();
+//        actuator = new OpenNebulaActionRequester();
         eventAssessor.setActuator(actuator);
         eventAssessor.setListeners(listeners);
     }
