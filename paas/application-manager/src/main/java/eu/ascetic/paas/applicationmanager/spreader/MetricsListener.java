@@ -123,7 +123,7 @@ public class MetricsListener implements MessageListener {
         		logger.debug("Message to be sent: " + ModelConverter.applicationManagerMessageToJSON(amM));
 
         		// We send the created message //TODO change this topic... 
-        		AmqpProducer.sendMessage(topicToSend, amM);
+        		AmqpProducer.sendMessage(topicToSend, amM, false);
         	}
         	
         } catch (JMSException e) {

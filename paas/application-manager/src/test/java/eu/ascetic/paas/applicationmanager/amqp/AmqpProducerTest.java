@@ -52,7 +52,7 @@ public class AmqpProducerTest extends AbstractTest {
 		receiver.setMessageConsumer(listener);
 		
 		// We send the message with our AmqpProducer
-		AmqpProducer.sendMessage("application.111.deployment.222", messageToBeSent);
+		AmqpProducer.sendMessage("application.111.deployment.222", messageToBeSent, true);
 		
 		// We wait one second just in case
 		Thread.sleep(700l);

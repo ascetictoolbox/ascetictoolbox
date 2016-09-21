@@ -47,7 +47,7 @@ public class AmqpProducer {
 	 * @param topic to where the message it is going to be sent i.e.: application.111.deployment.222
 	 * @param message JSON object representation of the message to be sent
 	 */
-	public static void sendMessage(String topic, ApplicationManagerMessage message) {
+	public static void sendMessage(String topic, ApplicationManagerMessage message, boolean toLog) {
 		
 		if(Configuration.enableAMQP != null && Configuration.enableAMQP.equals("yes")) {
 		
@@ -59,8 +59,10 @@ public class AmqpProducer {
 				producer.sendMessage(messageString);
 				producer.close();
 
-				logger.info("Sending message to: " + topic);
-				logger.info("Message sent: \n" + messageString);
+				if(toLog) {
+					logger.info("Sending message to: " + topic);
+					logger.info("Message sent: \n" + messageString);
+				}
 
 			} catch(Exception e) {
 				logger.info("Error trying to send message to the Message Queue for the topic: " + topic);
@@ -79,7 +81,7 @@ public class AmqpProducer {
 		ApplicationManagerMessage amMessage = new ApplicationManagerMessage();
 		amMessage.setApplicationId(application.getName());
 		
-		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + application.getName() + "." + "ADDED", amMessage);
+		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + application.getName() + "." + "ADDED", amMessage, true);
 	}
 	
 	/**
@@ -92,7 +94,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + application.getName() + "." 
 		                         + DEPLOYMENT_PATH + "." + application.getDeployments().get(0).getId() + "." 
 				                 + Dictionary.APPLICATION_STATUS_SUBMITTED, 
-								 amMessage);
+								 amMessage,
+								 true);
 	}
 	
 	/**
@@ -106,7 +109,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_NEGOTIATING, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -120,7 +124,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_NEGOTIATIED, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -134,7 +139,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_CONTEXTUALIZING, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -148,7 +154,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_CONTEXTUALIZED, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -162,7 +169,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_DEPLOYING, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -176,7 +184,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_DEPLOYED, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -190,7 +199,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_TERMINATED, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -204,7 +214,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_ERROR, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -220,7 +231,8 @@ public class AmqpProducer {
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + VM_PATH + "." + vm.getId() + "."
                                  + Dictionary.APPLICATION_STATUS_DEPLOYING, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -236,7 +248,8 @@ public class AmqpProducer {
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + VM_PATH + "." + vm.getId() + "."
                                  + Dictionary.APPLICATION_STATUS_DEPLOYED, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -252,7 +265,8 @@ public class AmqpProducer {
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + VM_PATH + "." + vm.getId() + "."
                                  + DELETED,
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -266,7 +280,8 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_RENEGOTIATING, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 	
 	/**
@@ -280,6 +295,7 @@ public class AmqpProducer {
 		AmqpProducer.sendMessage(APPLLICATION_PATH + "." + applicationName + "." 
                                  + DEPLOYMENT_PATH + "." + deployment.getId() + "." 
                                  + Dictionary.APPLICATION_STATUS_RENEGOTIATED, 
-                                 amMessage);
+                                 amMessage,
+                                 true);
 	}
 }
