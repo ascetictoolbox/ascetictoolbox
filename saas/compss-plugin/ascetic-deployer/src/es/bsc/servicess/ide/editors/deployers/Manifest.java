@@ -89,8 +89,8 @@ public class Manifest {
 	private static final String ASCETIC_APPMAN_PROP = "asceticAppManagerURL";
 	private static final String ASCETIC_APPMON_PROP = "asceticAppMonitorURL";
 	private static final String ASCETIC_IMAGE_CACHE_PROP = "asceticCacheImage";
-	private static final String POWER_APP_SLA_TERM = "power_per_app";
-	private static final String PRICE_APP_SLA_TERM = "price_per_app";
+	private static final String POWER_APP_SLA_TERM = "app_power_consumption";
+	private static final String PRICE_APP_SLA_TERM = "app_price_for_next_hour";
 	private static final String ASCETIC_SLA_INFO_NUMBER = "asceticSlaInfoNumber";
 	//private static final int SLA_MAX_TERMS = 2;
 	private IJavaProject project;
@@ -1125,29 +1125,30 @@ public class Manifest {
 		VirtualSystemCollection vsc = ovf.getVirtualSystemCollection();
 		if (vsc!=null && vsc.getVirtualSystemArray()!=null){
 			for (VirtualSystem component :vsc.getVirtualSystemArray()){
-			ProductSection ps;
-			if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
-				setAsceticProductSection(component);
-			}
-			ps = component.getProductSectionAtIndex(0);
-			ProductProperty prop = ps.getPropertyByKey(ASCETIC_IMAGE_CACHE_PROP);
-			if (prop != null){
-				if (enabled)
-					prop.setValue("1");
-				else
-					prop.setValue("0");
-			}else{
-				if (enabled)
-				ps.addNewProperty(ASCETIC_IMAGE_CACHE_PROP, ProductPropertyType.UINT32, "1");	
-			}
+				ProductSection ps;
+				if (component.getProductSectionArray() == null || component.getProductSectionArray().length<1){
+					setAsceticProductSection(component);
+				}
+				ps = component.getProductSectionAtIndex(0);
+				ProductProperty prop = ps.getPropertyByKey(ASCETIC_IMAGE_CACHE_PROP);
+				if (prop != null){
+					if (enabled)
+						prop.setValue("1");
+					else
+						prop.setValue("0");
+				}else{
+					if (enabled)
+						ps.addNewProperty(ASCETIC_IMAGE_CACHE_PROP, ProductPropertyType.UINT32, "1");	
+				}
 			}
 		}
-		
+
 	}
 
 	public void deleteSlaTerms(){
 		ProductSection ps = getOrCreateGlobalProductSection();
-		for (int index=0; index < getSLATermsNumber(ps); index++){
+		int sla_numbers = getSLATermsNumber(ps);
+		for (int index=sla_numbers-1; index >= 0; index--){
 			log.debug("Removing SLA term "+index);
 			ps.removeSlaInfo(index);
 		}
@@ -1164,9 +1165,8 @@ public class Manifest {
 	public void setPriceBoundary(String price) {
 		ProductSection ps = getOrCreateGlobalProductSection();
 		log.debug("Adding Price SLA term ");
-		ps.addSlaInfo(PRICE_APP_SLA_TERM, "Euro/Hour", "LTE", price, "violation");
+		ps.addSlaInfo(PRICE_APP_SLA_TERM, "EUR", "LTE", price, "violation");
 		ps.setPriceRequirement(price);
-		
 	}
 	private int getSLATermsNumber(ProductSection ps) {
         ProductProperty productProperty = ps.getPropertyByKey(ASCETIC_SLA_INFO_NUMBER);
@@ -1175,6 +1175,7 @@ public class Manifest {
         } else {
             return ((Integer) productProperty.getValueAsJavaObject());
         }
+        
     }
 
 	
