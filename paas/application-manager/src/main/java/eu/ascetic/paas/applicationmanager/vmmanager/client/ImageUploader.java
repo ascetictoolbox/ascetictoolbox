@@ -20,8 +20,8 @@ public class ImageUploader {
 		String imageProviderId = vmManagerClient.uploadImage(imgToUpload);
 		logger.info("Provider image id: >" + imageProviderId + "<");
 		
-		imageProviderId = imageProviderId.trim();
-		logger.info("Provider image id: >" + imageProviderId + "<");
+		//imageProviderId = imageProviderId.trim();
+		//logger.info("Provider image id: >" + imageProviderId + "<");
 		
 		//Saving the new image to the database
 		Image image = new Image();

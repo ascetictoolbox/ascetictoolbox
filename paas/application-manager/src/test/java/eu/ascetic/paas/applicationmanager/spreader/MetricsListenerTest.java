@@ -80,6 +80,11 @@ public class MetricsListenerTest extends AbstractTest {
 		vm.setId(111);
 		vm.setProviderVmId("489c0769-2ad3-4f76-a5d0-dedff0877f09");
 		vm.setDeployment(deployment);
+		vm.setCpuActual(2);
+		vm.setRamActual(1024);
+		vm.setSwapActual(122);
+		vm.setDiskActual(23);
+		vm.setPriceSchema(2l);
 		when(vmDAO.getVMWithProviderVMId("489c0769-2ad3-4f76-a5d0-dedff0877f09", "providerId")).thenReturn(vm);
 		
 		MetricsListener metricsListener = new MetricsListener("amqp://" + Configuration.amqpUsername + ":" + Configuration.amqpPassword + "@" + Configuration.amqpAddress, 
@@ -115,7 +120,12 @@ public class MetricsListenerTest extends AbstractTest {
 		assertEquals(0.1, message.getVms().get(0).getValue(), 0.0001);
 		assertEquals("units", message.getVms().get(0).getUnits());
 		assertEquals(22l, message.getVms().get(0).getTimestamp());
-		
+		assertEquals(2, message.getVms().get(0).getCpu());
+		assertEquals(1024, message.getVms().get(0).getRam());
+		assertEquals(122, message.getVms().get(0).getSwap());
+		assertEquals(2, message.getVms().get(0).getPriceSchema());
+		assertEquals(23, message.getVms().get(0).getDisk());
+				
 		producer = new AmqpMessageProducer(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword, "vm.489c0769-2ad3-4f76-a5d0-dedff0877f0.item.power", true);
 		producer.sendMessage(json);
 		producer.close();

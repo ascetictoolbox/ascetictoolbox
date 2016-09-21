@@ -113,6 +113,13 @@ public class MetricsListener implements MessageListener {
         		vm.setTimestamp(im.getTimestamp());
         		vm.setVmId("" + vmFromDB.getId());
         		vm.setProviderId(providerId);
+        		vm.setCpu(vmFromDB.getCpuActual());
+        		vm.setRam(vmFromDB.getRamActual());
+        		vm.setDisk(vmFromDB.getDiskActual());
+        		vm.setSwap(vmFromDB.getSwapActual());
+        		if(vmFromDB.getPriceSchema() != null) {
+        			vm.setPriceSchema(vmFromDB.getPriceSchema().intValue());
+        		}
 
         		ApplicationManagerMessage amM = new ApplicationManagerMessage();
         		amM.setApplicationId(vmFromDB.getDeployment().getApplication().getName());
