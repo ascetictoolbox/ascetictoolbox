@@ -7,6 +7,8 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.axis2.client.Stub;
+import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.log4j.Logger;
 import org.slasoi.slamodel.sla.SLATemplate;
 
@@ -58,11 +60,21 @@ public class NegotiationWsClient implements NegotiationClient {
 		this.slaTranslator = slaTranslator;
 	}
 	
+	private void setTimeout(BZNegotiationStub stub) {
+		int timeout = 5 * 60 * 1000; // five minutes
+
+		stub._getServiceClient().getOptions().setProperty(
+		                 HTTPConstants.SO_TIMEOUT, new Integer(timeout));
+		stub._getServiceClient().getOptions().setProperty(
+		                 HTTPConstants.CONNECTION_TIMEOUT, new Integer(timeout));
+	}
+	
 	@Override
 	public String initiateNegotiation(String endpoint, SLATemplate slaTemplate) {
 		
 		try {
 			BZNegotiationStub stub = new BZNegotiationStub(endpoint);
+			setTimeout(stub);
 			
 			InitiateNegotiation doc = getInitiateNegotiationDoc(slaTemplate);
 			
@@ -83,6 +95,7 @@ public class NegotiationWsClient implements NegotiationClient {
 		try {
 			
 			BZNegotiationStub stub = new BZNegotiationStub(endpoint);
+			setTimeout(stub);
 			
 			Renegotiate doc = getRenegotiationDoc(id);
 			
@@ -104,6 +117,7 @@ public class NegotiationWsClient implements NegotiationClient {
 		
 		try { 
 			BZNegotiationStub stub = new BZNegotiationStub(endpoint);
+			setTimeout(stub);
 			
 			Negotiate doc = getNegotiationDoc(negotiationId, slaTemplate);
 			
@@ -143,6 +157,7 @@ public class NegotiationWsClient implements NegotiationClient {
 		SLA sla = null;
 		try { 
 			BZNegotiationStub stub = new BZNegotiationStub(endpoint);
+			setTimeout(stub);
 			
 			CreateAgreement doc = getAgreementDoc(negotiationId, slaTemplate);
 			
