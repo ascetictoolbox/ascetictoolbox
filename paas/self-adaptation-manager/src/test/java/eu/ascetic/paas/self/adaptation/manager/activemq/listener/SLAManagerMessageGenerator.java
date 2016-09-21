@@ -53,7 +53,7 @@ public class SLAManagerMessageGenerator extends ActiveMQBase implements Runnable
         // Create a Session
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
-        messageQueue = getMessageQueue(queueName);
+        messageQueue = getTopic(queueName);
         producer = getMessageProducer(session, messageQueue);
     }
 
@@ -74,7 +74,7 @@ public class SLAManagerMessageGenerator extends ActiveMQBase implements Runnable
         // Create a Session
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
-        messageQueue = getMessageQueue(queueName);
+        messageQueue = getTopic(queueName);
         producer = getMessageProducer(session, messageQueue);
     }
 
@@ -127,6 +127,7 @@ public class SLAManagerMessageGenerator extends ActiveMQBase implements Runnable
         sgs.setGuaranteedId("power_usage_per_app");
         sgs.setGuaranteedValue(guranteedValue);
         sgs.setOperator("greater_than_or_equals");
+//        sgs.setOperator("less_than_or_equals");
         alert.setSlaGuaranteedState(sgs);
         violationMessage.setAlert(alert);
         ViolationMessageTranslator vmt = new ViolationMessageTranslator();
