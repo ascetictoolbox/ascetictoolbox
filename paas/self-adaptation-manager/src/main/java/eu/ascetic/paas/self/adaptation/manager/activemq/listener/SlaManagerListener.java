@@ -73,7 +73,7 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
         } catch (ConfigurationException ex) {
             Logger.getLogger(SlaManagerListener.class.getName()).log(Level.INFO, "Error loading the configuration of the PaaS Self adaptation manager", ex);
         }
-        queue = getMessageQueue(queue_name);
+        queue = getTopic(queue_name);
         consumer = session.createConsumer(queue);
     }
 
@@ -103,7 +103,7 @@ public class SlaManagerListener extends ActiveMQBase implements Runnable, EventL
      */
     public SlaManagerListener(String queueName) throws JMSException, NamingException {
         super();
-        queue = getMessageQueue(queueName);
+        queue = getTopic(queueName);
         consumer = session.createConsumer(queue);
     }
 

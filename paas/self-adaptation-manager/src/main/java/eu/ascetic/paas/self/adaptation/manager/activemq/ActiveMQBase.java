@@ -250,7 +250,7 @@ public abstract class ActiveMQBase {
      * error.
      */
     protected Destination getMessageQueue(String queue) throws NamingException, JMSException {
-        return (Destination) session.createTopic(queue);
+        return (Destination) session.createQueue(queue);
     }
 
     /**

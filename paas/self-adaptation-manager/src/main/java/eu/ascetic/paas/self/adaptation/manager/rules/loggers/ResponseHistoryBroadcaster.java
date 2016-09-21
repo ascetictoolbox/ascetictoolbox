@@ -60,7 +60,7 @@ public class ResponseHistoryBroadcaster extends ActiveMQBase implements Runnable
         // Create a Session
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         // Create the destination (Topic or Queue)
-        messageQueue = getMessageQueue(queueName);
+        messageQueue = getTopic(queueName);
         producer = getMessageProducer(session, messageQueue);
     }
 
