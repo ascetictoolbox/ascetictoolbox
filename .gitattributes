@@ -3471,12 +3471,14 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/loggers/EventHistoryLogger.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/loggers/ResponseHistoryBroadcaster.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/loggers/ResponseHistoryLogger.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/utils/CombinationGenerator.java -text
 paas/self-adaptation-manager/src/main/resources/adapt.fcl -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/activemq/ActiveMQBaseTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/SLAManagerMessageGenerator.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/activemq/listener/SlaManagerListenerTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rest/ActionRequesterTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rest/generated/RestVMClientTest.java -text
+paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rules/F7SlotAwareVMDeploymentTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rules/FuzzyEventAssessorTest.java -text
 paas/self-adaptation-manager/src/test/java/eu/ascetic/paas/self/adaptation/manager/rules/ThresholdEventAssessorTest.java -text
 paas/self-adaptation-manager/tests/junit1.fcl -text

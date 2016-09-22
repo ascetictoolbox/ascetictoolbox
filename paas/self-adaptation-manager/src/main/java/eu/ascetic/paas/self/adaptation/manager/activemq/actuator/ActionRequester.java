@@ -340,5 +340,10 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     public List<Slot> getSlots(VmRequirements requirements) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public List<Slot> getSlots() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

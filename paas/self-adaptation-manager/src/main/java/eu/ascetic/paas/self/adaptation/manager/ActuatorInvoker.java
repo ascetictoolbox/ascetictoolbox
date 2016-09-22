@@ -135,6 +135,13 @@ public interface ActuatorInvoker {
     public List<Slot> getSlots(VmRequirements requirements);
     
     /**
+     * This checks to see how many free slots are available.
+     * 
+     * @return The amount of free slots available.
+     */
+    public List<Slot> getSlots();
+    
+    /**
      * This adds a vm of a given ovf type to named deployment.
      *
      * @param applicationId The application ID

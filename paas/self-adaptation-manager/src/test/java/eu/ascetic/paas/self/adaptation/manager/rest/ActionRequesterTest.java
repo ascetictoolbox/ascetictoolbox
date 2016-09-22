@@ -19,6 +19,7 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import es.bsc.vmmclient.models.Slot;
 
 /**
  * A test class for the rest interface to the Application Manager.
@@ -131,6 +132,21 @@ public class ActionRequesterTest {
         for (VM vm : result) {
             assert (vm != null);
             printVM(vm);
+        }
+    }
+    
+    /**
+     * Test of getSlots method, of class ActionRequester.
+     */
+    @Test
+    public void testGetSlots() {
+        System.out.println("getSlots");
+        ActionRequester instance = new ActionRequester();
+        List<Slot> result = instance.getSlots();
+        for (Slot slot : result) {
+            System.out.println(slot.getHostname() + " - " + slot.getFreeCpus());
+            //assert (vm != null);
+            //printVM(vm);
         }
     }
 

@@ -418,6 +418,18 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         ArrayList<Slot> output = gson.fromJson(response, listType);
         return output;
     }
+    
+    @Override
+    public List<Slot> getSlots() {
+        ProviderSlotClient client = new ProviderSlotClient("1"); //TODO fix this
+        Gson gson = new Gson();
+        ClientResponse clientResponse = client.getSlots();
+        String response = clientResponse.getEntity(String.class);
+        Type listType = new TypeToken<ArrayList<Slot>>() {
+        }.getType();
+        ArrayList<Slot> output = gson.fromJson(response, listType);
+        return output;
+    }
 
     /**
      * This scales a VM type to a set amount of VMs
