@@ -15,11 +15,8 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
-import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
-import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.applicationmanager.model.VM;
-import eu.ascetic.utils.ovf.api.OvfDefinition;
-import eu.ascetic.utils.ovf.api.ProductSection;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.Collections;
 import java.util.List;
 
@@ -197,56 +194,14 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
     }
 
     /**
-     * The decision logic for horizontal scaling to a given target value.
-     *
-     * @param response The response to finalise details for.
-     * @return The finalised response object
-     */
-    public Response scaleToNVms(Response response) {
-        if (getActuator() == null) {
-            response.setAdaptationDetails("Unable to find actuator.");
-            response.setPossibleToAdapt(false);
-            return response;
-        }
-        String appId = response.getApplicationId();
-        String deploymentId = response.getDeploymentId();
-        String vmType = response.getAdaptationDetail("VM_TYPE");
-        int currentVmCount = getActuator().getVmCountOfGivenType(appId, deploymentId, vmType);
-        int targetCount = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
-        int difference = targetCount - currentVmCount;
-        OvfDefinition ovf = response.getCause().getOvf();
-        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf, appId);
-        if (difference == 0) {
-            response.setPerformed(true);
-            response.setPossibleToAdapt(false);
-            return response;
-        }
-        if (ovf != null && details != null) {
-            if (targetCount < details.getLowerBound() || targetCount > details.getUpperBound()) {
-                response.setPerformed(true);
-                response.setPossibleToAdapt(false);
-                response.setAdaptationDetails("Unable to adapt, the target was out of acceptable bounds");
-                return response;
-            }
-        }
-        if (difference > 0) { //add VMs
-            response.setAdaptationDetails("VM_TYPE=" + vmType + ";VM_COUNT=" + difference);
-        } else { //less that zero so remove VMs
-            List<Integer> vmsPossibleToRemove = getActuator().getVmIdsAvailableToRemove(appId, deploymentId);
-            //Note: the 0 - difference is intended to make the number positive
-            response.setAdaptationDetails("VM_TYPE=" + vmType + ";VMs_TO_REMOVE=" + getVmsToRemove(vmsPossibleToRemove, 0 - difference));
-        }
-        return response;
-    }
-
-    /**
      * This generates the list of VMs to remove
      *
      * @param vmsPossibleToRemove The list of VMs that could be removed
      * @param count The amount of VMs needing to go
      * @return The string for the command to remove the VMs
      */
-    private String getVmsToRemove(List<Integer> vmsPossibleToRemove, int count) {
+    @Override
+    protected String getVmsToRemove(List<Integer> vmsPossibleToRemove, int count) {
         String answer = "";
         Collections.sort(vmsPossibleToRemove);
         Collections.reverse(vmsPossibleToRemove);
