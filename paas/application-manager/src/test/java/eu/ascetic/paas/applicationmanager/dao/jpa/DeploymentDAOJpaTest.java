@@ -197,27 +197,7 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 	
 	@Test
 	public void getDeploymentsForApplicationWithStatus() {
-		Application application = new Application();
-		application.setName("name");
-
-		Deployment deployment1 = new Deployment();
-		deployment1.setStatus("RUNNING");
-		deployment1.setPrice("expensive");
-				
-		Deployment deployment2 = new Deployment();
-		deployment2.setStatus("DELETED");
-		deployment2.setPrice("expensive");
-		
-		Deployment deployment3 = new Deployment();
-		deployment3.setStatus("RUNNING");
-		deployment3.setPrice("expensive");
-		
-		application.addDeployment(deployment1);
-		application.addDeployment(deployment2);
-		application.addDeployment(deployment3);
-		
-		boolean saved = applicationDAO.save(application);
-		assertTrue(saved);
+		Application application = setupSeveralDeploymentsAndApplications();
 		
 		List<Deployment> deploymentsRUNNING = deploymentDAO.getDeploymentsForApplicationWithStatus(application, "RUNNING");
 		assertEquals(2, deploymentsRUNNING.size());
@@ -256,6 +236,58 @@ public class DeploymentDAOJpaTest extends AbstractTransactionalJUnit4SpringConte
 		assertEquals("DELETED", deploymentFromDB.getStatus());
 		deploymentFromDB = deploymentDAO.getDeployment("ccc");
 		assertNull(deploymentFromDB);
+	}
+	
+	private Application setupSeveralDeploymentsAndApplications() {
+		Application application1 = new Application();
+		application1.setName("name");
+		
+		Application application2 = new Application();
+		application2.setName("name2");
+
+		Deployment deployment1 = new Deployment();
+		deployment1.setStatus("RUNNING");
+		deployment1.setPrice("expensive");
+				
+		Deployment deployment2 = new Deployment();
+		deployment2.setStatus("DELETED");
+		deployment2.setPrice("expensive");
+		
+		Deployment deployment3 = new Deployment();
+		deployment3.setStatus("RUNNING");
+		deployment3.setPrice("expensive");
+		
+		application1.addDeployment(deployment1);
+		application1.addDeployment(deployment2);
+		application1.addDeployment(deployment3);
+		
+		Deployment deployment4 = new Deployment();
+		deployment4.setStatus("RUNNING");
+		deployment4.setPrice("expensive");
+		
+		application2.addDeployment(deployment4);
+		
+		boolean saved = applicationDAO.save(application1);
+		assertTrue(saved);
+		
+		saved = applicationDAO.save(application2);
+		assertTrue(saved);
+		
+		return application1;
+	}
+	
+	@Test
+	public void getDeploymentsWithStatus() {
+		setupSeveralDeploymentsAndApplications();
+		
+		List<Deployment> deploymentsRUNNING = deploymentDAO.getDeploymentsWithStatus("RUNNING");
+		assertEquals(3, deploymentsRUNNING.size());
+		
+		List<Deployment> deploymentsDELETED = deploymentDAO.getDeploymentsWithStatus("DELETED");
+		assertEquals(1, deploymentsDELETED.size());
+		
+		List<Deployment> deploymentsXXX = deploymentDAO.getDeploymentsWithStatus("XXX");
+		assertEquals(0, deploymentsXXX.size());
 	}
 }
 

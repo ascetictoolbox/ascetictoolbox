@@ -118,6 +118,16 @@ public class DeploymentDAOJpa implements DeploymentDAO {
 			return null;
 		}
 	}
+
+	@Override
+	public List<Deployment> getDeploymentsWithStatus(String status) {
+		Query query = entityManager.createQuery("SELECT d FROM Deployment d WHERE d.status = :status");
+		query.setParameter("status", status);
+		@SuppressWarnings("unchecked")
+		List<Deployment> deployments = query.getResultList();
+		
+		return deployments;
+	}
 }
 
 
