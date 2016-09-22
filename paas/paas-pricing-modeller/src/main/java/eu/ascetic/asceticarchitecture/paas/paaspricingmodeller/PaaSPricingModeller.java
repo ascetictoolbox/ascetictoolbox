@@ -54,12 +54,8 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
 public class PaaSPricingModeller implements PaaSPricingModellerInterface{
-
 	
 	PaaSPricingModellerBilling billing = new PaaSPricingModellerBilling();
-	
-
-
 	static PricingModellerQueueServiceManager  producer;
 	/////static HashMap<Integer,IaaSProvider> IaaSProviders = new HashMap<Integer,IaaSProvider>();
 	static HashMap<Integer,Double> VMsEnergy = new HashMap<Integer, Double>();
@@ -70,7 +66,6 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
     Date today = Calendar.getInstance().getTime();
     String reportDate = df.format(today);
     String name = "logs/" + reportDate;
-	
 	
 	public PaaSPricingModellerBilling getBilling() {
 		return billing;
@@ -108,17 +103,9 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		
 	}
 
-	//////////////////////////////////INITIALIZATION OF APP////////////////////////////////////
-	/**
-	 * This function initialized the application in order for the Pricing Modeller to initiate the billing of the app
-	 * @param deplID
-	 * @param schemeId: the pricing scheme followed
-	 */
-	public void initializeApp(String appID, int deplID, int schemeId){
-		billing.registerApp(appID, deplID, schemeId);
-	}
 	
-	/*Default IaaSProviderID = 0*/
+	//////////////////////////////////YEAR 3 //////////////////////////////////////////////////////////
+		/*Default IaaSProviderID = 0*/
 	public void initializeApp(String appID, int deplID, LinkedList<VMinfo> VMs){
 			billing.registerApp(deplID, VMs, billing);
 	}
@@ -140,10 +127,6 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		
 	}
 
-	
-//////////////////////BASED ON LAYER'S CALCULATION////////////////////////////
-
-	/* CALCULATION*/	
 	/**
 	 * This function returns the total charges of the application based on the IaaS Charges
 	 * @param deplID
@@ -154,10 +137,8 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		logger.info("ChargesCalculator calculation of charges");
 		double charges = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
 		return charges;
-		//System.out.println("ChargesCalculator calculation of charges");
-		
+		//System.out.println("ChargesCalculator calculation of charges");		
 	}
-
 	
 	public double predictPriceforNextPeriod(int depID, double duration){
 		DeploymentInfo depl = billing.getApp(depID);
@@ -201,8 +182,6 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	}
 
 	
-
-
 	public double getAppPredictedPrice(int scheme,  double duration, LinkedList<VMinfo> VMs){
 		double charges = getAppPredictedCharges(scheme, VMs);
 		double totalDurationOfApp = 0;
@@ -232,9 +211,48 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return billing.getCostlyVMs(deplID, currentAppCharges, totalChargesLimit, remainingAppDuration,  averageWattPerHourPerVM);
 		
 	}
-	
 
-/////////////////////////USED FOR EVENTS/////////////////////////////////////////
+	/**
+	 * This function returns the total charges for one event running on multiple VMs with different scheme ids
+	 * @param deplID
+	 * @param LinkedList<>: the list of VMs
+	 * @param energy: the predicted energy from EM
+	 * @param schemeId
+	 * @param duration: the duration of the event in seconds
+	 * @param numberOfevents: the number of the events on the same VM (given from EM)
+	 * @return
+	 */
+	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy) throws Exception{
+		int VMschemeId= VMs.getFirst().getSchemeID();
+		try{
+			DeploymentInfo deployment = new DeploymentInfo(deplID);
+			deployment.setVMs(VMs);
+			deployment.setEnergy(energy);
+			double charges = billing.predictAppEventChargesVMbased(deployment);
+			return charges;
+		}
+		catch(NullPointerException e){
+			logger.error("Predict event running on multiple VM which have different schemes found VM without scheme");
+			return -2;
+		}
+		
+		//logger.info("Event:"+deplID+","+energy+","+schemeId+","+charges);
+		
+		
+	}
+	
+	
+	
+	////////////////////////////////////////YEAR 2 //////////////////////////////////////////////////////////
+	/**
+	 * This function initialized the application in order for the Pricing Modeller to initiate the billing of the app
+	 * @param deplID
+	 * @param schemeId: the pricing scheme followed
+	 */
+	public void initializeApp(String appID, int deplID, int schemeId){
+		billing.registerApp(appID, deplID, schemeId);
+	}
+	
 	/**
 	 * This function returns the total charges for all events running on one VM
 	 * @param deplID
@@ -259,8 +277,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		double charges = billing.predictEventCharges(deployment);
 		return charges;
 	}
-	
-	
+
 	/**
 	 * This function returns the total charges for one event running on multiple VMs
 	 * @param deplID
@@ -274,37 +291,14 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 */
 	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
-		deployment.setIaaSProvider("test1"); 
+		deployment.setIaaSProvider("0"); 
 		deployment.setVMs(VMs);
 		deployment.setEnergy(energy);
 		double charges = billing.predictAppEventCharges(deployment);
-		return charges;
-		
+		return charges;	
 	}
 	
-	/**
-	 * This function returns the total charges for one event running on multiple VMs with different scheme ids
-	 * @param deplID
-	 * @param LinkedList<>: the list of VMs
-	 * @param energy: the predicted energy from EM
-	 * @param schemeId
-	 * @param duration: the duration of the event in seconds
-	 * @param numberOfevents: the number of the events on the same VM (given from EM)
-	 * @return
-	 */
-	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy) throws Exception{
-		DeploymentInfo deployment = new DeploymentInfo(deplID);
-		deployment.setVMs(VMs);
-		deployment.setEnergy(energy);
-		double charges = billing.predictAppEventChargesVMbased(deployment);
-		//logger.info("Event:"+deplID+","+energy+","+schemeId+","+charges);
-		return charges;
-		
-	}
-	
-	/////////////////////////////////////////BASED ON CALCULATIONS FROM IAAS LAYER///////////////////////////////////
-	
-	/*********************************** PREDICTION**************************************************/
+/*********************************** PREDICTION**************************************************/
 	
 	/**
 	 * This function returns the predicted charges for an application based on the IaaS charges. 
@@ -339,7 +333,6 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return price;
 	}
 	
-		
 	
 	/*	public double getAppAveragePredictedPrice(int deplID, LinkedList<VMinfo> VMs, int IaaSProviderID, HashMap<Integer, Double> energy){
 	double charges = getAppTotalPredictedCharges(deplID, VMs, IaaSProviderID, energy);

@@ -38,6 +38,7 @@ public class IaaSProvider {
 		IaaSID = id;
 		distribution.setDistribution(0.6, 0.3, 0.1); 
 		int IaaSid = Integer.parseInt(IaaSID.trim());
+		
 		int even= IaaSid%2;
 		if (even == 0){
 			staticResourcePrice = 0.14;}
@@ -83,6 +84,7 @@ public class IaaSProvider {
 	}
 	
 	public ResourceDistribution getDistribution(){
+		//System.out.println("the distribution"+distribution.cpuPer);
 		return distribution;
 	}
 	

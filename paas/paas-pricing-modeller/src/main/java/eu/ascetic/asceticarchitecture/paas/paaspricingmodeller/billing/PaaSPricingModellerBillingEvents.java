@@ -93,7 +93,6 @@ public class PaaSPricingModellerBillingEvents extends PaaSPricingModellerBilling
 			double b = deploy.getIaaSProvider().predictEnergyCharges(deploy.getEnergy(), deploy.getIaaSProvider().getAverageEnergyPrice());
 			charges = charges +b;
 			charges= charges+0.2*charges;
-			
 			deploy.setPredictedCharges(charges);
 			return deploy.getPredictedCharges();
 		}

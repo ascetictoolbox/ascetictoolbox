@@ -30,14 +30,20 @@ public class VMinfo extends VMBasic{
 
 	
 	public VMinfo (double RAM, double CPU, double storage, long predictedDuration){
-		
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage;
 		this.predictedDuration=predictedDuration;
-		time = new TimeParameters();
 		this.scheme = initializeScheme(0);
+		time = new TimeParameters();
+		energyInfo.setCurrentTotalConsumption(0.0);		
+		energyCharges = new Charges();
+		resourceCharges = new Charges();
+		TotalCharges = new Charges();
 		energyInfo.setCurrentTotalConsumption(0.0);
+		IaaSProvider Prov = new IaaSProvider("0");
+		IaaSProviders.put("0", Prov);
+		setIaaSProvider(IaaSProviders.get("0"));
 	}
 
 	/*

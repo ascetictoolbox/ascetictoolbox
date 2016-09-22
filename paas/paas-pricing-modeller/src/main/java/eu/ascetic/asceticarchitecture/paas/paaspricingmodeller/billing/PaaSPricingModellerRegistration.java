@@ -102,7 +102,7 @@ public class PaaSPricingModellerRegistration {
 					System.out.println("PM: Could not set producer");
 					// logger.error("PM: Could not set producer");
 				}
-			 System.out.println(VM.getProducer());
+		//	 System.out.println(VM.getProducer());
 			 if (VM.getSchemeID()==0){
 				 charges= charges+ VM.getScheme().predictTotalCharges(VM, false);
 				 vm.add(VM.getVMid());

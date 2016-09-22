@@ -341,11 +341,15 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 public double getAppCurrentTotalCharges(int depl, double charges){
 		
 		DeploymentInfo deploy = getApp(depl);
-		if (deploy ==null){
-		deploy = new DeploymentInfo(depl, this);	
+		try{
+			return IaaSBilling.getAppCurrentTotalCharges(deploy, charges);
+		}catch (NullPointerException ex) {
+			deploy = new DeploymentInfo(depl, this);
+			System.out.println("PM PaaS: Trying to get App Charges but the Deployment has been removed. Re-creating");
+			return IaaSBilling.getAppCurrentTotalCharges(deploy, charges);
 		}
 		
-		return IaaSBilling.getAppCurrentTotalCharges(deploy, charges);
+		
 	}
 
 

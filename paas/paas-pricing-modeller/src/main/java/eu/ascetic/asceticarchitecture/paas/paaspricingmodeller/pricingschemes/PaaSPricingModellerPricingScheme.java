@@ -81,7 +81,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	}
 	
 	private double getPredictedEnergy(VMinfo VM, double duration) {
-		 	double difference=3000;
+		 	double difference=0;
 	        try{
 	        	EMInteraction response = new EMInteraction();
 	        	double energy = response.getPredictedEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), Double.toString(duration));
@@ -90,7 +90,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	        }
 	       catch (Exception ex){
 			//	System.out.println("Pricing Modeller getPredictedEnergy: Could receive asnwer");
-				logger.info("Could not send the message to queue");
+			logger.info("Pricing Modeller getPredictedEnergy: Could recieve asnwe from EM modellerr");
 			}
 	      //  if (VM.getEnergyConsumptionofLastPeriod()!=0){
 	    //    	difference= VM.getEnergyConsumptionofLastPeriod();
@@ -152,7 +152,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	//	System.out.println("Total energy charges " + VM.getEnergyCharges());
 		
 	}
-	
+
 	public double updateEnergyCharges(VMinfo VM){
 		//the energy charges for the past period
 		

@@ -69,14 +69,16 @@ public class PaaSPricingModellerTestqueue{
 	//	PricingModellerQueueServiceManager  producer1;
 	//	producer1 = new PricingModellerQueueServiceManager(PMqueue1);
       //  VMinfo vm1 = new VMinfo(1,7680, 2, 32000, 10, 1, 0);
-		VMinfo vm1 = new VMinfo(1, 7680, 2, 32000, 60, 0, "0");
-    	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 10, 1, "0");
+		VMinfo vm1 = new VMinfo(7680, 2, 32, 3600);
+    //	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 10, 1, "0");
     	
     	LinkedList<VMinfo> test = new LinkedList<>();
         test.add(vm1);
+        
+        System.out.println(prmodeller.getAppTotalCharges(0, 1, 1000000));
        
-        test.add(vm2);
-
+    //    test.add(vm2);
+/*********************
   //      producer1.createConsumers("Pricing", "PMBILLING.DEPLOYMENTID.1.CHARGES");
   //      producer1.createConsumers("Pricing", "PMPREDICTION.DEPLOYMENTID.1.PRICEHOUR");
   //      producer1.createConsumers("Pricing", "PMBILLING.DEPLOYMENTID.1.TOTALCHARGES");
@@ -108,6 +110,7 @@ public class PaaSPricingModellerTestqueue{
       //  Thread.sleep(40000);
       //  System.out.println("the method here returns: "+ prmodeller.getAppTotalChargesPaaSCalculated(1));
         Thread.sleep(70000);
+        *********************/
    }
     
 
