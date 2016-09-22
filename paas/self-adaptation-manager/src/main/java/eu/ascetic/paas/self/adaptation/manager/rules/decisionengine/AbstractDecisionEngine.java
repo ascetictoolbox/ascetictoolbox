@@ -23,7 +23,10 @@ import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The aim of this class is to decide given an event that has been assessed what
@@ -64,12 +67,28 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
      * @param vmOvfType The OVF type to add to
      * @return If the VM is permissible to add.
      */
-    public boolean getCanVmBeAdded(Response response, String vmOvfType) {
+    public boolean getCanVmBeAdded(Response response, String vmOvfType) { 
+        return getCanVmBeAdded(response, vmOvfType, 1);
+    }   
+    
+    /**
+     * This tests to see if the power consumption limit will be breached or not
+     * as well as the OVF boundaries.
+     *
+     * @param response The response type to check
+     * @param vmOvfType The OVF type to add to
+     * @param count theAmount of VMs to add
+     * @return If the VM is permissible to add.
+     */
+    public boolean getCanVmBeAdded(Response response, String vmOvfType, int count) {
         if (actuator == null) {
             return false;
         }
+        //average power of the VM type to add
         double averagePower = actuator.getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(), vmOvfType);
+        //The current total measured power consumption
         double totalMeasuredPower = actuator.getTotalPowerUsage(response.getApplicationId(), response.getDeploymentId());
+        averagePower = averagePower * count;
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(),
                 response.getDeploymentId());
         if (!vmOvfTypes.contains(vmOvfType)) {
@@ -83,30 +102,43 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
                 return false;
             }
         }
-        //TODO compare any further standard gurantees here that make sense
+        //TODO compare any further standard guarantees here that make sense
         //TODO cost??
 
         return enoughSpaceForVM(response, vmOvfType);
     }
+    
+    /**
+     * This determines if the provider has enough space to create the new VM.
+     *
+     * @param response The response type to check
+     * @param vmOvfType The OVF type to add to
+     * @return If there is enough space for the new VM.
+     */
+    public boolean enoughSpaceForVM(Response response, String vmOvfType) {   
+        return enoughSpaceForVM(response, vmOvfType, 1);
+    } 
 
     /**
      * This determines if the provider has enough space to create the new VM.
+     *
      * @param response The response type to check
      * @param vmOvfType The OVF type to add to
-     * @return If there is enough space for the new  VM.
+     * @param vmCount The count of how many VMs are to add
+     * @return If there is enough space for the new VM.
      */
-    public boolean enoughSpaceForVM(Response response, String vmOvfType) {
+    public boolean enoughSpaceForVM(Response response, String vmOvfType, int vmCount) {
         VmRequirements requirements = OVFUtils.getVMRequirementsFromOvfType(response.getCause().getOvf(), vmOvfType);
         if (requirements == null) {
             return true;
         }
         List<Slot> slots = actuator.getSlots(requirements);
-        if (slots.isEmpty()) {
+        if (slots.size() >= vmCount) {
             return false;
         }
         return true;
     }
-    
+
     /**
      * The decision logic for horizontal scaling to a given target value.
      *
@@ -149,24 +181,99 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         return response;
     }
-    
+
     /**
      * This generates the list of VMs to remove
      *
      * @param vmsPossibleToRemove The list of VMs that could be removed
      * @param count The amount of VMs needing to go
      * @return The string for the command to remove the VMs
-     */    
+     */
     protected abstract String getVmsToRemove(List<Integer> vmsPossibleToRemove, int count);
 
     /**
-     * 
-     * @param totalCpus
-     * @param totalMem
-     * @param vmTypesAvailableToAdd 
+     * This looks at the host with the most power consumption and looks how to
+     * fill it with the VmTypes that are available in the OVF
+     *
+     * @param response The response object to perform the analysis for
+     * @param vmOvfType The Vm type that is to be added
+     * @return The vm types to add to a given host, with repeats as needed to
+     * instantiate multiple VMs.
      */
-    protected void getConsolidationSlots(int totalCpus, int totalMem, List<String> vmTypesAvailableToAdd) {
-    
+    protected List<String> getVmTypesToConsolidateHost(Response response, String vmOvfType) {
+        List<String> answer = new ArrayList<>();
+        VmRequirements requirements = OVFUtils.getVMRequirementsFromOvfType(response.getCause().getOvf(), vmOvfType);
+        if (requirements == null) {
+            return answer;
+        }
+        List<Slot> slots = actuator.getSlots(requirements);
+        if (slots.isEmpty()) {
+            return answer;
+        }
+        int count = getHostSlotCountWithFewestSlots(slots);
+        int maxVms = getCountOfVMsPossibleToAdd(response, vmOvfType);
+        for (int i = 0; i < count; i++) {
+            if (count >= maxVms) {
+                return answer;
+            }
+            answer.add(vmOvfType);
+        }
+        return answer;
     }
     
+    /**
+     * This indicates how many VMs can be added of a given type
+     * @param response The response object to do the calculation for
+     * @param vmOvfType The ovf type to do the calculation for
+     * @return The count of VMs that can be added of a given type
+     */
+    protected int getCountOfVMsPossibleToAdd(Response response, String vmOvfType) {
+        OvfDefinition ovf = response.getCause().getOvf();
+        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf, 
+                response.getApplicationId());
+        int currentCount = getActuator().getVmCountOfGivenType(response.getApplicationId(), 
+                response.getDeploymentId(),
+                vmOvfType);
+        int upperBound = details.getUpperBound();
+        int answer = upperBound - currentCount;
+        return (answer < 0 ? 0 : answer); //The answer must be positive
+    }
+
+    /**
+     * This gets the count of VMs slots from the host with the fewest slots
+     * available.
+     *
+     * @param slots The slots that are currently available to use.
+     * @return The host with the fewest slots available
+     */
+    private Integer getHostSlotCountWithFewestSlots(List<Slot> slots) {
+        Integer score = Integer.MAX_VALUE;
+        HashMap<String, Integer> hostSlots = slotCounter(slots);
+        for (Map.Entry<String, Integer> hostSlot : hostSlots.entrySet()) {
+            if (hostSlot.getValue() < score) {
+                score = hostSlot.getValue();
+            }
+        }
+        return score;
+    }
+
+    /**
+     * This counts the amount of slots that are available on each physical host
+     *
+     * @param slots The slots available
+     * @return The mapping between hosts and slots available.
+     */
+    private HashMap<String, Integer> slotCounter(List<Slot> slots) {
+        HashMap<String, Integer> answer = new HashMap<>();
+        for (Slot slot : slots) {
+            String hostname = slot.getHostname();
+            if (answer.containsKey(slot.getHostname())) {
+                answer.put(hostname, answer.get(hostname) + 1);
+            } else {
+                answer.put(hostname, 1);
+            }
+        }
+        return answer;
+    }
+
 }
