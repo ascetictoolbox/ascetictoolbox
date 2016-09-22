@@ -42,7 +42,7 @@ public class ProviderSlotClient {
     private WebResource webResource;
     private Client client;
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
-    private static String baseUri = "http://192.168.3.16/provider-registry/";
+    private static String baseUri = "http://192.168.3.222/provider-registry/";
 
     public ProviderSlotClient(String id) {
         try {
@@ -77,6 +77,10 @@ public class ProviderSlotClient {
 
     public ClientResponse postSlots(Object requestEntity) throws UniformInterfaceException {
         return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(ClientResponse.class, requestEntity);
+    }
+    
+    public ClientResponse getSlots() throws UniformInterfaceException {
+        return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(ClientResponse.class);
     }
 
     public void close() {
