@@ -37,6 +37,8 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.Items;
 import eu.ascetic.paas.applicationmanager.model.Link;
 import eu.ascetic.paas.applicationmanager.model.Root;
+import eu.ascetic.paas.applicationmanager.model.SLAApplicationTerms;
+import eu.ascetic.paas.applicationmanager.model.SLAInfoTerm;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.SLAVMLimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
@@ -1328,6 +1330,49 @@ public class ModelConverterTest {
 		assertEquals(3.0d, cost.getPowerValue().doubleValue(), 0.001);
 		assertEquals(1, cost.getLinks().size());
 		assertEquals("/href", cost.getHref());
+	}
+	
+	@Test
+	public void fromToSLAApplicationTerms() {
+		SLAInfoTerm slaInfoTerm1 = new SLAInfoTerm();
+		slaInfoTerm1.setComparator("c1");
+		slaInfoTerm1.setMetricUnit("mu1");
+		slaInfoTerm1.setSlaTerm("term1");
+		slaInfoTerm1.setSlaType("type1");
+		slaInfoTerm1.setValue("1.0");
+		
+		SLAInfoTerm slaInfoTerm2 = new SLAInfoTerm();
+		slaInfoTerm2.setComparator("c2");
+		slaInfoTerm2.setMetricUnit("mu2");
+		slaInfoTerm2.setSlaTerm("term2");
+		slaInfoTerm2.setSlaType("type2");
+		slaInfoTerm2.setValue("2.0");
+		
+		List<SLAInfoTerm> infoTerms = new ArrayList<SLAInfoTerm>();
+		infoTerms.add(slaInfoTerm1);
+		infoTerms.add(slaInfoTerm2);
+		
+		SLAApplicationTerms slaApplicationTerms = new SLAApplicationTerms();
+		slaApplicationTerms.setSlaInfoTerms(infoTerms);
+		
+		String json = ModelConverter.objectSLAApplicationTermToJSON(slaApplicationTerms);
+		slaApplicationTerms = ModelConverter.jsonSLAApplicationTermsToObject(json);
+		String xml = ModelConverter.objectSLAApplicationTermToXML(slaApplicationTerms);
+		slaApplicationTerms = ModelConverter.xmlSLAApplicationTermsToObject(xml);
+		
+		assertEquals(2, slaApplicationTerms.getSlaInfoTerms().size());
+		SLAInfoTerm infoTerm = slaApplicationTerms.getSlaInfoTerms().get(0);
+		assertEquals(slaInfoTerm1.getComparator(), infoTerm.getComparator());
+		assertEquals(slaInfoTerm1.getMetricUnit(), infoTerm.getMetricUnit());
+		assertEquals(slaInfoTerm1.getSlaTerm(), infoTerm.getSlaTerm());
+		assertEquals(slaInfoTerm1.getSlaType(), infoTerm.getSlaType());
+		assertEquals(slaInfoTerm1.getValue(), infoTerm.getValue());
+		infoTerm = slaApplicationTerms.getSlaInfoTerms().get(1);
+		assertEquals(slaInfoTerm2.getComparator(), infoTerm.getComparator());
+		assertEquals(slaInfoTerm2.getMetricUnit(), infoTerm.getMetricUnit());
+		assertEquals(slaInfoTerm2.getSlaTerm(), infoTerm.getSlaTerm());
+		assertEquals(slaInfoTerm2.getSlaType(), infoTerm.getSlaType());
+		assertEquals(slaInfoTerm2.getValue(), infoTerm.getValue());
 	}
 	
 	@Test

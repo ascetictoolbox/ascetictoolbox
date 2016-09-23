@@ -22,6 +22,7 @@ import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Root;
+import eu.ascetic.paas.applicationmanager.model.SLAApplicationTerms;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 
@@ -85,6 +86,42 @@ public class ModelConverter {
 	 */
 	public static Collection jsonCollectionToObject(String xml) {
 		return fromJSONToObject(Collection.class, xml);
+	}
+	
+	/**
+	 * Converts an SLAApplicationTerms to its String xML representation
+	 * @param slaAppTerms
+	 * @return XML representation
+	 */
+	public static String objectSLAApplicationTermToXML(SLAApplicationTerms slaAppTerms) {
+		return toXML(SLAApplicationTerms.class, slaAppTerms);
+	}
+	
+	/**
+	 * Converts an SLAApplicationTerms to its String JSON representation
+	 * @param slaAppTerms
+	 * @return JSON representation
+	 */
+	public static String objectSLAApplicationTermToJSON(SLAApplicationTerms slaAppTerms) {
+		return toJSON(SLAApplicationTerms.class, slaAppTerms);
+	}
+	
+	/**
+	 * Converts an SLAApplicationTerms XML to object representation
+	 * @param xml to be converted
+	 * @return an SLAApplicationTerms object or null in case the XML is mal-formatted
+	 */
+	public static SLAApplicationTerms xmlSLAApplicationTermsToObject(String xml) {
+		return toObject(SLAApplicationTerms.class, xml);
+	}
+	
+	/**
+	 * Converts an SLAApplicationTerms JSON to object representation
+	 * @param xml to be converted
+	 * @return an SLAApplicationTerms object or null in case the JSON is mal-formatted
+	 */
+	public static SLAApplicationTerms jsonSLAApplicationTermsToObject(String jsonString) {
+		return fromJSONToObject(SLAApplicationTerms.class, jsonString);
 	}
 	
 	/**
