@@ -18,6 +18,7 @@ package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
+import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
 import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
@@ -67,10 +68,10 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
      * @param vmOvfType The OVF type to add to
      * @return If the VM is permissible to add.
      */
-    public boolean getCanVmBeAdded(Response response, String vmOvfType) { 
+    public boolean getCanVmBeAdded(Response response, String vmOvfType) {
         return getCanVmBeAdded(response, vmOvfType, 1);
-    }   
-    
+    }
+
     /**
      * This tests to see if the power consumption limit will be breached or not
      * as well as the OVF boundaries.
@@ -107,7 +108,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
 
         return enoughSpaceForVM(response, vmOvfType);
     }
-    
+
     /**
      * This determines if the provider has enough space to create the new VM.
      *
@@ -115,9 +116,9 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
      * @param vmOvfType The OVF type to add to
      * @return If there is enough space for the new VM.
      */
-    public boolean enoughSpaceForVM(Response response, String vmOvfType) {   
+    public boolean enoughSpaceForVM(Response response, String vmOvfType) {
         return enoughSpaceForVM(response, vmOvfType, 1);
-    } 
+    }
 
     /**
      * This determines if the provider has enough space to create the new VM.
@@ -132,8 +133,8 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         if (requirements == null) {
             return true;
         }
-        List<Slot> slots = actuator.getSlots(requirements);
-        if (slots.size() >= vmCount) {
+        List<Slot> slots = actuator.getSlots(requirements);    
+        if (slots.size() < vmCount) {
             return false;
         }
         return true;
@@ -192,6 +193,61 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
     protected abstract String getVmsToRemove(List<Integer> vmsPossibleToRemove, int count);
 
     /**
+     * General Utility functions
+     */
+    /**
+     * This gets the lowest power consuming VM type it may for example be used
+     * to add another instance of this type.
+     *
+     * @param response The response type to get the vm type for.
+     * @param vmOvfTypes The list of VM types of to search through (i.e.
+     * available VM types to add).
+     * @return The VM type with the lowest average power consumption
+     */
+    public String pickLowestAveragePower(Response response, List<String> vmOvfTypes) {
+        response.setAdaptationDetails(vmOvfTypes.get(0));
+        if (vmOvfTypes.isEmpty()) {
+            return "";
+        }
+        String answer = vmOvfTypes.get(0);
+        double answersPower = 0;
+        for (String current : vmOvfTypes) {
+            double answersAvgPower = getActuator().getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(),
+                    current);
+            if (answersAvgPower < answersPower) {
+                answer = current;
+                answersPower = answersAvgPower;
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * This gets the highest powered VM to remove from the application
+     * deployment.
+     *
+     * @param response The response object to perform the test for.
+     * @param vmIds The VMids that are to be tested (i.e. ones that could be
+     * removed for example).
+     * @return The VmId to remove.
+     */
+    public Integer getHighestPoweredVM(Response response, List<Integer> vmIds) {
+        Integer answer = null;
+        double answerPower = Double.MAX_VALUE;
+        String vmType = response.getAdaptationDetail("VM_TYPE");
+        for (Integer vmId : vmIds) {
+            double currentValue = getActuator().getPowerUsageVM(response.getApplicationId(), response.getDeploymentId(), "" + vmId);
+            VM vm = getActuator().getVM(response.getApplicationId(), response.getDeploymentId(), vmId + "");
+            if (currentValue < answerPower && (vmType == null
+                    || vm.getOvfId().equals(vmType))) {
+                answer = vmId;
+                answerPower = currentValue;
+            }
+        }
+        return answer;
+    }
+
+    /**
      * This looks at the host with the most power consumption and looks how to
      * fill it with the VmTypes that are available in the OVF
      *
@@ -220,18 +276,19 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         return answer;
     }
-    
+
     /**
      * This indicates how many VMs can be added of a given type
+     *
      * @param response The response object to do the calculation for
      * @param vmOvfType The ovf type to do the calculation for
      * @return The count of VMs that can be added of a given type
      */
     protected int getCountOfVMsPossibleToAdd(Response response, String vmOvfType) {
         OvfDefinition ovf = response.getCause().getOvf();
-        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf, 
+        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf,
                 response.getApplicationId());
-        int currentCount = getActuator().getVmCountOfGivenType(response.getApplicationId(), 
+        int currentCount = getActuator().getVmCountOfGivenType(response.getApplicationId(),
                 response.getDeploymentId(),
                 vmOvfType);
         int upperBound = details.getUpperBound();

@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * This ranks the VMs to create destroy etc based upon power consumption.
+ *
  * @author Richard Kavanagh
  */
 public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
@@ -41,8 +42,8 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
         }
         return response;
     }
-    
-  /**
+
+    /**
      * The decision logic for deleting a VM. It removes the last VM to be
      * created (i.e. highest VM ID first).
      *
@@ -72,27 +73,6 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
         }
         return response;
     }
-    
-    /**
-     * This gets the highest powered VM to remove from the application deployment.
-     * @param response The response object to perform the test for.
-     * @param vmIds The VMids that are possible to remove.
-     * @return The VmId to remove.
-     */
-    private Integer getHighestPoweredVM(Response response, List<Integer> vmIds) {
-        Integer answer = null;
-        double answerPower = Double.MAX_VALUE;
-        String vmType = response.getAdaptationDetail("VM_TYPE");
-        for (Integer vmId : vmIds) {
-            double currentValue = getActuator().getPowerUsageVM(response.getApplicationId(), response.getDeploymentId(), "" + vmId);
-            VM vm = getActuator().getVM(response.getApplicationId(), response.getDeploymentId(), vmId + "");
-            if (currentValue < answerPower && (vmType == null || vm.getOvfId().equals(vmType))) {
-                answer = vmId;
-                answerPower = currentValue;
-            }
-        }
-        return answer;
-    }
 
     /**
      * The decision logic for adding a VM.
@@ -107,56 +87,31 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
             return response;
         }
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
-        if (!vmOvfTypes.isEmpty()) {
-            Collections.shuffle(vmOvfTypes);
-            //Give preference to any VM type specified in the rule.
-            String vmType = response.getAdaptationDetail("VM_TYPE");
-            String vmTypeToAdd = "";
-            //Check that the preferential type can be added
-            if (vmType != null && vmOvfTypes.contains(vmType)) {
-                vmTypeToAdd = vmType;
-            } else { //If no preference is given then pick the best alternative
-                pickLowestAveragePower(response, vmOvfTypes);
-            }
-            response.setAdaptationDetails(vmTypeToAdd);
-            if (getCanVmBeAdded(response, vmTypeToAdd)) {
-                return response;
-            } else {
-                response.setAdaptationDetails("Adding a VM would breach SLA criteria");
-                response.setPossibleToAdapt(false);
-                return response;
-            }
-        } else {
+        if (vmOvfTypes.isEmpty()) {
             response.setAdaptationDetails("Could not find a VM OVF type to add");
+            response.setPossibleToAdapt(false);
+            return response;
+        }
+        Collections.shuffle(vmOvfTypes);
+        //Give preference to any VM type specified in the rule.
+        String vmType = response.getAdaptationDetail("VM_TYPE");
+        String vmTypeToAdd = "";
+        //Check that the preferential type can be added
+        if (vmType != null && vmOvfTypes.contains(vmType)) {
+            vmTypeToAdd = vmType;
+        } else { //If no preference is given then pick the best alternative
+            pickLowestAveragePower(response, vmOvfTypes);
+        }
+        response.setAdaptationDetails(vmTypeToAdd);
+        if (getCanVmBeAdded(response, vmTypeToAdd)) {
+            return response;
+        } else {
+            response.setAdaptationDetails("Adding a VM would breach SLA criteria");
             response.setPossibleToAdapt(false);
             return response;
         }
     }
 
-    /**
-     * This gets the lowest power consuming VM type to add.
-     * @param response The response type to get the vm type for.
-     * @param vmOvfTypes The types of VM available to add
-     * @return The VM type with the lowest power to add
-     */
-    private String pickLowestAveragePower(Response response, List<String> vmOvfTypes) {
-        response.setAdaptationDetails(vmOvfTypes.get(0));
-        if (vmOvfTypes.isEmpty())
-            return "";
-        String answer = vmOvfTypes.get(0);
-        double answersPower = 0;
-        for (String current : vmOvfTypes) {
-            double answersAvgPower = getActuator().getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(), 
-                    current);
-            if (answersAvgPower < answersPower){
-                answer = current;
-                answersPower = answersAvgPower;
-            }
-        }
-        return answer;
-    
-    } 
-    
     /**
      * The decision logic for scaling down.
      *
@@ -212,5 +167,5 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
         }
         return answer;
     }
-        
+
 }
