@@ -89,7 +89,8 @@ public class NegotiationEventHandler {
 																							    deploymentEvent.getApplicationName() + 
 																							    "/deployments/" + 
 																							    deployment.getId() + 
-																							    "/ovf");
+																							    "/ovf",
+																							   null);
 				logger.info("Initial SLA Template document: " + slaTemplate);
 				SLASOITemplateRenderer rend = new SLASOITemplateRenderer();
 				String xmlRetSlat = rend.renderSLATemplate(slaTemplate);
@@ -151,7 +152,8 @@ public class NegotiationEventHandler {
 			    															appName + 
 			    															"/deployments/" + 
 			    															deploymentId + 
-			    															"/ovf");
+			    															"/ovf",
+			    															null);
 		
 		logger.info("SLA Template: " + slaTemplate.toString());
 		SLASOITemplateRenderer rend2 = new SLASOITemplateRenderer();

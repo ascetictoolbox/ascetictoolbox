@@ -59,7 +59,7 @@ public class SLAMClientTest {
 	public void getInitiateNegotiationDocumentTest() throws Exception {
 		//We create an SLA Document from a valid OVF file
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "REST-URL");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "REST-URL", null);
 		
 		InitiateNegotiation inParam = new InitiateNegotiation();
 		SyntaxConverterDelegator delegator = new SyntaxConverterDelegator(SyntaxConverterType.SLASOISyntaxConverter);

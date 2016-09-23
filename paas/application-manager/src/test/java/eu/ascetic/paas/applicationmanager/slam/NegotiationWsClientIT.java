@@ -114,7 +114,7 @@ public class NegotiationWsClientIT {
 		System.out.println(endpoint);
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf", null);
 		
 		//SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
 		
@@ -137,7 +137,7 @@ public class NegotiationWsClientIT {
 //		SLATemplate slat = slasoieTemplatParser.parseTemplate(slatXml);
 		
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.16/application-manager/applications/davidgpTestApp/deployments/478/ovf", null);
 		
 		System.out.println("SLA Template: " + slaTemplate.toString());
 		SLASOITemplateRenderer rend2 = new SLASOITemplateRenderer();

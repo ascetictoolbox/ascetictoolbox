@@ -50,6 +50,8 @@ import org.slasoi.slamodel.sla.SLATemplate;
 import org.slasoi.slamodel.sla.VariableDeclr;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
+import eu.ascetic.paas.applicationmanager.model.SLAApplicationTerms;
+import eu.ascetic.paas.applicationmanager.model.SLAInfoTerm;
 import eu.ascetic.paas.applicationmanager.ovf.AsceticSLAInfo;
 import eu.ascetic.paas.applicationmanager.ovf.AsceticTermMeasurement;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
@@ -89,7 +91,7 @@ public class SLATemplateCreator {
 	 * @param ovf from which to generate the SLA Template
 	 * @return the template
 	 */
-	public static SLATemplate generateSLATemplate(OvfDefinition ovf, String ovfURL) {
+	public static SLATemplate generateSLATemplate(OvfDefinition ovf, String ovfURL, SLAApplicationTerms appTerms) {
 		SLATemplate slaTemplate = new SLATemplate();
 		UUID uuid = new UUID("ASCETiC-SLaTemplate-Example-01");
 		slaTemplate.setUuid(uuid);
@@ -105,9 +107,9 @@ public class SLATemplateCreator {
 		addInterfaceDclr(slaTemplate, ovf, ovfURL);
 		
 		//Add the App Energy Consumption Agreement Term
-		addAppAgreementTerm(slaTemplate, ovf, APP_ENERGY_CONSUMPTION_OVF, APP_ENERGY_CONSUMPTION_SLA_OPERATOR, APP_ENERGY_CONSUMPTION_SLA);
-		addAppAgreementTerm(slaTemplate, ovf, APP_POWER_CONSUMPTION_OVF, APP_POWER_CONSUMPTION_SLA_OPERATOR, APP_POWER_CONSUMPTION_SLA);
-		addAppAgreementTerm(slaTemplate, ovf, APP_PRICE_PER_HOUR_OVF, APP_PRICE_PER_HOUR_SLA_OPERATOR, APP_PRICE_PER_HOUR_SLA);
+		addAppAgreementTerm(slaTemplate, ovf, APP_ENERGY_CONSUMPTION_OVF, APP_ENERGY_CONSUMPTION_SLA_OPERATOR, APP_ENERGY_CONSUMPTION_SLA, appTerms);
+		addAppAgreementTerm(slaTemplate, ovf, APP_POWER_CONSUMPTION_OVF, APP_POWER_CONSUMPTION_SLA_OPERATOR, APP_POWER_CONSUMPTION_SLA, appTerms);
+		addAppAgreementTerm(slaTemplate, ovf, APP_PRICE_PER_HOUR_OVF, APP_PRICE_PER_HOUR_SLA_OPERATOR, APP_PRICE_PER_HOUR_SLA, appTerms);
 		
 		addVMSpecificAgreementTerms(slaTemplate, ovf);
 		
@@ -312,9 +314,25 @@ public class SLATemplateCreator {
 		}
 	}
 	
-	private static void addAppAgreementTerm(SLATemplate slaTemplate, OvfDefinition ovf, String ovfTerm, String slaOperator, String slaTerm) {
+	private static void addAppAgreementTerm(SLATemplate slaTemplate, OvfDefinition ovf, String ovfTerm, String slaOperator, String slaTerm, SLAApplicationTerms appTerms) {
 		// We extract the ASCETiC Sla Info
 		AsceticSLAInfo info = OVFUtils.getAppSlaInfo(ovf, ovfTerm);
+		
+		SLAInfoTerm infoTerm = checkIfAppTermsApply(ovfTerm, appTerms);
+		
+		if(infoTerm != null) {
+			
+			// In case we are adding a term the OVF did not contain in the beginning 
+			if(info == null) {
+				info = new AsceticSLAInfo();
+			}
+			
+			info.setBoundaryValue(infoTerm.getValue());
+			info.setComparator(infoTerm.getComparator());
+			info.setMetricUnit(infoTerm.getMetricUnit());
+			info.setTerm(infoTerm.getSlaTerm());
+			info.setType(infoTerm.getSlaType());
+		}
 
 		if(info != null) {
 
@@ -332,6 +350,7 @@ public class SLATemplateCreator {
 							new STND(METRIC_UNITS.get(info.getMetricUnit()))),
 					new STND(COMPARATORS.get(info.getComparator())));
 
+
 			TypeConstraintExpr typeConstraintExprEnergyApp = new TypeConstraintExpr(energyUsagePerAppFuncExpr, simpleDomainExprAppEnergy);
 
 			Guaranteed.State energyUsagePerAppGuarantee = new Guaranteed.State(new ID(slaTerm), typeConstraintExprEnergyApp);
@@ -345,6 +364,23 @@ public class SLATemplateCreator {
 
 			// Now we add this agreement terms to the others ones that there are in teh SLATemplate
 			addAgreementTerm(slaTemplate, agreementTerm); 
+		}
+	}
+	
+	protected static SLAInfoTerm checkIfAppTermsApply(String ovfTerm, SLAApplicationTerms appTerms) {
+		if(appTerms == null) {
+			return null;
+		} else if(appTerms.getSlaInfoTerms() == null) {
+			return null;
+		} else {
+			
+			for(SLAInfoTerm infoTerm : appTerms.getSlaInfoTerms()) {
+				if(infoTerm.getSlaTerm().equals(ovfTerm)) {
+					return infoTerm;
+				}
+			}
+			
+			return null;
 		}
 	}
 	

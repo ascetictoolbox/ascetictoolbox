@@ -1,6 +1,7 @@
 package eu.ascetic.paas.applicationmanager.slam;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -24,6 +26,8 @@ import org.slasoi.slamodel.sla.SLATemplate;
 
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
 import eu.ascetic.paas.applicationmanager.dao.testUtil.MockWebServer;
+import eu.ascetic.paas.applicationmanager.model.SLAApplicationTerms;
+import eu.ascetic.paas.applicationmanager.model.SLAInfoTerm;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.slam.sla.model.AgreementTerm;
 import eu.ascetic.paas.applicationmanager.slam.sla.model.FuncExpr;
@@ -88,6 +92,97 @@ public class SLATemplateCreatorTest {
 	}
 	
 	@Test
+	public void checkIfAppTermsApplyTest() {
+		// If the object is null we ignore this for the SLA Template Creation Proccess
+		assertNull(SLATemplateCreator.checkIfAppTermsApply("Whatever", null));
+		
+		// If the list object is null, also return null
+		SLAApplicationTerms applicationTerms = new SLAApplicationTerms();
+		assertNull(SLATemplateCreator.checkIfAppTermsApply("Whatever", applicationTerms));
+		
+		// If the list does not contain what we are looking for return null
+		SLAInfoTerm infoTerm1 = new SLAInfoTerm();
+		infoTerm1.setSlaTerm("Term1");
+		SLAInfoTerm infoTerm2 = new SLAInfoTerm();
+		infoTerm2.setSlaTerm("Term2");
+		
+		List<SLAInfoTerm> infoTerms = new ArrayList<SLAInfoTerm>();
+		infoTerms.add(infoTerm1);
+		infoTerms.add(infoTerm2);
+		applicationTerms.setSlaInfoTerms(infoTerms);
+		
+		assertNull(SLATemplateCreator.checkIfAppTermsApply("Whatever", applicationTerms));
+		
+		// We get the info term if we input the correct one
+		SLAInfoTerm infoTerm3 = new SLAInfoTerm();
+		infoTerm3.setSlaTerm("Whatever");
+		infoTerms.add(infoTerm3);
+		
+		
+		assertEquals(infoTerm3, SLATemplateCreator.checkIfAppTermsApply("Whatever", applicationTerms));
+	}
+	
+	@Test
+	public void totalConversionWithNewAppAgreement() throws Exception {
+		// We start fake provider registry
+		setupFakeProviderRegistry();
+				
+		// We read the OVF definition from file
+		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
+		
+		// We create the new SLAAppTerm
+		SLAApplicationTerms appTerms = new SLAApplicationTerms();
+		
+		SLAInfoTerm infoTerm = new SLAInfoTerm();
+		infoTerm.setComparator("LTE");
+		infoTerm.setMetricUnit("WattHour");
+		infoTerm.setSlaTerm(OVFToSLANames.APP_ENERGY_CONSUMPTION_OVF);
+		infoTerm.setSlaType("violation");
+		infoTerm.setValue("3000");
+		
+		List<SLAInfoTerm> infoTerms = new ArrayList<SLAInfoTerm>();
+		infoTerms.add(infoTerm);
+		
+		appTerms.setSlaInfoTerms(infoTerms);
+		
+		// We setup the propierties section for the template... /
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition,  "http://localhost/application-manager/appid/deployments/111/ovf", appTerms);
+		
+		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
+		SLATemplateDocument slaTemplateRendered = SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
+		
+		String slaTemplateString = slaTemplateRendered.toString();
+		
+		System.out.println("SLA rendered as XML: ############################## ");
+		System.out.println(slaTemplateString);
+		
+		// TEST
+		eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate slat = null;
+		
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			slat = (eu.ascetic.paas.applicationmanager.slam.sla.model.SLATemplate) jaxbUnmarshaller.unmarshal(new StringReader(slaTemplateString));
+		} catch(JAXBException jaxbExpcetion) {
+			jaxbExpcetion.printStackTrace();
+		}
+		
+		// We verify the application guarantees
+		assertEquals("App Guarantees", slat.getAgreemenTerms().get(0).getId());
+		// Energy App Guarantees
+		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA, slat.getAgreemenTerms().get(0).getGuaranteed().getState().getId());
+		assertEquals(OVFToSLANames.APP_ENERGY_CONSUMPTION_SLA_OPERATOR, 
+				slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getValue().getFuncExpr().getOperator());
+		assertEquals(OVFToSLANames.COMPARATORS.get("LTE"),
+				slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getComparisonOp());
+		assertEquals("3000",
+				slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getValue());
+		assertEquals(OVFToSLANames.METRIC_UNITS.get("WattHour"),
+				slat.getAgreemenTerms().get(0).getGuaranteed().getState().getConstraint().getTypeConstraintExpr().getDomain().getSimpleDomainExpr().getValue().getConstVariable().getDatatype());
+
+	}
+	
+	@Test
 	public void totalConversion() throws Exception {
 		// We start fake provider registry
 		setupFakeProviderRegistry();
@@ -96,7 +191,7 @@ public class SLATemplateCreatorTest {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(ovfSelfAdaptationString);
 		
 		// We setup the propierties section for the template... /
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition,  "http://localhost/application-manager/appid/deployments/111/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition,  "http://localhost/application-manager/appid/deployments/111/ovf", null);
 		
 		SLASOITemplateRenderer slasoiTemplateRenderer = new SLASOITemplateRenderer();
 		SLATemplateDocument slaTemplateRendered = SLATemplateDocument.Factory.parse(slasoiTemplateRenderer.renderSLATemplate(slaTemplate));
@@ -387,7 +482,7 @@ public class SLATemplateCreatorTest {
 	public void verifyGenerateSLATemplate() throws Exception {
 		OvfDefinition ovfDefinition = OVFUtils.getOvfDefinition(threeTierWebAppOvfString);
 
-		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf");
+		SLATemplate slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://10.4.0.16/application-manager/applications/threeTierWebApp/deployments/31/ovf", null);
 
 		assertEquals("ASCETiC-SLaTemplate-Example-01", slaTemplate.getUuid().getValue());
 		//assertEquals("1", slaTemplate.getModelVersion());
@@ -406,7 +501,7 @@ public class SLATemplateCreatorTest {
 		
 		ovfDefinition = OVFUtils.getOvfDefinition(aAfString);
 
-		slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.222/application-manager/applications/newsAsset/deployments/490/ovf");
+		slaTemplate = SLATemplateCreator.generateSLATemplate(ovfDefinition, "http://192.168.3.222/application-manager/applications/newsAsset/deployments/490/ovf", null);
 
 		assertEquals("ASCETiC-SLaTemplate-Example-01", slaTemplate.getUuid().getValue());
 		//assertEquals("1", slaTemplate.getModelVersion());
