@@ -39,23 +39,6 @@ import org.junit.Test;
 public class F7SlotAwareVMDeploymentTest {
     private static final Logger logger = Logger.getLogger("F7SlotAwareVMDeploymentTest");
     
-    private String extendCombination(String[] e) {
-        if(e.length == 1){
-            return e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0];
-        }
-        else if(e.length == 2){
-            return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",");
-        }
-        else if(e.length == 3){
-            return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") ;
-        }
-        else if(e.length == 4){
-            return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") ;
-        }
-        
-        return StringUtils.join(e, ",");
-    }
-    
     public Set<String> subsetSumBruteForce(String allowedSizes, int total){
         //System.out.println("subsetSumBruteForce " + allowedSizes + " - " + total);
         List<String> combinations = CombinationGenerator.getCombinations(allowedSizes);
@@ -103,7 +86,7 @@ public class F7SlotAwareVMDeploymentTest {
         return null;
     }
     
-    public List<Slot> cloneSlots(List<Slot> slots) {
+    private List<Slot> cloneSlots(List<Slot> slots) {
         List<Slot> clonedSlots = new ArrayList<>();
         
         for(Slot s : slots){
@@ -115,7 +98,7 @@ public class F7SlotAwareVMDeploymentTest {
         return clonedSlots;
     }
     
-    public int consolidationScore(List<Slot> slots, int numAllCpus) {
+    private int consolidationScore(List<Slot> slots, int numAllCpus) {
         int consolidationScore = 0;
         for(Slot s : slots){ 
             if(s.getFreeCpus() == numAllCpus){
@@ -124,6 +107,23 @@ public class F7SlotAwareVMDeploymentTest {
         }
         
         return consolidationScore;
+    }
+    
+    private String extendCombination(String[] e) {
+        if(e.length == 1){
+            return e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0] + "," + e[0];
+        }
+        else if(e.length == 2){
+            return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",");
+        }
+        else if(e.length == 3){
+            return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") ;
+        }
+        else if(e.length == 4){
+            return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") ;
+        }
+        
+        return StringUtils.join(e, ",");
     }
     
     private String getAllowedCpuSizes(int minCpu, int maxCpu) {
@@ -159,6 +159,29 @@ public class F7SlotAwareVMDeploymentTest {
             solutions.add(new SlotSolution(consolidationScore, results));
         }
         
+        Collections.sort(solutions, new Comparator<SlotSolution>() {
+            @Override
+            public int compare(SlotSolution a, SlotSolution b) {
+                if(a.getConsolidationScore() > b.getConsolidationScore()){
+                    return -1;
+                }
+                
+                if(a.getConsolidationScore() < b.getConsolidationScore()){
+                    return 1;
+                }
+                
+                if(a.getSlots().size() < b.getSlots().size()){
+                    return -1;
+                }
+                
+                if(a.getSlots().size() > b.getSlots().size()){
+                    return 1;
+                }
+                
+                return 0;
+            }
+        });
+        
         return solutions;
     }
     
@@ -175,13 +198,6 @@ public class F7SlotAwareVMDeploymentTest {
         int cpusPerHost = 8;
         
         List<SlotSolution> solutions = getSlotsSortedByConsolidationScore(slots, totalCpusToAdd, cpusPerHost, minCpus, maxCpus, 1000, 100);
-        Collections.sort(solutions, new Comparator<SlotSolution>() {
-            @Override
-            public int compare(SlotSolution a, SlotSolution b) {
-                return a.getConsolidationScore() > b.getConsolidationScore() ? -1 : (a.getConsolidationScore() < b.getConsolidationScore()) ? 1 : 0;
-            }
-        });
-        
         System.out.println(solutions);
     }
 }
