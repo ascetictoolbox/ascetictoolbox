@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.jms.JMSException;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
@@ -37,7 +38,7 @@ import eu.ascetic.paas.applicationmanager.conf.Configuration;
  *
  */
 @Service("EnergyModellerQueueService")
-public class EnergyModellerQueueController {
+public class EnergyModellerQueueController implements InitializingBean {
 	public static final String WATT = "WATT";
 	public static final String WATTHOUR = "WATTHOUR";
 	public static final String COUNT = "COUNT";
@@ -46,7 +47,7 @@ public class EnergyModellerQueueController {
 	public static final String APP_COUNT = "APP_COUNT"; // Davide: is total per application including all its vms 
 	public static final String MEASUREMENTS = "MEASUREMENTS";
 	public static final String PREDICTIONS = "PREDICTIONS";
-	protected static int MAX_ENTRIES_CACHE = 100;
+	protected static int MAX_ENTRIES_CACHE = 200;
 	private static Logger logger = Logger.getLogger(EnergyModellerQueueController.class);
 	private Map<String, EnergyModellerMessage> measurementMessages;
 	private Map<String, EnergyModellerMessage> predictionsMessages;
@@ -56,6 +57,11 @@ public class EnergyModellerQueueController {
 	private AmqpMessageReceiver receiverPredictions;
 	
 	public EnergyModellerQueueController() {
+
+	}
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		logger.info("Starting service EnergyModellerQueueController...........................................");
 		// It is necessary to create two different queues to store the messages
 		measurementMessages = EnergyModellerQueueController.createLRUMap(MAX_ENTRIES_CACHE);
@@ -97,6 +103,7 @@ public class EnergyModellerQueueController {
 		if(type != null && type.equals(MEASUREMENTS)) {
 			measurementMessages.put(generateKey(emMessage), emMessage);
 		} else if (type != null && type.equals(PREDICTIONS)) {
+			logger.info("Storing message with key: " + generateKey(emMessage));
 			predictionsMessages.put(generateKey(emMessage), emMessage);
 		}
  	}

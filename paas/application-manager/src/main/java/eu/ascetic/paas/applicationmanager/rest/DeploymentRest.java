@@ -788,6 +788,8 @@ public class DeploymentRest extends AbstractRest {
 		// Getting from the queue the necessary variables to query the Price Modeller
 		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
 		
+		logger.info("secKey: " + secKey);
+		
 		Thread.sleep(5000l);
 		
 		EnergyModellerMessage emMessageSec = getEnergyModellerQueueController().getPredictionMessage(secKey); 

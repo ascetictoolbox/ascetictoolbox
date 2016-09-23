@@ -70,7 +70,8 @@ public abstract class AbstractRest {
 	//@Autowired
 	//protected static EnergyModellerBean energyModellerBean;
 	protected static PaaSEnergyModeller energyModeller;
-	protected static EnergyModellerQueueController energyModellerQueueController;
+	@Autowired
+	protected EnergyModellerQueueController energyModellerQueueController;
 	protected static PriceModellerClient priceModellerClient;
 	
 	
@@ -103,7 +104,7 @@ public abstract class AbstractRest {
 	 * Constructs the EnergyModellerQueueController with an specific configuration if necessary
 	 * @return the new EnergyModellerQueueController or a previous created object
 	 */
-	protected static EnergyModellerQueueController getEnergyModellerQueueController() {
+	protected EnergyModellerQueueController getEnergyModellerQueueController() {
 		if(energyModellerQueueController == null) {
 			energyModellerQueueController = ApplicationContextHolder.getContext().getBean(EnergyModellerQueueController.class);
 

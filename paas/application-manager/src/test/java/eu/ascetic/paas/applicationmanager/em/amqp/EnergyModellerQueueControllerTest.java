@@ -132,6 +132,7 @@ public class EnergyModellerQueueControllerTest extends AbstractTest {
 		Configuration.emPredictionsTopic = "PREDICTIONS";
 		
 		EnergyModellerQueueController controller = new EnergyModellerQueueController();
+		controller.afterPropertiesSet();
 		
 		// We send a message to the queue
 		// Message to be sent in the test.
