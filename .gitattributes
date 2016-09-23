@@ -1235,6 +1235,7 @@ paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/As
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/AsceticTermMeasurement.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/OVFUtils.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/ovf/VMLimits.java -text
+paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerBean.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/pm/PriceModellerClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/providerregistry/PRClient.java -text
 paas/application-manager/src/main/java/eu/ascetic/paas/applicationmanager/rest/AbstractRest.java -text

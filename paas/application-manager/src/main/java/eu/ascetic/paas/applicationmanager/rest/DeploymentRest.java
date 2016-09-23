@@ -790,6 +790,9 @@ public class DeploymentRest extends AbstractRest {
 		
 		EnergyModellerMessage emMessageSec = getEnergyModellerQueueController().getPredictionMessage(secKey); 
 		
+		logger.info("############################################################################################");
+		logger.info("Message recevied by energy modeller in cost-estimation: " + emMessageSec);
+		
 		Cost cost = new Cost();
 		cost.setEnergyValue(energyEstimated);
 		cost.setPowerValue(powerEstimated);

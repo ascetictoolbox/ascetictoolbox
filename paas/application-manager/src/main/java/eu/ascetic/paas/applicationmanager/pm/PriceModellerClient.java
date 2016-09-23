@@ -57,6 +57,10 @@ public class PriceModellerClient {
 		priceModeller.initializeApp(applicationId, deploymentId, schemeId);
 	}
 	
+	public void initializeApplication(String applicationName, int deploymentId, LinkedList<VMinfo> vms) {
+		priceModeller.initializeApp(applicationName, deploymentId, vms);
+	}
+	
 	public double getAppPredictedCharges(int deploymentId, int schemeID, double iaaSCharges) {
 		try {
 			return priceModeller.getAppPredictedCharges(deploymentId, schemeID, iaaSCharges);
