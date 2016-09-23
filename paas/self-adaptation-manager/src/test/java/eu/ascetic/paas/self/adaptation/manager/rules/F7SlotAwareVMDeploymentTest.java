@@ -6,8 +6,11 @@
 package eu.ascetic.paas.self.adaptation.manager.rules;
 
 import es.bsc.vmmclient.models.Slot;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.SlotSolution;
 import eu.ascetic.paas.self.adaptation.manager.utils.CombinationGenerator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,12 +53,11 @@ public class F7SlotAwareVMDeploymentTest {
             return StringUtils.join(e, ",") + "," + StringUtils.join(e, ",") ;
         }
         
-        System.out.println("Too many combinations!");
-        return "";
+        return StringUtils.join(e, ",");
     }
     
     public Set<String> subsetSumBruteForce(String allowedSizes, int total){
-        
+        //System.out.println("subsetSumBruteForce " + allowedSizes + " - " + total);
         List<String> combinations = CombinationGenerator.getCombinations(allowedSizes);
         Set<String> results = new HashSet<>();
         
@@ -82,15 +84,23 @@ public class F7SlotAwareVMDeploymentTest {
         return results;
     }
     
-    private void assignSlot(int numCpus, List<Slot> slots) {
+    private Slot assignSlot(int numCpus, int diskGb,  int ramMb, List<Slot> slots) {
         for(int index = 0; index < slots.size(); index++){
             Slot slot = slots.get(index);
-            if(slot.getFreeCpus() >= numCpus){
+            if(slot.getFreeCpus() >= numCpus && 
+               slot.getFreeDiskGb() >= diskGb && 
+               slot.getFreeMemoryMb() >= ramMb){
+                
                 slot.setFreeCpus(slot.getFreeCpus() - numCpus);
+                slot.setFreeDiskGb(slot.getFreeDiskGb() - diskGb);
+                slot.setFreeMemoryMb(slot.getFreeMemoryMb() - ramMb);
                 slots.set(index, slot);
-                return;
+                
+                return new Slot(slot.getHostname(), numCpus,diskGb, ramMb);
             }
         }
+        
+        return null;
     }
     
     public List<Slot> cloneSlots(List<Slot> slots) {
@@ -116,6 +126,42 @@ public class F7SlotAwareVMDeploymentTest {
         return consolidationScore;
     }
     
+    private String getAllowedCpuSizes(int minCpu, int maxCpu) {
+        String allowedCpuSizes = ""; 
+        for(int i = minCpu; i <= maxCpu; i++){
+            if(i > minCpu){ allowedCpuSizes += ","; }
+            allowedCpuSizes += String.valueOf(i);
+        }
+        
+        return allowedCpuSizes;
+    }
+    
+    private List<SlotSolution> getSlotsSortedByConsolidationScore(List<Slot> slots, int totalCpusToAdd, int cpusPerHost, int minCpu, int maxCpu, int ramMb, int diskGb) {
+        Set<String> combinations = subsetSumBruteForce(getAllowedCpuSizes(minCpu, maxCpu), totalCpusToAdd);
+        List<SlotSolution> solutions = new ArrayList<>();
+        
+        for(String combination : combinations){
+            List<Slot> results = new ArrayList<>();
+            System.out.println("Trying to find place for " + combination.toString());
+            String cpus[] = combination.split(",");
+            List<Slot> slotsClone = this.cloneSlots(slots);
+            for(int index = 0; index < cpus.length; index++){
+                int numCpus = Integer.parseInt(cpus[index]);
+                Slot slotAssigned = this.assignSlot(numCpus, diskGb, ramMb, slotsClone);
+                if(slotAssigned != null) {
+                   results.add(slotAssigned);
+                }
+            }
+            
+            for(Slot s : slotsClone){  System.out.println(s.getFreeCpus() + " - " + s.getHostname() ); }
+            double consolidationScore = consolidationScore(slotsClone, cpusPerHost);
+            System.out.println("Score: " + consolidationScore);
+            solutions.add(new SlotSolution(consolidationScore, results));
+        }
+        
+        return solutions;
+    }
+    
     @Test
     public void testAll(){
         List<Slot> slots = new ArrayList<>();
@@ -123,23 +169,19 @@ public class F7SlotAwareVMDeploymentTest {
         slots.add(new Slot("hostB", 4, 400, 4000));
         slots.add(new Slot("hostC", 8, 800, 8000));
         
-        String allowedSizes = "2,3,4";
-        int total = 6;
+        int minCpus = 2;
+        int maxCpus = 4;
+        int totalCpusToAdd = 6;
         int cpusPerHost = 8;
         
-        Set<String> results = subsetSumBruteForce(allowedSizes, total);
-        
-        for(String result : results){
-            System.out.println("Trying to find place for " + result.toString());
-            String c[] = result.split(",");
-            List<Slot> slotsClone = this.cloneSlots(slots);
-            for(int index = 0; index < c.length; index++){
-                int numCpus = Integer.parseInt(c[index]);
-                this.assignSlot(numCpus, slotsClone);
+        List<SlotSolution> solutions = getSlotsSortedByConsolidationScore(slots, totalCpusToAdd, cpusPerHost, minCpus, maxCpus, 1000, 100);
+        Collections.sort(solutions, new Comparator<SlotSolution>() {
+            @Override
+            public int compare(SlotSolution a, SlotSolution b) {
+                return a.getConsolidationScore() > b.getConsolidationScore() ? -1 : (a.getConsolidationScore() < b.getConsolidationScore()) ? 1 : 0;
             }
-            
-            for(Slot s : slotsClone){  System.out.println(s.getFreeCpus() + " - " + s.getHostname() ); }
-            System.out.println("Score: " + this.consolidationScore(slotsClone, cpusPerHost));
-        }
+        });
+        
+        System.out.println(solutions);
     }
 }

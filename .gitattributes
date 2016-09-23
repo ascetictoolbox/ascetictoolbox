@@ -3463,6 +3463,7 @@ paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manag
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/EventData.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/FiringCriteria.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/Response.java -text
+paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/datatypes/SlotSolution.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/AbstractDecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/DecisionEngine.java -text
 paas/self-adaptation-manager/src/main/java/eu/ascetic/paas/self/adaptation/manager/rules/decisionengine/LastVMCreatedDecisionEngine.java -text
