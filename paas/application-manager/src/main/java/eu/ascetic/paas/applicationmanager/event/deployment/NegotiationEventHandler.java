@@ -15,6 +15,7 @@ import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
+import eu.ascetic.paas.applicationmanager.model.SLAApplicationTerms;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.slam.NegotiationWsClient;
@@ -97,7 +98,7 @@ public class NegotiationEventHandler {
 				
 				logger.info("####### SLAT TO START NEGOTIATION....");
 				logger.info(xmlRetSlat);
-
+ 
 				// We create a client to the SLAM
 				NegotiationWsClient client = new NegotiationWsClient();
 				SlaTranslator slaTranslator = new SlaTranslatorImplNoOsgi();
@@ -110,7 +111,7 @@ public class NegotiationEventHandler {
 				logger.info("Deployment: " + deployment + " id: " + deployment.getId()); 
 				logger.info(" agreements: " + deployment.getAgreements());
 				
-				SLATemplate[] slats = NegotiationEventHandler.negiotate(negId, ovfDefinition, deploymentEvent.getApplicationName(), deploymentEvent.getDeploymentId(), client);
+				SLATemplate[] slats = NegotiationEventHandler.negiotate(negId, ovfDefinition, deploymentEvent.getApplicationName(), deploymentEvent.getDeploymentId(), client, null);
 				
 				// New Y2 - We store all the templates in the database
 				storeTemplatesInDB(slats, negId, deployment);
@@ -139,7 +140,7 @@ public class NegotiationEventHandler {
 		}
 	}
 	
-	public static SLATemplate[] negiotate(String negId, OvfDefinition ovfDefinition, String appName, int deploymentId, NegotiationWsClient client) throws Exception {
+	public static SLATemplate[] negiotate(String negId, OvfDefinition ovfDefinition, String appName, int deploymentId, NegotiationWsClient client, SLAApplicationTerms appTerms) throws Exception {
 
 		logger.info("  Negotiation ID: " + negId);
 
@@ -153,7 +154,7 @@ public class NegotiationEventHandler {
 			    															"/deployments/" + 
 			    															deploymentId + 
 			    															"/ovf",
-			    															null);
+			    															appTerms);
 		
 		logger.info("SLA Template: " + slaTemplate.toString());
 		SLASOITemplateRenderer rend2 = new SLASOITemplateRenderer();

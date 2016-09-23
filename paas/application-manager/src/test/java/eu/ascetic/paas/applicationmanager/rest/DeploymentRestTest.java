@@ -1823,6 +1823,22 @@ public class DeploymentRestTest extends AbstractTest {
 	}
 	
 	@Test
+	public void renegotiateWithWrongPayload() {
+		//Setup *************************
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		// Test starts here *****************
+		String payload = "YYYYYYY";
+		Response response = deploymentRest.renegotiateWithPayload("xxx", "XXXX", payload);
+		
+		assertEquals(400, response.getStatus());
+		
+		String message = (String) response.getEntity();
+		assertEquals("Wrong payload: " + payload, message);
+	}
+	
+	
+	@Test
 	public void renegotiateNoDeployment() {
 		//Setup *************************
 		DeploymentRest deploymentRest = new DeploymentRest();

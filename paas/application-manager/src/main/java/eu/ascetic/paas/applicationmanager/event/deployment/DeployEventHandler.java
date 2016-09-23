@@ -69,7 +69,7 @@ public class DeployEventHandler {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected ImageDAO imageDAO;
-	protected PRClient prClient = new PRClient();
+	protected PRClient prClient = new PRClient(); 
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
 	public void deployDeployment(Event<DeploymentEvent> event) {
