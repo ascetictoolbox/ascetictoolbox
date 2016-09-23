@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The aim of this class is to decide given an event that has been assessed what
@@ -246,6 +247,39 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         return answer;
     }
+    
+    /**
+     * This gets the list of all vm objects from a given vmId and provides the
+     * power consumption, ready for ranking
+     *
+     * @param response The response object to perform the test for.
+     * @param vmIds The VMids that are to be tested (i.e. ones that could be
+     * removed for example).
+     * @return The list of VMs and there power consumption
+     */
+    public TreeMap<VM, Double> getVMPowerList(Response response, List<Integer> vmIds) {
+        TreeMap<VM, Double> answer = new TreeMap<>();
+        for (Integer vmId : vmIds) {
+            double power = getActuator().getPowerUsageVM(response.getApplicationId(), response.getDeploymentId(), "" + vmId);
+            VM vm = getActuator().getVM(response.getApplicationId(), response.getDeploymentId(), vmId + "");
+            answer.put(vm, power);
+        }
+        return answer;
+    }
+
+    /**
+     * This ranks vm objects by their power consumption
+     * @param list The list/tree map sorted by VM.
+     * @return The list of vms sorted by power consumption, low to high (i.e. 
+     * natural ordering for the double type).
+     */
+    public TreeMap<Double, VM> sortVMPowerList(TreeMap<VM, Double> list) {
+        TreeMap<Double, VM> answer = new TreeMap<>();
+        for (Map.Entry<VM, Double> current : list.entrySet()) {
+            answer.put(current.getValue(), current.getKey());
+        }
+        return answer;
+    }       
 
     /**
      * This looks at the host with the most power consumption and looks how to
