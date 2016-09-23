@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.activemq.kaha.impl.index.VMIndexLinkedList;
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
@@ -787,7 +788,7 @@ public class DeploymentRest extends AbstractRest {
 		// Getting from the queue the necessary variables to query the Price Modeller
 		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
 		
-		Thread.sleep(1000l);
+		Thread.sleep(5000l);
 		
 		EnergyModellerMessage emMessageSec = getEnergyModellerQueueController().getPredictionMessage(secKey); 
 		
@@ -998,5 +999,44 @@ public class DeploymentRest extends AbstractRest {
 		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/renegotiate");
 		
 		return renegotiate(applicationName, deploymentId, null);
+	}
+	
+	@GET
+	@Path("{deployment_id}/predict-price-next-hour")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response predictPriceNextHour(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId) {
+		int deploymentIdInt = Integer.parseInt(deploymentId);
+		Deployment deployment = deploymentDAO.getById(deploymentIdInt);
+		
+		if(deployment == null) {
+			return buildResponse(Status.NOT_FOUND, "Deployment not found!");
+		} 
+		
+		LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
+		
+		for(VM vm : deployment.getVms()) {
+			Long schema = vm.getPriceSchema();
+			int priceSchema = 0;
+			
+			if(schema != null) {
+				priceSchema = schema.intValue();
+			} else {
+				priceSchema = deployment.getSchema();
+			}
+			
+			VMinfo vmInfo = new VMinfo(vm.getId(), vm.getRamActual(), vm.getCpuActual(), vm.getDiskActual(), priceSchema, vm.getProviderId());
+			vmInfos.add(vmInfo);
+		}
+		
+		double predictedPrice = priceModellerClient.predictPriceForNextHour(deploymentIdInt, vmInfos);
+		
+		Cost cost = new Cost();
+		cost.setCharges(predictedPrice);
+		cost.setEnergyValue(-1.0);
+		cost.setPowerValue(-1.0);
+		
+		String xml = XMLBuilder.getCostConsumptionForADeployment(cost, applicationName, deploymentId);
+		
+		return  buildResponse(Status.OK, xml);
 	}
 }

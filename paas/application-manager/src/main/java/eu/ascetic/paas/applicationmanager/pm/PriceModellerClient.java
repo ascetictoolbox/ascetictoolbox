@@ -112,9 +112,9 @@ public class PriceModellerClient {
 		}
 	}
 	
-	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId) {
+	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> vms, double energy,int schemeId) {
 		try {
-			return priceModeller.getEventPredictedChargesOfApp(deplID, VMs, energy, schemeId);
+			return priceModeller.getEventPredictedChargesOfApp(deplID, vms, energy, schemeId);
 		} catch(Exception ex) {
 			logger.warn("Error getting the reploy from the PaaS PM");
 			logger.warn(ex.getMessage());
@@ -127,6 +127,17 @@ public class PriceModellerClient {
 		try {
 			return priceModeller.predictPriceforNextPeriod(deplID, duration);
 		} catch(Exception ex) {
+			logger.warn("Error getting the reploy from the PaaS PM");
+			logger.warn(ex.getMessage());
+			logger.warn(ex.getStackTrace());
+			return -1.0;
+		}
+	}
+	
+	public double predictPriceForNextHour(int depId, LinkedList<VMinfo> vms) {
+		try {
+			return priceModeller.predictAppPriceforNextHour(depId, vms);
+		}  catch(Exception ex) {
 			logger.warn("Error getting the reploy from the PaaS PM");
 			logger.warn(ex.getMessage());
 			logger.warn(ex.getStackTrace());

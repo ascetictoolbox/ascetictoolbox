@@ -2031,6 +2031,26 @@ public class DeploymentRestTest extends AbstractTest {
 		assertEquals(33, providerId);
 	}
 	
+	@Test
+	public void predictPriceNextHourNoDeployment() {
+		// Setup *****************************************	
+		DeploymentRest deploymentRest = new DeploymentRest();
+		
+		// Creating mocks
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		deploymentRest.deploymentDAO = deploymentDAO;
+		
+		// 404 if deployment is not in database
+		when(deploymentDAO.getById(1)).thenReturn(null);
+		
+		Response response = deploymentRest.predictPriceNextHour("XXX", "1");
+		
+		assertEquals(404, response.getStatus());
+		
+		String message = (String) response.getEntity();
+		assertEquals("Deployment not found!", message);
+	}
+	
 	/**
 	 * It just reads a file form the disk... 
 	 * @param path
