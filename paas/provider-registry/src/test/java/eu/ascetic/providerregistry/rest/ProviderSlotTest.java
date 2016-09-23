@@ -152,9 +152,9 @@ public class ProviderSlotTest {
 		Gson gson = new Gson();
 		VmRequirements vmRequirements = gson.fromJson(payloadToVMM, VmRequirements.class);
 		assertEquals(2, vmRequirements.getCpus());
-		assertEquals(2222, vmRequirements.getRamMb());
-		assertEquals(33333, vmRequirements.getDiskGb());
-		assertEquals(4444, vmRequirements.getSwapMb());
+		assertEquals(512, vmRequirements.getRamMb());
+		assertEquals(333, vmRequirements.getDiskGb());
+		assertEquals(0, vmRequirements.getSwapMb());
 		
 		assertEquals(200, response.getStatus());
 		
