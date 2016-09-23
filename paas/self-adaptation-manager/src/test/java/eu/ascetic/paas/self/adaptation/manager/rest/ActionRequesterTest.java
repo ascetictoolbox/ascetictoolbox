@@ -15,11 +15,12 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rest;
 
+import es.bsc.vmmclient.models.Slot;
+import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import es.bsc.vmmclient.models.Slot;
 
 /**
  * A test class for the rest interface to the Application Manager.
@@ -141,13 +142,19 @@ public class ActionRequesterTest {
     @Test
     public void testGetSlots() {
         System.out.println("getSlots");
+        VmRequirements requirements = new VmRequirements(1, 1024, 20, 2);
+        requirements.toString();
         ActionRequester instance = new ActionRequester();
-        List<Slot> result = instance.getSlots();
-        for (Slot slot : result) {
-            System.out.println(slot.getHostname() + " - " + slot.getFreeCpus());
-            //assert (vm != null);
-            //printVM(vm);
+        List<Slot> result = instance.getSlots(requirements);
+        assert(result != null);
+        assert(!result.isEmpty());
+        for (Slot item : result) {
+            System.out.println("Host: " + item.getHostname() +
+            " CPU: " + item.getFreeCpus() + 
+            " Memory: " + item.getFreeMemoryMb() + 
+            " Disk: " + item.getFreeDiskGb());
         }
-    }
+    }    
+
 
 }
