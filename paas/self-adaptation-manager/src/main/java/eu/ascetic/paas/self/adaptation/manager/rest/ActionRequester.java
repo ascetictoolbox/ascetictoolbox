@@ -89,6 +89,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param vmID The VM id
      * @return The VM given the id values specified.
      */
+    @Override
     public VM getVM(String application, String deployment, String vmID) {
         /**
          * An example url is:
@@ -232,12 +233,9 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         if (vm == null) {
             return;
         }
-        //TODO Remove temporary debug code here
-        System.out.println("Application ID: " + applicationId);
-        System.out.println("Deployment ID: " + deploymentId);
-        System.out.println("OVF ID: " + ovfId);
-        System.out.println("VM: " + vm);
-        System.out.println("Post CONV: " + ModelConverter.objectVMToXML(vm));
+        String vmDetails = "AppID: " + applicationId + "Deployment ID: " 
+                + deploymentId + "OVF ID: " + ovfId + "VM: " + vm;
+        Logger.getLogger(ActionRequester.class.getName()).log(Level.INFO, vmDetails);
         client.postVM(ModelConverter.objectVMToXML(vm));
         client.close();
     }

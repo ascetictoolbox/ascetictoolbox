@@ -97,7 +97,7 @@ public class ResponseHistoryBroadcaster extends ActiveMQBase implements Runnable
             responseMessage.setString("Operator", response.getCause().getGuranteeOperator().toString());
             producer.send(responseMessage, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
         } catch (JMSException ex) {
-            Logger.getLogger(ResponseHistoryBroadcaster.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ResponseHistoryBroadcaster.class.getName()).log(Level.SEVERE, "Broadcasting message failed", ex);
         }
     }
 
