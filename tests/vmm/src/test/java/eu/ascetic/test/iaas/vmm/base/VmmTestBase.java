@@ -8,6 +8,8 @@ package eu.ascetic.test.iaas.vmm.base;
 import es.bsc.vmmclient.models.*;
 import es.bsc.vmmclient.vmm.VmManagerClient;
 import eu.ascetic.test.conf.VMMConf;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import junit.framework.TestCase;
 
@@ -36,6 +38,7 @@ public class VmmTestBase extends TestCase {
     private static final int MAX_ITERATIONS = 100;
     public VmManagerClient vmm;
     public String vmId = null;
+    public List<String> vmIds = new ArrayList<>();
     public String environment = null;
     
     @Override
@@ -56,6 +59,13 @@ public class VmmTestBase extends TestCase {
             
             vmId = null;
         }
+        for(String vId : vmIds){
+            //Destroy
+            logger.info("Destroying VM " + vId);
+            vmm.destroyVm(vId);
+        }
+        
+        vmIds.clear();
     }
     
     public boolean loopIsAlive() throws Exception{
