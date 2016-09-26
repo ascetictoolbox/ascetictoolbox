@@ -8,7 +8,9 @@ import eu.ascetic.test.conf.SlotSolution;
 import eu.ascetic.test.conf.VMMConf;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -31,6 +33,37 @@ import java.util.logging.Logger;
  */
 public class DeployAndMigrateTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("DeployAndMigrateTest");
+    
+    public void testFloatingIpDeploy() throws Exception {
+        int cpus = 1;
+        int ramMb = 256;
+        int diskGb = 1;
+        int swapMb = 0;
+        
+        VmRequirements vmDeployRequirements = 
+            new VmRequirements( cpus, ramMb, diskGb, swapMb);
+        
+        List<Node> nodes = new ArrayList<Node>();
+        for (Node node : vmm.getNodes()) {
+			if( environment.equals("dev") || node.matchesRequirements(vmDeployRequirements)){
+                nodes.add(node);
+            }
+		}
+        
+        assertTrue("Can't run test with less than 2 compute nodes with enough resources!", 
+            nodes.size() >= 1);
+        
+        String vmName = "deployFloatingIpTest01";
+        String computeNode01 = nodes.get(0).getHostname();
+        
+        //Deploy
+        logger.info("Deploying '" + vmName + "' at " + computeNode01 + "...");
+        Vm vm = new Vm("deployFloatingIpTest01", VMMConf.imageId, vmDeployRequirements, null, "dmt01", "", "sla", computeNode01, true);
+		List<String> deployedVms = vmm.deployVms(Arrays.asList(vm));
+		VmDeployed vmd = vmm.getVm(deployedVms.get(0));
+        vmId = vmd.getId();
+        assertTrue(vmd.getIpAddress().contains("192.168"));
+    }
 
     public void testDeployAndMigrate() throws Exception {
         int cpus = 1;
@@ -89,46 +122,56 @@ public class DeployAndMigrateTest extends VmmTestBase{
         assertEquals(swapMb, vmMigrated.getSwapMb());
     }
     
+    private static final String END_OF_LINE = System.getProperty("line.separator");
+
+    private String generateScript() {
+        return "#cloud-config" + END_OF_LINE
+                + "password: bsc" + END_OF_LINE
+                + "chpasswd: { expire: False }" + END_OF_LINE
+                + "ssh_pwauth: True" + END_OF_LINE
+                + "runcmd:" + END_OF_LINE
+                + " - sleep 5" + END_OF_LINE
+                + END_OF_LINE;
+    }
+    
     public void testSlotAwareDeployment() {
-        /*String imageId= "01265289-873c-4d9f-a990-43d21e395739";
-        VmRequirements vmRequirements = 
-            new VmRequirements( 2, 2048, 10, 0);
+        //String imageId= "01265289-873c-4d9f-a990-43d21e395739";
+        //String imageId= "42227cb6-0d54-4e91-b4c7-bb443e5e1434";
+        String imageId = "c5b3d1e3-6f40-4032-8cdd-9d0adfb2b5ba";
+        Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 12, 14000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid30");
+        Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 10, 12000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid29");
         
-        Vm vm1 = new Vm("slotAwareTest01", imageId, vmRequirements, null, "slotAwareTest", "", "sla", "bscgrid30");
-        Vm vm2 = new Vm("slotAwareTest02", imageId, vmRequirements, null, "slotAwareTest", "", "sla", "bscgrid30");
-        Vm vm3 = new Vm("slotAwareTest03", imageId, vmRequirements, null, "slotAwareTest", "", "sla", "bscgrid30");
-        Vm vm4 = new Vm("slotAwareTest04", imageId, vmRequirements, null, "slotAwareTest", "", "sla", "bscgrid29");
-        Vm vm5 = new Vm("slotAwareTest05", imageId, vmRequirements, null, "slotAwareTest", "", "sla", "bscgrid29");
-        
-        List<String> deployedVms = vmm.deployVms(Arrays.asList(vm1, vm2, vm3, vm4, vm5));
+        List<String> deployedVms = vmm.deployVms(Arrays.asList(vm01, vm02));
 	
-        VmDeployed vmd1 = vmm.getVm(deployedVms.get(0));
-        VmDeployed vmd2 = vmm.getVm(deployedVms.get(1));
-        VmDeployed vmd3 = vmm.getVm(deployedVms.get(2));
-        VmDeployed vmd4 = vmm.getVm(deployedVms.get(3));
-        VmDeployed vmd5 = vmm.getVm(deployedVms.get(4));
-        vmIds.add(vmd1.getId());
-        vmIds.add(vmd2.getId());
-        vmIds.add(vmd3.getId());
-        vmIds.add(vmd4.getId());
-        vmIds.add(vmd5.getId());*/
+        //VmDeployed vmd1 = vmm.getVm(deployedVms.get(0));
+        //VmDeployed vmd2 = vmm.getVm(deployedVms.get(1));
+        //VmDeployed vmd3 = vmm.getVm(deployedVms.get(2));
+        //vmIds.add(vmd1.getId());
+        //vmIds.add(vmd2.getId());
         
-        //System.out.println( vmm.getNodes() );
-        //System.out.println( vmm.getSlots() );
-        //System.out.println( vmm.getHardwareInfo() );
         
-        List<Slot> slots = new ArrayList<>();
-        slots.add(new Slot("hostA", 2, 200, 2000));
-        slots.add(new Slot("hostB", 4, 400, 4000));
-        slots.add(new Slot("hostC", 8, 800, 8000));
+        /*
+        Map<String, Node> nodesTable = new HashMap<String, Node>();
+        for(Node n : vmm.getNodes()) {
+            nodesTable.put(n.getHostname(), n);
+        }
+        
+        System.out.println( nodesTable.toString() );
+        List<Slot> slots = vmm.getSlots();
+        System.out.println(slots);
+        //List<Slot> slots = new ArrayList<>();
+        //slots.add(new Slot("bscgrid30", 2, 200, 2000));
+        //slots.add(new Slot("bscgrid29", 4, 400, 4000));
+        //slots.add(new Slot("bscgrid28", 12, 1200, 12000));
+        //slots.add(new Slot("bscgrid31", 12, 1200, 12000));
 
         int minCpus = 2;
         int maxCpus = 4;
         int totalCpusToAdd = 6;
-        int cpusPerHost = 8;
 
         SlotAwareDeployer deployer = new SlotAwareDeployer();
-        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, totalCpusToAdd, cpusPerHost, minCpus, maxCpus, 1000, 100);
+        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 512, 10);
         System.out.println(solutions);
+        */
     }
 }

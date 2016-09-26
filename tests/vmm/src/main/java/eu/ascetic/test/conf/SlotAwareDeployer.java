@@ -5,12 +5,14 @@
  */
 package eu.ascetic.test.conf;
 
+import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
@@ -95,6 +97,27 @@ public class SlotAwareDeployer {
 
         return clonedSlots;
     }
+    
+    /**
+     * 
+     * @param slots 
+     */
+    private void sortSlotsByConsolidation(List<Slot> slots) {
+        Collections.sort(slots, new Comparator<Slot>() {
+            @Override
+            public int compare(Slot a, Slot b) {
+                if (a.getFreeCpus() > b.getFreeCpus()) {
+                    return 1;
+                }
+
+                if (a.getFreeCpus() < b.getFreeCpus()) {
+                    return -1;
+                }
+
+                return 0;
+            }
+        });
+    }
 
     /**
      *
@@ -102,10 +125,10 @@ public class SlotAwareDeployer {
      * @param numAllCpus
      * @return
      */
-    private int consolidationScore(List<Slot> slots, int numAllCpus) {
+    private int consolidationScore(List<Slot> slots, Map<String,Node> nodes) {
         int consolidationScore = 0;
         for (Slot s : slots) {
-            if (s.getFreeCpus() == numAllCpus) {
+            if (s.getFreeCpus() == nodes.get(s.getHostname()).getTotalCpus()) {
                 consolidationScore++;
             }
         }
@@ -153,15 +176,15 @@ public class SlotAwareDeployer {
     /**
      *
      * @param slots
+     * @param nodes
      * @param totalCpusToAdd
-     * @param cpusPerHost
      * @param minCpu
      * @param maxCpu
      * @param ramMb
      * @param diskGb
      * @return
      */
-    public List<SlotSolution> getSlotsSortedByConsolidationScore(List<Slot> slots, int totalCpusToAdd, int cpusPerHost, int minCpu, int maxCpu, int ramMb, int diskGb) {
+    public List<SlotSolution> getSlotsSortedByConsolidationScore(List<Slot> slots, Map<String, Node> nodes, int totalCpusToAdd, int minCpu, int maxCpu, int ramMb, int diskGb) {
         Set<String> combinations = subsetSumBruteForce(getAllowedCpuSizes(minCpu, maxCpu), totalCpusToAdd);
         List<SlotSolution> solutions = new ArrayList<>();
 
@@ -170,6 +193,8 @@ public class SlotAwareDeployer {
             System.out.println("Trying to find place for " + combination.toString());
             String cpus[] = combination.split(",");
             List<Slot> slotsClone = this.cloneSlots(slots);
+            this.sortSlotsByConsolidation(slots);
+            //System.out.println("Sorted slots: " + slots.toString());
             for (int index = 0; index < cpus.length; index++) {
                 int numCpus = Integer.parseInt(cpus[index]);
                 Slot slotAssigned = this.assignSlot(numCpus, diskGb, ramMb, slotsClone);
@@ -181,7 +206,7 @@ public class SlotAwareDeployer {
             for (Slot s : slotsClone) {
                 System.out.println(s.getFreeCpus() + " - " + s.getHostname());
             }
-            double consolidationScore = consolidationScore(slotsClone, cpusPerHost);
+            double consolidationScore = consolidationScore(slotsClone, nodes);
             System.out.println("Score: " + consolidationScore);
             solutions.add(new SlotSolution(consolidationScore, results));
         }
