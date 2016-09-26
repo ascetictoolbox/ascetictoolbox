@@ -153,12 +153,37 @@ public class EnergyModellerQueueServiceManager {
 	                    LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
+	                    /* 26-09-2016 - BEGIN */
+	                    /*
 	                    if (topic.length<6){
+	                     
 	                    	LOGGER.debug("Received a message of no interest for the EM");
 	                    	return;
 	                    }
-	                    LOGGER.info("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
 	                    
+	                    LOGGER.info("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
+	                    */
+	                    
+	                    int counter;
+	                    String ArgString;
+	                    ArgString="-->";
+	                    
+	                    for (counter = 0; counter < topic.length; counter++) {
+	                    	
+	                    	if (counter == (topic.length-1))
+	                    		ArgString = ArgString + topic[counter] + "<--";
+	                    	else
+	                    		ArgString = ArgString + topic[counter] + ".";
+	                    }
+	                    
+	                    if (topic.length < 7){
+	                    	LOGGER.info("Received a message of no interest for the EM:" + ArgString);
+	                    	return;
+	                    }
+	                    else {
+	                    	LOGGER.info("Received: " + ArgString);
+	                    }
+	                    /* 26-09-2016 - END */
 	                    
 	                    if (topic[6].equals("DEPLOYED")){
 	                    	VirtualMachine vm = new VirtualMachine();
@@ -171,13 +196,14 @@ public class EnergyModellerQueueServiceManager {
 	                    	String payload = textMessage.getText();
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    JsonNode jsontext = jmapper.readValue(payload, JsonNode.class);
-		                    LOGGER.info("Received DEPLOYED message for provider id"+ jsontext.findValue("providerId"));
+		                    
 		                    if (jsontext.findValue("providerId")==null){
 	                    		LOGGER.info("Unable to parse AMQP deployment message, missing provider id (default value will be used)");
 	                    		vm.setProviderid(defaultProviderId);
 	                    	} else {
 	                    		String providerid = jsontext.findValue("providerId").textValue();
 	                    		vm.setProviderid(providerid);
+	                    		LOGGER.info("Received DEPLOYED message for provider id"+ providerid);
 	                    	}
 
 	                    	SqlSession session = appRegistry.getSession();
@@ -185,20 +211,22 @@ public class EnergyModellerQueueServiceManager {
 
 	                    	int checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());
 	                    	if (checkvm>0){
-	                    		LOGGER.warn("Received again a deployd message for an app already registered");
+	                    		/* 26-09-2016 - BEGIN */
+	                    		// LOGGER.warn("Received again a deployed message for an app already registered");
+	                    		LOGGER.info("Received again a deployed message for an app already registered");
+	                    		/* 26-09-2016 - END */
 	                    		
 	                    		return;
 	                    	}
 
-	                    	LOGGER.info("Received DEPLOYED message for iaas id"+ jsontext.findValue("iaasVmId"));
-		        
 	                    	if (jsontext.findValue("iaasVmId")==null){
 	                    		LOGGER.info("Unable to parse AMQP deployment message, missing iaas id");
 	                    		return;
-	                    	}		                    
-		                    
-		                    String iaasid = jsontext.findValue("iaasVmId").textValue();
-	                    	vm.setIaasid(iaasid);
+	                    	} else {		                    
+		                    	String iaasid = jsontext.findValue("iaasVmId").textValue();
+	                    		vm.setIaasid(iaasid);
+	                    		LOGGER.info("Received DEPLOYED message for iaas id"+ iaasid);
+	                    	}
 	                    	
 	                    	mapper.createVM(vm);
 	                    	session.close();
@@ -215,21 +243,26 @@ public class EnergyModellerQueueServiceManager {
 	                    	String payload = textMessage.getText();
 		                    ObjectMapper jmapper = new ObjectMapper();
 		                    JsonNode jsontext = jmapper.readValue(payload, JsonNode.class);
-		                    LOGGER.info("Received DELETED message for provider id"+ jsontext.findValue("providerId"));
+		                    
 		                    if (jsontext.findValue("providerId")==null){
 	                    		LOGGER.info("Unable to parse AMQP deployment message, missing provider id (default value will be used)");
 	                    		vm.setProviderid(defaultProviderId);
 	                    	} else {
 	                    		String providerid = jsontext.findValue("providerId").textValue();
 	                    		vm.setProviderid(providerid);
+	                    		LOGGER.info("Received DELETED message for provider id"+ providerid);
 	                    	}
 
 	                    	SqlSession session = appRegistry.getSession();
 		                	AppRegistryMapper mapper = session.getMapper(AppRegistryMapper.class); 
 	                    	int checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());
+	                    	
 	                    	LOGGER.info("Received DELETED for VM"+vm.getProviderid()+ vm.getApplicationid()+ vm.getDeploymentid()+ vm.getVmid());
 	                    	if (checkvm==0){
-	                    		LOGGER.warn("Received a message for an app not being created");
+	                    		/* 26-09-2016 - BEGIN */
+	                    		//LOGGER.warn("Received a message for an app not being created");
+	                    		LOGGER.info("Received a message for an app not being created");
+	                    		/* 26-09-2016 - END */
 	                    		return;
 	                    	}
 	                    	
@@ -239,7 +272,10 @@ public class EnergyModellerQueueServiceManager {
 	                    }
 	                }
 	            } catch (Exception e) {
-	            	LOGGER.error("Received EXCEPTION while writing app events");
+	            	/* 26-09-2016 - BEGIN */
+	            	//LOGGER.error("Received EXCEPTION while writing app events");
+	            	LOGGER.info("Received EXCEPTION while writing app events");
+	            	/* 26-09-2016 - END */
 	                System.out.println("Caught:" + e);
 	                e.printStackTrace();
 	            }
@@ -262,7 +298,7 @@ public class EnergyModellerQueueServiceManager {
 		                    LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 		                    String dest = message.getJMSDestination().toString();
 		                    String[] topic = dest.split("\\.");
-		                    if (topic.length<6){
+		                    if (topic.length<8){
 		                    	LOGGER.debug("Received a message of no interest for the EM");
 		                    	return;
 		                    }
@@ -308,11 +344,11 @@ public class EnergyModellerQueueServiceManager {
 			                    JsonNode jsontext = jmapper.readValue(payload, JsonNode.class);
 			                    
 			                    String providerid = defaultProviderId;
-			                    LOGGER.info("Received METRIC message for provider id"+ jsontext.findValue("providerId"));
 			                    if (jsontext.findValue("providerId")==null){
 		                    		LOGGER.info("Unable to parse AMQP deployment message, missing provider id (default value will be used)");	                    		
 		                    	} else {
-		                    		providerid = jsontext.findValue("providerId").textValue();                  		
+		                    		providerid = jsontext.findValue("providerId").textValue();
+		                    		LOGGER.info("Received METRIC message for provider id"+ providerid);
 		                    	}
 			                    
 			                    dc.setProviderid(providerid); 
