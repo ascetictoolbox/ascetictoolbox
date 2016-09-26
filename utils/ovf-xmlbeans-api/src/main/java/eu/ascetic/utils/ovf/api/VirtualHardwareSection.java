@@ -15,16 +15,13 @@
  */
 package eu.ascetic.utils.ovf.api;
 
+import eu.ascetic.utils.ovf.api.enums.ResourceType;
+import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Vector;
-
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanRASDType;
 import org.dmtf.schemas.ovf.envelope.x1.XmlBeanVirtualHardwareSectionType;
-
-import eu.ascetic.utils.ovf.api.AbstractElement;
-import eu.ascetic.utils.ovf.api.utils.XmlSimpleTypeConverter;
-import eu.ascetic.utils.ovf.api.enums.*;
 
 /**
  * Provides access to the VirtualHardwareSection. Each {@link VirtualSystem}
@@ -38,7 +35,7 @@ import eu.ascetic.utils.ovf.api.enums.*;
  * <br>
  * A typical VirtualHardwareSection contains a {@link System} child element to
  * describe the virtual hardware family (a.k.a virtual system type) and a
- * sequence of {@link Item} elements to describe the virtual hardware
+ * sequence of {@link2 Item} elements to describe the virtual hardware
  * characteristics.<br>
  * <br>
  * TODO: Refactor ASCETiC specific helper methods to another package/class so as
@@ -188,6 +185,42 @@ public class VirtualHardwareSection
     }
 
     /**
+     * Gets the min number of virtual CPUs. Returns 0
+     * if no CPU {@link Item} number element can be found.
+     * 
+     * @return The min number of virtual CPUs
+     */
+    public int getMinNumberOfVirtualCPUs() {
+        Item[] itemArray = getItemArray();
+        for (int i = 0; i < itemArray.length; i++) {
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
+                    && itemArray[i].isSetResourceSubType() == true &&
+                    "min".equals(itemArray[i].getResourceSubType())) {
+                return itemArray[i].getVirtualQuantity().intValue();
+            }
+        }
+        return 0;
+    }    
+
+    /**
+     * Gets the maximum number of virtual CPUs. Returns Integer max value 
+     * if no CPU {@link Item} number element can be found.
+     * 
+     * @return The max number of virtual CPUs
+     */
+    public int getMaxNumberOfVirtualCPUs() {
+        Item[] itemArray = getItemArray();
+        for (int i = 0; i < itemArray.length; i++) {
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
+                    && itemArray[i].isSetResourceSubType() == true &&
+                    "max".equals(itemArray[i].getResourceSubType())) {
+                return itemArray[i].getVirtualQuantity().intValue();
+            }
+        }
+        return Integer.MAX_VALUE;
+    }    
+    
+    /**
      * Gets the number of virtual CPUs. Returns zero if no CPU {@link Item}
      * number element can be found.
      * 
@@ -225,6 +258,50 @@ public class VirtualHardwareSection
         return false;
     }
 
+    /**
+     * Sets the min number of virtual CPUs. Returns false if no CPU {@link Item}
+     * number element can be found.
+     * 
+     * @param numberOfVirtualCPUs
+     *            The min number of virtual CPUs to set
+     * @return Indicates if setting was successful.
+     */
+    public boolean setMinNumberOfVirtualCPUs(int numberOfVirtualCPUs) {
+        Item[] itemArray = getItemArray();
+        for (int i = 0; i < itemArray.length; i++) {
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
+                    && itemArray[i].isSetResourceSubType() == true &&
+                            "min".equals(itemArray[i].getResourceSubType())){
+                itemArray[i].setVirtualQuantity(
+                        new BigInteger(Integer.toString(numberOfVirtualCPUs)));
+                return true;
+            }
+        }
+        return false;
+    }    
+
+     /**
+     * Sets the max number of virtual CPUs. Returns false if no CPU {@link Item}
+     * number element can be found.
+     * 
+     * @param numberOfVirtualCPUs
+     *            The max number of virtual CPUs to set
+     * @return Indicates if setting was successful.
+     */
+    public boolean setMaxNumberOfVirtualCPUs(int numberOfVirtualCPUs) {
+        Item[] itemArray = getItemArray();
+        for (int i = 0; i < itemArray.length; i++) {
+            if (ResourceType.PROCESSOR.equals(itemArray[i].getResourceType())
+                    && itemArray[i].isSetResourceSubType() == true &&
+                            "max".equals(itemArray[i].getResourceSubType())){
+                itemArray[i].setVirtualQuantity(
+                        new BigInteger(Integer.toString(numberOfVirtualCPUs)));
+                return true;
+            }
+        }
+        return false;
+    }   
+    
     /**
      * Gets the memory size (see {@link Item#getAllocationUnits()}). Returns
      * zero if no {@link Item} element for memory can be found.
