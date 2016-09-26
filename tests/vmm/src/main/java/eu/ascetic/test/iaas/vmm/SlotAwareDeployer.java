@@ -1,9 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright 2016 Barcelona Super Computing Center
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-package eu.ascetic.test.conf;
+package eu.ascetic.test.iaas.vmm;
 
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
@@ -18,14 +28,24 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  *
- * @author raimon
+ * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
 public class SlotAwareDeployer {
     
+    /**
+     * Constructor
+     */
     public SlotAwareDeployer(){
         
     }
     
+    /**
+     * Calculates subset of sums.
+     * 
+     * @param allowedSizes string that represents allowed sizes i.e. 2,3,4
+     * @param total the total expected from the sums
+     * @return all sum subset combinations
+     */
     public Set<String> subsetSumBruteForce(String allowedSizes, int total) {
         //System.out.println("subsetSumBruteForce " + allowedSizes + " - " + total);
         List<String> combinations = CombinationGenerator.getCombinations(allowedSizes);
@@ -55,12 +75,13 @@ public class SlotAwareDeployer {
     }
 
     /**
-     *
-     * @param numCpus
-     * @param diskGb
-     * @param ramMb
-     * @param slots
-     * @return
+     * Assigns a slot to a given size.
+     * 
+     * @param numCpus number of cpus
+     * @param diskGb gb of disk
+     * @param ramMb ram memory
+     * @param slots slots to assign
+     * @return the assigned slot
      */
     private Slot assignSlot(int numCpus, int diskGb, int ramMb, List<Slot> slots) {
         for (int index = 0; index < slots.size(); index++) {
@@ -82,9 +103,10 @@ public class SlotAwareDeployer {
     }
 
     /**
-     *
-     * @param slots
-     * @return
+     * Function that clones slots.
+     * 
+     * @param slots the slots to clone
+     * @return a clone of the slots
      */
     private List<Slot> cloneSlots(List<Slot> slots) {
         List<Slot> clonedSlots = new ArrayList<>();
@@ -99,8 +121,9 @@ public class SlotAwareDeployer {
     }
     
     /**
+     * Sort slots by consolidation criteria.
      * 
-     * @param slots 
+     * @param slots the slots to sort
      */
     private void sortSlotsByConsolidation(List<Slot> slots) {
         Collections.sort(slots, new Comparator<Slot>() {
@@ -120,10 +143,12 @@ public class SlotAwareDeployer {
     }
 
     /**
-     *
-     * @param slots
-     * @param numAllCpus
-     * @return
+     * Calculates consolidationScore for a given solution and configuration of nodes.
+     * When we find a slot with all cpus available we increase score + 1.
+     * 
+     * @param slots a list of slots with a proposed solution.
+     * @param nodes information about the nodes to extract total cpus per host.
+     * @return the consolidation score
      */
     private int consolidationScore(List<Slot> slots, Map<String,Node> nodes) {
         int consolidationScore = 0;
@@ -137,9 +162,10 @@ public class SlotAwareDeployer {
     }
 
     /**
-     *
-     * @param e
-     * @return
+     * Helper to calculate all combinations.
+     * 
+     * @param e combination to extend.
+     * @return the extended combination
      */
     private String extendCombination(String[] e) {
         if (e.length == 1) {
@@ -156,10 +182,11 @@ public class SlotAwareDeployer {
     }
 
     /**
-     *
-     * @param minCpu
-     * @param maxCpu
-     * @return
+     * Calculate string with allowed sizes i.e. from (2,4) it would be 2,3,4
+     * 
+     * @param minCpu min of cpus
+     * @param maxCpu max of cpus
+     * @return a string with all allowed cpu sizes i.e. 2,3,4
      */
     private String getAllowedCpuSizes(int minCpu, int maxCpu) {
         String allowedCpuSizes = "";
@@ -174,15 +201,16 @@ public class SlotAwareDeployer {
     }
 
     /**
-     *
-     * @param slots
-     * @param nodes
-     * @param totalCpusToAdd
-     * @param minCpu
-     * @param maxCpu
-     * @param ramMb
-     * @param diskGb
-     * @return
+     * Returns a list of SolutionSlot sorted by consolidation criteria.
+     * 
+     * @param slots slots given by VMM.
+     * @param nodes information about physical nodes given by VMM.
+     * @param totalCpusToAdd number of cpus that you want to add.
+     * @param minCpu min of cpus allowed.
+     * @param maxCpu max of cpus allowed.
+     * @param ramMb memory ram allowed.
+     * @param diskGb gb of disk allowed.
+     * @return a list with all slot solutions
      */
     public List<SlotSolution> getSlotsSortedByConsolidationScore(List<Slot> slots, Map<String, Node> nodes, int totalCpusToAdd, int minCpu, int maxCpu, int ramMb, int diskGb) {
         Set<String> combinations = subsetSumBruteForce(getAllowedCpuSizes(minCpu, maxCpu), totalCpusToAdd);
@@ -236,5 +264,4 @@ public class SlotAwareDeployer {
 
         return solutions;
     }
-    
 }

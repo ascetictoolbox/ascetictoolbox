@@ -1,10 +1,9 @@
 package eu.ascetic.test.iaas.vmm;
 
+import com.jcraft.jsch.JSchException;
 import es.bsc.vmmclient.models.*;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import es.bsc.vmmclient.models.Node;
-import eu.ascetic.test.conf.SlotAwareDeployer;
-import eu.ascetic.test.conf.SlotSolution;
 import eu.ascetic.test.conf.VMMConf;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,44 +133,40 @@ public class DeployAndMigrateTest extends VmmTestBase{
                 + END_OF_LINE;
     }
     
-    public void testSlotAwareDeployment() {
-        //String imageId= "01265289-873c-4d9f-a990-43d21e395739";
-        //String imageId= "42227cb6-0d54-4e91-b4c7-bb443e5e1434";
-        String imageId = "c5b3d1e3-6f40-4032-8cdd-9d0adfb2b5ba";
-        Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 12, 14000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid30");
-        Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 10, 12000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid29");
+    public void testSlotAwareDeployment() throws Exception {
+        boolean prepareExperiment = false;
+        boolean runExperiment = true;
         
-        List<String> deployedVms = vmm.deployVms(Arrays.asList(vm01, vm02));
-	
-        //VmDeployed vmd1 = vmm.getVm(deployedVms.get(0));
-        //VmDeployed vmd2 = vmm.getVm(deployedVms.get(1));
-        //VmDeployed vmd3 = vmm.getVm(deployedVms.get(2));
-        //vmIds.add(vmd1.getId());
-        //vmIds.add(vmd2.getId());
-        
-        
-        /*
-        Map<String, Node> nodesTable = new HashMap<String, Node>();
-        for(Node n : vmm.getNodes()) {
-            nodesTable.put(n.getHostname(), n);
+        if(prepareExperiment){
+            String imageId = "c5b3d1e3-6f40-4032-8cdd-9d0adfb2b5ba";
+            Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 12, 14000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid30");
+            Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 14, 12000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid29");
+
+            List<String> deployedVms = vmm.deployVms(Arrays.asList(vm01, vm02));
         }
         
-        System.out.println( nodesTable.toString() );
-        List<Slot> slots = vmm.getSlots();
-        System.out.println(slots);
-        //List<Slot> slots = new ArrayList<>();
-        //slots.add(new Slot("bscgrid30", 2, 200, 2000));
-        //slots.add(new Slot("bscgrid29", 4, 400, 4000));
-        //slots.add(new Slot("bscgrid28", 12, 1200, 12000));
-        //slots.add(new Slot("bscgrid31", 12, 1200, 12000));
+        if(runExperiment){
+            Map<String, Node> nodesTable = new HashMap<String, Node>();
+            for(Node n : vmm.getNodes()) {
+                nodesTable.put(n.getHostname(), n);
+            }
 
-        int minCpus = 2;
-        int maxCpus = 4;
-        int totalCpusToAdd = 6;
+            System.out.println( nodesTable.toString() );
+            List<Slot> slots = vmm.getSlots();
+            System.out.println(slots);
+            //List<Slot> slots = new ArrayList<>();
+            //slots.add(new Slot("bscgrid30", 2, 200, 2000));
+            //slots.add(new Slot("bscgrid29", 4, 400, 4000));
+            //slots.add(new Slot("bscgrid28", 12, 1200, 12000));
+            //slots.add(new Slot("bscgrid31", 12, 1200, 12000));
 
-        SlotAwareDeployer deployer = new SlotAwareDeployer();
-        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 512, 10);
-        System.out.println(solutions);
-        */
+            int minCpus = 2;
+            int maxCpus = 4;
+            int totalCpusToAdd = 6;
+
+            SlotAwareDeployer deployer = new SlotAwareDeployer();
+            List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 512, 10);
+            System.out.println(solutions);
+        }
     }
 }

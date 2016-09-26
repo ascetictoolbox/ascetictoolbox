@@ -13,19 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.test.conf;
+package eu.ascetic.test.iaas.vmm;
 
 import es.bsc.vmmclient.models.Slot;
 import java.util.List;
 
 /**
  *
- * @author raimon
+ * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
 public class SlotSolution {
     private List<Slot> slots;
     private double consolidationScore;
     
+    /**
+     * Constructor of SlotSolution
+     * 
+     * @param consolidationScore score for this solution.
+     * @param slots list of slots with the solution proposed.
+     */
     public SlotSolution(double consolidationScore, List<Slot> slots){
         this.consolidationScore = consolidationScore;
         this.slots = slots;

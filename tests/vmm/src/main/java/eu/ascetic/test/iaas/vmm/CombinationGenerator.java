@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package eu.ascetic.test.conf;
+package eu.ascetic.test.iaas.vmm;
 
 
 /**
@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  *
- * @author Raimon
+ * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
 public class CombinationGenerator {
 
@@ -36,9 +36,10 @@ public class CombinationGenerator {
     private BigInteger total;
 
     /**
-     *
-     * @param n
-     * @param r
+     * Constructor for CombinationGenerator.
+     * 
+     * @param n the factorial input
+     * @param r the number of combinations
      */
     public CombinationGenerator(int n, int r) {
         if (r > n) {
@@ -58,7 +59,8 @@ public class CombinationGenerator {
     }
 
     /**
-     *
+     * resets BigInteger.
+     * 
      */
     public void reset() {
         for (int i = 0; i < a.length; i++) {
@@ -68,27 +70,24 @@ public class CombinationGenerator {
     }
 
     /**
-     * Return number of combinations not yet generated
-     *
-     * @return
+     * 
+     * @return number of combinations not yet generated
      */
     public BigInteger getNumLeft() {
         return numLeft;
     }
 
     /**
-     * Are there more combinations?
-     *
-     * @return
+     * 
+     * @return Are there more combinations?
      */
     public boolean hasMore() {
         return numLeft.compareTo(BigInteger.ZERO) == 1;
     }
 
     /**
-     * Return total number of combinations
      *
-     * @return
+     * @return total number of combinations
      */
     public BigInteger getTotal() {
         return total;
@@ -96,8 +95,8 @@ public class CombinationGenerator {
 
     /**
      *
-     * @param n
-     * @return
+     * @param n the factorial input
+     * @return the factorial result
      */
     private static BigInteger getFactorial(int n) {
         BigInteger fact = BigInteger.ONE;
@@ -108,9 +107,8 @@ public class CombinationGenerator {
     }
 
     /**
-     * Generate next combination (algorithm from Rosen p. 286)
      *
-     * @return
+     * @return Generate next combination (algorithm from Rosen p. 286)
      */
     public int[] getNext() {
 
@@ -134,9 +132,10 @@ public class CombinationGenerator {
     }
 
     /**
-     *
-     * @param input
-     * @return
+     * Calculates combinations.
+     * 
+     * @param input string with the combinations you want to combine i.e. 2,3,4
+     * @return all combinations
      */
     public static List<String> getCombinations(String input) {
         int k = 0;

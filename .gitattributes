@@ -6434,10 +6434,11 @@ tests/application_manager/src/test/resources/webapp-ovf.xml -text
 tests/pom.xml -text
 tests/vmm/README.md -text
 tests/vmm/pom.xml -text
-tests/vmm/src/main/java/eu/ascetic/test/conf/CombinationGenerator.java -text
-tests/vmm/src/main/java/eu/ascetic/test/conf/SlotAwareDeployer.java -text
-tests/vmm/src/main/java/eu/ascetic/test/conf/SlotSolution.java -text
 tests/vmm/src/main/java/eu/ascetic/test/conf/VMMConf.java -text
+tests/vmm/src/main/java/eu/ascetic/test/iaas/vmm/CombinationGenerator.java -text
+tests/vmm/src/main/java/eu/ascetic/test/iaas/vmm/JschManager.java -text
+tests/vmm/src/main/java/eu/ascetic/test/iaas/vmm/SlotAwareDeployer.java -text
+tests/vmm/src/main/java/eu/ascetic/test/iaas/vmm/SlotSolution.java -text
 tests/vmm/src/main/resources/config.bsc.properties -text
 tests/vmm/src/main/resources/config.properties -text
 tests/vmm/src/main/resources/config.stable.properties -text
