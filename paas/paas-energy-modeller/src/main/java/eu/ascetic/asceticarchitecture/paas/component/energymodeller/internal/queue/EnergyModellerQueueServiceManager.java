@@ -149,8 +149,14 @@ public class EnergyModellerQueueServiceManager {
 	            try {
 	            	
 	                if (message instanceof TextMessage) {
+	                	/* 26-09-2016 - BEGIN */
+	                	LOGGER.info("Received information from ActiveMQ");
+	                	/* 26-09-2016 - END */
 	                    TextMessage textMessage = (TextMessage) message;
-	                    LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+	                    /* 26-09-2016 - BEGIN */
+	                    //LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+	                    /* 26-09-2016 - END */
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
 	                    /* 26-09-2016 - BEGIN */
@@ -276,7 +282,7 @@ public class EnergyModellerQueueServiceManager {
 	            	//LOGGER.error("Received EXCEPTION while writing app events");
 	            	LOGGER.info("Received EXCEPTION while writing app events");
 	            	/* 26-09-2016 - END */
-	                System.out.println("Caught:" + e);
+	                System.out.println("EnergyModellerQueueServiceManager Caught:" + e);
 	                e.printStackTrace();
 	            }
 	        }      
