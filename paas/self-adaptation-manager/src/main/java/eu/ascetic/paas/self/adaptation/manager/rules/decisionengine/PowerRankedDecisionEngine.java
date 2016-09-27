@@ -15,7 +15,6 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
-import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.Collections;
 import java.util.List;

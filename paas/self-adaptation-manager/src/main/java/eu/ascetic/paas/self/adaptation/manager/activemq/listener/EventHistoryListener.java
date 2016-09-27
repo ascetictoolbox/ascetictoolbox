@@ -48,8 +48,8 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
     private final MessageConsumer consumer;
     private EventAssessor eventAssessor;
     private boolean running = true;
-    private Gson gson = new Gson();
-    private ViolationMessageTranslator converter = new ViolationMessageTranslator();
+    private final Gson gson = new Gson();
+    private final ViolationMessageTranslator converter = new ViolationMessageTranslator();
 
     /**
      * This creates a new event history listener
@@ -93,6 +93,7 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
 
     @Override
     public void run() {
+        int errorCounter = 0;
         while (running) {
             try {
                 // Wait for a message
@@ -112,9 +113,15 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
                         response.setVmId(adaptationAction.getDeploymentPlan()[0].getVmId());
                     }
                     eventAssessor.addRemoteAdaptationEvent(response);
+                    errorCounter = (errorCounter <= 0 : 0 ? errorCounter = errorCounter -1);
                 }
             } catch (JMSException ex) {
-                ex.printStackTrace();
+                Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.ERROR, "Error listening to IaaS SAM message queue", ex);
+                errorCounter = errorCounter + 1;
+                if (errorCount >= 5) {
+                    running = false;
+                }
+                
             }
         }
         if (consumer != null) {
