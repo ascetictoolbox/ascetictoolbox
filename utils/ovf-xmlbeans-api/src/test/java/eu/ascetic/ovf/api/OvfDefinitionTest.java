@@ -426,6 +426,26 @@ public class OvfDefinitionTest extends TestCase {
         itemCpuNumber.setResourceType(ResourceType.PROCESSOR);
         itemCpuNumber.setVirtualQuantity(new BigInteger("1"));
         virtualHardwareSection.addItem(itemCpuNumber);
+        
+        // Min CPU
+        Item itemMinCpuNumber = Item.Factory.newInstance();
+        itemMinCpuNumber.setDescription("Minimum number of virtual CPUs");
+        itemMinCpuNumber.setElementName("1 virtual CPU");
+        itemMinCpuNumber.setInstanceId("1");
+        itemMinCpuNumber.setResourceType(ResourceType.PROCESSOR);
+        itemMinCpuNumber.setResourceSubType("min");
+        itemMinCpuNumber.setVirtualQuantity(new BigInteger("1"));
+        virtualHardwareSection.addItem(itemMinCpuNumber);
+        
+        // Max CPU
+        Item itemMaxCpuNumber = Item.Factory.newInstance();
+        itemMaxCpuNumber.setDescription("Maximum number of virtual CPUs");
+        itemMaxCpuNumber.setElementName("4 virtual CPU");
+        itemMaxCpuNumber.setInstanceId("1");
+        itemMaxCpuNumber.setResourceType(ResourceType.PROCESSOR);
+        itemMaxCpuNumber.setResourceSubType("max");
+        itemMaxCpuNumber.setVirtualQuantity(new BigInteger("4"));
+        virtualHardwareSection.addItem(itemMaxCpuNumber);
 
         // CPU Speed
         if (!virtualHardwareSection.setCPUSpeed(2000)) {
