@@ -1330,6 +1330,7 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/dao/te
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/datamodel/convert/ApplicationConverterTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerMessageListenerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerMessageTest.java -text
+paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerQueueControllerIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/em/amqp/EnergyModellerQueueControllerTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/DeploymentStatusTest.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/event/deployment/AcceptAgreementEventHandlerTest.java -text

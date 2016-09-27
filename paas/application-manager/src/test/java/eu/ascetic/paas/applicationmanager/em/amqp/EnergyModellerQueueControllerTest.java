@@ -158,7 +158,7 @@ public class EnergyModellerQueueControllerTest extends AbstractTest {
 		producerPredictions.sendMessage(message1);
 		
 		// We wait one second just in case
-		Thread.sleep(1000l);
+		Thread.sleep(2000l);
 		
 		EnergyModellerMessage messageRetrived1 = controller.getMeasurementMessage(key1);
 		assertEquals("davidgpTestApp", messageRetrived1.getApplicationid());

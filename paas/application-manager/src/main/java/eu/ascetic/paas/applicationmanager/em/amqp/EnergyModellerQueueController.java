@@ -50,7 +50,7 @@ public class EnergyModellerQueueController implements InitializingBean {
 	protected static int MAX_ENTRIES_CACHE = 200;
 	private static Logger logger = Logger.getLogger(EnergyModellerQueueController.class);
 	private Map<String, EnergyModellerMessage> measurementMessages;
-	private Map<String, EnergyModellerMessage> predictionsMessages;
+	protected Map<String, EnergyModellerMessage> predictionsMessages;
 	private EnergyModellerMessageListener emListenerMeasurements;
 	private EnergyModellerMessageListener emListenerPredictions;
 	private AmqpMessageReceiver receiverMeasurements;

@@ -786,11 +786,16 @@ public class DeploymentRest extends AbstractRest {
 		double powerEstimated = energyModeller.estimate(providerId,  applicationName, deploymentId, ids, eventId, Unit.POWER, 0l);
 		
 		// Getting from the queue the necessary variables to query the Price Modeller
-		String secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, ids, EnergyModellerQueueController.SEC);
+		String secKey = "none";
+		if(ids != null && ids.size() > 0) {
+			List<String> vmIds = new ArrayList<String>();
+			vmIds.add(ids.get(0));
+			secKey = EnergyModellerQueueController.generateKey(applicationName, eventId, deploymentId, vmIds, EnergyModellerQueueController.SEC);
+		}
 		
 		logger.info("secKey: " + secKey);
 		
-		Thread.sleep(5000l);
+		Thread.sleep(1000l);
 		
 		EnergyModellerMessage emMessageSec = getEnergyModellerQueueController().getPredictionMessage(secKey); 
 		
