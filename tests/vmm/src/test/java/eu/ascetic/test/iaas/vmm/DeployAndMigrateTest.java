@@ -1,6 +1,5 @@
 package eu.ascetic.test.iaas.vmm;
 
-import com.jcraft.jsch.JSchException;
 import es.bsc.vmmclient.models.*;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import es.bsc.vmmclient.models.Node;
@@ -123,26 +122,28 @@ public class DeployAndMigrateTest extends VmmTestBase{
     
     private static final String END_OF_LINE = System.getProperty("line.separator");
 
-    private String generateScript() {
+    private String generateScript(int numCpus) {
         return "#cloud-config" + END_OF_LINE
                 + "password: bsc" + END_OF_LINE
                 + "chpasswd: { expire: False }" + END_OF_LINE
                 + "ssh_pwauth: True" + END_OF_LINE
                 + "runcmd:" + END_OF_LINE
+                + " - stress -c " + numCpus + END_OF_LINE
                 + " - sleep 5" + END_OF_LINE
                 + END_OF_LINE;
     }
     
     public void testSlotAwareDeployment() throws Exception {
         boolean prepareExperiment = false;
-        boolean runExperiment = true;
+        boolean runExperiment = false;
+        boolean bestSlot = false;
+        String imageId = "1e8d335f-e797-4d3b-aa28-20154d77006f";
         
         if(prepareExperiment){
-            String imageId = "c5b3d1e3-6f40-4032-8cdd-9d0adfb2b5ba";
-            Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 12, 14000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid30");
-            Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 14, 12000, 25, 0), this.generateScript(), "slotAwareTest", "", "sla", "bscgrid29");
-
-            List<String> deployedVms = vmm.deployVms(Arrays.asList(vm01, vm02));
+            Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 12, 14000, 25, 0), this.generateScript(12), "slotAwareTest", "", "sla", "bscgrid30");
+            vmm.deployVms(Arrays.asList(vm01));
+            Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 14, 12000, 25, 0), this.generateScript(14), "slotAwareTest", "", "sla", "bscgrid29");
+            vmm.deployVms(Arrays.asList(vm02));
         }
         
         if(runExperiment){
@@ -167,6 +168,15 @@ public class DeployAndMigrateTest extends VmmTestBase{
             SlotAwareDeployer deployer = new SlotAwareDeployer();
             List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 512, 10);
             System.out.println(solutions);
+            
+            SlotSolution chosenSolution = (bestSlot) ? solutions.get(0) : solutions.get(solutions.size()-1);
+            List<Slot> chosenSlots = chosenSolution.getSlots();
+            for(Slot slot : chosenSlots) {
+                System.out.println("Deploying a VM following this requirements: " + slot.toString());
+                VmRequirements slotRequeriments = new VmRequirements( (int)slot.getFreeCpus(), (int)slot.getFreeMemoryMb(), (int)slot.getFreeDiskGb(), 0);
+                Vm vm = new Vm("slotAwareInstance", imageId, slotRequeriments, this.generateScript(slotRequeriments.getCpus()), "slotAwareTest", "", "sla", slot.getHostname());
+                vmm.deployVms(Arrays.asList(vm));
+            }
         }
     }
 }
