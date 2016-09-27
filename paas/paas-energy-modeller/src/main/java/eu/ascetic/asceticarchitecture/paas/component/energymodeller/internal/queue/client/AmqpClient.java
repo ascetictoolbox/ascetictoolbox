@@ -177,7 +177,9 @@ public class AmqpClient {
 	 * register a listener of a specific topic
 	 */
 	public void registerListener(String topic, MessageListener listener){
-		LOGGER.info("Registering listener");
+		/* 26-09-2016 - BEGIN */
+		LOGGER.info("Registering listener "+topic);
+		/* 26-09-2016 - END */
 		try {			
 			Destination thisDestination = session.createTopic(topic);			
 			MessageConsumer thisConsumer = session.createConsumer(thisDestination);

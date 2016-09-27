@@ -142,12 +142,16 @@ public class EnergyModellerQueueServiceManager {
 		
         MessageListener appListener = new MessageListener() {
                
-        DataConsumptionHandler dataMapper = dataConsumptionHandler;
+        // DataConsumptionHandler dataMapper = dataConsumptionHandler;
         private ApplicationRegistry appRegistry=registry;
         	
         public void onMessage(Message message) {
 	            try {
 	            	
+	            	/* 26-09-2016 - BEGIN */
+                	LOGGER.info("Before received information from ActiveMQ");
+                	/* 26-09-2016 - END */
+                	
 	                if (message instanceof TextMessage) {
 	                	/* 26-09-2016 - BEGIN */
 	                	LOGGER.info("Received information from ActiveMQ");
@@ -279,7 +283,7 @@ public class EnergyModellerQueueServiceManager {
 	                }
 	            } catch (Exception e) {
 	            	/* 26-09-2016 - BEGIN */
-	            	System.out.println("EnergyModellerQueueServiceManager (EXCEPTION) Caught:" + e);
+	            	LOGGER.info("EnergyModellerQueueServiceManager (EXCEPTION) Caught:" + e);
 	            	e.printStackTrace();
 	            	//LOGGER.error("Received EXCEPTION while writing app events");
 	            	LOGGER.info("Received EXCEPTION while writing app events");
@@ -287,8 +291,10 @@ public class EnergyModellerQueueServiceManager {
 	            }
 	        }      
 	    };
-	    	  
-	    LOGGER.debug("Registering  "+appTopic);
+	    
+	    /* 26-09-2016 - BEGIN */
+	    LOGGER.info("Registering  "+appTopic);
+	    /* 26-09-2016 - END */
 	    paasQueuePublisher.registerListener(appTopic,appListener);    
         
 	    
