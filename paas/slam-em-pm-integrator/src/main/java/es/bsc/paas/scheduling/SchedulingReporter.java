@@ -59,7 +59,7 @@ public class SchedulingReporter {
                                 mi.getApplicationId(), mi.getDeploymentId(), until,
                                 em.getEnergyEstimation(mi.getApplicationId(), mi.getDeploymentId(), mi.getFrequency()),
                                 em.getPowerEstimation(mi.getApplicationId(), mi.getDeploymentId(), mi.getFrequency()),
-                                -1 // TODO: add a similar service and client for the Price Modeller
+                                em.getPriceEstimation(mi.getApplicationId(), mi.getDeploymentId())
                             );
                             
                             slam.reportMeasurement(

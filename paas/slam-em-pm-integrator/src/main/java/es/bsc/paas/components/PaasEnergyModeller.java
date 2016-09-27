@@ -29,7 +29,7 @@ public class PaasEnergyModeller {
             response.indexOf("</value>")
         );
 
-        log.trace("douvleValueStr = " + doubleStr);
+        //log.trace("douvleValueStr = " + doubleStr);
         return Double.parseDouble(doubleStr.trim());
     }
 
@@ -63,5 +63,13 @@ public class PaasEnergyModeller {
             + "/deployments/" + deploymentId
             + "/power-consumption"), String.class);
         return valueFromXml(powerConsumption);
+    }
+    
+    public double getPriceEstimation(String applicationId, String deploymentId) {
+        String pricePrediction = rest.getForObject(URI.create(applicationManagerUrl
+            + "/applications/" + applicationId
+            + "/deployments/" + deploymentId
+            + "/predict-price-next-hour"), String.class);
+        return valueFromXml(pricePrediction);
     }
 }
