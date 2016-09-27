@@ -58,7 +58,8 @@
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-all</artifactId> 
-			<version>5.8.0</version>
+			<version>5.11.1</version>
+			
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -120,4 +121,5 @@
 		</dependency>
 		
 	</dependencies>
+	
 </project>

@@ -31,6 +31,11 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 //import java.time.ZonedDateTime;
 //import java.time.format.DateTimeFormatter;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.TimeZone;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 
@@ -191,19 +196,32 @@ public abstract class PaaSPricingModellerPricingScheme {
 	 //TESTED
 	public double getEnergy(VMinfo VM){
 	        double difference=3000;
+	       
+	        TimeZone tz = TimeZone.getTimeZone("UTC");
+	        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");     
+	        df.setTimeZone(tz);
+	             
+	        Date startDate = new Date(VM.getEnergyChargesAll().getTime().getTimeInMillis());
+	        String startDateISO = df.format(startDate);
+	        
+	        Date endDate = new Date(VM.getChangeTime().getTimeInMillis());
+	        String endDateISO = df.format(endDate);
+	        System.out.println("start " + startDateISO + " end " + endDateISO + " difference "+(endDate.getTime()-startDate.getTime()));
+	        
 	      //  ZonedDateTime zdt1 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getEnergyChargesAll().getTime().getTimeInMillis()), ZoneId.systemDefault());
 	     //   System.out.println(zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 	     //   ZonedDateTime zdt2 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getChangeTime().getTimeInMillis()), ZoneId.systemDefault());
 	     //   System.out.println("Scheme getEnergy " +zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 	       try{
 	    	    EMInteraction response = new EMInteraction();
-	    	    double energy =1000;
-	       // 	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-	        //	VM.updateEnergyConsumption(energy/1000);
+	    	    double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), startDateISO, endDateISO);
+	       //	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+	        	VM.updateEnergyConsumption(energy/1000);
+	        	System.out.println("Energy taken from EM: " +energy);
 	        	return energy/1000;
 	        }
 	       catch (Exception ex){
-	    	   //	System.out.println("Pricing Modeller Scheme getEnergy: Could not receive asnwer");
+	    	   	System.out.println("Pricing Modeller Scheme getEnergy: Could not receive asnwer");
 				logger.error("Pricing Modeller Scheme getEnergy: Could not receive answer from Energy Modeller");
 	    	    difference= VM.getEnergyFromAppMan();
 	    	    if (difference == 0){

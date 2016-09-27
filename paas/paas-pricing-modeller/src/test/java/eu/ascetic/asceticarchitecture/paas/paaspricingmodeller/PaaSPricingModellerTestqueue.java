@@ -88,10 +88,10 @@ public class PaaSPricingModellerTestqueue{
      //  prmodeller.initializeApp("e", 0, 0);
         
        System.out.println("----------------------------------------WAITING-----------------------------");
-     //  Thread.sleep(40000);
+       Thread.sleep(40000);
        System.out.println("----------------------------------------NOW AGAIN-----------------------------");
-      System.out.println("Energy" + prmodeller.getEventPredictedChargesOfApp(0,test,300));
-       // System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0));
+     // System.out.println("Energy" + prmodeller.getEventPredictedChargesOfApp(0,test,300));
+      System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0));
        //System.out.println("----------------------------------------NOW AGAIN-----------------------------");
        //System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0, energyPerVM));
     /*   prmodeller.resizeVM(0, 1, 2, 7680, 16);
