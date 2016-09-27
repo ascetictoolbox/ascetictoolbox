@@ -28,6 +28,10 @@ import java.util.logging.Logger;
  */
 public class VerticalScalabilityTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("VerticalScalabilityTest");
+    
+    public void testNotSupportedOnTestbed() throws Exception {
+        assertTrue(true);
+    }
 
     /*public void testDeployAndScaleConfirmManually() throws Exception {
         VmRequirements vmDeployRequirements = new VmRequirements( 1, 256, 1, 16);
