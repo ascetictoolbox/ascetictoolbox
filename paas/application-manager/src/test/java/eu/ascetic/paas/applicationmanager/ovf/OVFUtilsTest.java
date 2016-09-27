@@ -50,6 +50,8 @@ import eu.ascetic.utils.ovf.api.VirtualSystemCollection;
  *
  */
 public class OVFUtilsTest {
+	private String threeTierWebAppWithMaxMinCPUFile = "3tier-webapp-max-min-cpu.xml";
+	private String threeTierWebAppWithMaxMinCPU;
 	private String threeTierWebAppOvfFile = "3tier-webapp.ovf.xml";
 	private String threeTierWebAppOvfString;
 	private String threeTierWebAppDEMOOvfFile = "3tier-webapp.ovf.vmc.xml";
@@ -83,6 +85,9 @@ public class OVFUtilsTest {
 		// Reading ovf with self adatpation
 		file = new File(this.getClass().getResource( "/" + ovfSelfAdaptationFile ).toURI());		
 		ovfSelfAdaptationString = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
+		// Reading ovf file with max and min CPU
+		file = new File(this.getClass().getResource( "/" + threeTierWebAppWithMaxMinCPUFile ).toURI());		
+		threeTierWebAppWithMaxMinCPU = readFile(file.getAbsolutePath(), StandardCharsets.UTF_8);
 	}
 	
 	@Test
@@ -413,21 +418,36 @@ public class OVFUtilsTest {
 	public void determineVMLimits() {
 		// Without lowerBound
 		OvfDefinition ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithUpperLimitsString);
-		ProductSection productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
+		VirtualSystem virtualSystem = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0);
 		
-		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(productSection);
+		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem);
 		
 		assertEquals(1, vmLimits.getUpperNumberOfVMs());
 		assertEquals(1, vmLimits.getLowerNumberOfVMs());
+		assertEquals(0, vmLimits.getMaxNumberCPUs());
+		assertEquals(0, vmLimits.getMinNumberCPUs());
 		
 		// With lowerBound
 		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppDEMOOvfString);
-		productSection = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0).getProductSectionAtIndex(0);
+		virtualSystem = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0);
 		
-		vmLimits = OVFUtils.getUpperAndLowerVMlimits(productSection);
+		vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem);
 		
 		assertEquals(2, vmLimits.getUpperNumberOfVMs());
 		assertEquals(1, vmLimits.getLowerNumberOfVMs());
+		assertEquals(0, vmLimits.getMaxNumberCPUs());
+		assertEquals(0, vmLimits.getMinNumberCPUs());
+		
+		// With maxAndMin virtual cpus
+		ovfDocument = OVFUtils.getOvfDefinition(threeTierWebAppWithMaxMinCPU);
+		virtualSystem = ovfDocument.getVirtualSystemCollection().getVirtualSystemAtIndex(0);
+		
+		vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem);
+		
+		assertEquals(2, vmLimits.getUpperNumberOfVMs());
+		assertEquals(1, vmLimits.getLowerNumberOfVMs());
+		assertEquals(4, vmLimits.getMaxNumberCPUs());
+		assertEquals(1, vmLimits.getMinNumberCPUs());
 	}
 	
 	@Test

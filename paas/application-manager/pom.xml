@@ -248,7 +248,7 @@
 		<dependency>
 			<groupId>eu.ascetic.utils</groupId>
 			<artifactId>ascetic-qpid-amqp-client</artifactId>
-			<version>0.3-SNAPSHOT</version>
+			<version>0.4-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- OVF LIBRARIES -->

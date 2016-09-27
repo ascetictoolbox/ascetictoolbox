@@ -1407,10 +1407,12 @@ paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/spread
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/VmManagerTest2IT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VMMIT.java -text
 paas/application-manager/src/test/java/eu/ascetic/paas/applicationmanager/vmmanager/client/VmManagerClientBSCCTest.java -text
+paas/application-manager/src/test/resources/3tier-webapp-max-min-cpu.xml -text
 paas/application-manager/src/test/resources/3tier-webapp-public-ips.ovf.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf-only-upper-bounds.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/3tier-webapp.ovf.xml -text
+paas/application-manager/src/test/resources/META-INF/3tier-webapp.ovf.vmc.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.mysql.test.xml -text
 paas/application-manager/src/test/resources/META-INF/persistence.test.xml -text
 paas/application-manager/src/test/resources/a.xml -text

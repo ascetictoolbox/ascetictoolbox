@@ -267,16 +267,32 @@ public class OVFUtils {
 		return false;
 	}
 	
-	public static VMLimits getUpperAndLowerVMlimits(ProductSection productSection) {
+	public static VMLimits getUpperAndLowerVMlimits(VirtualSystem virtualSystem) {
 	
 		VMLimits vmLimits = new VMLimits();
 		
 		try {
+			ProductSection productSection = virtualSystem.getProductSectionAtIndex(0);
 			vmLimits.setLowerNumberOfVMs(productSection.getLowerBound());
 			vmLimits.setUpperNumberOfVMs(productSection.getUpperBound());
 		} catch(NullPointerException ex) {
+			ProductSection productSection = virtualSystem.getProductSectionAtIndex(0);
 			vmLimits.setLowerNumberOfVMs(productSection.getUpperBound());
 			vmLimits.setUpperNumberOfVMs(productSection.getUpperBound());
+		}
+		
+		try {
+			VirtualHardwareSection virtualHardwareSection = virtualSystem.getVirtualHardwareSection();
+			int max = virtualHardwareSection.getMaxNumberOfVirtualCPUs();
+			
+			if(max == Integer.MAX_VALUE) {
+				max = 0;
+			}
+			
+			vmLimits.setMaxNumberCPUs(max);
+			vmLimits.setMinNumberCPUs(virtualHardwareSection.getMinNumberOfVirtualCPUs());
+		} catch(NullPointerException ex) {
+			logger.debug("Error accessing man or min production section... ");
 		}
 		
 		return vmLimits;

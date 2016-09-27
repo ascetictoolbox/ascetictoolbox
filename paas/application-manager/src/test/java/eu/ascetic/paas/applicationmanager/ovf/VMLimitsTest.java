@@ -33,8 +33,12 @@ public class VMLimitsTest {
 		VMLimits vmLimits = new VMLimits();
 		vmLimits.setLowerNumberOfVMs(1);
 		vmLimits.setUpperNumberOfVMs(2);
+		vmLimits.setMaxNumberCPUs(4);
+		vmLimits.setMinNumberCPUs(3);
 		
 		assertEquals(1l, vmLimits.getLowerNumberOfVMs());
 		assertEquals(2l, vmLimits.getUpperNumberOfVMs());
+		assertEquals(3, vmLimits.getMinNumberCPUs());
+		assertEquals(4, vmLimits.getMaxNumberCPUs());
 	}
 }

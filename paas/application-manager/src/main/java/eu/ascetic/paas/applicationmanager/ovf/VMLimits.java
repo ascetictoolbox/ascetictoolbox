@@ -25,6 +25,8 @@ package eu.ascetic.paas.applicationmanager.ovf;
 public class VMLimits {
 	private long lowerNumberOfVMs;
 	private long upperNumberOfVMs;
+	private int maxNumberCPUs = 0;
+	private int minNumberCPUs = 0;
 	
 	public long getUpperNumberOfVMs() {
 		return upperNumberOfVMs;
@@ -38,5 +40,19 @@ public class VMLimits {
 	}
 	public void setLowerNumberOfVMs(long lowerNumberOfVMs) {
 		this.lowerNumberOfVMs = lowerNumberOfVMs;
+	}
+	
+	public int getMaxNumberCPUs() {
+		return maxNumberCPUs;
+	}
+	public void setMaxNumberCPUs(int maxNumberCPUs) {
+		this.maxNumberCPUs = maxNumberCPUs;
+	}
+	
+	public int getMinNumberCPUs() {
+		return minNumberCPUs;
+	}
+	public void setMinNumberCPUs(int minNumberCPUs) {
+		this.minNumberCPUs = minNumberCPUs;
 	}
 }

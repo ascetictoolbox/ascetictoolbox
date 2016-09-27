@@ -150,7 +150,7 @@ public class VMRest extends AbstractRest {
 		}
 
 		// Now we determine if we are inside the limtis to create a new VM
-		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getProductionSectionForOvfID(ovf,  vm.getOvfId()));
+		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getVirtualSystemForOvfId(deployment.getOvf(), vm.getOvfId()));
 		List<VM> vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted(vm.getOvfId(), deploymentIdInt);
 
 		if(vms.size() >= vmLimits.getUpperNumberOfVMs()) {
@@ -339,7 +339,7 @@ public class VMRest extends AbstractRest {
 		}
 		
 		// Now we determine if we are inside the limtis to create a new VM
-		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getProductionSectionForOvfID(deployment.getOvf(), vm.getOvfId()));
+		VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getVirtualSystemForOvfId(deployment.getOvf(), vm.getOvfId()));
 		List<VM> vms = vmDAO.getVMsWithOVfIdForDeploymentNotDeleted(vm.getOvfId(), deploymentIdInt);
 		
 		if(vms.size() <= vmLimits.getLowerNumberOfVMs()) {

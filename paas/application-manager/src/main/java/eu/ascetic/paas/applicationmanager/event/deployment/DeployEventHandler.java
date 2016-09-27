@@ -134,7 +134,7 @@ public class DeployEventHandler {
 						//Now we have the image... lets see what it is the rest to build the VM to Upload...
 						String ovfVirtualSystemID = virtualSystem.getId();
 						// We determine how many VMs of this type we need to create
-						VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem.getProductSectionAtIndex(0));
+						VMLimits vmLimits = OVFUtils.getUpperAndLowerVMlimits(virtualSystem);
 						long minNumberVMs = vmLimits.getLowerNumberOfVMs();
 						long maxNumberVMs = vmLimits.getUpperNumberOfVMs();
 						int priceSchema = OVFUtils.getPriceSchema(virtualSystem.getProductSectionAtIndex(0));

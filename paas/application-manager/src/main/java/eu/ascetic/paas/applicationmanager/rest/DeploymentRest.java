@@ -883,7 +883,7 @@ public class DeploymentRest extends AbstractRest {
 				}
 				
 				//VMLimits
-				VMLimits maxMin = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getProductionSectionForOvfID(deployment.getOvf(), id));
+				VMLimits maxMin = OVFUtils.getUpperAndLowerVMlimits(OVFUtils.getVirtualSystemForOvfId(deployment.getOvf(), id));
 				
 				vmLimit.setMax("" + maxMin.getUpperNumberOfVMs());
 				vmLimit.setMin("" + maxMin.getLowerNumberOfVMs());
