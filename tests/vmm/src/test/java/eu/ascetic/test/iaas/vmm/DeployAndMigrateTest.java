@@ -136,13 +136,13 @@ public class DeployAndMigrateTest extends VmmTestBase{
     public void testSlotAwareDeployment() throws Exception {
         boolean prepareExperiment = false;
         boolean runExperiment = false;
-        boolean bestSlot = false;
+        boolean bestSlot = true;
         String imageId = "1e8d335f-e797-4d3b-aa28-20154d77006f";
         
         if(prepareExperiment){
-            Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 12, 14000, 25, 0), this.generateScript(12), "slotAwareTest", "", "sla", "bscgrid30");
+            Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements( 6, 6*1024, 10, 0), this.generateScript(12), "slotAwareTest", "", "sla", "bscgrid30");
             vmm.deployVms(Arrays.asList(vm01));
-            Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 14, 12000, 25, 0), this.generateScript(14), "slotAwareTest", "", "sla", "bscgrid29");
+            Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements( 10, 10*1024, 10, 0), this.generateScript(14), "slotAwareTest", "", "sla", "bscgrid29");
             vmm.deployVms(Arrays.asList(vm02));
         }
         
@@ -163,7 +163,7 @@ public class DeployAndMigrateTest extends VmmTestBase{
 
             int minCpus = 2;
             int maxCpus = 4;
-            int totalCpusToAdd = 6;
+            int totalCpusToAdd = 16;
 
             SlotAwareDeployer deployer = new SlotAwareDeployer();
             List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 512, 10);
