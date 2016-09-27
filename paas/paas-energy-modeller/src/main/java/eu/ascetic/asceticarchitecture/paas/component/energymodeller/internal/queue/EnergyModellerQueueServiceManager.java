@@ -279,11 +279,11 @@ public class EnergyModellerQueueServiceManager {
 	                }
 	            } catch (Exception e) {
 	            	/* 26-09-2016 - BEGIN */
+	            	System.out.println("EnergyModellerQueueServiceManager (EXCEPTION) Caught:" + e);
+	            	e.printStackTrace();
 	            	//LOGGER.error("Received EXCEPTION while writing app events");
 	            	LOGGER.info("Received EXCEPTION while writing app events");
-	            	/* 26-09-2016 - END */
-	                System.out.println("EnergyModellerQueueServiceManager Caught:" + e);
-	                e.printStackTrace();
+	            	/* 26-09-2016 - END */	                
 	            }
 	        }      
 	    };
@@ -304,11 +304,34 @@ public class EnergyModellerQueueServiceManager {
 		                    LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 		                    String dest = message.getJMSDestination().toString();
 		                    String[] topic = dest.split("\\.");
-		                    if (topic.length<8){
+		                    /* 26-09-2016 - BEGIN */
+		                    /* if (topic.length<8){
 		                    	LOGGER.debug("Received a message of no interest for the EM");
 		                    	return;
 		                    }
 		                    LOGGER.info("Received: METRIC " +topic[7]+", VM "+topic[5]+", deployment "+topic[3]+",application "+topic[1] );
+		                    */
+		                    
+		                    int counter;
+		                    String ArgString;
+		                    ArgString="-->";
+		                    
+		                    for (counter = 0; counter < topic.length; counter++) {
+		                    	
+		                    	if (counter == (topic.length-1))
+		                    		ArgString = ArgString + topic[counter] + "<--";
+		                    	else
+		                    		ArgString = ArgString + topic[counter] + ".";
+		                    }
+		                    
+		                    if (topic.length < 8){
+		                    	LOGGER.info("Received a message of no interest for the EM:" + ArgString);
+		                    	return;
+		                    }
+		                    else {
+		                    	LOGGER.info("Received: " + ArgString);
+		                    }
+		                    /* 26-09-2016 - END */
 		                    
 		                    if (topic[6].equals("METRIC")){
 		                    	
@@ -429,7 +452,7 @@ public class EnergyModellerQueueServiceManager {
 		                    }
 			                }
 		            } catch (Exception e) {
-		                System.out.println("Exception while inserting data about measurements:" + e);
+		                System.out.println("EXCEPTION while inserting data about measurements:" + e);
 		                e.printStackTrace();
 		            }
 		        }

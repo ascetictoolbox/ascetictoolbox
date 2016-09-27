@@ -184,7 +184,11 @@ public class AmqpClient {
 			thisConsumer.setMessageListener(listener);
 		
 		} catch (JMSException e1) {
-			e1.printStackTrace();
+        	/* 26-09-2016 - BEGIN */
+        	System.out.println("AmqpClient-registerListener - topic " + topic + " - (EXCEPTION) Caught:" + e1);
+        	e1.printStackTrace();
+        	LOGGER.info("Received EXCEPTION in registerListener (topic "+topic+")");
+        	/* 26-09-2016 - END */			
 		}		
 	}
 	
