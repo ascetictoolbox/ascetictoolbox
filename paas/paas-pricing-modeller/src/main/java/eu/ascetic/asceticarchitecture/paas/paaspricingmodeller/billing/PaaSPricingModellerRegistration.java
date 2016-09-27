@@ -25,6 +25,7 @@ import java.util.ListIterator;
 
 import org.apache.log4j.Logger;
 
+import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModeller;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
@@ -63,8 +64,8 @@ public class PaaSPricingModellerRegistration {
 	double averagePrice=1;
 
 	static PricingModellerQueueServiceManager producer;
-	//Logger logger = Logger.getLogger(PaaSPricingModellerRegistration.class);
-	
+	//protected final Logger logger = Logger.getLogger(this.getClass());
+	  
 	public DeploymentInfo getApp(int depl) {
 		if (registeredDynamicApps.containsKey(depl))
 			return registeredDynamicApps.get(depl);
@@ -85,11 +86,12 @@ public class PaaSPricingModellerRegistration {
 			this.producer = producer;
 		}
 		catch(Exception ex){
-			System.out.println("PM: Could not set producer");
+		//	System.out.println("PM: Could not set producer");
 			// logger.error("PM: Could not set producer");
 		}
 	}
 	
+	//TESTED
 	 public double predictCharges(DeploymentInfo deploy, HashMap<Integer, Double> energy){
 		 VMinfo VM;
 		 double charges=0;
@@ -99,22 +101,27 @@ public class PaaSPricingModellerRegistration {
 			 try{
 				 VM.setProducer(producer);
 			 }catch(Exception ex){
-					System.out.println("PM: Could not set producer");
+				//	System.out.println("PM: Could not set producer");
 					// logger.error("PM: Could not set producer");
 				}
 		//	 System.out.println(VM.getProducer());
+			 if (VM.schemeChange()&&(deploy.getSchemeId()!=100)){
+				 VM.setSchemeID(deploy.getSchemeId());
+				 VM.setScheme(deploy.getSchemeId());
+			 }
 			 if (VM.getSchemeID()==0){
 				 charges= charges+ VM.getScheme().predictTotalCharges(VM, false);
 				 vm.add(VM.getVMid());
 			 }
 			 else {
 				 if (energy!=null){
-				//	 System.out.println("Energy not null ");
+					// System.out.println("Energy not null " +energy.get(VM.getVMid()));
 					 VM.setEnergyPredicted(energy.get(VM.getVMid()));
 					 charges= charges+ VM.getScheme().predictTotalCharges(VM, true);}
 				 else{
+				//	 System.out.println("Energy null");
 				// VM.setEnergyPredicted(energy.get(VM.getVMid())*(Math.ceil(VM.getActualDuration()/3600)));
-				 charges= charges+ VM.getScheme().predictTotalCharges(VM, false);}
+						 charges= charges+ VM.getScheme().predictTotalCharges(VM, false);}
 				 vm.add(VM.getVMid());
 			 }
 		 }
@@ -129,7 +136,8 @@ public class PaaSPricingModellerRegistration {
 		 return charges;
 	 }
 	
-	public void registerApp(int deplID, LinkedList<VMinfo> VMs, PaaSPricingModellerBilling billing) {
+	//TESTED
+	public void registerApp (int deplID, LinkedList<VMinfo> VMs, PaaSPricingModellerBilling billing) {
 		DeploymentInfo app = new DeploymentInfo(deplID, billing);
 		app.setVMs(VMs);
 		
@@ -143,75 +151,83 @@ public class PaaSPricingModellerRegistration {
 						app.getVM(i).setProducer(producer);
 					}
 					catch(Exception ex){
-					//	System.out.println("PM: Could not set producer");
-						// logger.error("PM: Could not set producer");
+					//	System.out.println("Registration PM: Could not set producer");
+					//	 logger.error("PM: Could not set producer");
 					}
-				//	System.out.println("Billing: VM with ID: " + app.getVM(i).getVMid() + " has been registered in static");
+					//	System.out.println("Registration: VM with ID: " + app.getVM(i).getVMid() + " has been registered in static");
 	            
 				} else {
 					registeredDynamicEnergyPricesVMs.put(app.getVM(i).getVMid(), app.getVM(i));
-				//	System.out.println("Billing: VM with ID: " + app.getVM(i).getVMid() + " has been registered in dynamic");
+				//	System.out.println("Registration: VM with ID: " + app.getVM(i).getVMid() + " has been registered in dynamic");
 					app.getVM(i).setDepID(deplID);
 					try{
 						app.getVM(i).setProducer(producer);
 					}
 					catch(Exception ex){
-					//	System.out.println("PM: Could not set producer");
+				//		System.out.println("Registration PM: Could not set producer");
 					//	 logger.error("PM: Could not set producer");
 					}
 					app.getVM(i).resetVMTimers();
 				}
 			}
 			if (!allApps.containsKey(app)){
-			//	System.out.println("Billing: adding app with ID: " + app.getId() );
+			//	System.out.println("Registration: adding app with ID: " + app.getId() );
 				allApps.put(app.getId(), app);
 				allAppIDs.add(app.getId());
 				try{
 				app.setProducer(producer);
 				}
 				catch(Exception ex){
-				//	System.out.println("PM: Could not set producer");
+			//		System.out.println("Registration PM: Could not set producer");
 					// logger.error("PM: Could not set producer");
 				}
 				predictPriceofNextHour(app, 3600);}
 	}
 	
+	//TESTED
 	 public double predictPriceofNextHour(DeploymentInfo depl, double duration){
 		 double price=0.0;
 		 List <Integer> vm = new ArrayList<Integer>();
-		 for (int i=0; i<depl.getNumberOfVMs();i++){
-			 int VMid = depl.getVM(i).getVMid();
-         	 VMinfo VM = depl.getVM(i);
-         	 if (VM.isActive()){
-         		 vm.add(VMid);                       
-         		 price = price + getVMPredictedPrice(VM, duration);
-         	//	 System.out.println("Billing: updating price of VM "+VM.getVMid()+" with "+ VM.getCurrentprice());
-         		// logger.error("PM: Could not set producer");
-         	 }
-		 }
 		 try{
-			 depl.setCurrentPrice(price);
+			 for (int i=0; i<depl.getNumberOfVMs();i++){
+				 int VMid = depl.getVM(i).getVMid();
+				 VMinfo VM = depl.getVM(i);
+				 if (VM.isActive()){
+					 vm.add(VMid);                       
+					 price = price + getVMPredictedPrice(VM, duration);
+				//	 System.out.println("Registration predict next hour : updating price of VM "+VM.getVMid()+" with "+ VM.getCurrentprice());
+					 // logger.error("PM: Could not set producer");
+				 }
+			 }	
+			 try{
+				 depl.setCurrentPrice(price);
 
- 		//	 System.out.println("Billing: current price of app is "+ depl.getCurrentPrice());
-  			 producer.sendToQueue("PMPREDICTION", depl.getVM().getIaaSProvider().getID(), depl.getId(), vm, Unit.PRICEHOUR, depl.getCurrentPrice());
+				 //	 System.out.println("Billing: current price of app is "+ depl.getCurrentPrice());
+				 producer.sendToQueue("PMPREDICTION", depl.getVM().getIaaSProvider().getID(), depl.getId(), vm, Unit.PRICEHOUR, depl.getCurrentPrice());
  			 
- 			}
- 			catch (Exception ex){
- 				System.out.println("Billing: Could not send the message to queue");
- 			//	 logger.error("PM: Could not set producer");
- 				//logger.info("Could not send the message to queue");
- 			}
+ 				}
+ 				catch (Exception ex){
+ 			//		System.out.println("Registration predict next hour: Could not send the message to queue 1");
+ 					//	 logger.error("PM: Could not set producer");
+ 					//logger.info("Could not send the message to queue");
+ 				}
+		 }
+		 catch (NullPointerException e){
+		//	 System.out.println("Registration predict next hour: Not a deployed application. This is used only for deployed applications");
+		 }
          return price;
    
 	 }
 	 
 
+	//TESTED
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		 PaaSPricingModellerPricingScheme scheme = VM.getScheme();
 	      //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
 	     return scheme.getVMPredictedPrice(VM, duration);
 	}
 	
+	//TESTED
 	public void registerApp(String appID, int deplID, int schemeID) {
 		DeploymentInfo app = new DeploymentInfo(appID, deplID, schemeID);
 		if (app.getSchemeId()==0||app.getSchemeId()==2)
@@ -237,6 +253,7 @@ public class PaaSPricingModellerRegistration {
 		
 	}
 	
+	//TESTED
 	public void addVM(int deplID, VMinfo VM) {
 		
 		synchronized(allApps.get(deplID).getLock()){

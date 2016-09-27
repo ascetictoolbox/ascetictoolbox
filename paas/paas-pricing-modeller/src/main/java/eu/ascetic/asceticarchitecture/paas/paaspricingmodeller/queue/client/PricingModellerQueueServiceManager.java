@@ -37,7 +37,7 @@ public class PricingModellerQueueServiceManager {
 		this.queuePublisher = queuePublisher;
 		this.prmodeller = prmodeller;
 		
-		System.out.println("PricingModellerQueueServiceManager: PM queue manager set");
+		//System.out.println("PricingModellerQueueServiceManager: PM queue manager set");
 		logger.info("PricingModellerQueueServiceManager: PM queue manager set");
 	
 	}
@@ -51,7 +51,7 @@ public class PricingModellerQueueServiceManager {
 			queuePublisher.sendMessageTopic(queue +"."+DEPLOYMENTID + "." + deploymentid + "." + "VMID"+ "."+VMid + "."+unit , MessageParserUtility.buildStringMessage(message));
 		}
 		catch (Exception e) {
-         System.out.println("PM could not send message to queue:");
+        // System.out.println("PM could not send message to queue:");
          logger.info("PM could not send message to queue:");
      }
 		
@@ -70,7 +70,7 @@ public class PricingModellerQueueServiceManager {
 			queuePublisher.sendMessageTopic(queue +"."+DEPLOYMENTID + "." + deploymentid + "." + unit, MessageParserUtility.buildStringMessage(message));
 		}
 		catch (Exception e) {
-	         System.out.println("PM could not send message to queue:");
+	      //   System.out.println("PM could not send message to queue:");
 	         logger.error("PM could not send message to queue:");
 	     }
 			//queuePublisher.sendMessageTopic(queue, MessageParserUtility.buildStringMessage(message));
@@ -82,7 +82,7 @@ public class PricingModellerQueueServiceManager {
 	
 	public void createConsumers(String appTopic, String measurementsTopic){
 
-		 System.out.println("Registering pricing consumer for application " + appTopic + " and for price measurements "+measurementsTopic);
+	//	 System.out.println("Registering pricing consumer for application " + appTopic + " and for price measurements "+measurementsTopic);
 		
         MessageListener appListener = new MessageListener() {
         
@@ -93,7 +93,7 @@ public class PricingModellerQueueServiceManager {
 	                if (message instanceof TextMessage) {
 	                	 
 	                    TextMessage textMessage = (TextMessage) message;
-	                    System.out.println("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
+	  //                  System.out.println("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
 	                   // System.out.println("Received " +topic[6] + topic[5]+topic[3]+topic[1]);
@@ -105,7 +105,7 @@ public class PricingModellerQueueServiceManager {
 	                    
 	                    if (topic[6].equals("DEPLOYED")){
 	                    	////HERE I SHOULD TAKE THE CHARS OF THE VM
-	                    	String[] text2 = text[7].split(":");
+	                    	String[] text2 = text[7].split("\"");
 	                        String IaaSProviderID = text2[1];
 	                        text2 = text[10].split(":");
 	                        int CPU = Integer.parseInt(text2[1].trim());

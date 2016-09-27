@@ -39,6 +39,8 @@ public class PricingSchemeB extends PaaSPricingModellerPricingScheme {
 
 	
 /////////////////////////PREDICT CHARGES ///////////////////////////////
+	
+	//TESTED
 	@Override
 public double predictTotalCharges(VMinfo vm, boolean energySet){
 	Charges a = predictEnergyCharges(vm, vm.getIaaSProvider().getAverageEnergyPrice(), energySet);
@@ -57,6 +59,7 @@ public double predictTotalCharges(VMinfo vm, boolean energySet){
 }
 
 /////////////////////////////////////////////////
+	//TESTED
 	@Override 
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		double price1 = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
@@ -69,7 +72,7 @@ public double predictTotalCharges(VMinfo vm, boolean energySet){
 		}
 		catch(Exception ex){
 		//	System.out.println("PM: Could not send message to queue");
-			 logger.error("PM: Could not send message to queue");
+			 logger.error("Scheme B PM: Could not send message to queue");
 		}
 //		System.out.println("Pricing B: "+ VM.getCurrentprice() + " with price " + getResourcePrice(VM));
 		return VM.getCurrentprice();
@@ -98,11 +101,12 @@ public void updateVMCharges(VMinfo VM) {
 
 
 /////////////////////////// GET CHARGES /////////////////////////
+//TESTED
 @Override
 public double getTotalCharges(VMinfo VM) {
 	VM.setChangeTime();
 	updateVMResourceCharges(VM, getResourcePrice(VM), getDistribution(VM));
-	//System.out.println("Set change time to " +VM.getChangeTime().getTimeInMillis());
+	//System.out.println("Scheme B Set change time to " +VM.getChangeTime().getTimeInMillis());
 	updateVMEnergyCharges(VM);
 	
 	VM.setTotalCharges(VM.getResourcesCharges()+VM.getEnergyCharges());
@@ -119,11 +123,14 @@ public double getTotalCharges(VMinfo VM) {
 	return (VM.getTotalCharges());
 }
 
+//TESTED
 private double getResourcePrice(VMinfo VM){
-	return VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getResoucePrice());
+	double price = VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getResoucePrice());
+//	System.out.println("Scheme B: price of provider " + VM.getIaaSProvider().getID()+" is "+price);
+	return price;
 }
 
-
+//TESTED
 private ResourceDistribution getDistribution(VMinfo VM){
 	return VM.getIaaSProvider().getDistribution();
 }

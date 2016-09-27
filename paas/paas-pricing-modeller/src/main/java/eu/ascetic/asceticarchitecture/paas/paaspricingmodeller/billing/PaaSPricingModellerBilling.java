@@ -61,7 +61,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	
 	double averagePrice=1;
 
-	
+	boolean lastEnergyNotCalculatedFromPaaS = false;
 	
 	//static Logger logger = Logger.getLogger(PaaSPricingModellerBilling.class);
 	
@@ -69,7 +69,9 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 		//Logger logger = Logger.getLogger(PaaSPricingModellerBilling.class);
 	}
 	
-	
+	public boolean getEnergyFlag(){
+		return lastEnergyNotCalculatedFromPaaS;
+	}
 	
 	public void updateVMCharges(double price) {
         for (Integer key : registeredDynamicEnergyPricesVMs.keySet()) {
@@ -84,22 +86,31 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 
 	
 ////////////////////////////////// App and VM Charges //////////////////////
-	
-	public double getAppCurrentTotalCharges(int depl){
+	//TESTED
+	public double getAppCurrentTotalCharges(int depl, HashMap<Integer,Double> energyOfVMs){
 		 if (allApps.containsKey(depl)) {
 			
 			 List <Integer> vm = new ArrayList<Integer>();
 			 	DeploymentInfo app = allApps.get(depl);
 	            double totalcharges = 0;
 	            double currentcharges = 0;
+	            double energy = 0.0;
 	            for (int i=0; i<app.getNumberOfVMs();i++){
 	            	
 	            	int VMid = app.getVM(i).getVMid();
 	            	VMinfo VM = app.getVM(i);
 	            	if(VM.isActive()){
-	            	  vm.add(VMid);                       	
+	            	  vm.add(VMid); 
+	            	  if (energyOfVMs!=null){
+	            		  if (energyOfVMs.get(VMid)!=null){
+	            			  VM.setEnergyFromAppMan(energyOfVMs.get(VMid));
+	            		  }
+	            	  }
 	            	  totalcharges = totalcharges + getVMCharges(VM);
 	            	  currentcharges = currentcharges + VM.getCurrentCharges();
+	            	  if (VM.energyFailed()){
+	            		  app.setEnergyFailed(true);
+	            	  }
 	            	//  System.out.println("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
 	            	//  logger.info("Billing: updating charges of VM "+VM.getVMid()+" with "+ VM.getTotalCharges());
 	            	}else{
@@ -110,7 +121,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	            try{
         			app.setCurrentCharges(currentcharges);
         			app.setTotalCharges(totalcharges);
-        			// System.out.println("Billing: current charges of app are "+ app.getCurrentCharges());
+        		//	 System.out.println("Billing: current charges of app are "+ app.getCurrentCharges());
         			// logger.info("Billing: current charges of app are "+ app.getCurrentCharges());
          			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.TOTALCHARGES, app.getTotalCharges());
         			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.CHARGES, app.getCurrentCharges());
@@ -122,6 +133,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
         			//	logger.error("PM: Could not send message to queue");
         				//logger.info("Could not send the message to queue");
         			}
+	            lastEnergyNotCalculatedFromPaaS=app.getEnergyFailed();
 	            return totalcharges;
 	        } else {
 	            return 0;
@@ -129,11 +141,13 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 
 	}
 	
+	//TESTED
 	 public double getVMCharges(VMinfo VM) {
-
+		 
 	        PaaSPricingModellerPricingScheme scheme = VM.getScheme();
-	      //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
+	    //   System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
 	   //     logger.info("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
+	      
 	        return scheme.getTotalCharges(VM);
 	    }
 	 
@@ -276,6 +290,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	}
 }
 	
+	//TESTED
 	public void removeVM(int deplID, int VMid) {
 	//	 System.out.println("Billing: removing VM");
 	//	 System.out.println("try "+ allApps.containsKey(deplID));
@@ -298,12 +313,13 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 		 }
 	}
 	
+	//TESTED
 	public void resizeVM(int depID, int VMid, double CPU, double RAM, double storage){
 		synchronized(allApps.get(depID).getLock()){
 			allApps.get(depID).setChanging(true);
 			getVMCharges(allApps.get(depID).getVMbyID(VMid));
 			allApps.get(depID).getVMbyID(VMid).createNewChars(CPU, RAM, storage,allApps.get(depID).getVMbyID(VMid).getTotalChargesAll() );	
-	//		System.out.println("Billing: The charges of the VM with id " + VMid + " are until now " + allApps.get(depID).getVMbyID(VMid).getTotalChargesAll().getChargesOnly());
+		//	System.out.println("Billing: The charges of the VM with id " + VMid + " are until now " + allApps.get(depID).getVMbyID(VMid).getTotalChargesAll().getChargesOnly());
 			allApps.get(depID).setChanging(false);
 			allApps.get(depID).getLock().notifyAll();
 		}
@@ -317,10 +333,12 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 		return eventsBilling.predictAppEventCharges(deployment);
 	}
 	
+	//TESTED
 	public double predictAppEventCharges(DeploymentInfo deployment) {
 		return eventsBilling.predictAppEventCharges(deployment);
 	}
 	
+	//TESTED
 	public double predictAppEventChargesVMbased(DeploymentInfo deployment) {
 		return eventsBilling.predictAppEventChargesVMbased(deployment);
 	}
@@ -338,6 +356,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 		return IaaSBilling.predictPrice(deploy);
 	}
 	
+	//TESTED
 public double getAppCurrentTotalCharges(int depl, double charges){
 		
 		DeploymentInfo deploy = getApp(depl);
@@ -345,7 +364,7 @@ public double getAppCurrentTotalCharges(int depl, double charges){
 			return IaaSBilling.getAppCurrentTotalCharges(deploy, charges);
 		}catch (NullPointerException ex) {
 			deploy = new DeploymentInfo(depl, this);
-			System.out.println("PM PaaS: Trying to get App Charges but the Deployment has been removed. Re-creating");
+		//	System.out.println("PM PaaS: Trying to get App Charges but the Deployment has been removed. Re-creating");
 			return IaaSBilling.getAppCurrentTotalCharges(deploy, charges);
 		}
 		

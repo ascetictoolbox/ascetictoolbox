@@ -29,6 +29,8 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+
+
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.PaaSPricingModellerInterface;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerBilling;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.AmqpClientPM;
@@ -62,11 +64,13 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	
 	 //Logging
     static Logger logger = null;
-    DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
+  
+   /* DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
     Date today = Calendar.getInstance().getTime();
     String reportDate = df.format(today);
     String name = "logs/" + reportDate;
-	
+    */
+    
 	public PaaSPricingModellerBilling getBilling() {
 		return billing;
 	}
@@ -77,14 +81,15 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
 		Date today = Calendar.getInstance().getTime();     
 		String reportDate = df.format(today);
-		//Properties log4jProperties = new Properties();
-		//String name = "logs/" + reportDate;
-
+		String name = "logs/" + reportDate;
 		System.setProperty("logfile.name",name);
-		logger = Logger.getLogger(PaaSPricingModeller.class);
+		
 		//PropertyConfigurator.configure(log4jProperties);
 		//BasicConfigurator.configure();
-		logger.info("PaaS Pricing Modeller initiallized");
+		 
+		
+		logger = Logger.getLogger(PaaSPricingModeller.class);
+	    logger.info("PaaS Pricing Modeller initiallized");
 		
 		try{
 			AmqpClientPM PMqueue = new AmqpClientPM();
@@ -106,25 +111,28 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	
 	//////////////////////////////////YEAR 3 //////////////////////////////////////////////////////////
 		/*Default IaaSProviderID = 0*/
+	//TESTED
 	public void initializeApp(String appID, int deplID, LinkedList<VMinfo> VMs){
 			billing.registerApp(deplID, VMs, billing);
 	}
 	
+	//TESTED
 	public void addVM(int deplID, VMinfo VM){
 	//	System.out.println("Modeller: VMid to add " + VM.getVMid());
 		logger.info("Modeller: VMid to add " + VM.getVMid());
 		billing.addVM(deplID, VM);
 	}
 	
+	//TESTED
 	public void removeVM(int deplID, int VMid){
 		billing.removeVM(deplID, VMid);
 	}
 	
+	//TESTED
 	public void resizeVM(int deplID, int VMid,double CPU, double RAM, double storage){
-		System.out.println("Modeller: VMid to resize " + VMid);
+		//System.out.println("Modeller: VMid to resize " + VMid);
 		logger.info("Modeller: VMid to resize " + VMid);
 		 billing.resizeVM(deplID, VMid,CPU, RAM, storage);
-		
 	}
 
 	/**
@@ -133,13 +141,43 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @param schemeId: the pricing scheme followed
 	 * @throws Exception 
 	 */
+	//TESTED
 	public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges) throws Exception{
 		logger.info("ChargesCalculator calculation of charges");
-		double charges = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
+		double charges;
+		double chargesOnIaaS = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
+		charges = chargesOnIaaS;
+		try{
+			double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, null);
+		//	System.out.println("Charges on IaaS: " + chargesOnIaaS);
+		//	System.out.println("Charges on PaaS: " + chargesOnPaaS);
+			charges = chargesOnPaaS;
+			}
+		catch(NullPointerException e){
+			logger.error("PM getAppTotalCharges could not calculate the charges coming from PaaS");
+			charges = chargesOnIaaS;
+		}
+		if (billing.getEnergyFlag()){
+			charges=chargesOnIaaS;
+		}
 		return charges;
 		//System.out.println("ChargesCalculator calculation of charges");		
 	}
 	
+	//TESTED
+		public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges, HashMap<Integer,Double> energyOfVMs) throws Exception{
+			logger.info("ChargesCalculator calculation of charges");
+			double chargesOnIaaS = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
+			double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, energyOfVMs);
+			//System.out.println("Charges on IaaS: " + chargesOnIaaS);
+			//System.out.println("Charges on PaaS: " + chargesOnPaaS);
+			
+			return chargesOnPaaS;
+			//System.out.println("ChargesCalculator calculation of charges");		
+		}
+		
+		
+		//TESTED
 	public double predictPriceforNextPeriod(int depID, double duration){
 		DeploymentInfo depl = billing.getApp(depID);
 		depl.resetCurrentCharges();
@@ -150,6 +188,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return billing.predictPriceofNextHour(depl, duration);
 	}
 	
+	//TESTED
 	public double predictAppPriceforNextHour(int depID, LinkedList<VMinfo> VMs){
 		DeploymentInfo depl = billing.getApp(depID);
 		double price = 0.0;
@@ -162,8 +201,12 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return price;		
 	}
 	
+	
+	// IT TAKES INTO ACCOUNT THE SCHEME OF EACH VM IF THIS HAS BEEN SET ALREADY
+	//TESTED
 	public double getAppPredictedCharges(int scheme, LinkedList<VMinfo> VMs){
-		DeploymentInfo deployment = new DeploymentInfo();
+			DeploymentInfo deployment = new DeploymentInfo();
+			deployment.setSchemeID(scheme);
 			deployment.setVMs(VMs);
 			double charges = billing.predictCharges(deployment, null);
 			List<Integer> vms = new ArrayList<>();
@@ -181,16 +224,22 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 			return charges;
 	}
 
-	
+	//TESTED
 	public double getAppPredictedPrice(int scheme,  double duration, LinkedList<VMinfo> VMs){
 		double charges = getAppPredictedCharges(scheme, VMs);
 		double totalDurationOfApp = 0;
-		List<Integer> vms = new ArrayList<>();
-				for (int i=0;i<VMs.size();i++){
-					totalDurationOfApp = totalDurationOfApp + VMs.get(i).getPredictedDuration();
-					vms.add(VMs.get(i).getVMid());
-				}
-				double price = charges / totalDurationOfApp;
+		double price = 0.0;
+		//List<Integer> vms = new ArrayList<>();
+		//		for (int i=0;i<VMs.size();i++){
+		//			totalDurationOfApp = totalDurationOfApp + VMs.get(i).getPredictedDuration();
+		//			vms.add(VMs.get(i).getVMid());
+		//		}
+		//System.out.println("the charges are " +charges+" the duration is "+duration);
+		if (duration > 3600){
+				 price = charges / (duration/3600);}
+		else
+			 price = charges;
+	//	System.out.println(price);
 				/*
 				try{
 					producer.sendToQueue("PMPREDICTION", VMs.getLast().getIaaSProvider().getID(), deplID, vms, Unit.PRICEHOUR, price);	
@@ -222,19 +271,21 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @param numberOfevents: the number of the events on the same VM (given from EM)
 	 * @return
 	 */
+	//TESTED
 	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy) throws Exception{
-		int VMschemeId= VMs.getFirst().getSchemeID();
-		try{
+		//int VMschemeId= VMs.getFirst().getSchemeID();
+		//try{
 			DeploymentInfo deployment = new DeploymentInfo(deplID);
 			deployment.setVMs(VMs);
 			deployment.setEnergy(energy);
+			deployment.setIaaSProvider("0"); 
 			double charges = billing.predictAppEventChargesVMbased(deployment);
 			return charges;
-		}
-		catch(NullPointerException e){
-			logger.error("Predict event running on multiple VM which have different schemes found VM without scheme");
-			return -2;
-		}
+		//}
+	//	catch(NullPointerException e){
+		//	logger.error("Predict event running on multiple VM which have different schemes found VM without scheme");
+	//		return -2;
+		//}
 		
 		//logger.info("Event:"+deplID+","+energy+","+schemeId+","+charges);
 		
@@ -249,9 +300,12 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @param deplID
 	 * @param schemeId: the pricing scheme followed
 	 */
+	/******************In comments for not to be confused with Y3***************************/
 	public void initializeApp(String appID, int deplID, int schemeId){
 		billing.registerApp(appID, deplID, schemeId);
 	}
+	
+	
 	
 	/**
 	 * This function returns the total charges for all events running on one VM
@@ -266,9 +320,10 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @return
 	 * @throws Exception 
 	 */
+	///TO CHECK!!
 	public double getEventPredictedCharges(int deplID, int CPU, int RAM, double storage, double energy, int schemeId, long duration, int numberOfevents) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
-		deployment.setIaaSProvider("test1"); 
+		deployment.setIaaSProvider("0"); 
 		VMinfo VM = new VMinfo(RAM, CPU, storage,duration);
 		VM.setEnergyPredicted(energy);
 		VM.setNumberOfEvents(numberOfevents);
@@ -289,6 +344,8 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @return
 	 * @throws Exception 
 	 */
+	
+	//TESTED
 	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy,int schemeId) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeId);
 		deployment.setIaaSProvider("0"); 
@@ -308,6 +365,8 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @return
 	 * @throws Exception 
 	 */
+	
+	///TO CHECK!!!
 	public double getAppPredictedCharges(int deplID, int schemeID, double IaaSCharges) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
 		deployment.setIaaSPredictedCharges(IaaSCharges);
@@ -324,6 +383,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @return
 	 * @throws Exception 
 	 */
+	///TO CHECK!!
 	public double getAppPredictedPrice(int deplID, int schemeID, double IaaSCharges, long duration) throws Exception{
 		DeploymentInfo deployment = new DeploymentInfo(deplID, schemeID);
 		deployment.setIaaSPredictedCharges(IaaSCharges);

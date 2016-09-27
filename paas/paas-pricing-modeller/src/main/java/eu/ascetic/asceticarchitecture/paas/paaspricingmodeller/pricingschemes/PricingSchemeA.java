@@ -51,6 +51,8 @@ ResourceDistribution distribution = new ResourceDistribution();
 	}*/
 	
 	/////////////////////////PREDICTION/////////////////////////
+	
+	//TESTED
 	@Override 
 	public double predictTotalCharges(VMinfo vm, boolean energySet) {
 		Charges b = predictResourcesCharges(vm, getDistribution(vm), getResourcePrice(vm));
@@ -63,11 +65,12 @@ ResourceDistribution distribution = new ResourceDistribution();
 		}
 		catch(Exception ex){
 		//	System.out.println("PM: Could not send message to queue");
-			 logger.error("PM: Could not set producer");
+			 logger.error("PM: Could not send message");
 		}
 		return temp;
 	}
 	
+	//TESTED
 	@Override 
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		double price = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
@@ -78,7 +81,7 @@ ResourceDistribution distribution = new ResourceDistribution();
 		}
 		catch(Exception ex){
 		//	System.out.println("PM: Could not send message to queue");
-			 logger.error("PM: Could not set producer");
+			 logger.error("Scheme A PM: Could not send message to queue");
 		}
 	//	System.out.println("Pricing A: "+  VM.getCurrentprice() + " with price " + getResourcePrice(VM));
 		return VM.getCurrentprice();
@@ -86,7 +89,7 @@ ResourceDistribution distribution = new ResourceDistribution();
 
 ////////////////////////////////// BILLING //////////////////////////
 	
-	
+	//TESTED
 	@Override
 	public double getTotalCharges(VMinfo VM) {
 		Unit unit = Unit.TOTALCHARGES;
@@ -106,10 +109,14 @@ ResourceDistribution distribution = new ResourceDistribution();
 		
 	}
 	
+	//TESTED
 	private double getResourcePrice(VMinfo VM){
-		return VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getStaticResoucePrice());
+		double price = VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getStaticResoucePrice());
+		//System.out.println("Scheme A: price of provider " + VM.getIaaSProvider().getID()+" is "+price);
+		return price;
 	}
 	
+	//TESTED
 	private ResourceDistribution getDistribution(VMinfo VM){
 		return VM.getIaaSProvider().getDistribution();
 	}

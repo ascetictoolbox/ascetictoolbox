@@ -70,12 +70,36 @@ public class PaaSPricingModellerTestqueue{
 	//	producer1 = new PricingModellerQueueServiceManager(PMqueue1);
       //  VMinfo vm1 = new VMinfo(1,7680, 2, 32000, 10, 1, 0);
 		VMinfo vm1 = new VMinfo(7680, 2, 32, 3600);
-    //	VMinfo vm2 = new VMinfo(2,7680, 2, 32000, 10, 1, "0");
+		VMinfo vm2 = new VMinfo(1, 7680, 2, 32, 3600, 0, "0");
+    	VMinfo vm3 = new VMinfo(2,7680, 2, 32, 1, "1");
     	
     	LinkedList<VMinfo> test = new LinkedList<>();
         test.add(vm1);
+        test.add(vm2);
+        test.add(vm3);
+
+        energyPerVM.put(2, 300.0);
+
+      //  System.out.println(prmodeller.getAppPredictedPrice(1, 3600, test));
         
-        System.out.println(prmodeller.getAppTotalCharges(0, 1, 1000000));
+        prmodeller.initializeApp("e", 0, test);
+        
+       // System.out.println("----------------------------------------WAITING-----------------------------");
+     //  prmodeller.initializeApp("e", 0, 0);
+        
+       System.out.println("----------------------------------------WAITING-----------------------------");
+     //  Thread.sleep(40000);
+       System.out.println("----------------------------------------NOW AGAIN-----------------------------");
+      System.out.println("Energy" + prmodeller.getEventPredictedChargesOfApp(0,test,300));
+       // System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0));
+       //System.out.println("----------------------------------------NOW AGAIN-----------------------------");
+       //System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0, energyPerVM));
+    /*   prmodeller.resizeVM(0, 1, 2, 7680, 16);
+       System.out.println("----------------------------------------WAITING-----------------------------");
+       Thread.sleep(40000);
+       System.out.println("----------------------------------------NOW AGAIN-----------------------------");
+       System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0));
+       */
        
     //    test.add(vm2);
 /*********************

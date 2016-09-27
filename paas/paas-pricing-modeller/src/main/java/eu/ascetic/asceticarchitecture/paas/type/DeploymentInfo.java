@@ -60,6 +60,7 @@ public class DeploymentInfo {
 	boolean changing = false;
 	private final Object lock = new Object();
 
+	boolean energyFalied = false;
 	LinkedList<VMinfo> VMs = new LinkedList<VMinfo>();
 	PricingModellerQueueServiceManager producer;
 	
@@ -84,6 +85,16 @@ public class DeploymentInfo {
 		this.schemeId = schemeID;
 	}
 
+	public void setEnergyFailed(boolean value){
+		energyFalied = value;
+	}
+	
+	public boolean getEnergyFailed(){
+		boolean temp = energyFalied;
+		energyFalied = false;
+		return temp;
+	}
+	
 	public String getAppID(){
 		return applicationId;
 	}
@@ -257,5 +268,8 @@ public class DeploymentInfo {
 		
 	}
 	
+	public void setSchemeID(int scheme){
+		this.schemeId = scheme;
+	}
 
 }

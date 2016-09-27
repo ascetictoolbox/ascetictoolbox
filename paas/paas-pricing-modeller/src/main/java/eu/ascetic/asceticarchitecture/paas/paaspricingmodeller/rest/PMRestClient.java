@@ -40,11 +40,12 @@ public class PMRestClient {
     	 resource = resource.path(java.text.MessageFormat.format("{0}/energy-consumption", new Object[]{deploymentId}));
 
     	 T response = resource.accept(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
-    	 System.out.println("Output from Server .... \n");
+    	// System.out.println("Output from Server .... \n");
     	 return response;
      }
      catch (Exception e) {
          System.out.println("PM could not take message from EM");
+        // logger.error("PM could not take message from EM");
      }
     return null;
 	}

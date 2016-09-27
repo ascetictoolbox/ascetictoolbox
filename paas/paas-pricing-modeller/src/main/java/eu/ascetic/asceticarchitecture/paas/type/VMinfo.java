@@ -27,7 +27,7 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.Pr
 
 
 public class VMinfo extends VMBasic{
-
+	
 	
 	public VMinfo (double RAM, double CPU, double storage, long predictedDuration){
 		this.RAM = RAM/1024;
@@ -35,6 +35,7 @@ public class VMinfo extends VMBasic{
 		this.storage = storage;
 		this.predictedDuration=predictedDuration;
 		this.scheme = initializeScheme(0);
+		schemeToChange = true;
 		time = new TimeParameters();
 		energyInfo.setCurrentTotalConsumption(0.0);		
 		energyCharges = new Charges();
@@ -45,6 +46,8 @@ public class VMinfo extends VMBasic{
 		IaaSProviders.put("0", Prov);
 		setIaaSProvider(IaaSProviders.get("0"));
 	}
+	
+
 
 	/*
 	public VMinfo (double RAM, double CPU, double storage, long duration, int scheme){
@@ -98,6 +101,7 @@ public class VMinfo extends VMBasic{
 		energyCharges = new Charges();
 		resourceCharges = new Charges();
 		TotalCharges = new Charges();
+		this.predictedDuration=3600;
 	//	System.out.println("VMinfo: VM with id = " + VMid+" Time has started at " + time.getStartTime().getTimeInMillis()+ " end time is " + time.getEndTime().getTimeInMillis());
 		
 		

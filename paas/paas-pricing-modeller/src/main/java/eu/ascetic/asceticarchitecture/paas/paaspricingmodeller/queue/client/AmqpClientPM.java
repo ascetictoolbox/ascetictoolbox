@@ -90,7 +90,7 @@ public class AmqpClientPM {
         connection.setExceptionListener(new MyExceptionListener());
         connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		System.out.println("here");
+	//	System.out.println("here");
 		
 		// Create a Session for each queue
      
@@ -100,12 +100,12 @@ public class AmqpClientPM {
 		producerPrediction = session.createProducer(destinationPrediction);
         producerMeasurements = session.createProducer(destinationMeasurements);
        
-        System.out.println("Connection started to queue " + pmQueueTopic + " to topics " + billingTopic + " and "+ predictionTopic);
+     //   System.out.println("Connection started to queue " + pmQueueTopic + " to topics " + billingTopic + " and "+ predictionTopic);
     
 	}
 	
 	public void sendMessage(String queue, String message){
-		System.out.println("Sending Message to queue");
+		//System.out.println("Sending Message to queue");
 		try {
 			if (queue=="prediction"){
 				TextMessage messagetext = session.createTextMessage(message);
@@ -121,7 +121,7 @@ public class AmqpClientPM {
 	}
 	
 	public void sendMessageTopic(String topic, String message){
-		System.out.println("Sending Message to topic" + topic);
+	//	System.out.println("Sending Message to topic" + topic);
 		try {
 			Destination destination = session.createTopic(topic);
 			MessageProducer producer = session.createProducer(destination);
@@ -136,7 +136,7 @@ public class AmqpClientPM {
 	}
 	
 	public void registerListener(String topic, MessageListener listener){
-		System.out.println("Registering listener with topic: " + topic);
+	//	System.out.println("Registering listener with topic: " + topic);
 		try {
 			
 			Destination thisDestination = session.createTopic(topic);

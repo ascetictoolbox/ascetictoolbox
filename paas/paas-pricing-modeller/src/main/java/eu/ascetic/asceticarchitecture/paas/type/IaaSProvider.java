@@ -62,8 +62,9 @@ public class IaaSProvider {
 		return resourcePrice;
 	}
 	
+	//TESTED
 	public double getStaticResoucePrice(){
-	//	System.out.println("static resoiurce price = " + staticResourcePrice);
+		//System.out.println("IaaS Provider static resource price = " + staticResourcePrice);
 		return staticResourcePrice;
 	}
 	
@@ -83,8 +84,9 @@ public class IaaSProvider {
 		return averageEnergyPrice;
 	}
 	
+	//TESTED
 	public ResourceDistribution getDistribution(){
-		//System.out.println("the distribution"+distribution.cpuPer);
+	//	System.out.println("IaaS Provider: the distribution "+distribution.cpuPer);
 		return distribution;
 	}
 	
@@ -96,17 +98,19 @@ public class IaaSProvider {
 		return IaaSID;
 	}
 
-	
+	//TESTED
 	public double predictResourcesCharges(VMinfo vm, double duration, double price) {
 		Charges b = new Charges();
-		b.setCharges((distribution.getDistribution(vm)*price*(Math.ceil(duration/3600))));
+	//	System.out.print("here5");
+		//b.setCharges((distribution.getDistribution(vm)*price*(Math.ceil(duration/3600))));
+		b.setCharges((distribution.getDistribution(vm)*price*duration));
 		return b.getChargesOnly();
 	}
 	
 	
 	public double predictEnergyCharges(double energy, double average){
 		Charges charges = new Charges();
-		charges.setCharges(energy*average);
+		charges.setCharges((energy/1000)*average);
 		return charges.getChargesOnly();
 	}
 

@@ -49,12 +49,14 @@ public class VMBasic {
 	double RAM;
 	double CPU;
 	double storage;
-	
+
+	boolean schemeToChange= false;
 	double currentDuration;
 	double totalDuration;
 	double predictedDuration;
 	boolean active =true;
 	
+	double energyFromAPPManager=0.0;
 	static EnergyInfo energyInfo = new EnergyInfo();
 	
 	static HashMap<String,IaaSProvider> IaaSProviders = new HashMap<String,IaaSProvider>();
@@ -74,7 +76,7 @@ public class VMBasic {
 	
 	//long predictedDuration;
 	
-	
+	boolean energyFailed = false;
 	
 	TimeParameters time;
 	
@@ -88,6 +90,29 @@ public class VMBasic {
 	
 	double currentCharges=0.0;
 	double currentPrice;
+	
+	public void setEnergyFailed(boolean value){
+		energyFailed = value;
+	}
+	
+	public boolean energyFailed(){
+		boolean temp = energyFailed;
+		energyFailed = false;
+		return temp;
+	}
+	
+	public boolean schemeChange(){
+		return schemeToChange;
+	}
+	
+	public void setEnergyFromAppMan (double energy){
+		energyFromAPPManager =energy;
+	}
+	
+	public double getEnergyFromAppMan (){
+		return energyFromAPPManager;
+	}
+	
 	public void setCurrentPrice (double price){
 		currentPrice =price;
 	}
@@ -210,6 +235,10 @@ public class VMBasic {
 		return schemeID;
 	}
 	
+	public void setSchemeID(int scheme){
+		this.schemeID = scheme;
+	}
+	
 	public double getStorage(){
 		return storage;
 	}
@@ -227,6 +256,11 @@ public class VMBasic {
 	
 	public PaaSPricingModellerPricingScheme getScheme(){
 		return scheme;
+		
+	}
+	
+	public void setScheme(int scheme){
+		this.scheme = initializeScheme(scheme);
 		
 	}
 

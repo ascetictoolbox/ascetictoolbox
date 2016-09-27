@@ -17,6 +17,11 @@
 
 package eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.billing.PaaSPricingModellerRegistration;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.GenericPricingMessage.Unit;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.rest.EMInteraction;
@@ -29,6 +34,10 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 //import java.time.ZoneId;
 //import java.time.ZonedDateTime;
 //import java.time.format.DateTimeFormatter;
+
+
+
+
 
 import org.apache.log4j.Logger;
 
@@ -55,61 +64,66 @@ public abstract class PaaSPricingModellerPricingScheme {
 	 * @param vm
 	 * @return the total charges of a VM depending on the total hours that it will run
 	 */////////////
-	
+	//TESTED
 	public Charges predictResourcesCharges(VMinfo vm, ResourceDistribution distribution, double price) {
 		Charges b = new Charges();
 		
 		double temp = distribution.getDistribution(vm)*price*vm.getPredictedDuration();
 		b.setCharges(vm.getChangeTime(), temp);
-		//System.out.println("Resource charges " + b.getChargesOnly());
+	//	System.out.println("Scheme predict resource charges: Resource charges " + b.getChargesOnly());
 		return b;
 	}
 	
+	//TESTED
 	public double predictResourcePrice (VMinfo VM, double price, ResourceDistribution distribution, double duration){
 		double Resourcecharges = distribution.getDistribution(VM)*price;
 		double count = Resourcecharges*(duration);
-	//	System.out.println("predictResourcePrice: " + count);
+//		System.out.println("Scheme the duration is: " + duration);
 		return (double) Math.round(count*1000) / 1000;
 	}
 	
+	//TESTED
 	public double predictEnergyPrice (VMinfo VM, double duration){
 		double price = getEnergyPrice(VM);
 		 double energyCharges = getPredictedEnergy(VM, duration) * price;
-	//	 System.out.println("predictResourcePrice: " + energyCharges);
+	//	 System.out.println("PRModellerScheme predictEnergyPrice: " + energyCharges);
 		//double energycharges = (energy/1000)*price; 
 		return (double) Math.round(energyCharges * 1000) / 1000;
 	}
 	
+	//TESTED
 	private double getPredictedEnergy(VMinfo VM, double duration) {
 		 	double difference=0;
 	        try{
 	        	EMInteraction response = new EMInteraction();
 	        	double energy = response.getPredictedEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), Double.toString(duration));
 	        	VM.updateEnergyConsumption(energy/1000);
+	       // 	System.out.println("Pricing Modeller Scheme energy is " + energy/1000);
 	        	return energy/1000;
 	        }
 	       catch (Exception ex){
-			//	System.out.println("Pricing Modeller getPredictedEnergy: Could receive asnwer");
-			logger.info("Pricing Modeller getPredictedEnergy: Could recieve asnwe from EM modellerr");
-			}
+	    	   
+		//		System.out.println("Pricing Modeller Scheme getPredictedEnergy: Could receive asnwer");
+				logger.error("Pricing Modeller getPredictedEnergy: Could recieve answer from EM modeller");
+	       }
 	      //  if (VM.getEnergyConsumptionofLastPeriod()!=0){
 	    //    	difference= VM.getEnergyConsumptionofLastPeriod();
 	     //   }
-	     //   System.out.println("Pricing scheme: I am updating energy difference"+difference);
+	      // System.out.println("Pricing scheme: I am updating energy difference"+difference);
 	        return difference;
 
 	}
 
-
+//TESTED
 	public Charges predictEnergyCharges(VMinfo VM, double average, boolean energySet){
 		Charges charges = new Charges();
 		
 		if (!energySet){
-			
+			//System.out.println("here");
 		VM.setEnergyPredicted(getPredictedEnergy(VM, VM.getPredictedDuration()));
 		}
 		charges.setCharges(VM.getChangeTime(), VM.getEnergyPredicted()*average);
-	//	System.out.println("Energy charges " + charges);
+		//System.out.println("Energy charges " + charges);
 		return charges;
 	}
 	
@@ -120,6 +134,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	}
 	
 	
+	//TESTED
 	public void updateVMResourceCharges(VMinfo VM, double price, ResourceDistribution distribution){
 		Unit unit = Unit.CHARGES;
 		long duration = VM.getDuration(VM.getResourcesChargesAll().getTime(), VM.getChangeTime());
@@ -140,56 +155,69 @@ public abstract class PaaSPricingModellerPricingScheme {
 		
 		}
 	
+	
+	//TESTED
 	public void updateVMEnergyCharges(VMinfo VM){	
 	//	VM.setChangeTime();
 		long duration = VM.getDuration(VM.getEnergyChargesAll().getTime(), VM.getChangeTime());
 		double energycharges = updateEnergyCharges(VM);
 		
-	//	System.out.println("Last change time is: "+ VM.getEnergyChargesAll().getTime().getTimeInMillis()+" Now is: "+VM.getChangeTime().getTimeInMillis()+" and the diff is "+duration);
-	//	System.out.println("Updating energy charges to " + energycharges);
+	//	System.out.println("Scheme  Last change time is: "+ VM.getEnergyChargesAll().getTime().getTimeInMillis()+" Now is: "+VM.getChangeTime().getTimeInMillis()+" and the diff is "+duration);
+	//	System.out.println("Scheme  Updating energy charges to " + energycharges);
 		VM.updateEnergyCharges(energycharges);
 		VM.setCurrentCharges(energycharges);
 	//	System.out.println("Total energy charges " + VM.getEnergyCharges());
 		
 	}
 
+	
+	//TESTED
 	public double updateEnergyCharges(VMinfo VM){
 		//the energy charges for the past period
 		
 		double price = getEnergyPrice(VM);
-        double energyCharges = (double) Math.round((getEnergy(VM) * price) * 1000) / 1000;
-   //     System.out.println("Pricing scheme: I am updating energy with this price "+getEnergyPrice(VM));
+		double energy = getEnergy(VM);
+        double energyCharges = (double) Math.round(( energy* price) * 1000) / 1000;
+   //     System.out.println("Pricing scheme: I am updating energy "+energy+"  with this price "+getEnergyPrice(VM));
         return energyCharges;
 		
 	}
 	
-	
+	//TESTED
 	 private double getEnergyPrice(VMinfo vM) {
-		 return vM.getIaaSProvider().getEnergyPriceForBilling();
+		 double price =  vM.getIaaSProvider().getEnergyPriceForBilling();
+	//	 System.out.println("Scheme the energy price is: " + price);
+		 return price;
 
 	}
 
 
+	 //TESTED
 	public double getEnergy(VMinfo VM){
 	        double difference=3000;
-	   //     ZonedDateTime zdt1 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getEnergyChargesAll().getTime().getTimeInMillis()), ZoneId.systemDefault());
-	//        System.out.println(zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-	    //    ZonedDateTime zdt2 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getChangeTime().getTimeInMillis()), ZoneId.systemDefault());
-	//        System.out.println(zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+	        ZonedDateTime zdt1 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getEnergyChargesAll().getTime().getTimeInMillis()), ZoneId.systemDefault());
+	     //   System.out.println(zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+	        ZonedDateTime zdt2 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getChangeTime().getTimeInMillis()), ZoneId.systemDefault());
+	     //   System.out.println("Scheme getEnergy " +zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 	       try{
-	    //    	EMInteraction response = new EMInteraction();
-	      //  	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-	        //	VM.updateEnergyConsumption(energy/1000);
-	        	//return energy/1000;
+	    	    EMInteraction response = new EMInteraction();
+	        	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+	        	VM.updateEnergyConsumption(energy/1000);
+	        	return energy/1000;
 	        }
 	       catch (Exception ex){
-			//	System.out.println("Pricing Modeller  getEnergy: Could receive asnwer");
-				logger.info("Could not send the message to queue");
+	    	   //	System.out.println("Pricing Modeller Scheme getEnergy: Could not receive asnwer");
+				logger.error("Pricing Modeller Scheme getEnergy: Could not receive answer from Energy Modeller");
+	    	    difference= VM.getEnergyFromAppMan();
+	    	    if (difference == 0){
+	    	    	VM.setEnergyFailed(true);
+	    	    }
+				
 			}
 	      //  if (VM.getEnergyConsumptionofLastPeriod()!=0){
 	    //    	difference= VM.getEnergyConsumptionofLastPeriod();
 	     //   }
-	  //      System.out.println("Pricing scheme: I am updating energy difference"+difference);
+	    //   System.out.println("Pricing scheme: I am updating energy difference"+difference);
 	        return difference;
 	    }
  

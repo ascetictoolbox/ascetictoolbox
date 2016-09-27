@@ -45,7 +45,7 @@ public class ChargesCalculator extends TimerTask{
 			depl.setChanging(true);
 			//System.out.println("ChargesCalculator calculation of charges");
 			logger.info("ChargesCalculator calculation of charges");
-			billing.getAppCurrentTotalCharges(depl.getId());
+			billing.getAppCurrentTotalCharges(depl.getId(),null);
 			depl.setChanging(false);
 			depl.getLock().notifyAll();
 			}
