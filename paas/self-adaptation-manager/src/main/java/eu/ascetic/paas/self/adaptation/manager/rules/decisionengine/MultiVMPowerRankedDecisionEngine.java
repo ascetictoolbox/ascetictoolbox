@@ -128,7 +128,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         if (vmType != null && vmOvfTypes.contains(vmType)) {
             vmTypeToAdd = vmType;
         } else { //If no preference is given then pick the best alternative
-            pickLowestAveragePower(response, vmOvfTypes);
+            vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
         }
         response.setAdaptationDetails(vmTypeToAdd);
         List<String> typesToAdd = getVmTypesToConsolidateHost(response, vmTypeToAdd);
