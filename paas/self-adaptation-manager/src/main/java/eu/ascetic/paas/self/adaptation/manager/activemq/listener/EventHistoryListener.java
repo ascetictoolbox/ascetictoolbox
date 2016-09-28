@@ -116,9 +116,9 @@ public class EventHistoryListener extends ActiveMQBase implements Runnable, Even
                     errorCounter = (errorCounter <= 0 ? 0 : errorCounter -1);
                 }
             } catch (JMSException ex) {
-                Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.ERROR, "Error listening to IaaS SAM message queue", ex);
+                Logger.getLogger(EventHistoryListener.class.getName()).log(Level.SEVERE, "Error listening to IaaS SAM message queue", ex);
                 errorCounter = errorCounter + 1;
-                if (errorCount >= 5) {
+                if (errorCounter >= 5) {
                     running = false;
                 }
                 
