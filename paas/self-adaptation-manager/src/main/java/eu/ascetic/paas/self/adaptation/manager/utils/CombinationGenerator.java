@@ -163,24 +163,4 @@ public class CombinationGenerator {
 
         return (combinations);
     }
-
-    /**
-     *
-     * @param args
-     */
-    public static void main(String... args) {
-        String all_filters = "type:Obres Teatre,moment:Aquest Divendres,moment:Aquesta Nit,"
-                + "moment:Aquest Dissabte,moment:Aquest Diumenge,moment:Aquest Dimarts,moment:Aquest Dimecres,"
-                + "moment:Aquest Dijous,location:Teatre Romea,city:Barcelona,district:Ciutat Vella,"
-                + "day:Diumenge 29 Abril 2012,day:Dimarts 1 Maig 2012,day:Dimecres 2 Maig 2012,ymonth:Abril 2012,"
-                + "ymonth:Maig 2012,ymonth:Juny 2012,lang:ca";
-        List<String> combinations = CombinationGenerator.getCombinations(all_filters);
-        System.out.println("combinations:");
-        int i = 0;
-        for (String comb : combinations) {
-            System.out.println(comb);
-            i++;
-        }
-        System.out.println("Generated a total of " + i + " combinations.");
-    }
 }
