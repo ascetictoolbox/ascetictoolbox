@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.activemq.kaha.impl.index.VMIndexLinkedList;
 import org.apache.log4j.Logger;
 import org.slasoi.gslam.syntaxconverter.SLASOITemplateRenderer;
 import org.slasoi.slamodel.sla.SLATemplate;
