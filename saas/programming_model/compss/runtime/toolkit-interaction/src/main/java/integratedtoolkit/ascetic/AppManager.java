@@ -53,23 +53,23 @@ public class AppManager {
     public Cost getEstimations(String id, int coreId, int implId) throws ApplicationUploaderException {
         String eventType = generateEventType(coreId, implId);
         Cost c = null;
-        /*try {
+        try {
          c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
          } catch (Exception e) {
          e.printStackTrace();
          c=null;
-         }*/
+         }
         return c;
     }
 
     public double getAccumulatedEnergy() throws ApplicationUploaderException {
-        return 0;
-        //return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
+    	//return 0;
+        return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
     }
 
     public double getAccumulatedCost() throws ApplicationUploaderException {
-        return 0;
-        //return uploader.getDeploymentCostConsumption(applicationId, deploymentId);
+        //return 0;
+        return uploader.getDeploymentCostConsumption(applicationId, deploymentId);
 
     }
 

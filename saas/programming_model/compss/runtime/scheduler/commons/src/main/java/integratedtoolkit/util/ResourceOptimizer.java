@@ -544,6 +544,7 @@ public class ResourceOptimizer extends Thread {
      * ********************************************************
      */
     protected void applyPolicies(WorkloadState workload) {
+    	logger.debug("Applying policies");
         int currentCloudVMCount = CloudManager.getCurrentVMCount();
         Integer maxNumberOfVMs = (CloudManager.getMaxVMs() > 0) ? CloudManager.getMaxVMs() : null;
         Integer minNumberOfVMs = CloudManager.getMinVMs();

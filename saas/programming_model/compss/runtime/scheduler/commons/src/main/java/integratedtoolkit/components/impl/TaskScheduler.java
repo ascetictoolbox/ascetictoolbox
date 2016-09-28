@@ -457,7 +457,13 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             LinkedList<Implementation<T>>[] impls = ui.getExecutableImpls();
             for (int coreId = 0; coreId < coreCount; coreId++) {
                 for (Implementation<T> impl : impls[coreId]) {
-                    coreProfile[coreId].accumulate(ui.getProfile(impl));
+                	if (debug){
+                    	logger.debug("Profile before accumulate: " + ui.getProfile(impl));
+                    }
+                	coreProfile[coreId].accumulate(ui.getProfile(impl));
+                    if (debug){
+                    	logger.debug("Profile after accumulate: " + ui.getProfile(impl));
+                    }
                 }
             }
 

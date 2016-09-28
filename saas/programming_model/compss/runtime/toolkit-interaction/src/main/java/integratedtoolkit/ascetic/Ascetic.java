@@ -160,8 +160,8 @@ public class Ascetic {
         int implId = impl.getImplementationId();
         currentCost += vm.getPrice(coreId, implId);
         currentPower += vm.getPower(coreId, implId);
-        //String eventId = ApplicationMonitor.startEvent(vm, impl);
-        String eventId = java.util.UUID.randomUUID().toString();
+        String eventId = ApplicationMonitor.startEvent(vm, impl);
+        //String eventId = java.util.UUID.randomUUID().toString();
         action.setEventId(eventId);
         changes = true;
     }
@@ -175,7 +175,7 @@ public class Ascetic {
         vm.endJob(action);
         currentCost -= vm.getPrice(coreId, implId);
         currentPower -= vm.getPower(coreId, implId);
-        //ApplicationMonitor.stopEvent(action.getEventId());
+        ApplicationMonitor.stopEvent(action.getEventId());
         changes = true;
     }
 
