@@ -10,6 +10,8 @@ import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.Vm;
 import es.bsc.vmmclient.models.VmRequirements;
 import es.bsc.vmmclient.vmm.VmManagerClient;
+import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.SlotSolution;
+import eu.ascetic.paas.self.adaptation.manager.utils.SlotAwareDeployer;
 import eu.ascetic.test.conf.VMMConf;
 import eu.ascetic.test.iaas.vmm.base.VmmTestBase;
 import java.util.ArrayList;

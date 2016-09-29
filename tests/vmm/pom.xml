@@ -356,5 +356,12 @@
             <artifactId>ascetic</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <!-- SAM -->
+        <dependency>
+            <groupId>eu.ascetic.paas</groupId>
+            <artifactId>self-adaptation-manager</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
