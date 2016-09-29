@@ -152,8 +152,7 @@ public class EnergyModellerQueueServiceManager {
                 	LOGGER.info("Before received information from ActiveMQ");
                 	// 26-09-2016 - END
                 	
-                	/* Massimiliano - BEGIN
-	                if (message instanceof TextMessage) {
+                	if (message instanceof TextMessage) {
 	                	// 26-09-2016 - BEGIN
 	                	LOGGER.info("Received information from ActiveMQ");
 	                	// 26-09-2016 - END
@@ -272,8 +271,7 @@ public class EnergyModellerQueueServiceManager {
 	                    	session.close();
 	                    	LOGGER.info("Received DELETED stop recorded");
 	                    }
-	                }
-	                Massimiliano - END */
+	                }	                
 	            } catch (Exception e) {
 	            	// 26-09-2016 - BEGIN
 	            	LOGGER.info("EnergyModellerQueueServiceManager (EXCEPTION) Caught:" + e);
@@ -304,14 +302,7 @@ public class EnergyModellerQueueServiceManager {
 		                    LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 		                    String dest = message.getJMSDestination().toString();
 		                    String[] topic = dest.split("\\.");
-		                    /* 26-09-2016 - BEGIN */
-		                    /* if (topic.length<8){
-		                    	LOGGER.debug("Received a message of no interest for the EM");
-		                    	return;
-		                    }
-		                    LOGGER.info("Received: METRIC " +topic[7]+", VM "+topic[5]+", deployment "+topic[3]+",application "+topic[1] );
-		                    */
-		                    
+		                    		                    
 		                    int counter;
 		                    String ArgString;
 		                    ArgString="-->";
@@ -331,8 +322,7 @@ public class EnergyModellerQueueServiceManager {
 		                    else {
 		                    	LOGGER.info("Received: " + ArgString);
 		                    }
-		                    /* 26-09-2016 - END */
-		                    
+		                    		                    
 		                    if (topic[6].equals("METRIC")){
 		                    	
 		                    	boolean isManagedMeasureType = false;
