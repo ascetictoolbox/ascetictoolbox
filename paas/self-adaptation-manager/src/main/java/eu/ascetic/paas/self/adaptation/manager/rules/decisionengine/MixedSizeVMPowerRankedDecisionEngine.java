@@ -147,22 +147,10 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setPossibleToAdapt(false);
             return response;
         }
-        Map<String, Node> hosts = new HashMap<>();        
-        for (Slot slot : slots) {
-            /**
-             * The Host are of an unknown max size, but ignoring this by ignoring
-             * used slots thus treating the hosts as smaller should provide 
-             * a workaround.
-             */
-            Node node = new Node(slot.getHostname(), 
-                    (int) slot.getFreeCpus(), 
-                    slot.getFreeMemoryMb(), 
-                    slot.getFreeDiskGb(), 
-                    slot.getFreeCpus(), 
-                    slot.getFreeMemoryMb(), 
-                    slot.getFreeDiskGb(), 
-                    0);            
-            hosts.put(vmTypeToAdd, node);    
+        Map<String, Node> hosts = new HashMap<>();
+        List<Node> nodes = getActuator().getProviderHostInfo();
+        for (Node node : nodes) {
+            hosts.put(node.getHostname(), node);    
         }
         //Construct VM information
         String ovfStr = getActuator().getOvf(response.getApplicationId(), response.getDeploymentId());
