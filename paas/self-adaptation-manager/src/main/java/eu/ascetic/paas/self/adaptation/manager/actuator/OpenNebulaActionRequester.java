@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.actuator;
 
+import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
