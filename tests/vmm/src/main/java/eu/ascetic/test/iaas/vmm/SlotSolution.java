@@ -25,16 +25,19 @@ import java.util.List;
 public class SlotSolution {
     private List<Slot> slots;
     private double consolidationScore;
+    private String provider;
     
     /**
      * Constructor of SlotSolution
      * 
      * @param consolidationScore score for this solution.
      * @param slots list of slots with the solution proposed.
+     * @param provider the provider of the solution.
      */
-    public SlotSolution(double consolidationScore, List<Slot> slots){
+    public SlotSolution(double consolidationScore, List<Slot> slots, String provider){
         this.consolidationScore = consolidationScore;
         this.slots = slots;
+        this.provider = provider;
     }
 
     /**
@@ -70,7 +73,7 @@ public class SlotSolution {
         String out = "consolidationScore = " + consolidationScore + "\n";
         for(Slot s : slots){ 
             out += s.getHostname() + " => ( cpus=" + s.getFreeCpus() + 
-                ", ramMb=" + s.getFreeDiskGb() + ", diskGb=" + s.getFreeDiskGb() + " ); \n"; 
+                ", ramMb=" + s.getFreeDiskGb() + ", diskGb=" + s.getFreeDiskGb() + ", provider = " + this.provider + " ); \n"; 
         }
         return out;
     }

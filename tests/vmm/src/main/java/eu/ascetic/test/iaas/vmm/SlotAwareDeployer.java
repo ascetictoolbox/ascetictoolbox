@@ -17,9 +17,11 @@ package eu.ascetic.test.iaas.vmm;
 
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +33,26 @@ import org.apache.commons.lang.StringUtils;
  * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
 public class SlotAwareDeployer {
+    String provider;
     
     /**
-     * Constructor
+     * Empty constructor.
      */
     public SlotAwareDeployer(){
-        
+        this.provider = "providerA";
+    }
+    
+    /**
+     * 
+     * @param provider the provider of this deployer.
+     */
+    public SlotAwareDeployer(String provider){
+        this.provider = provider;
     }
     
     /**
      * Calculates subset of sums.
+     * TODO: Find a most efficient way of calculate this.
      * 
      * @param allowedSizes string that represents allowed sizes i.e. 2,3,4
      * @param total the total expected from the sums
@@ -199,6 +211,42 @@ public class SlotAwareDeployer {
 
         return allowedCpuSizes;
     }
+    
+    /**
+     * Provides all combinations of a list. 
+     * It's an approximation since it uses Collections.shuffle internally
+     * TODO: Find a most efficient way of calculate this.
+     * 
+     * @param slots list of slots you want to combine.
+     * @return a map with all the possible combinations of this list.
+     */
+    private Map<Integer, List<Slot>> getAllListOrders(List<Slot> slots) {
+        Map<Integer, List<Slot>> out = new HashMap<>();
+        
+        List<Slot> slotsClone = this.cloneSlots(slots);
+        BigInteger numTries = //10*(n!)
+            CombinationGenerator.getFactorial(slots.size()).multiply(BigInteger.TEN);
+        for(int i = 0; i < numTries.intValue(); i++){
+            Collections.shuffle(slotsClone);
+            if(!out.containsKey(slotsClone.hashCode())){
+                out.put(slotsClone.hashCode(), this.cloneSlots(slotsClone));
+            }
+        }
+        
+        /*
+        for(Integer k : out.keySet()){
+            System.out.println(k);
+            for(Slot s : out.get(k)){
+                System.out.println(s.getHostname());
+            }
+            
+            System.out.println("====");
+        }
+        */
+        
+        
+        return out;
+    }
 
     /**
      * Returns a list of SolutionSlot sorted by consolidation criteria.
@@ -212,31 +260,37 @@ public class SlotAwareDeployer {
      * @param diskGb gb of disk allowed.
      * @return a list with all slot solutions
      */
-    public List<SlotSolution> getSlotsSortedByConsolidationScore(List<Slot> slots, Map<String, Node> nodes, int totalCpusToAdd, int minCpu, int maxCpu, int ramMb, int diskGb) {
+    public List<SlotSolution> getSlotsSortedByConsolidationScore(
+            List<Slot> slots, Map<String, Node> nodes, int totalCpusToAdd, int minCpu, int maxCpu, int ramMb, int diskGb) {
         Set<String> combinations = subsetSumBruteForce(getAllowedCpuSizes(minCpu, maxCpu), totalCpusToAdd);
+        Map<Integer, List<Slot>> slotsInAllOrders = getAllListOrders(slots);
         List<SlotSolution> solutions = new ArrayList<>();
 
         for (String combination : combinations) {
-            List<Slot> results = new ArrayList<>();
             System.out.println("Trying to find place for " + combination.toString());
             String cpus[] = combination.split(",");
-            List<Slot> slotsClone = this.cloneSlots(slots);
-            this.sortSlotsByConsolidation(slots);
-            //System.out.println("Sorted slots: " + slots.toString());
-            for (int index = 0; index < cpus.length; index++) {
-                int numCpus = Integer.parseInt(cpus[index]);
-                Slot slotAssigned = this.assignSlot(numCpus, diskGb, ramMb, slotsClone);
-                if (slotAssigned != null) {
-                    results.add(slotAssigned);
+            
+            for(int k : slotsInAllOrders.keySet()){
+                List<Slot> results = new ArrayList<>();
+                List<Slot> slotsOrderProposal = this.cloneSlots(slotsInAllOrders.get(k));
+                
+                //System.out.println("Sorted slots: " + slotsClone.toString());
+                for (int index = 0; index < cpus.length; index++) {
+                    int numCpus = Integer.parseInt(cpus[index]);
+                    Slot slotAssigned = this.assignSlot(numCpus, diskGb, ramMb, slotsOrderProposal);
+                    //System.out.println("Sorted slots (II): " + slotsClone.toString());
+                    if (slotAssigned != null) {
+                        results.add(slotAssigned);
+                    }
                 }
-            }
 
-            for (Slot s : slotsClone) {
-                System.out.println(s.getFreeCpus() + " - " + s.getHostname());
+                for (Slot s : slotsOrderProposal) {
+                    System.out.println(s.getFreeCpus() + " - " + s.getHostname());
+                }
+                double consolidationScore = consolidationScore(slotsOrderProposal, nodes);
+                System.out.println("Score: " + consolidationScore);
+                solutions.add(new SlotSolution(consolidationScore, results, this.provider));
             }
-            double consolidationScore = consolidationScore(slotsClone, nodes);
-            System.out.println("Score: " + consolidationScore);
-            solutions.add(new SlotSolution(consolidationScore, results));
         }
 
         Collections.sort(solutions, new Comparator<SlotSolution>() {
