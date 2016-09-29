@@ -222,7 +222,7 @@ public class SlotAwareDeployer {
             System.out.println("Trying to find place for " + combination.toString());
             String cpus[] = combination.split(",");
             List<Slot> slotsClone = this.cloneSlots(slots);
-            this.sortSlotsByConsolidation(slots);
+            this.sortSlotsByConsolidation(slotsClone);
             //System.out.println("Sorted slots: " + slots.toString());
             for (int index = 0; index < cpus.length; index++) {
                 int numCpus = Integer.parseInt(cpus[index]);
