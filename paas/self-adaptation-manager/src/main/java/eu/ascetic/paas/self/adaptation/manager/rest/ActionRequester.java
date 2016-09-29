@@ -423,7 +423,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     public List<Node> getProviderHostInfo() {
         ProviderHostInfoClient client = new ProviderHostInfoClient("1"); //TODO fix this
         Gson gson = new Gson();
-        javax.ws.rs.core.Response responseObj = client.getHostInfo(1);
+        javax.ws.rs.core.Response responseObj = client.getHostInfo(javax.ws.rs.core.Response.class);
         String response = (String) responseObj.getEntity();
         Type listType = new TypeToken<ArrayList<Node>>() {
         }.getType();
