@@ -14,6 +14,7 @@
  * the License.
  */
 package eu.ascetic.paas.self.adaptation.manager;
+import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.SLALimits;
@@ -140,6 +141,12 @@ public interface ActuatorInvoker {
      * @return The amount of free slots available.
      */
     public List<Slot> getSlots();
+    
+    /**
+     * Gets the list of hosts from the provider.
+     * @return The list of hosts from the provider.
+     */
+    public List<Node> getProviderHostInfo();
     
     /**
      * This adds a vm of a given ovf type to named deployment.

@@ -15,6 +15,7 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.activemq.actuator;
 
+import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
@@ -345,5 +346,10 @@ public class ActionRequester extends ActiveMQBase implements Runnable, ActuatorI
     public List<Slot> getSlots() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public List<Node> getProviderHostInfo() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    } 
     
 }

@@ -447,5 +447,10 @@ public class OpenNebulaActionRequester implements Runnable, ActuatorInvoker {
     public List<Slot> getSlots() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public List<Node> getProviderHostInfo() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }     
 
 }

@@ -19,6 +19,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.ClientResponse;
 import es.bsc.vmmclient.models.Slot;
+import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
@@ -26,6 +27,7 @@ import eu.ascetic.paas.applicationmanager.model.SLALimits;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.self.adaptation.manager.ActuatorInvoker;
+import eu.ascetic.paas.self.adaptation.manager.rest.generated.ProviderHostInfoClient;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.ProviderSlotClient;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestDeploymentClient;
 import eu.ascetic.paas.self.adaptation.manager.rest.generated.RestVMClient;
@@ -416,6 +418,18 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         ArrayList<Slot> output = gson.fromJson(response, listType);
         return output;
     }
+
+    @Override
+    public List<Node> getProviderHostInfo() {
+        ProviderHostInfoClient client = new ProviderHostInfoClient("1"); //TODO fix this
+        Gson gson = new Gson();
+        javax.ws.rs.core.Response responseObj = client.getHostInfo(1);
+        String response = (String) responseObj.getEntity();
+        Type listType = new TypeToken<ArrayList<Node>>() {
+        }.getType();
+        ArrayList<Node> output = gson.fromJson(response, listType);
+        return output;
+    }    
     
     @Override
     public List<Slot> getSlots() {
