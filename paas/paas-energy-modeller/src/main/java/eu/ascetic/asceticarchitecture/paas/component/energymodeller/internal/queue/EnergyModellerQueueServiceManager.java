@@ -148,32 +148,23 @@ public class EnergyModellerQueueServiceManager {
         public void onMessage(Message message) {
 	            try {
 	            	
-	            	/* 26-09-2016 - BEGIN */
+	            	// 26-09-2016 - BEGIN
                 	LOGGER.info("Before received information from ActiveMQ");
-                	/* 26-09-2016 - END */
+                	// 26-09-2016 - END
                 	
+                	/* Massimiliano - BEGIN
 	                if (message instanceof TextMessage) {
-	                	/* 26-09-2016 - BEGIN */
+	                	// 26-09-2016 - BEGIN
 	                	LOGGER.info("Received information from ActiveMQ");
-	                	/* 26-09-2016 - END */
+	                	// 26-09-2016 - END
 	                    TextMessage textMessage = (TextMessage) message;
-	                    /* 26-09-2016 - BEGIN */
+	                    // 26-09-2016 - BEGIN
 	                    //LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
 	                    LOGGER.info("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
-	                    /* 26-09-2016 - END */
+	                    // 26-09-2016 - END
 	                    String dest = message.getJMSDestination().toString();
 	                    String[] topic = dest.split("\\.");
-	                    /* 26-09-2016 - BEGIN */
-	                    /*
-	                    if (topic.length<6){
-	                     
-	                    	LOGGER.debug("Received a message of no interest for the EM");
-	                    	return;
-	                    }
-	                    
-	                    LOGGER.info("Received " +topic[6] + topic[5]+topic[3]+topic[1] );
-	                    */
-	                    
+	                    	                    
 	                    int counter;
 	                    String ArgString;
 	                    ArgString="-->";
@@ -193,8 +184,7 @@ public class EnergyModellerQueueServiceManager {
 	                    else {
 	                    	LOGGER.info("Received: " + ArgString);
 	                    }
-	                    /* 26-09-2016 - END */
-	                    
+	                    	                    
 	                    if (topic[6].equals("DEPLOYED")){
 	                    	VirtualMachine vm = new VirtualMachine();
 		                    vm.setApplicationid( topic[1]);
@@ -221,10 +211,11 @@ public class EnergyModellerQueueServiceManager {
 
 	                    	int checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());
 	                    	if (checkvm>0){
-	                    		/* 26-09-2016 - BEGIN */
+	                    		// 26-09-2016 - BEGIN
 	                    		// LOGGER.warn("Received again a deployed message for an app already registered");
 	                    		LOGGER.info("Received again a deployed message for an app already registered");
-	                    		/* 26-09-2016 - END */
+	                    		session.close();
+	                    		// 26-09-2016 - END
 	                    		
 	                    		return;
 	                    	}
@@ -269,10 +260,11 @@ public class EnergyModellerQueueServiceManager {
 	                    	
 	                    	LOGGER.info("Received DELETED for VM"+vm.getProviderid()+ vm.getApplicationid()+ vm.getDeploymentid()+ vm.getVmid());
 	                    	if (checkvm==0){
-	                    		/* 26-09-2016 - BEGIN */
+	                    		// 26-09-2016 - BEGIN
 	                    		//LOGGER.warn("Received a message for an app not being created");
 	                    		LOGGER.info("Received a message for an app not being created");
-	                    		/* 26-09-2016 - END */
+	                    		session.close();
+	                    		// 26-09-2016 - END
 	                    		return;
 	                    	}
 	                    	
@@ -281,20 +273,22 @@ public class EnergyModellerQueueServiceManager {
 	                    	LOGGER.info("Received DELETED stop recorded");
 	                    }
 	                }
+	                Massimiliano - END */
 	            } catch (Exception e) {
-	            	/* 26-09-2016 - BEGIN */
+	            	// 26-09-2016 - BEGIN
 	            	LOGGER.info("EnergyModellerQueueServiceManager (EXCEPTION) Caught:" + e);
 	            	e.printStackTrace();
 	            	//LOGGER.error("Received EXCEPTION while writing app events");
 	            	LOGGER.info("Received EXCEPTION while writing app events");
-	            	/* 26-09-2016 - END */	                
+	            	// 26-09-2016 - END	                
 	            }
 	        }      
 	    };
 	    
-	    /* 26-09-2016 - BEGIN */
+	    // 26-09-2016 - BEGIN
+	    //LOGGER.debug("Registering  "+appTopic);
 	    LOGGER.info("Registering  "+appTopic);
-	    /* 26-09-2016 - END */
+	    // 26-09-2016 - END
 	    paasQueuePublisher.registerListener(appTopic,appListener);    
         
 	    
