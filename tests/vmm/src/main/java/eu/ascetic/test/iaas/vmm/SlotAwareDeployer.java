@@ -162,11 +162,14 @@ public class SlotAwareDeployer {
      * @param nodes information about the nodes to extract total cpus per host.
      * @return the consolidation score
      */
-    private int consolidationScore(List<Slot> slots, Map<String,Node> nodes) {
-        int consolidationScore = 0;
+    private double consolidationScore(List<Slot> slots, Map<String,Node> nodes) {
+        double consolidationScore = 0.0;
         for (Slot s : slots) {
             if (s.getFreeCpus() == nodes.get(s.getHostname()).getTotalCpus()) {
-                consolidationScore++;
+                consolidationScore+=0.9;
+            }
+            else if (s.getFreeCpus() == 0) {
+                consolidationScore += 0.1;
             }
         }
 

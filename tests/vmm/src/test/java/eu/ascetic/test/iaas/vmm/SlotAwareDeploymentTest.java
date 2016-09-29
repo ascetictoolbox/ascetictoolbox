@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 public class SlotAwareDeploymentTest extends VmmTestBase{
     private static final Logger logger = Logger.getLogger("SlotAwareDeploymentTest");
     
-    public void testSlotAwareDeploymentFake1() {
+    public void testSlotAwareDeploymentFake() {
         Map<String, Node> nodesTable = new HashMap<String, Node>();
         nodesTable.put("hostA", new Node("hostA", 8, 8*1024, 80, 6, 6*1024, 60, 0));
         nodesTable.put("hostB", new Node("hostB", 8, 8*1024, 80, 4, 4*1024, 40, 0));
@@ -46,22 +46,42 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         System.out.println(solutions);
     }
     
-    public void testSlotAwareDeploymentFake2() {
-        Map<String, Node> nodesTable = new HashMap<String, Node>();
-        nodesTable.put("hostA", new Node("hostA", 16, 16*1024, 160, 6, 6*1024, 60, 0));
-        nodesTable.put("hostB", new Node("hostB", 12, 12*1024, 120, 0, 0, 0, 0));
+    public void testSlotAwareDeploymentMultiProviderFake() {
+        boolean bestProvider = true;
         
-        List<Slot> slots = new ArrayList<>();
-        slots.add(new Slot("hostA", 10, 100, 10*1024));
-        slots.add(new Slot("hostB", 12, 120, 12*1024));
-
+        Map<String, Node> nodesTable1 = new HashMap<String, Node>();
+        nodesTable1.put("hostA", new Node("hostA", 16, 16*1024, 160, 6, 6*1024, 60, 0));
+        nodesTable1.put("hostB", new Node("hostB", 12, 12*1024, 120, 0, 0, 0, 0));
+        Map<String, Node> nodesTable2 = new HashMap<String, Node>();
+        nodesTable2.put("hostC", new Node("hostC", 16, 16*1024, 160, 0, 0, 0, 0));
+        nodesTable2.put("hostD", new Node("hostD", 12, 12*1024, 120, 0, 0, 0, 0));
+        
+        List<Slot> slots1 = new ArrayList<>();
+        slots1.add(new Slot("hostA", 10, 100, 10*1024));
+        slots1.add(new Slot("hostB", 12, 120, 12*1024));
+        List<Slot> slots2 = new ArrayList<>();
+        slots2.add(new Slot("hostC", 16, 160, 16*1024));
+        slots2.add(new Slot("hostD", 12, 120, 12*1024));
+        
         int minCpus = 2;
         int maxCpus = 4;
         int totalCpusToAdd = 10;
         
-        SlotAwareDeployer deployer = new SlotAwareDeployer();
-        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10);
-        System.out.println(solutions);
+        SlotAwareDeployer deployerA = new SlotAwareDeployer("providerA");
+        List<SlotSolution> solutions1 = deployerA.getSlotsSortedByConsolidationScore(
+                slots1, nodesTable1, totalCpusToAdd, minCpus, maxCpus, 512, 10);
+        System.out.println(solutions1);
+
+        SlotAwareDeployer deployerB = new SlotAwareDeployer("providerB");
+        List<SlotSolution> solutions2 = deployerB.getSlotsSortedByConsolidationScore(
+                slots2, nodesTable2, totalCpusToAdd, minCpus, maxCpus, 512, 10);
+        System.out.println(solutions2);
+
+        SlotSolution solution = 
+            (bestProvider && solutions1.get(0).getConsolidationScore() >= solutions2.get(0).getConsolidationScore()) ?
+                solutions1.get(0) : solutions2.get(0);
+
+        System.out.println(solution);
     }
     
     public void testSlotAwareDeployment() throws Exception {
