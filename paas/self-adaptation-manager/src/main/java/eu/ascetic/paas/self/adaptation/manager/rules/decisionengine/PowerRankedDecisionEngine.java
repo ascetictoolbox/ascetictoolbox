@@ -93,11 +93,11 @@ public class PowerRankedDecisionEngine extends AbstractDecisionEngine {
         }
         Collections.shuffle(vmOvfTypes);
         //Give preference to any VM type specified in the rule.
-        String vmType = response.getAdaptationDetail("VM_TYPE");
-        String vmTypeToAdd = "";
+        String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
+        String vmTypeToAdd;
         //Check that the preferential type can be added
-        if (vmType != null && vmOvfTypes.contains(vmType)) {
-            vmTypeToAdd = vmType;
+        if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
+            vmTypeToAdd = vmTypePreference;
         } else { //If no preference is given then pick the best alternative
             vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
         }

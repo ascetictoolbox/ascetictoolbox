@@ -122,17 +122,17 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         }
         Collections.shuffle(vmOvfTypes);
         //Give preference to any VM type specified in the rule.
-        String vmType = response.getAdaptationDetail("VM_TYPE");
-        String vmTypeToAdd = "";
+        String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
+        String vmTypeToAdd;
         //Check that the preferential type can be added
-        if (vmType != null && vmOvfTypes.contains(vmType)) {
-            vmTypeToAdd = vmType;
+        if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
+            vmTypeToAdd = vmTypePreference;
         } else { //If no preference is given then pick the best alternative
             vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
         }
         response.setAdaptationDetails(vmTypeToAdd);
         List<String> typesToAdd = getVmTypesToConsolidateHost(response, vmTypeToAdd);
-        while (!typesToAdd.isEmpty() && !getCanVmBeAdded(response, vmType, typesToAdd.size())) {
+        while (!typesToAdd.isEmpty() && !getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
         }
@@ -147,7 +147,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         } else { //Multiple VMs to add
             response.setVmId("");
             response.setActionType(Response.AdaptationType.SCALE_TO_N_VMS);
-            response.setAdaptationDetails("VM_TYPE=" + vmType + ";VM_COUNT=" + typesToAdd.size());
+            response.setAdaptationDetails("VM_TYPE=" + vmTypeToAdd + ";VM_COUNT=" + typesToAdd.size());
         }
         return response;
     }

@@ -132,11 +132,11 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setPossibleToAdapt(false);
             return response;
         }
-        String vmType = response.getAdaptationDetail("VM_TYPE");
-        String vmTypeToAdd = "";
+        String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
+        String vmTypeToAdd;
         //Check that the preferential type can be added
-        if (vmType != null && vmOvfTypes.contains(vmType)) {
-            vmTypeToAdd = vmType;
+        if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
+            vmTypeToAdd = vmTypePreference;
         } else { //If no preference is given then pick the best alternative
             vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
         }
@@ -158,7 +158,8 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         VirtualSystem system = OVFUtils.getVMFromOvfType(ovf, vmTypeToAdd);
         VmRequirements reqs = OVFUtils.getVMRequirementsFromOvfType(ovf, vmTypeToAdd);
         List<String> typesToAdd = new ArrayList<>();
-
+        List<String> typeSizesToAdd = new ArrayList<>();
+        
         int minCpus = system.getVirtualHardwareSection().getMinNumberOfVirtualCPUs();
         int maxCpus = system.getVirtualHardwareSection().getMaxNumberOfVirtualCPUs();
         /**
@@ -179,33 +180,34 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             return response;
         }
         List<Slot> winningSolution = solutions.get(0).getSlots();
-        /**
-         * TODO convert slot solution into typesToAdd.
-         * This has a problem in that winning solutions of different sizes aren't
-         * easily coped with. The PaaS SAM has always previously indicated which
-         * VM type like ordering at a bar, i.e. I want one of X drink. Thus saying
-         * X drink plus 2 lemons (i.e. cpus), is more difficult.
-         */
         for (Slot vmToPlace : winningSolution) {
-            typesToAdd.add(vmType); //Thus this conversion is not quite right.
-            vmToPlace.getFreeCpus(); //use this to get actual VM size.
+            typesToAdd.add(vmTypePreference);
+            typeSizesToAdd.add(vmToPlace.getFreeCpus() + "");
         }
-        while (!typesToAdd.isEmpty() && !getCanVmBeAdded(response, vmType, typesToAdd.size())) {
+        while (!typesToAdd.isEmpty() && !getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
+            typeSizesToAdd.remove(0);
         }
         if (typesToAdd.isEmpty()) {
             response.setAdaptationDetails("Adding a VM would breach SLA criteria");
             response.setPossibleToAdapt(false);
             return response;
         }
+        String typesToAddSize = "";
+        int count = 0;
+        for (String size : typeSizesToAdd) {
+            typesToAddSize = typesToAddSize + (count == 0 ? "" : ",") + size;
+            count = count + 1;
+        }
+        typesToAddSize = ";VM_SIZE=" + typesToAddSize;
         if (typesToAdd.size() == 1) {
             //Send the update as a simple add VM message
             response.setAdaptationDetails(vmTypeToAdd);
         } else { //Multiple VMs to add
             response.setVmId("");
             response.setActionType(Response.AdaptationType.SCALE_TO_N_VMS);
-            response.setAdaptationDetails("VM_TYPE=" + vmType + ";VM_COUNT=" + typesToAdd.size());
+            response.setAdaptationDetails("VM_TYPE=" + vmTypeToAdd + ";VM_COUNT=" + typesToAdd.size() + typesToAddSize);
         }
         return response;
     }
