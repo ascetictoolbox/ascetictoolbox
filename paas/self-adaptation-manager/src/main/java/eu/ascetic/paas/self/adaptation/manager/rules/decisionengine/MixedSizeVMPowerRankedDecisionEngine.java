@@ -150,7 +150,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         Map<String, Node> hosts = new HashMap<>();
         List<Node> nodes = getActuator().getProviderHostInfo();
         for (Node node : nodes) {
-            hosts.put(node.getHostname(), node);    
+            hosts.put(node.getHostname(), node);
         }
         //Construct VM information
         String ovfStr = getActuator().getOvf(response.getApplicationId(), response.getDeploymentId());
@@ -159,20 +159,20 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         VmRequirements reqs = OVFUtils.getVMRequirementsFromOvfType(ovf, vmTypeToAdd);
         List<String> typesToAdd = new ArrayList<>();
         List<String> typeSizesToAdd = new ArrayList<>();
-        
+
         int minCpus = system.getVirtualHardwareSection().getMinNumberOfVirtualCPUs();
         int maxCpus = system.getVirtualHardwareSection().getMaxNumberOfVirtualCPUs();
         /**
-         * TODO consider a better way of deciding the target number of CPUs to add.
-         * The goal is rather arbritrary but needs to fill up a given host, thus
-         * making things as efficient cent as possible.
+         * TODO consider a better way of deciding the target number of CPUs to
+         * add. The goal is rather arbritrary but needs to fill up a given host,
+         * thus making things as efficient cent as possible.
          */
-        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, 
-                hosts, 
+        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots,
+                hosts,
                 reqs.getCpus() * 4, // Add upto 4 x the curent cpu default. 
-                minCpus, 
-                maxCpus, 
-                reqs.getRamMb(), 
+                minCpus,
+                maxCpus,
+                reqs.getRamMb(),
                 reqs.getDiskGb());
         if (solutions.isEmpty()) {
             response.setAdaptationDetails("No Slot solution was found");
@@ -201,14 +201,10 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             count = count + 1;
         }
         typesToAddSize = ";VM_SIZE=" + typesToAddSize;
-        if (typesToAdd.size() == 1) {
-            //Send the update as a simple add VM message
-            response.setAdaptationDetails(vmTypeToAdd);
-        } else { //Multiple VMs to add
-            response.setVmId("");
-            response.setActionType(Response.AdaptationType.SCALE_TO_N_VMS);
-            response.setAdaptationDetails("VM_TYPE=" + vmTypeToAdd + ";VM_COUNT=" + typesToAdd.size() + typesToAddSize);
-        }
+        //In order to specify CPU size, even if one VM is added a SCALE TO N VMS action is used.
+        response.setVmId("");
+        response.setActionType(Response.AdaptationType.SCALE_TO_N_VMS);
+        response.setAdaptationDetails("VM_TYPE=" + vmTypeToAdd + ";VM_COUNT=" + typesToAdd.size() + typesToAddSize);
         return response;
     }
 

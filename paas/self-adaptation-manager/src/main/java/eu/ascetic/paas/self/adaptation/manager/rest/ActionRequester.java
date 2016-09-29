@@ -18,8 +18,8 @@ package eu.ascetic.paas.self.adaptation.manager.rest;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.ClientResponse;
-import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.Node;
+import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
@@ -235,7 +235,32 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         if (vm == null) {
             return;
         }
-        String vmDetails = "AppID: " + applicationId + "Deployment ID: " 
+        String vmDetails = "AppID: " + applicationId + "Deployment ID: "
+                + deploymentId + "OVF ID: " + ovfId + "VM: " + vm;
+        Logger.getLogger(ActionRequester.class.getName()).log(Level.INFO, vmDetails);
+        client.postVM(ModelConverter.objectVMToXML(vm));
+        client.close();
+    }
+
+    /**
+     * This adds a vm of a given ovf type to named deployment.
+     *
+     * @param applicationId The application ID
+     * @param deploymentId The deployment ID
+     * @param ovfId The OVF id that indicates which VM type to instantiate
+     * @param cpuSize The size of the cpu to use, must be at least 1 else the 
+     * ovf default will be used instead.
+     */
+    public void addVM(String applicationId, String deploymentId, String ovfId, int cpuSize) {
+        RestVMClient client = new RestVMClient(applicationId, deploymentId);
+        VM vm = cloneVm(getVm(applicationId, deploymentId, ovfId));
+        if (vm == null) {
+            return;
+        }
+        if (cpuSize >= 1) {
+            vm.setCpuActual(cpuSize);
+        }        
+        String vmDetails = "AppID: " + applicationId + "Deployment ID: "
                 + deploymentId + "OVF ID: " + ovfId + "VM: " + vm;
         Logger.getLogger(ActionRequester.class.getName()).log(Level.INFO, vmDetails);
         client.postVM(ModelConverter.objectVMToXML(vm));
@@ -429,8 +454,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         }.getType();
         ArrayList<Node> output = gson.fromJson(response, listType);
         return output;
-    }    
-    
+    }
+
     @Override
     public List<Slot> getSlots() {
         ProviderSlotClient client = new ProviderSlotClient("1"); //TODO fix this
@@ -454,10 +479,20 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     public void horizontallyScaleToNVms(String applicationId, String deploymentId, Response response) {
         String vmType = response.getAdaptationDetail("VM_TYPE");
         String vmsToRemove = response.getAdaptationDetail("VMs_TO_REMOVE");
+        String cpuSizeStr = response.getAdaptationDetail("VM_SIZE");
+        String[] sizes = null;
+        if (cpuSizeStr != null) {
+            sizes = cpuSizeStr.split(",");
+        }
         if (vmsToRemove == null) { //Add VMs
             int count = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
             for (int i = 0; i < count; i++) {
-                addVM(applicationId, deploymentId, vmType);
+                if (cpuSizeStr != null && cpuSizeStr.isEmpty()) {
+                    addVM(applicationId, deploymentId, vmType);
+                } else {
+                    //Set the cpu size here.
+                    addVM(applicationId, deploymentId, vmType, Integer.parseInt(sizes[i]));
+                }
             }
         } else { //Remove VMs
             for (String vmId : vmsToRemove.split(",")) {
@@ -568,7 +603,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                 break;
             case RENEGOTIATE:
                 renegotiate(response.getApplicationId(), response.getDeploymentId());
-                break;                
+                break;
             default:
                 Logger.getLogger(ActionRequester.class.getName()).log(Level.SEVERE, "The Response type was not recoginised by this adaptor");
                 break;
