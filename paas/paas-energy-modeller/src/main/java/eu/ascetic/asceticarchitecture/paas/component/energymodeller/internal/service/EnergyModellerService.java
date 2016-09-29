@@ -32,7 +32,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.Date;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.ApplicationSample;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.datatype.EventSample;
@@ -43,10 +47,12 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.com
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataConsumption;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.CpuFeatures;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.VirtualMachine;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.DataConsumptionHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.CpuFeaturesHandler;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.MonitoringRegistry;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EventDataAggregatorService;
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.model.PredictorBuilder;
@@ -341,6 +347,70 @@ public class EnergyModellerService implements PaaSEnergyModeller {
 		return currentval;
 	}
 
+	
+	// M. Fontanella - 29/09/2016 - BEGIN
+	public int writeDeploymentRequest(String providerid, String applicationid,  String deploymentid,	String vmid, String iaasid, String status) {
+	
+		if (providerid==null) providerid=emsettings.getProviderIdDefault();
+		
+       	VirtualMachine vm = new VirtualMachine();
+        vm.setApplicationid( applicationid );
+        vm.setDeploymentid( deploymentid );
+        vm.setVmid( vmid );
+        vm.setProviderid( providerid );
+        vm.setIaasid( iaasid );
+        Date date = new Date();
+     	SqlSession session = appRegistry.getSession();
+    	AppRegistryMapper mapper = session.getMapper(AppRegistryMapper.class); 
+    	int checkvm = 0;
+    	int returncode = 0;
+        
+        switch (status.toLowerCase()) {
+        case "deployed":
+        	LOGGER.info("Received DEPLOYED request for: " + vm.getProviderid() + ", " + vm.getApplicationid() + ", " + vm.getDeploymentid() + ", " + vm.getVmid());
+            
+        	vm.setStart(date.getTime());
+        	
+        	checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());
+        	if (checkvm>0){
+        		// LOGGER.warn("Received again a deployed message for an app already registered");
+        		LOGGER.info("Received again a deployed message for an app already registered");
+        		session.close();
+        		        		
+        		returncode = -1;
+        	} else {    	
+        		mapper.createVM(vm);
+        		LOGGER.info("DEPLOYED request completed");
+        	}
+        	break;
+        case "deleted":
+        	LOGGER.info("Received DELETED request for: " + vm.getProviderid() + ", " + vm.getApplicationid() + ", " + vm.getDeploymentid() + ", " + vm.getVmid());
+        	
+        	vm.setStop(date.getTime());
+        	
+         	checkvm = mapper.checkVM(vm.getProviderid(), vm.getApplicationid(), vm.getDeploymentid(), vm.getVmid());     	
+        	if (checkvm==0){        		
+        		//LOGGER.warn("Received a message for an app not being created");
+        		LOGGER.info("Received a message for an app not being created");
+        		session.close();
+        		
+        		returncode = -1;
+        	} else {
+        	
+        		mapper.stopVM(vm);
+        	   	LOGGER.info("DELETED request completed");
+        	}
+        	break;
+        default:
+        	returncode = -2;
+        	break;
+        }
+        
+        session.close();
+		return returncode;
+	}
+	// M. Fontanella - 29/09/2016 - END
+	
 	
 	/**
 	 * Private method, used internally for:

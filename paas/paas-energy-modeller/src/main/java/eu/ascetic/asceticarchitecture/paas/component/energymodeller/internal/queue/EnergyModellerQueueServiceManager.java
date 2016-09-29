@@ -71,7 +71,7 @@ public class EnergyModellerQueueServiceManager {
 		this.dataConsumptionHandler = dataConsumptionHandler;
 		this.registry = registry;
 		this.cpuFeaturesHandler = cpuFeaturesHandler;
-		LOGGER.info("EM queue manager set");
+		LOGGER.info("EM queue manager set1");
 	
 	}
 	
@@ -87,7 +87,7 @@ public class EnergyModellerQueueServiceManager {
 		this.dataConsumptionHandler = dataConsumptionHandler;		
 		this.registry = registry;
 		this.cpuFeaturesHandler = cpuFeaturesHandler;
-		LOGGER.info("EM queue manager set");
+		LOGGER.info("EM queue manager set2");
 	
 	}
 	
@@ -127,6 +127,8 @@ public class EnergyModellerQueueServiceManager {
 		
 	}	
 	
+	// M. Fontanella - 29/09/2016 - BEGIN
+	// M. Fontanella - 29/09/2016 - END
 
 	/**
 	 * 

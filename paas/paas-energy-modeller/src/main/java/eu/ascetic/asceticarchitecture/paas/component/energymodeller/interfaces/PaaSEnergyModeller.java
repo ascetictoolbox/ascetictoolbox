@@ -65,6 +65,16 @@ public interface PaaSEnergyModeller {
 	 */
 	public double measure( String providerid, String applicationid,String deployment, List<String> vmids, String eventid, Unit unit,Timestamp start, Timestamp end);	
 	
+	/**
+	 * @param providerid
+	 * @param applicationid
+	 * @param deploymentid
+	 * @param vmid
+	 * @param iaasid
+	 * @param status
+	 * @return 0 = registration successfully completed, -1 = error during check VM, -2 = wrong status parameter 
+	 */
+	public int writeDeploymentRequest(String providerid, String applicationid,  String deploymentid, String vmid, String iaasid, String status);
 	// Y1 interfaces to collect data samples about application and its consumption
 	
 	/**
