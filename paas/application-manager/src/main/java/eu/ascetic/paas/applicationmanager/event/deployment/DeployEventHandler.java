@@ -231,7 +231,7 @@ public class DeployEventHandler {
 										                  "" + deployment.getId(), 
 										                  "" + vmToDB.getId(), 
 										                  vmToDB.getProviderVmId(), 
-										                  vmToDB.getStatus());
+										                  Dictionary.APPLICATION_STATUS_DEPLOYED);
 							}
 						}
 					}

@@ -1999,7 +1999,7 @@ public class VMRestTest extends AbstractTest {
 				                                                    "11", 
 				                                                    "0", 
 				                                                    "haproxy-vm1", 
-				                                                    "ACTIVE");
+				                                                    Dictionary.APPLICATION_STATUS_DEPLOYED);
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);

@@ -679,10 +679,10 @@ public class DeployEventHandlerTest extends AbstractTest {
 	}
 	
 	private void verifyEm(String appName, EnergyModellerBean em) {
-		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "haproxy-vm1", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "jboss-vm1", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "mysql-vm1", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "jmeter-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "haproxy-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "jboss-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "mysql-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "jmeter-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
 	}
 	
 	@Test
@@ -886,11 +886,11 @@ public class DeployEventHandlerTest extends AbstractTest {
 		verify(vmDAO, times(5)).save((VM) any());
 		
 		// Verify Em
-		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "haproxy-vm1", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jboss-vm1", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jboss-vm2", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "mysql-vm1", "ACTIVE");
-		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jmeter-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "haproxy-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jboss-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jboss-vm2", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "mysql-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jmeter-vm1", Dictionary.APPLICATION_STATUS_DEPLOYED);
 		
 		// We verify that at the end we store in the database the right object
 		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);

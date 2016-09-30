@@ -41,6 +41,7 @@ import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
+import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
@@ -312,7 +313,7 @@ public class VMRest extends AbstractRest {
 					                                   "" + deployment.getId(), 
 					                                   "" + vmToDB.getId(), 
 					                                   vmToDB.getProviderVmId(), 
-					                                   vmToDB.getStatus());
+					                                   Dictionary.APPLICATION_STATUS_DEPLOYED);
 			
 			AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
 		}
