@@ -609,6 +609,10 @@ public class DeploymentRestTest extends AbstractTest {
 		
 		assertEquals("22.0 Wh", argument.getValue().getData().getPower());
 		
+		// Verify em
+		verify(modeller, times(1)).writeDeploymentRequest(null, "app-name", "1", "1", "aaaa-bbbb-1", "DELETED");
+		verify(modeller, times(1)).writeDeploymentRequest(null, "app-name", "1", "2", "aaaa-bbbb-2", "DELETED");
+		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);
 		assertEquals(3, listener.getTextMessages().size());

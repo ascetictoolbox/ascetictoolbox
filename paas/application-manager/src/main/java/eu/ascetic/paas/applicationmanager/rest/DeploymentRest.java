@@ -343,6 +343,12 @@ public class DeploymentRest extends AbstractRest {
 			
 			images.addAll(vm.getImages());
 			
+			getEnergyModeller().writeDeploymentRequest(vm.getProviderId(), 
+													   applicationName, 
+													   "" + deployment.getId(), 
+													   "" + vm.getId(), 
+													   vm.getProviderVmId(), 
+													   vm.getStatus());
 			AmqpProducer.sendVMDeletedMessage(applicationName, deployment, vm);
 		}
 		

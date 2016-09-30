@@ -68,7 +68,7 @@ public abstract class AbstractRest {
 	@Autowired
 	protected DeploymentEventService deploymentEventService;
 	//@Autowired
-	//protected static EnergyModellerBean energyModellerBean;
+	//protected EnergyModellerBean energyModellerBean;
 	protected static PaaSEnergyModeller energyModeller;
 	@Autowired
 	protected EnergyModellerQueueController energyModellerQueueController;
@@ -93,6 +93,7 @@ public abstract class AbstractRest {
 			EnergyModellerBean energyModellerBean = ApplicationContextHolder.getContext().getBean(EnergyModellerBean.class);
 			logger.info("Getting Energy Modeller...");
 			energyModeller = energyModellerBean.getEnergyModeller();
+			
 			return energyModeller;
 		}
 		else {

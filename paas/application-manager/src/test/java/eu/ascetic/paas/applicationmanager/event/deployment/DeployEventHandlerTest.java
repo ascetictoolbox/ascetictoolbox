@@ -38,6 +38,7 @@ import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.em.EnergyModellerBean;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.event.deployment.matchers.ImageToUploadWithEquals;
 import eu.ascetic.paas.applicationmanager.event.deployment.matchers.VmWithEquals;
@@ -48,7 +49,6 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
-import eu.ascetic.paas.applicationmanager.spreader.model.Converter;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
 
 /**
@@ -253,6 +253,9 @@ public class DeployEventHandlerTest extends AbstractTest {
 		PRClient prClient = mock(PRClient.class);
 		when(prClient.getVMMClient(-1)).thenReturn(vmMaClient);
 		
+		// EnergyModeller Mock
+		EnergyModellerBean em = mock(EnergyModellerBean.class);
+		
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
@@ -260,6 +263,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		deploymentEvent.setDeploymentId(22);
 		deploymentEvent.setApplicationName(application.getName());
 		deploymentEvent.setDeploymentStatus(Dictionary.APPLICATION_STATUS_CONTEXTUALIZED);
+		
 		
 		// We configure de DeployEventHandler
 		DeployEventHandler deploymentEventHandler = new DeployEventHandler();
@@ -269,6 +273,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		deploymentEventHandler.imageDAO = imageDAO;
 		deploymentEventHandler.prClient = prClient;
 		deploymentEventHandler.vmDAO = vmDAO;
+		deploymentEventHandler.em = em;
 		
 		//We start the task
 		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
@@ -285,6 +290,9 @@ public class DeployEventHandlerTest extends AbstractTest {
 		verify(vmMaClient, times(1)).getVM("jmeter-vm1");
 		
 		verify(vmDAO, times(4)).save((VM) any());
+		
+		//Verify EM
+		verifyEm(application.getName(), em);
 		
 		// We verify that at the end we store in the database the right object
 		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
@@ -535,6 +543,9 @@ public class DeployEventHandlerTest extends AbstractTest {
 		PRClient prClient = mock(PRClient.class);
 		when(prClient.getVMMClient(-1)).thenReturn(vmMaClient);
 		
+		// Energy modeller mock
+		EnergyModellerBean em = mock(EnergyModellerBean.class);
+		
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
@@ -551,6 +562,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		deploymentEventHandler.imageDAO = imageDAO;
 		deploymentEventHandler.prClient = prClient;
 		deploymentEventHandler.vmDAO = vmDAO;
+		deploymentEventHandler.em = em;
 		
 		//We start the task
 		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
@@ -570,6 +582,9 @@ public class DeployEventHandlerTest extends AbstractTest {
 		verify(vmMaClient, times(1)).getVM("jmeter-vm1");
 		
 		verify(vmDAO, times(4)).save((VM) any());
+		
+		// We verify the mock calss to em
+		verifyEm(application.getName(), em);
 		
 		// We verify that at the end we store in the database the right object
 		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
@@ -663,6 +678,13 @@ public class DeployEventHandlerTest extends AbstractTest {
 		receiver.close();
 	}
 	
+	private void verifyEm(String appName, EnergyModellerBean em) {
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "haproxy-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "jboss-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "mysql-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", appName, "22", "0", "jmeter-vm1", "ACTIVE");
+	}
+	
 	@Test
 	public void testDeployVmsCreatingImagesWithPublicIPs() throws Exception {
 		Deployment deployment = new Deployment();
@@ -721,6 +743,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		ApplicationDAO applicationDAO = mock(ApplicationDAO.class);
 		
 		Application application = new Application();
+		application.setName("threeTierWebApp");
 		when(applicationDAO.getByName("threeTierWebApp")).thenReturn(application);
 		when(applicationDAO.update(application)).thenReturn(true);
 		
@@ -822,6 +845,9 @@ public class DeployEventHandlerTest extends AbstractTest {
 		PRClient prClient = mock(PRClient.class);
 		when(prClient.getVMMClient(-1)).thenReturn(vmMaClient);
 		
+		// EM bean
+		EnergyModellerBean em = mock(EnergyModellerBean.class);
+		
 		// The test starts here
 		DeploymentEventService deploymentEventService = mock(DeploymentEventService.class);
 		
@@ -837,6 +863,7 @@ public class DeployEventHandlerTest extends AbstractTest {
 		deploymentEventHandler.imageDAO = imageDAO;
 		deploymentEventHandler.prClient = prClient;
 		deploymentEventHandler.vmDAO = vmDAO;
+		deploymentEventHandler.em = em;
 		
 		//We start the task
 		deploymentEventHandler.deployDeployment(Event.wrap(deploymentEvent));
@@ -857,6 +884,13 @@ public class DeployEventHandlerTest extends AbstractTest {
 		verify(vmMaClient, times(1)).getVM("jmeter-vm1");
 		
 		verify(vmDAO, times(5)).save((VM) any());
+		
+		// Verify Em
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "haproxy-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jboss-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jboss-vm2", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "mysql-vm1", "ACTIVE");
+		verify(em, times(1)).notifyVMChangeInStatus("-1", application.getName(), "22", "0", "jmeter-vm1", "ACTIVE");
 		
 		// We verify that at the end we store in the database the right object
 		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);

@@ -307,6 +307,13 @@ public class VMRest extends AbstractRest {
 			
 			logger.info("After the Deployment update");
 			
+			getEnergyModeller().writeDeploymentRequest("" +vmToDB.getProviderId(), 
+					                                   applicationName, 
+					                                   "" + deployment.getId(), 
+					                                   "" + vmToDB.getId(), 
+					                                   vmToDB.getProviderVmId(), 
+					                                   vmToDB.getStatus());
+			
 			AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
 		}
 		
@@ -363,6 +370,13 @@ public class VMRest extends AbstractRest {
 		vm.setStatus(STATE_VM_DELETED);
 		
 		vmDAO.update(vm);
+		
+		getEnergyModeller().writeDeploymentRequest(vm.getProviderId(), 
+				                                   applicationName, 
+				                                   "" + deployment.getId(), 
+				                                   "" + vm.getId(), 
+				                                   vm.getProviderVmId(), 
+				                                   vm.getStatus());
 		
 		AmqpProducer.sendVMDeletedMessage(applicationName, deployment, vm);
 		

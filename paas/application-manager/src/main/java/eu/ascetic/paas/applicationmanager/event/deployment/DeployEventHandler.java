@@ -13,6 +13,7 @@ import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
 import eu.ascetic.paas.applicationmanager.dao.ImageDAO;
 import eu.ascetic.paas.applicationmanager.dao.VMDAO;
+import eu.ascetic.paas.applicationmanager.em.EnergyModellerBean;
 import eu.ascetic.paas.applicationmanager.event.DeploymentEvent;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
@@ -69,6 +70,8 @@ public class DeployEventHandler {
 	protected VMDAO vmDAO;
 	@Autowired
 	protected ImageDAO imageDAO;
+	@Autowired
+	protected EnergyModellerBean em;
 	protected PRClient prClient = new PRClient(); 
 
 	@Selector(value="topic.deployment.status", reactor="@rootReactor")
@@ -221,6 +224,14 @@ public class DeployEventHandler {
 								//deployment = deploymentDAO.getById(deployment.getId());
 
 								AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
+								
+								//notify EM of VM deployment
+								em.notifyVMChangeInStatus("" + deploymentEvent.getProviderId(),
+										                  applicationName,
+										                  "" + deployment.getId(), 
+										                  "" + vmToDB.getId(), 
+										                  vmToDB.getProviderVmId(), 
+										                  vmToDB.getStatus());
 							}
 						}
 					}

@@ -50,4 +50,8 @@ public class EnergyModellerBean {
 	public PaaSEnergyModeller getEnergyModeller() {
 		return energyModeller;
 	}
+	
+	public void notifyVMChangeInStatus(String providerId, String applicationId, String deploymentId, String vmId, String vmIaaSId, String status) {
+		energyModeller.writeDeploymentRequest(providerId, applicationId, deploymentId, vmId, vmIaaSId, status);
+	}
 }

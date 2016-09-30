@@ -1148,6 +1148,7 @@ public class VMRestTest extends AbstractTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "static-access"}) 
 	public void deleteVM() {
 		// Pre
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
@@ -1172,18 +1173,27 @@ public class VMRestTest extends AbstractTest {
 		
 		VmManagerClient vmMaClient = mock(VmManagerClient.class);
 		
+		// We mock Energy Modeller
+		PaaSEnergyModeller em = mock(PaaSEnergyModeller.class);
+		
 		// Test
 		VMRest vmRest = new VMRest();
 		vmRest.deploymentDAO = deploymentDAO;
 		vmRest.vmDAO = vmDAO;
 		vmRest.vmManagerClient = vmMaClient;
+		vmRest.energyModeller = em;
 		
 		Response response = vmRest.deleteVM("", "11", "33");
 		assertEquals(204, response.getStatus());
 		assertEquals("", (String) response.getEntity());
 		
-		//verify
+		// verify em
+		verify(em, times(1)).writeDeploymentRequest(null, "", "0", "0", "provider-id", "DELETED");
+		
+		//verify VMMClient
 		verify(vmMaClient).deleteVM("provider-id");
+		
+		// Verify DAO
 		ArgumentCaptor<VM> vmCaptor = ArgumentCaptor.forClass(VM.class);
 		verify(vmDAO, times(1)).update(vmCaptor.capture());
 		assertEquals(vm.getOvfId(), vmCaptor.getValue().getOvfId());
@@ -1893,11 +1903,14 @@ public class VMRestTest extends AbstractTest {
 	}
 	
 	@Test
+	@SuppressWarnings(value = { "static-access" }) 
 	public void postVMWithForce() throws Exception {
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
 		AmqpListListener listener = new AmqpListListener();
 		receiver.setMessageConsumer(listener);
+		
+		PaaSEnergyModeller paasEnergyModeller = mock(PaaSEnergyModeller.class);
 		
 		// Pre Test 1 - Image already exits in the DB
 		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
@@ -1953,6 +1966,7 @@ public class VMRestTest extends AbstractTest {
 		vmRest.vmDAO = vmDAO;
 		vmRest.vmManagerClient = vmMaClient;
 		vmRest.imageDAO = imageDAO;
+		vmRest.energyModeller = paasEnergyModeller;
 		
 		Response response = vmRest.postVM("threeTierWebApp", "11", true, vmRequest);
 		assertEquals(200, response.getStatus());
@@ -1978,6 +1992,14 @@ public class VMRestTest extends AbstractTest {
 		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfHref());
 		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfId());
 		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
+		
+		// Verify that the VM was notify to EM
+		verify(paasEnergyModeller, times(1)).writeDeploymentRequest("prod-id",
+				                                                    "threeTierWebApp",
+				                                                    "11", 
+				                                                    "0", 
+				                                                    "haproxy-vm1", 
+				                                                    "ACTIVE");
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);
