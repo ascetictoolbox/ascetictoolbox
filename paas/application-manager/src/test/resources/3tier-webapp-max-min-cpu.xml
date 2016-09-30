@@ -113,7 +113,7 @@
           <rasd:ElementName>1024 MB of memory</rasd:ElementName>
           <rasd:InstanceID>2</rasd:InstanceID>
           <rasd:ResourceType>4</rasd:ResourceType>
-          <rasd:VirtualQuantity>1024</rasd:VirtualQuantity>
+          <rasd:VirtualQuantity>512</rasd:VirtualQuantity>
           <rasd:VirtualQuantityUnits>byte * 2^20</rasd:VirtualQuantityUnits>
         </ovf:Item>
         <ovf:Item>
@@ -152,8 +152,8 @@
         <ovf:Product>Jboss</ovf:Product>
         <ovf:Version>1.0</ovf:Version>
         <!--Product Properties that stores variables such as probe end points-->
-        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="2"/>
-        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="2"/>
+        <ovf:Property ovf:key="asceticLowerBound" ovf:type="uint32" ovf:value="1"/>
+        <ovf:Property ovf:key="asceticUpperBound" ovf:type="uint32" ovf:value="1"/>
         <ovf:Property ovf:key="asceticProbeUri-1" ovf:type="string" ovf:value="uri://some-end-point/application-monitor"/>
         <ovf:Property ovf:key="asceticProbeType-1" ovf:type="string" ovf:value="mem"/>
         <ovf:Property ovf:key="asceticProbeInterval-1" ovf:type="string" ovf:value="1sec"/>

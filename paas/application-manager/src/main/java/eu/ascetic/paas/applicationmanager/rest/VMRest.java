@@ -231,7 +231,17 @@ public class VMRest extends AbstractRest {
 		
 		// VM variables:
 		String vmName = virtualSystem.getName();
-		int cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+		int cpus = 0;
+		
+		// We check if we create the VM with different CPUs than the default.
+		if(vm.getCpuActual() == 0) {
+			cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+		} else if(vm.getCpuActual() >= vmLimits.getMinNumberCPUs() && vm.getCpuActual() <= vmLimits.getMaxNumberCPUs()) {
+			cpus = vm.getCpuActual();
+		} else {
+			cpus = virtualSystem.getVirtualHardwareSection().getNumberOfVirtualCPUs();
+		} 
+		
 		int ramMb = virtualSystem.getVirtualHardwareSection().getMemorySize();
 		String isoPath = OVFUtils.getIsoPathFromVm(virtualSystem.getVirtualHardwareSection(), ovfDocument);
 		int capacity = OVFUtils.getCapacity(ovfDocument, diskId);

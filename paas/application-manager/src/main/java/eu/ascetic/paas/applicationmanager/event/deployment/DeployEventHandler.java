@@ -187,9 +187,17 @@ public class DeployEventHandler {
 								//vmToDB.setSlaAgreement(deployment.getSlaAgreement());
 								vmToDB.setNumberVMsMax(maxNumberVMs);
 								vmToDB.setNumberVMsMin(minNumberVMs);
-								vmToDB.setCpuMin(cpus);
+								if(vmLimits.getMinNumberCPUs() > 0) {
+									vmToDB.setCpuMin(vmLimits.getMinNumberCPUs());
+								} else {
+									vmToDB.setCpuMin(cpus);
+								}
 								vmToDB.setCpuActual(cpus);
-								vmToDB.setCpuMax(cpus);
+								if(vmLimits.getMaxNumberCPUs() > 0 ) {
+									vmToDB.setCpuMax(vmLimits.getMaxNumberCPUs());
+								} else {
+									vmToDB.setCpuMax(cpus);
+								}
 								vmToDB.setDiskMin(capacity);
 								vmToDB.setDiskActual(capacity);
 								vmToDB.setDiskMax(capacity);
