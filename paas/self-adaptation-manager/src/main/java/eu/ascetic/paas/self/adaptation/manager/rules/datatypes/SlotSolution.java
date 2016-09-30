@@ -73,9 +73,23 @@ public class SlotSolution {
         String out = "consolidationScore = " + consolidationScore + "\n";
         for(Slot s : slots){ 
             out += s.getHostname() + " => ( cpus=" + s.getFreeCpus() + 
-                ", ramMb=" + s.getFreeDiskGb() + ", diskGb=" + s.getFreeDiskGb() + ", provider = " + this.provider + " ); \n"; 
+                ", ramMb=" + s.getFreeDiskGb() + ", diskGb=" + s.getFreeDiskGb() + ", provider = " + this.getProvider() + " ); \n"; 
         }
         return out;
+    }
+
+    /**
+     * @return the provider
+     */
+    public String getProvider() {
+        return provider;
+    }
+
+    /**
+     * @param provider the provider to set
+     */
+    public void setProvider(String provider) {
+        this.provider = provider;
     }
     
 }

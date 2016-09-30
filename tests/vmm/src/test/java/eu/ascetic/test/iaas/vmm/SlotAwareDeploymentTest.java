@@ -137,24 +137,29 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         boolean prepareExperiment = false;
         boolean runExperiment = false;
         boolean bestProvider = true;
+        VmManagerClient vmm2 = new VmManagerClient(VMMConf.vmManagerURLSecondProvider);
         String imageId = "1e8d335f-e797-4d3b-aa28-20154d77006f";
         
         if(prepareExperiment){
+            //bscgrid30 on providerA
             Vm vm01 = new Vm("slotAwareTest01", imageId, new VmRequirements(6, 6*1024, 10, 0), this.generateScript(6), "slotAwareTest", "", "sla", "bscgrid30");
             vmm.deployVms(Arrays.asList(vm01));
+            
+            //bscgrid29 on providerB
+            Vm vm02 = new Vm("slotAwareTest02", imageId, new VmRequirements(7, 7*1024, 10, 0), this.generateScript(7), "slotAwareTest", "", "sla", "bscgrid29");
+            vmm2.deployVms(Arrays.asList(vm02));
         }
         
         if(runExperiment){
             Map<String, Node> nodesTable1 = getNodesTable(vmm.getNodes());
             List<Slot> slots1 = vmm.getSlots();
             
-            VmManagerClient vmm2 = new VmManagerClient(VMMConf.vmManagerURLSecondProvider);
             Map<String, Node> nodesTable2 =getNodesTable(vmm2.getNodes());
             List<Slot> slots2 = vmm2.getSlots();
 
             int minCpus = 2;
             int maxCpus = 4;
-            int totalCpusToAdd = 16;
+            int totalCpusToAdd = 10;
 
             SlotAwareDeployer deployerA = new SlotAwareDeployer("providerA");
             List<SlotSolution> solutions1 = deployerA.getSlotsSortedByConsolidationScore(
@@ -166,11 +171,19 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
                     slots2, nodesTable2, totalCpusToAdd, minCpus, maxCpus, 512, 10);
             System.out.println(solutions2);
             
-            SlotSolution solution = 
+            SlotSolution chosenSolution = 
                 (bestProvider && solutions1.get(0).getConsolidationScore() >= solutions2.get(0).getConsolidationScore()) ?
                     solutions1.get(0) : solutions2.get(0);
+            VmManagerClient providerVMM = chosenSolution.getProvider().equals("providerA") ? vmm : vmm2;
             
-            System.out.println(solution);
+            System.out.println(chosenSolution);
+            List<Slot> chosenSlots = chosenSolution.getSlots();
+            for(Slot slot : chosenSlots) {
+                System.out.println("Deploying a VM following this requirements: " + slot.toString());
+                VmRequirements slotRequeriments = new VmRequirements( (int)slot.getFreeCpus(), (int)slot.getFreeMemoryMb(), (int)slot.getFreeDiskGb(), 0);
+                Vm vm = new Vm("slotAwareInstance", imageId, slotRequeriments, this.generateScript(slotRequeriments.getCpus()), "slotAwareTest", "", "sla", slot.getHostname());
+                providerVMM.deployVms(Arrays.asList(vm));
+            }
         }
     }
     
