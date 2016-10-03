@@ -1,0 +1,164 @@
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.SUBMITTED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "SUBMITTED"
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.NEGOTIATING
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "NEGOTIATING"
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.NEGOTIATED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "NEGOTIATED"
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.CONTEXTUALIZING
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "CONTEXTUALIZING"
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.CONTEXTUALIZED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "CONTEXTUALIZED"
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.DEPLOYING
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "DEPLOYING"
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.VM.3123.DEPLOYED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "DEPLOYING",
+   "vms" : [ {
+      "vmId" : "3123",
+      "iaasVmId" : "869b3930-53ef-43c6-9eb9-dc61b0cd87aa",
+      "ovfId" : "mysqlA",
+      "status" : "ACTIVE",
+      "providerId" : "1",
+      "value" : 0.0,
+      "timestamp" : 0,
+      "cpu" : 1,
+      "ram" : 1024,
+      "swap" : 0,
+      "disk" : 20,
+      "priceSchema" : 0
+   } ]
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.DEPLOYED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "DEPLOYED",
+   "vms" : [ {
+      "vmId" : "3123",
+      "iaasVmId" : "869b3930-53ef-43c6-9eb9-dc61b0cd87aa",
+      "ovfId" : "mysqlA",
+      "status" : "ACTIVE",
+      "providerId" : "1",
+      "value" : 0.0,
+      "timestamp" : 0,
+      "cpu" : 1,
+      "ram" : 1024,
+      "swap" : 0,
+      "disk" : 20,
+      "priceSchema" : 0
+   } ]
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.VM.3123.DELETED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "DEPLOYED",
+   "vms" : [ {
+      "vmId" : "3123",
+      "iaasVmId" : "869b3930-53ef-43c6-9eb9-dc61b0cd87aa",
+      "ovfId" : "mysqlA",
+      "status" : "DELETED",
+      "providerId" : "1",
+      "value" : 0.0,
+      "timestamp" : 0,
+      "cpu" : 1,
+      "ram" : 1024,
+      "swap" : 0,
+      "disk" : 20,
+      "priceSchema" : 0
+   } ]
+}
+
+
+####################################
+   Message received for destination: APPLICATION.davidgpTestApp.DEPLOYMENT.1153.TERMINATED
+   Message:
+
+{
+   "applicationId" : "davidgpTestApp",
+   "deploymentId" : "1153",
+   "status" : "TERMINATED",
+   "vms" : [ {
+      "vmId" : "3123",
+      "iaasVmId" : "869b3930-53ef-43c6-9eb9-dc61b0cd87aa",
+      "ovfId" : "mysqlA",
+      "status" : "DELETED",
+      "providerId" : "1",
+      "value" : 0.0,
+      "timestamp" : 0,
+      "cpu" : 1,
+      "ram" : 1024,
+      "swap" : 0,
+      "disk" : 20,
+      "priceSchema" : 0
+   } ]
+}

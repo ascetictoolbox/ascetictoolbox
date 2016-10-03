@@ -7128,6 +7128,15 @@ utils/energy-modeller-vm-summary-generator/src/test/java/eu/ascetic/iaasvmenergy
 utils/energy-modeller-vm-summary-generator/vm_experimental_list.csv -text
 utils/energy-modeller-vm-summary-generator/vm_experimental_list.txt -text
 utils/energy-modeller-vm-summary-generator/zabbix_db_adaptor.properties -text
+utils/haproxy-dynamic-configuration/LICENSE.TXT -text
+utils/haproxy-dynamic-configuration/README.md -text
+utils/haproxy-dynamic-configuration/bootstrap.sh -text
+utils/haproxy-dynamic-configuration/conf_files/config.cfg -text
+utils/haproxy-dynamic-configuration/conf_files/haproxy.cfg -text
+utils/haproxy-dynamic-configuration/scripts/configure_repositores.sh -text
+utils/haproxy-dynamic-configuration/scripts/haproxy_bootstrap.sh -text
+utils/haproxy-dynamic-configuration/scripts/monitor_deployment.sh -text
+utils/haproxy-dynamic-configuration/tests/amq-messages.txt -text
 utils/host-power-emulator/Read[!!-~]Me.docx -text
 utils/host-power-emulator/Read[!!-~]Me.txt -text
 utils/host-power-emulator/associate[!!-~]scripts/host-power-push-exec.sh -text
