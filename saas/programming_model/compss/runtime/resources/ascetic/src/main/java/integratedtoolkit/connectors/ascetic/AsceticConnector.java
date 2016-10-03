@@ -1,22 +1,13 @@
 package integratedtoolkit.connectors.ascetic;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.Semaphore;
-
-import eu.ascetic.saas.application_uploader.ApplicationUploader;
-import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import integratedtoolkit.ascetic.Ascetic;
-import integratedtoolkit.ascetic.Configuration;
 import integratedtoolkit.connectors.Connector;
 import integratedtoolkit.connectors.ConnectorException;
 import integratedtoolkit.connectors.Cost;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.resources.CloudMethodWorker;
-import integratedtoolkit.types.resources.ShutdownListener;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
-import integratedtoolkit.types.resources.updates.ResourceUpdate;
-import integratedtoolkit.util.ResourceManager;
+import java.util.HashMap;
 
 public class AsceticConnector implements Cost, Connector {
 
@@ -61,7 +52,7 @@ public class AsceticConnector implements Cost, Connector {
 
     @Override
     public void terminateAll() {
-        
+
     }
 
     @Override
@@ -78,19 +69,13 @@ public class AsceticConnector implements Cost, Connector {
         }
 
         public void run() {
-        	System.out.println("Requesting a " + rR.getRequested().getType() + " instance "
-                    + "with image " + rR.getRequested().getImage().getImageName() + " to the APP_MANAGER");
-        	String applicationId = Configuration.getApplicationId();
-            String deploymentId = Configuration.getDeploymentId();
-            String amEndpoint = Configuration.getApplicationManagerEndpoint();
-        	ApplicationUploader uploader = new ApplicationUploader(amEndpoint);
-        	try {
-				uploader.addNewVM(applicationId, deploymentId, rR.getRequested().getType());
-			} catch (ApplicationUploaderException e) {
-				System.err.println("Error creating new VM "+ rR.getRequested().getType());
-				e.printStackTrace();
-			}
-            
+            try {
+                Ascetic.requestVMCreation(rR.getRequested().getImage().getImageName(), rR.getRequested().getType());
+            } catch (Exception e) {
+                System.err.println("Error creating new VM " + rR.getRequested().getType());
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -105,7 +90,7 @@ public class AsceticConnector implements Cost, Connector {
         }
 
         public void run() {
-        	/*
+            /*
              System.out.println("----------SHUTTING DOWN " + worker.getName());
              ResourceUpdate ru = ResourceManager.reduceCloudWorker(worker, reduction, new LinkedList());
              try {
@@ -129,25 +114,14 @@ public class AsceticConnector implements Cost, Connector {
              } catch (Exception e) {
              System.out.println("ERROR: Exception raised on worker shutdown");
              }
-			*/
-             System.out.println("Requesting destruction of " + worker.getName() + " to the APP_MANAGER");
-             String applicationId = Configuration.getApplicationId();
-             String deploymentId = Configuration.getDeploymentId();
-             String amEndpoint = Configuration.getApplicationManagerEndpoint();
-         	 ApplicationUploader uploader = new ApplicationUploader(amEndpoint);
-         	 
-         	 String vmId = Integer.toString(Ascetic.getVMId(worker));
-         	 try {
-				uploader.deleteVM(applicationId, deploymentId, vmId);
- 			 } catch (ApplicationUploaderException e) {
- 				System.err.println("Error deleting VM "+ worker.getName() + "(Id:"+vmId+")" );
- 				e.printStackTrace();
- 			 }
+             */
+            try {
+                Ascetic.requestVMDestruction(worker);
+            } catch (Exception e) {
+                System.err.println("Error deleting VM " + worker.getName());
+                e.printStackTrace();
+            }
         }
     }
-
-
-
-
 
 }

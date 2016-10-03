@@ -49,9 +49,9 @@ public class ApplicationMonitor {
                     + "\", \"nodeId\":\"" + vm.getProviderId()
                     + "\", \"instanceId\":\"" + Configuration.getDeploymentId()
                     + "\", \"data\":{ \"ip\":\"" + vm.getIPv4()
-                        + "\", \"eventType\":\"" + eventType
-                        + "\", \"eventWeight\":\"" + eventWeight
-                        + "\"}}", "application/json", "UTF-8");
+                    + "\", \"eventType\":\"" + eventType
+                    + "\", \"eventWeight\":\"" + eventWeight
+                    + "\"}}", "application/json", "UTF-8");
             System.out.println("Postin event " + sre.getContent() + " at App Monitor");
             method.setRequestEntity(sre);
             client.executeMethod(method);

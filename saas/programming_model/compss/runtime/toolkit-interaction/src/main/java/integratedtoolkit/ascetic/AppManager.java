@@ -50,20 +50,28 @@ public class AppManager {
         return newResources;
     }
 
+    public void requestVMCreation(String type) throws ApplicationUploaderException {
+        uploader.addNewVM(applicationId, deploymentId, type);
+    }
+
+    public void requestVMDestruction(String vmId) throws ApplicationUploaderException {
+        uploader.deleteVM(applicationId, deploymentId, vmId);
+    }
+
     public Cost getEstimations(String id, int coreId, int implId) throws ApplicationUploaderException {
         String eventType = generateEventType(coreId, implId);
         Cost c = null;
         try {
-         c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
-         } catch (Exception e) {
-         e.printStackTrace();
-         c=null;
-         }
+            c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            c = null;
+        }
         return c;
     }
 
     public double getAccumulatedEnergy() throws ApplicationUploaderException {
-    	//return 0;
+        //return 0;
         return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
     }
 

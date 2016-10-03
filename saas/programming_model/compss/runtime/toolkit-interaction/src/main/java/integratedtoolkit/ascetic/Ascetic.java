@@ -152,6 +152,19 @@ public class Ascetic {
                 && (nextPower < Configuration.getEnergyBoundary()));
     }
 
+    public static void requestVMCreation(String image, String type) throws ApplicationUploaderException {
+        System.out.println("Requesting a " +type + " instance with image " + image + " to the APP_MANAGER");
+        APP_MANAGER.requestVMCreation(type);
+    }
+
+    public static void requestVMDestruction(Worker worker) throws ApplicationUploaderException {
+        String IPv4 = worker.getName();
+        VM vm = resources.get(IPv4);
+        String amId = Integer.toString(vm.getAMId());
+        System.out.println("Requesting destruction of " + worker.getName() + "(ID: " + amId + ") to the APP_MANAGER");
+        APP_MANAGER.requestVMDestruction(amId);
+    }
+
     public static void startEvent(Worker resource, Implementation impl, AllocatableAction action) {
         String IPv4 = resource.getName();
         VM vm = resources.get(IPv4);
@@ -267,12 +280,6 @@ public class Ascetic {
         int currentVMs = VM.getComponentCount(componentName);
         return Configuration.withinBoundaries(componentName, currentVMs - 1);
     }
-    
-    public static int getVMId(Worker w){
-    	String IPv4 = w.getName();
-        VM vm = resources.get(IPv4);
-        return vm.getAMId();
-    }
 
     private static class AsceticMonitor extends Thread {
 
@@ -290,11 +297,11 @@ public class Ascetic {
                 }
             }
             System.out.println("***** Ascetic Monitoring stopped ******");
-            System.out.println("-Elapsed Time: "+ Ascetic.getAccumulatedTime());
-            System.out.println("-Total Cost: "+ Ascetic.getAccumulatedCost());
-            System.out.println("-Total Energy: "+ Ascetic.getAccumulatedEnergy());
+            System.out.println("-Elapsed Time: " + Ascetic.getAccumulatedTime());
+            System.out.println("-Total Cost: " + Ascetic.getAccumulatedCost());
+            System.out.println("-Total Energy: " + Ascetic.getAccumulatedEnergy());
             System.out.println("***************************************");
         }
     }
-    
+
 }
