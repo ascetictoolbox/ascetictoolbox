@@ -34,9 +34,9 @@ import eu.ascetic.saas.application_uploader.ApplicationUploader;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 public class ApplicationUploaderTest {
-	private static String APP_ID = "BenchmarkApp";
-	private static String DEPLOYMENT_ID= "669";
-	private static String VM_ID= "2005";
+	private static String APP_ID = "JEPlus";
+	private static String DEPLOYMENT_ID= "1149";
+	private static String VM_ID= "3117";
 	/*@Test
 	public void uploadApptest() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");
@@ -169,7 +169,7 @@ public class ApplicationUploaderTest {
 		System.out.println("Estimations for app " + applicationID + " deployment "+ deploymentID+ " vm "+ vmID + " event " + eventID +" are: Energy-> "+ cost.getEnergyValue().toString()+" Power-> "+ cost.getPowerValue().toString()+ " Charges-> "+ cost.getCharges().toString());
 	}*/
 	
-	@Test
+//	@Test
 	public void vmElasticity() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://192.168.3.222/application-manager");
 		String applicationID = APP_ID;
@@ -178,5 +178,13 @@ public class ApplicationUploaderTest {
 		System.out.println("New vm deployed for app " + applicationID + " deployment "+ deploymentID+ " ip: "+vm.getIp());
 		uploader.deleteVM(applicationID, deploymentID, Integer.toString(vm.getId()));
 	}
+
+	@Test
+        public void vmDelete() throws ApplicationUploaderException {
+                ApplicationUploader uploader = new ApplicationUploader("http://192.168.3.222/application-manager");
+                String applicationID = APP_ID;
+                String deploymentID = DEPLOYMENT_ID;
+                uploader.deleteVM(applicationID, deploymentID, VM_ID);
+        }
 
 }
