@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
+// TODO: Auto-generated Javadoc
 /**
 *
 * 
@@ -85,6 +86,44 @@ public class Json2ObjectMapper {
 		return item;
 	}
 	
+//	/**
+//	 * Gets the string format item.
+//	 *
+//	 * @param hmJsonItem the hm json item
+//	 * @return the string format item
+//	 */
+//	public static StringFormatItem getStringFormatItem(HashMap<String,String> hmJsonItem){
+//		StringFormatItem item = new StringFormatItem(hmJsonItem.get(Dictionary.ITEM_NAME));
+//		item.setDelay(hmJsonItem.get(Dictionary.ITEM_DELAY));
+//		item.setHistory(hmJsonItem.get(Dictionary.ITEM_HISTORY));
+//		item.setHostid(hmJsonItem.get(Dictionary.ITEM_HOSTID));
+//		item.setItemid(hmJsonItem.get(Dictionary.ITEM_ITEMID));
+//		item.setKey(hmJsonItem.get(Dictionary.ITEM_KEY));
+//		item.setLastClock(Long.parseLong(hmJsonItem.get(Dictionary.ITEM_LASTCLOCK)));
+//		item.setLastValue(hmJsonItem.get(Dictionary.ITEM_LASTVALUE));
+//		item.setTrends(hmJsonItem.get(Dictionary.ITEM_TRENDS));
+//		return item;
+//	}
+//	
+//	/**
+//	 * Gets the double format item.
+//	 *
+//	 * @param hmJsonItem the hm json item
+//	 * @return the double format item
+//	 */
+//	public static DoubleFormatItem getDoubleFormatItem(HashMap<String,String> hmJsonItem){
+//		DoubleFormatItem item = new DoubleFormatItem(hmJsonItem.get(Dictionary.ITEM_NAME));
+//		item.setDelay(hmJsonItem.get(Dictionary.ITEM_DELAY));
+//		item.setHistory(hmJsonItem.get(Dictionary.ITEM_HISTORY));
+//		item.setHostid(hmJsonItem.get(Dictionary.ITEM_HOSTID));
+//		item.setItemid(hmJsonItem.get(Dictionary.ITEM_ITEMID));
+//		item.setKey(hmJsonItem.get(Dictionary.ITEM_KEY));
+//		item.setLastClock(Long.parseLong(hmJsonItem.get(Dictionary.ITEM_LASTCLOCK)));
+//		item.setLastValue(Double.parseDouble(hmJsonItem.get(Dictionary.ITEM_LASTVALUE).substring(0, hmJsonItem.get(Dictionary.ITEM_LASTVALUE).length()-2)));
+//		item.setTrends(hmJsonItem.get(Dictionary.ITEM_TRENDS));
+//		return item;
+//	}
+//	
 	
 	/**
 	 * Gets the history item.

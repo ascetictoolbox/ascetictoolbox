@@ -46,11 +46,10 @@ public class Item {
 	/** The trends. */
 	private String trends;
 	
-	/** The last value. */
-	private String lastValue;
-	
 	/** The last clock. */
 	private long lastClock;
+	
+	private String lastValue;
 	
 	/**
 	 * Instantiates a new item.
@@ -187,23 +186,6 @@ public class Item {
 		this.trends = trends;
 	}
 
-	/**
-	 * Gets the last value.
-	 *
-	 * @return the last value
-	 */
-	public String getLastValue() {
-		return lastValue;
-	}
-
-	/**
-	 * Sets the last value.
-	 *
-	 * @param lastValue the new last value
-	 */
-	public void setLastValue(String lastValue) {
-		this.lastValue = lastValue;
-	}
 
 	/**
 	 * Gets the last clock.
@@ -222,6 +204,15 @@ public class Item {
 	public void setLastClock(long lastClock) {
 		this.lastClock = lastClock;
 	}
+
+	public String getLastValue() {
+		return lastValue;
+	}
+
+	public void setLastValue(String lastValue) {
+		this.lastValue = lastValue;
+	}
+	
 	
 	
 }

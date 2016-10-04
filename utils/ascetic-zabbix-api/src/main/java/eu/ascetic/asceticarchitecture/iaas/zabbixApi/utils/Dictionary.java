@@ -74,4 +74,21 @@ public class Dictionary {
 	public static String TEMPLATE_HOST = "host";
 	public static String TEMPLATE_NAME = "host";
 
+	//ZABBIX TEMPLATES
+	public static String ZABBIX_TEMPLATES_ATTRIBUTE_PARENT_TEMPLATES = "parentTemplates";
+	public static String ZABBIX_TEMPLATES_NAME = "name";
+	
+	//ZABBIX ITEMS
+	public static String ZABBIX_ITEM_POWER = "power";
+	public static String ZABBIX_ITEM_ENERGY = "energy";
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
+	
 }

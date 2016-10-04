@@ -6867,6 +6867,7 @@ utils/ascetic-zabbix-api/readme/README.TXT -text
 utils/ascetic-zabbix-api/readme/ZabbixApiClientTest[!!-~]class[!!-~]output.txt -text
 utils/ascetic-zabbix-api/readme/ascetic-zabbix-api.properties -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/client/ZabbixClient.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/collector/CurrentCollectorManager.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/conf/Configuration.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/HistoryItem.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Host.java -text
@@ -6874,6 +6875,8 @@ utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbi
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Item.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/Template.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/User.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/json/JsonCurrentItem.java -text
+utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/datamodel/json/JsonLongCurrentItem.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/rpc/client/ZabbixApiClientTest.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Dictionary.java -text
 utils/ascetic-zabbix-api/src/main/java/eu/ascetic/asceticarchitecture/iaas/zabbixApi/utils/Json2ObjectMapper.java -text

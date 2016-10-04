@@ -44,10 +44,7 @@ public class Configuration {
     public static String zabbixPassword = "Brandmeldeanlage104"; //Y2
 
 	
-    public static String virtualMachinesGroupName = "Virtual Machines";
-    public static String vmTemplateName = "Template.Virt.Libvirt";
-    public static Integer zabbixAutoLogoutTime = 990;
-
+	
     private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
 
     /**

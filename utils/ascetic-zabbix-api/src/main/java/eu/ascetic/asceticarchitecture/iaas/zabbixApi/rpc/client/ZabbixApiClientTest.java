@@ -3,6 +3,7 @@ package eu.ascetic.asceticarchitecture.iaas.zabbixApi.rpc.client;
 //The Client sessions package
 //For creating URLs
 import java.util.List;
+import java.util.Vector;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.conf.Configuration;
@@ -40,12 +41,12 @@ import eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary;
 public class ZabbixApiClientTest {
 
 	/** The host name. */
-	private static String hostName = "c8fd1fe5-7b07-42c7-9991-0e348bad5fb3_asok09";
+	private static String hostName = "0c1b61e8-c383-4a4f-9ef0-b3ee8eb5cbab";
 //	private static String hostName ="aaeaa2fe-4035-4cba-a63a-f8b6a8c99ba0_asok09";
 	private static String hostName2 ="abdc85d2-fd11-4047-b3f4-a0bf86ad157d_asok09";
 	
 	/** The item name. */
-	private static String itemName = "Power";
+	private static String itemName = "energy";
 	
 	/** The limit. */
 	private static int limit = 5;
@@ -67,12 +68,12 @@ public class ZabbixApiClientTest {
 			ZabbixClient client = new ZabbixClient();
 			insertSeparator("getAllHosts");
 			testGetAllHosts(client);
-			insertSeparator("itemsCountFromHosts");
-			testItemsCountFromHosts(client);	
+//			insertSeparator("itemsCountFromHosts");
+//			testItemsCountFromHosts(client);	
 			insertSeparator("getItemsFromHost");
 			testItemsFromHost(client);
-			insertSeparator("getItemsFromHost");
-			testItemsFromHost2(client);
+//			insertSeparator("getItemsFromHost");
+//			testItemsFromHost2(client);
 //			insertSeparator("getItemByNameFromHost");
 //			testGetItemByNameFromHost(client);
 //			insertSeparator("getHistoryDataByLimit");
@@ -87,10 +88,64 @@ public class ZabbixApiClientTest {
 //			testDeleteVM(client);
 //			insertSeparator("sendData");
 //			testSendData(client);
-			
+//			insertSeparator("getPowerFromAllHosts");
+//			testGetPowerFromAllHosts(client);
+//			insertSeparator("getEnergyFromAllHosts");
+//			testGetEnergyFromAllHosts(client);
+//			insertSeparator("getVms");
+//			testGetVms(client);
+			insertSeparator("getMetricsForAsceticMetricPusher");
+			testGetMetricsForAsceticMetricPusher(client);
 	}
 
 
+	private static void testGetPowerFromAllHosts(ZabbixClient client) {
+		List<Host> hosts = client.getAllHosts();
+		int index = 1;
+		for (Host h : hosts){
+//			Item i = client.getItemByKeyFromHost("power", h.getHost(), true );
+			Item i = client.getItemByKeyFromHost("power", h.getHost());
+			if (i != null){
+				double value =  Double.parseDouble(i.getLastValue());
+//				if (value>=0) {
+					System.out.println(index + ". Host " + h.getHost() + " --> " + i.getName() +  ": " + Double.parseDouble(i.getLastValue()) + " W");
+					index++;	
+//				}				
+			}
+			else {
+				System.out.println("No power value for host " + h.getHost());
+			}
+		}
+	}
+		
+	
+
+
+	private static void testGetEnergyFromAllHosts(ZabbixClient client) {
+		List<Host> hosts = client.getAllHosts();
+		int index = 1;
+		for (Host h : hosts){
+//			Item i = client.getItemByKeyFromHost("energy", h.getHost(), true);
+			Item i = client.getItemByKeyFromHost("energy", h.getHost());
+			if (i != null){
+				double value =  Double.parseDouble(i.getLastValue());
+				String units = "Wh";
+				if (value>1000){
+					value = value/1000;
+					value = Dictionary.round(value, 2);
+					units = "KWh";
+				}
+//				if (value>=0) {
+					System.out.println(index + ". Host " + h.getHost() + " --> " + i.getName() +  ": " + value + " " + units);
+					index++;	
+//				}				
+			}
+			else {
+				System.out.println("No energy value for host " + h.getHost());
+			}
+		}
+		
+	}
 	/**
 	 * Insert separator.
 	 *
@@ -211,7 +266,7 @@ public class ZabbixApiClientTest {
 	 * @param client the client
 	 */
 	public static void testGetItemByNameFromHost(ZabbixClient client){		
-		Item i = client.getItemByNameFromHost(itemName, hostName);
+		Item i = client.getItemByNameFromHost(itemName, hostName, false);
 		if (i != null){
 			System.out.println("Host " + hostName + ", item " + itemName + ":");
 			printItem(i);
@@ -320,6 +375,7 @@ public class ZabbixApiClientTest {
 	 * @param client the client
 	 */
 	public static void testGetItemByKeyFromHost(ZabbixClient client){		
+//		Item i = client.getItemByKeyFromHost(itemKey, hostName, false);
 		Item i = client.getItemByKeyFromHost(itemKey, hostName);
 		if (i != null){
 			System.out.println("Host " + hostName + ", itemKey " + itemKey + ":");
@@ -329,7 +385,46 @@ public class ZabbixApiClientTest {
 			System.out.println("No item " + itemKey + " available in host " + hostName);
 		}
 	}
+	
+	
+	public static void testGetMetricsForAsceticMetricPusher(ZabbixClient client){
+		Vector<String> metrics = new Vector<String>(); 
+		metrics.add("cpu.measured");
+		metrics.add("memory");
+		metrics.add("rx.bytes");
+		metrics.add("tx.bytes");
+		
+		for (String metric : metrics){
+//			Item i = client.getItemByKeyFromHost(itemKey, hostName, false);
+			Item i = client.getItemByKeyFromHost(metric, hostName);
+			if (i != null){
+				System.out.println("Host " + hostName + ", metric " + metric + ":");
+			
+				double value =  Double.parseDouble(i.getLastValue());
+				
+				System.out.println("name: " + i.getName());
+				System.out.println("key: " + i.getKey());
+				System.out.println("itemid: " + i.getItemid());
+				System.out.println("hostid: " + i.getHostid());
+				System.out.println("delay: " + i.getDelay());
+				System.out.println("history: " + i.getHistory());
+				System.out.println("lastvalue (double): " + value);
+				System.out.println("lastvalue (String): " + i.getLastValue());
+				if (i.getLastValue().indexOf(".")==-1){
+					long lngValue = Long.parseLong(i.getLastValue());
+					System.out.println("lastvalue (long): " + lngValue);
+				}
+				
+				System.out.println("lastclock: " + i.getLastClock());
+				System.out.println();
+			}
+			else {
+				System.out.println("No item " + itemKey + " available in host " + hostName);
+			}
+		}
 
+	}
+	
 	/**
 	 * Test get host group by name.
 	 *
@@ -398,4 +493,22 @@ public class ZabbixApiClientTest {
 //		boolean sent = client.pushData(hostName, itemKey, "1234");	
 //	}
 
+	public static void testGetVms(ZabbixClient client){
+		List<Host> hostsList = client.getVms();
+		int index = 0;
+		if (hostsList != null && !hostsList.isEmpty()){
+			for (Host h : hostsList){
+				System.out.println("VM " + index + ":");
+				System.out.println("vm: " + h.getHost());
+				System.out.println("vm id: " + h.getHostid());
+				System.out.println("available: " + h.getAvailable());
+				System.out.println("name: " + h.getName());
+				index++;
+				System.out.println();
+			}	
+		}
+		else {
+			System.out.println("No hosts available in system");
+		}		
+	}
 }
