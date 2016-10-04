@@ -44,6 +44,7 @@ import eu.ascetic.asceticarchitecture.paas.type.VMinfo;
 
 
 public class PaaSPricingModellerBillingEvents extends PaaSPricingModellerBilling{
+//	static Logger logger = Logger.getLogger(PaaSPricingModellerBillingEvents.class);
 	
 /*	public PaaSPricingModellerBillingEvents(){
 		Logger logger = Logger.getLogger(PaaSPricingModellerBillingEvents.class);
@@ -79,6 +80,7 @@ public class PaaSPricingModellerBillingEvents extends PaaSPricingModellerBilling
 			for (int i=0; i<deploy.getNumberOfVMs(); i++){
 				temp = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(i), deploy.getVM(i).getPredictedDuration(),  deploy.getIaaSProvider().getPriceSec(deploy.getIaaSProvider().getStaticResoucePrice()));
 				charges = charges+temp;
+			//	logger.info("Pricing modeller getEventAppCharges for VM " + deploy.getVM(i).getVMid()+ " the resource charges are " + temp);
 			}
 		//	charges= charges+0.2*charges;
 			deploy.setPredictedCharges(charges);
@@ -89,10 +91,12 @@ public class PaaSPricingModellerBillingEvents extends PaaSPricingModellerBilling
 			double charges =0;
 			for (int i=0; i<deploy.getNumberOfVMs(); i++){
 				double a = deploy.getIaaSProvider().predictResourcesCharges(deploy.getVM(i), deploy.getVM(i).getPredictedDuration(), deploy.getIaaSProvider().getPriceSec(deploy.getIaaSProvider().getResoucePrice()));
+			//	logger.info("Pricing modeller getEventAppCharges for VM " + deploy.getVM(i).getVMid()+ " the resource charges are " + a);
 				charges = charges+a;
 			}
 			double b = deploy.getIaaSProvider().predictEnergyCharges(deploy.getEnergy(), deploy.getIaaSProvider().getAverageEnergyPrice());
 			charges = charges +b;
+		//	logger.info("Pricing modeller getEventAppCharges for deploy " + deploy.getId()+ " the energy charges are " + b);
 			//charges= charges+0.2*charges;
 			deploy.setPredictedCharges(charges);
 			return deploy.getPredictedCharges();

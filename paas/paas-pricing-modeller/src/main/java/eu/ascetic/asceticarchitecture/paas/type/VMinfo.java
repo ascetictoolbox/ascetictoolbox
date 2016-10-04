@@ -19,6 +19,8 @@ import java.util.Calendar;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+
 import eu.ascetic.asceticarchitecture.paas.type.Charges;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PaaSPricingModellerPricingScheme;
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.PricingSchemeA;
@@ -27,13 +29,13 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.Pr
 
 
 public class VMinfo extends VMBasic{
-	
+	static Logger logger = Logger.getLogger(PaaSPricingModellerPricingScheme.class);
 	
 	public VMinfo (double RAM, double CPU, double storage, long predictedDuration){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage;
-		this.predictedDuration=predictedDuration;
+		this.predictedDuration=predictedDuration/1000;
 		this.scheme = initializeScheme(0);
 		schemeToChange = true;
 		time = new TimeParameters();
@@ -45,6 +47,7 @@ public class VMinfo extends VMBasic{
 		IaaSProvider Prov = new IaaSProvider("0");
 		IaaSProviders.put("0", Prov);
 		setIaaSProvider(IaaSProviders.get("0"));
+		logger.info("PaaS Pricing Modeller: This is VMinfo 1");
 	}
 	
 
@@ -61,7 +64,7 @@ public class VMinfo extends VMBasic{
 		energyInfo.setCurrentTotalConsumption(0.0);
 	}
 	
-	*/
+*/
 	
 	///For prediction
 	public VMinfo (int VMid, double RAM, double CPU, double storage, long predictedDuration, int scheme, String IaaSProviderID){
@@ -69,7 +72,7 @@ public class VMinfo extends VMBasic{
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage;
-		this.predictedDuration=predictedDuration;
+		this.predictedDuration=predictedDuration/1000;
 		this.schemeID = scheme;
 		time = new TimeParameters();
 		this.scheme = initializeScheme(schemeID);
@@ -80,7 +83,7 @@ public class VMinfo extends VMBasic{
 		IaaSProvider Prov = new IaaSProvider(IaaSProviderID);
 		IaaSProviders.put(IaaSProviderID, Prov);
 		setIaaSProvider(IaaSProviders.get(IaaSProviderID));
-		
+		logger.info("PaaS Pricing Modeller: This is VMinfo 2");
 	}
 	
 	
@@ -103,7 +106,7 @@ public class VMinfo extends VMBasic{
 		TotalCharges = new Charges();
 		this.predictedDuration=3600;
 	//	System.out.println("VMinfo: VM with id = " + VMid+" Time has started at " + time.getStartTime().getTimeInMillis()+ " end time is " + time.getEndTime().getTimeInMillis());
-		
+		logger.info("PaaS Pricing Modeller: This is VMinfo 3");
 		
 	}
 	
