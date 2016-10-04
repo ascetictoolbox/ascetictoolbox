@@ -24,4 +24,4 @@ apt-get update
 
 # We install necessary packages...
 apt-get --yes --force-yes install curl
-apt-get --yes --force-yes install xmlstartlet
+apt-get --yes --force-yes install xmlstarlet
