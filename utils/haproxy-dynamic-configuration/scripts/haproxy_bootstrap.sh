@@ -18,15 +18,16 @@ DEPLOYMENT_ID=$2
 APPLICATION_NAME=$3
 APP_MANAGER_URL=$4
 OVF_ID=$5
+HAPROXY_CONFIG_FILE=$6
 
 ## Stopping the service
 service haproxy stop
 
 ## Backup of old HAproxy configuraiton:
-cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.old
+cp ${HAPROXY_CONFIG_FILE} ${HAPROXY_CONFIG_FILE}.old
 
 ## We create the initial configuration structure:
-cp $PWD/conf_files/haproxy.cfg /etc/haproxy/haproxy.cfg
+cp $PWD/conf_files/haproxy.cfg ${HAPROXY_CONFIG_FILE}
 
 ## We find our the number of interested instances
 vms_string=`curl ${APP_MANAGER_URL}/applications/${APPLICATION_NAME}/deployments/${DEPLOYMENT_ID}/vms | tail -n +2 | awk '{gsub("xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\"", "");print}' | xmlstarlet sel -T -t -m /collection/items/vm -s A:N:- "id" -v "concat(id,'|',ovf-id,'|',ip,' ')"`
@@ -38,6 +39,9 @@ for i in ${vm_array[@]}; do
 
   if [ "${vm[1]}" = "$OVF_ID" ]
   then
-    echo "        na_app_server_${vm[0]} ${vm[2]}:80 check" >> /etc/haproxy/haproxy.cfg
+    echo "            server na_app_server_${vm[0]} ${vm[2]}:80 check" >> ${HAPROXY_CONFIG_FILE}
   fi
 done
+
+## After it we load haproxy again
+service haproxy start

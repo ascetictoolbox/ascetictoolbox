@@ -18,4 +18,6 @@ source conf_files/config.cfg
 bash scripts/configure_repositores.sh
 
 # Starting the HAProxy initial configuration:
-bash scripts/haproxy_bootstrap.sh $PWD $DEPLOYMENT_ID $APPLICATION_NAME $APP_MANAGER_URL $OVF_ID
+bash scripts/haproxy_bootstrap.sh $PWD $DEPLOYMENT_ID $APPLICATION_NAME $APP_MANAGER_URL $OVF_ID $HAPROXY_CONFIG_FILE
+
+./scripts/monitor_deployment.sh $DEPLOYMENT_ID $APPLICATION_NAME $APP_MANAGER_URL $OVF_ID $SERVER_NAME $HAPROXY_CONFIG_FILE

@@ -7141,6 +7141,7 @@ utils/haproxy-dynamic-configuration/README.md -text
 utils/haproxy-dynamic-configuration/bootstrap.sh -text
 utils/haproxy-dynamic-configuration/conf_files/config.cfg -text
 utils/haproxy-dynamic-configuration/conf_files/haproxy.cfg -text
+utils/haproxy-dynamic-configuration/java/ascetic-amqp-console-client.jar -text
 utils/haproxy-dynamic-configuration/scripts/configure_repositores.sh -text
 utils/haproxy-dynamic-configuration/scripts/haproxy_bootstrap.sh -text
 utils/haproxy-dynamic-configuration/scripts/monitor_deployment.sh -text
