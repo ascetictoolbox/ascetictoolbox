@@ -9,10 +9,12 @@
 # Subscribes to the AMQP for that deployment and monitors it                   #
 ################################################################################
 
-DEPLOYMENT_ID="1153"
+DEPLOYMENT_ID="1152"
 APPLICATION_NAME="davidgpTestApp"
-APP_MANAGER_URL="url"
-OVF_ID="mysqlA"
+APP_MANAGER_URL="http://localhost:8080/application-manager"
+OVF_ID="jboss"
+SERVER_NAME="na_app_server"
+HAPROXY_CONFIG_FILE="/etc/haproxy/haproxy.cfg"
 
 get_id() {
   ID=`echo $5 | awk -F'.' '{print $6}'`
@@ -30,21 +32,22 @@ do
       get_id $line
       echo "ADDED: $ID"
       ## We add the VM to the HAProxy configuration
-      # vms_string=`curl ${APP_MANAGER_URL}/applications/${APPLICATION_NAME}/deployments/${DEPLOYMENT_ID}/vms | tail -n +2 | awk '{gsub("xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\"", "");print}' | xmlstarlet sel -T -t -m /collection/items/vm -s A:N:- "id" -v "concat(id,'|',ovf-id,'|',ip,' ')"`
-      #
-      # vm_array=($vms_string)
-      #
-      # for i in ${vm_array[@]}; do
-      #   vm=(${i//|/ })
-      #
-      #   if [ "${vm[1]}" = "$OVF_ID" && "${vm[0]}" = "$ID"]
-      #   then
-      #     echo "        na_app_server_${vm[0]} ${vm[2]}:80 check" >> /etc/haproxy/haproxy.cfg
-      #   fi
-      # done
+      vms_string=`curl ${APP_MANAGER_URL}/applications/${APPLICATION_NAME}/deployments/${DEPLOYMENT_ID}/vms | tail -n +2 | awk '{gsub("xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\"", "");print}' | xmlstarlet sel -T -t -m /collection/items/vm -s A:N:- "id" -v "concat(id,'|',ovf-id,'|',ip,' ')"`
+
+      vm_array=($vms_string)
+
+       for i in ${vm_array[@]}; do
+         vm=(${i//|/ })
+
+         if [ "${vm[1]}" = "$OVF_ID" ] && [ "${vm[0]}" = "$ID" ]
+         then
+           echo "        ${SERVER_NAME}_${vm[0]} ${vm[2]}:80 check"  >> ${HAPROXY_CONFIG_FILE}
+        fi
+       done
     elif [[ $line =~ $regex_vm_deleted ]]
     then
       get_id $line
       echo "DELETED: $ID"
+      sed -i.bak "/${SERVER_NAME}_${ID}/d" ${HAPROXY_CONFIG_FILE}
     fi
 done < ../tests/amq-messages.txt
