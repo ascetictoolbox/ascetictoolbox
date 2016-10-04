@@ -133,7 +133,7 @@ public class LocalOptimizationState {
         		ResourceDescription.reduceCommonDynamics(empty, missingResources);
         	}
         }else{
-        	System.out.println("**** Action has null implementation. Nothing done at release resources *** ")
+        	System.out.println("**** Action has null implementation. Nothing done at release resources *** ");
         }
     }
 
