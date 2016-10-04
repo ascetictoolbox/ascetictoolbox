@@ -173,8 +173,10 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 
 		for (Gap pGap : actionDSI.getPredecessors()) {
 			AllocatableAction pred = pGap.getOrigin();
-			freeResources.reduceDynamic(pGap.getResources());
-			resources.add(new Gap(pGap.getInitialTime(), Long.MAX_VALUE, pred, pGap.getResources().copy(), 0));
+			if (!(pred instanceof OptimizationAction )){
+			    freeResources.reduceDynamic(pGap.getResources());
+			    resources.add(new Gap(pGap.getInitialTime(), Long.MAX_VALUE, pred, pGap.getResources().copy(), 0));
+			}
 			AsceticSchedulingInformation predDSI = (AsceticSchedulingInformation<P, T>) pred.getSchedulingInfo();
 			predDSI.removeSuccessor(action);
 		}
