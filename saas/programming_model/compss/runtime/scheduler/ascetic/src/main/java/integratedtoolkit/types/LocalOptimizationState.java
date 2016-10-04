@@ -121,15 +121,19 @@ public class LocalOptimizationState {
     }
 
     public void releaseResources(long expectedStart, AllocatableAction action) {
-        Gap gap;
-        gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
-        AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
-        dsi.addGap();
-        gaps.add(gap);
-        if (missingResources != null) {
-            ResourceDescription empty = gap.getResources().copy();
-            topStartTime = gap.getInitialTime();
-            ResourceDescription.reduceCommonDynamics(empty, missingResources);
+        if (action.getAssignedImplementation()!=null){
+        	Gap gap;
+        	gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
+        	AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
+        	dsi.addGap();
+        	gaps.add(gap);
+        	if (missingResources != null) {
+        		ResourceDescription empty = gap.getResources().copy();
+        		topStartTime = gap.getInitialTime();
+        		ResourceDescription.reduceCommonDynamics(empty, missingResources);
+        	}
+        }else{
+        	System.out.println("**** Action has null implementation. Nothing done at release resources *** ")
         }
     }
 
@@ -235,7 +239,7 @@ public class LocalOptimizationState {
         		runningCost += p.getPrice();
         	}
         }else{
-        	System.out.println("Action has a null implementation");
+        	System.out.println("**** Action has a null implementation. Nothing done for reserving resources ***");
         }
     }
 
