@@ -1,15 +1,15 @@
 package eu.ascetic.utils.metricpusher.collector;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.client.ZabbixClient;
 import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Host;
-import eu.ascetic.asceticarchitecture.iaas.zabbixApi.datamodel.Item;
-import eu.ascetic.utils.metricpusher.amqp.AmqpProducer;
 import eu.ascetic.utils.metricpusher.conf.Configuration;
-import eu.ascetic.utils.metricpusher.conf.Dictionary;
 import eu.ascetic.utils.metricpusher.pusher.MetricPusher;
 
 /**
@@ -39,6 +39,8 @@ public class CurrentMetricPusherFactory extends Thread {
 
 	private static Logger logger = Logger.getLogger(CurrentMetricPusherFactory.class);
 	private ZabbixClient client;
+	private Set<String> vmsSet = new HashSet<String>();
+	private List<VmAgentMonitor> vmAgentMonitorList = new ArrayList<VmAgentMonitor>();
 	
 	public CurrentMetricPusherFactory(){
 		client = new ZabbixClient();
@@ -47,28 +49,52 @@ public class CurrentMetricPusherFactory extends Thread {
 	@SuppressWarnings("unchecked")  
 	public void run()  
 	{  
+		if (MetricPusher.SHOW_DEBUG_TRACES){
+			System.out.println("Launching CurrentMetricPusherFactory...");
+		}
+		logger.info("Launching CurrentMetricPusherFactory...");
+		List<Host> vms = null; 
+		Set<String> existingVms = new HashSet<String>();
 		while (true){
-			try {	
-
-				List<Host> vms = client.getVms();
-//				List<Host> vms = client.getAllHosts();
-				for (Host vm : vms){
-					publishCurrentEnergy(vm.getHost());
-					publishCurrentPower(vm.getHost());
-					publishCurrentCpu(vm.getHost());
-					publishCurrentMemory(vm.getHost());
-					publishCurrentTransmittedBytes(vm.getHost());
-					publishCurrentReceivedBytes(vm.getHost());
-					if (MetricPusher.SHOW_DEBUG_TRACES){
-						System.out.println("********************************************************");
-					}
-				}
+			try {		
+				vms = client.getVms();
 				if (MetricPusher.SHOW_DEBUG_TRACES){
-					System.out.println("----------------------------------------------------------");
-					System.out.println("------------------- END OF VMS ---------------------------");
-					System.out.println("----------------------------------------------------------");
+					if (vms == null){
+						System.out.println("VMs NOT collected from Zabbix" );
+					}
+					else {
+						System.out.println("VMs successfully collected from Zabbix = " + vms.size()+ " VMs");
+					}
+					
 				}
-				//wait 60 seconds to push more data to Communication middleware
+				for (Host vm : vms){
+					if (!vmsSet.contains(vm.getHost())){
+						if (MetricPusher.SHOW_DEBUG_TRACES){
+							System.out.println("New VM found: " + vm.getHost());
+						}
+						//new VM
+						vmsSet.add(vm.getHost());
+						VmAgentMonitor vmAgentMonitor = new VmAgentMonitor(vm.getHost());
+						vmAgentMonitor.start();
+						vmAgentMonitorList.add(vmAgentMonitor);
+						if (MetricPusher.SHOW_DEBUG_TRACES){
+							System.out.println("VM " + vm.getHost() + " successfully added");
+						}
+					}	
+					else {
+						if (MetricPusher.SHOW_DEBUG_TRACES){
+							System.out.println(vm.getHost() + " VM exists in the system");
+						}
+					}
+					existingVms.add(vm.getHost());
+				}
+				clearDeletedVms(existingVms);
+				
+				//clear existing VMs set for next iteration
+				existingVms.clear();
+				//empty vms list
+				vms = null;
+				//wait 40 seconds to push more data to Communication middleware
 				Thread.sleep(Long.parseLong(Configuration.publishFrequency));
 			}
 			catch (Exception e){
@@ -78,117 +104,43 @@ public class CurrentMetricPusherFactory extends Thread {
 	}  
 	
 
-	private void publishCurrentReceivedBytes(String vmId) {
-		Item i = client.getItemByKeyFromHost(Dictionary.ITEM_RX_BYTES_KEY, vmId);
-		if (i != null && i.getLastClock() != 0){
-			long value =  Long.parseLong(i.getLastValue());
-			String units = "bytes";
-			logger.info("VM " + vmId + " --> " + i.getName() +  ": " + Long.parseLong(i.getLastValue()) + 
-					" " + units);
-			if (MetricPusher.SHOW_DEBUG_TRACES){
-				System.out.println("VM " + vmId + " --> " + i.getName() +  ": " + Long.parseLong(i.getLastValue()) + 
-						" " + units);
+	private void clearDeletedVms(Set<String> existingVms){
+		Set<String> vmsToDelete = new HashSet<String>();
+		vmsToDelete.addAll(vmsSet);
+		vmsToDelete.removeAll(existingVms);
+		if (!vmsToDelete.isEmpty()){
+			for (String vm : vmsToDelete){
+				removeVm(vm);
 			}
-			AmqpProducer.sendCurrentLongValueForItemInHostMessage(vmId, Dictionary.ITEM_RX_BYTES_NAME, value, units, i.getLastClock());
-		}
-		else {
-			logger.info("No " + Dictionary.ITEM_RX_BYTES_KEY + " value for VM " + vmId);
-		}	
-	}
-
-	private void publishCurrentTransmittedBytes(String vmId) {
-		Item i = client.getItemByKeyFromHost(Dictionary.ITEM_TX_BYTES_KEY, vmId);
-		if (i != null && i.getLastClock() != 0){
-			long value =  Long.parseLong(i.getLastValue());
-			String units = "bytes";
-			logger.info("VM " + vmId + " --> " + i.getName() +  ": " + Long.parseLong(i.getLastValue()) + 
-					" " + units);
-			if (MetricPusher.SHOW_DEBUG_TRACES){
-				System.out.println("VM " + vmId + " --> " + i.getName() +  ": " + Long.parseLong(i.getLastValue()) + 
-						" " + units);
-			}
-			AmqpProducer.sendCurrentLongValueForItemInHostMessage(vmId, Dictionary.ITEM_TX_BYTES_NAME, value, units, i.getLastClock());
-		}
-		else {
-			logger.info("No " + Dictionary.ITEM_TX_BYTES_KEY + " value for VM " + vmId);
-		}	
-	}
-
-	private void publishCurrentMemory(String vmId) {
-		Item i = client.getItemByKeyFromHost(Dictionary.ITEM_MEMORY_KEY, vmId);
-		if (i != null && i.getLastClock() != 0){
-			long value =  Long.parseLong(i.getLastValue());
-			String units = "bytes";
-			logger.info("VM " + vmId + " --> " + i.getName() +  ": " + Long.parseLong(i.getLastValue()) + 
-					" " + units);
-			if (MetricPusher.SHOW_DEBUG_TRACES){
-				System.out.println("VM " + vmId + " --> " + i.getName() +  ": " + Long.parseLong(i.getLastValue()) + 
-					" " + units);
-			}
-			AmqpProducer.sendCurrentLongValueForItemInHostMessage(vmId, Dictionary.ITEM_MEMORY_NAME, value, units, i.getLastClock());
-		}
-		else {
-			logger.info("No " + Dictionary.ITEM_MEMORY_KEY + " value for VM " + vmId);
-		}	
-	}
-
-	private void publishCurrentCpu(String vmId) {
-		Item i = client.getItemByKeyFromHost(Dictionary.ITEM_CPU_KEY, vmId);
-		if (i != null && i.getLastClock() != 0){
-			double value =  Double.parseDouble(i.getLastValue());
-			String units = "Mhz";
-			logger.info("VM " + vmId + " --> " + i.getName() +  ": " + Double.parseDouble(i.getLastValue()) + 
-					" " + units);
-			if (MetricPusher.SHOW_DEBUG_TRACES){
-				System.out.println("VM " + vmId + " --> " + i.getName() +  ": " + Double.parseDouble(i.getLastValue()) + 
-					" " + units);
-			}
-			AmqpProducer.sendCurrentDoubleValueForItemInHostMessage(vmId, Dictionary.ITEM_CPU_NAME, value, units, i.getLastClock());
-		}
-		else {
-			logger.info("No " + Dictionary.ITEM_CPU_KEY + " value for VM " + vmId);
-		}
-		
-	}
-
-	private void publishCurrentPower(String vmId) {
-		Item i = client.getItemByKeyFromHost(Dictionary.ITEM_POWER_KEY, vmId);
-		if (i != null && i.getLastClock() != 0){
-			double value =  Double.parseDouble(i.getLastValue());
-			String units = "W";
-			logger.info("VM " + vmId + " --> " + i.getName() +  ": " + Double.parseDouble(i.getLastValue()) + 
-					" " + units);
-			if (MetricPusher.SHOW_DEBUG_TRACES){
-				System.out.println("VM " + vmId + " --> " + i.getName() +  ": " + Double.parseDouble(i.getLastValue()) + 
-						" " + units);
-			}
-			AmqpProducer.sendCurrentDoubleValueForItemInHostMessage(vmId, Dictionary.ITEM_POWER_NAME, value, units, i.getLastClock());
-		}
-		else {
-			logger.info("No " + Dictionary.ITEM_POWER_KEY + " value for VM " + vmId);
+			
 		}
 	}
 
+	private void removeVm(String hostname){
+		boolean deleted = false;
+		int i = 0;
+		while (vmAgentMonitorList.size() > i && !deleted){
+			if (vmAgentMonitorList.get(i).getHostname().equals(hostname)){
+				vmAgentMonitorList.get(i).stop();
+				vmAgentMonitorList.remove(i);
+				deleted = true;
+				
+			}
+			i++;
+		}
+		if (deleted){
+			vmsSet.remove(hostname);
+			logger.info("VM " + hostname + " deleted succesfully");
+			if (MetricPusher.SHOW_DEBUG_TRACES){
+				System.out.println("VM " + hostname + " successfully deleted");
+			}
+		}
+		else {
+			logger.warn("VM " + hostname + " not deleted succesfully");
+			if (MetricPusher.SHOW_DEBUG_TRACES){
+				System.out.println("VM " + hostname + " NOT successfully deleted");
+			}
+		}
+	}
 	
-	private void publishCurrentEnergy(String vmId) {
-		Item i = client.getItemByKeyFromHost(Dictionary.ITEM_ENERGY_KEY, vmId);
-		if (i != null && i.getLastClock() != 0){
-			double value =  Double.parseDouble(i.getLastValue());
-			String units = "Wh";
-			if (value>1000){
-				value = value/1000;
-				value = eu.ascetic.asceticarchitecture.iaas.zabbixApi.utils.Dictionary.round(value, 2);
-				units = "KWh";
-			}
-			logger.info("VM " + vmId + " --> " + i.getName() +  ": " + value + " " + units);
-			if (MetricPusher.SHOW_DEBUG_TRACES){
-				System.out.println("VM " + vmId + " --> " + i.getName() +  ": " + value + " " + units);
-			}
-			AmqpProducer.sendCurrentDoubleValueForItemInHostMessage(vmId, Dictionary.ITEM_ENERGY_NAME, value, units, i.getLastClock());
-		}
-		else {
-			logger.info("No " + Dictionary.ITEM_ENERGY_KEY + " value for VM " + vmId);
-		}
-	}	
-
 }

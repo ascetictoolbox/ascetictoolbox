@@ -41,7 +41,7 @@ public class Configuration {
 	public static String amqpAddress = "localhost:5673";
 	public static String amqpUsername = "guest";
 	public static String amqpPassword = "guest";
-	public static String publishFrequency = "60000";
+	public static String publishFrequency = "40000";
 	public static String hostFilterBegins = "_wally";
 	
 	static {
