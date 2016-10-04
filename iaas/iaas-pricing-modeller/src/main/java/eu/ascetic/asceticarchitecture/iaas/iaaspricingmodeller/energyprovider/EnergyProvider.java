@@ -44,7 +44,7 @@ public class EnergyProvider implements EnergyProviderInterface{
 	
 	Timer timer;
 	
-	long delay = 20;
+	long delay = 10;
 	
 	
 	public EnergyProvider(IaaSPricingModeller iaasprovider){
@@ -116,9 +116,9 @@ public class EnergyProvider implements EnergyProviderInterface{
 		dynamicEnergyPrice.setPrice(price);
 		dynamicEnergyPriceOld.setPrice(price.getOldPriceOnly());
 		GenericPricingMessage msg = new GenericPricingMessage(iaasprovider.getIaaSProviderID(), price.getPriceOnly());
-		/*
+		
 		iaasprovider.publishToQueue(msg);
-		*/
+		
 		chargesUpdated = false;
 		iaasprovider.getBilling().updateVMCharges(dynamicEnergyPriceOld);
 	}

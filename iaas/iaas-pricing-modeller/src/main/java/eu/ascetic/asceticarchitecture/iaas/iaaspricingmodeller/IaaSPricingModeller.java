@@ -90,9 +90,9 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     //Logging
     static Logger logger = null;
     DateFormat df = new SimpleDateFormat("ddMMyy_HHmmss");
-    Date today = Calendar.getInstance().getTime();
-    String reportDate = df.format(today);
-    String name = "logs/" + reportDate;
+   Date today = Calendar.getInstance().getTime();
+   String reportDate = df.format(today);
+   String name = "logs/" + reportDate;
 
 ////////////////////////////////////////Constructors////////////////////////////////////////////////////////
     /**
@@ -106,14 +106,11 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
         idIaaSP = IaaSID;
         
         //Activemq
-        /*
-        AmqpMessageProducer pricingqueue = new AmqpMessageProducer("localhost:5672", "guest", "guest", "test.topic2",true);
-		producer = new PricingModellerQueueServiceManager (pricingqueue);
-		GenericPricingMessage msg = new GenericPricingMessage(idIaaSP, energyProvider.getNewDynamicEnergyPrice().getPriceOnly());
-		publishToQueue(msg);
-		*/
-        
-        System.setProperty("logfile.name", name);
+      //->  AmqpMessageProducer pricingqueue = new AmqpMessageProducer("localhost:5673", "guest", "guest", "ENERGY.PRICE",true);
+	//->	producer = new PricingModellerQueueServiceManager (pricingqueue);
+		//GenericPricingMessage msg = new GenericPricingMessage(idIaaSP, energyProvider.getNewDynamicEnergyPrice().getPriceOnly());
+		//publishToQueue(msg);
+       System.setProperty("logfile.name", name);
         logger = Logger.getLogger(IaaSPricingModeller.class);
      //   System.out.println("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
         logger.info("IaaS Pricing Modeller initiallized with ID= " + idIaaSP);
@@ -122,7 +119,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     
     public IaaSPricingModeller(EnergyModeller energyModeller) throws Exception {
         this.energyModeller = energyModeller;
-        System.setProperty("logfile.name", name);
+    //    System.setProperty("logfile.name", name);
         logger = Logger.getLogger(IaaSPricingModeller.class);
         logger.info("IaaS Pricing Modeller initiallized");
         /*
@@ -135,7 +132,7 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     
     public IaaSPricingModeller() throws Exception {
         this.energyModeller = null;
-        System.setProperty("logfile.name", name);
+   //     System.setProperty("logfile.name", name);
         logger = Logger.getLogger(IaaSPricingModeller.class);
         logger.info("IaaS Pricing Modeller initiallized");
     }
@@ -152,17 +149,17 @@ public class IaaSPricingModeller implements IaaSPricingModellerInterface {
     	return energyProvider.getNewDynamicEnergyPrice().getPriceOnly();
     }
 ///////////////////////////////QUEUE//////////////////////////////////////////////////////////////////////
-  /*  
+   
     public void publishToQueue(GenericPricingMessage msg) throws Exception{
     	try{
-    		producer.sendToQueue("test", msg);
+    		//->producer.sendToQueue(msg);
     		}
     		catch (NullPointerException ex){
     			logger.info("Could not send the message to queue");
     		}
     }
 	
-   */
+   
 ///////////////////////////////////////////BILLING///////////////////////////////////////////////////////
 
 

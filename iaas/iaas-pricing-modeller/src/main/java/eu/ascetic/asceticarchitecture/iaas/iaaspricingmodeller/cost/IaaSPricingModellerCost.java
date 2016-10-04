@@ -65,16 +65,19 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
 
     public double updateEnergy(VMstate VM) {
         double difference;
+      //  System.out.println("The VM ");
+        long lessChangeTime = VM.getChangeTime().getTimeInMillis() - 60000;
+        TimePeriod timePeriod = new TimePeriod(VM.getEnergyChargesAll().getTimeOnly(), lessChangeTime);
+        logger.info("The VM " + VM.getVMid() + "Energy calculation - Start time: "
+                + timePeriod.getStartTimeInSeconds() + " end time: " + timePeriod.getEndTimeInSeconds());
+
+      //  System.out.println("The VM " + VM.getVMid() + "Energy calculation - Start time: "
+        //        + timePeriod.getStartTimeInSeconds() + " end time: " + timePeriod.getEndTimeInSeconds());
+
         try {
         	
             VmDeployed vm = energyModeller.getVM(VM.getVMid());
-            TimePeriod timePeriod = new TimePeriod(VM.getEnergyChargesAll().getTimeOnly(), VM.getChangeTime().getTimeInMillis());
-            logger.info("The VM " + VM.getVMid() + "Energy calculation - Start time: "
-                    + timePeriod.getStartTimeInSeconds() + " end time: " + timePeriod.getEndTimeInSeconds());
-
-          //  System.out.println("The VM " + VM.getVMid() + "Energy calculation - Start time: "
-            //        + timePeriod.getStartTimeInSeconds() + " end time: " + timePeriod.getEndTimeInSeconds());
-           double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
+            double newEnergyValue = energyModeller.getEnergyRecordForVM(vm, timePeriod).getTotalEnergyUsed();
             
             logger.info((VM.getStartTime() == null ? "The VM start time was null" : "The VM start time was ok"));
             logger.info((VM.getChangeTime() == null ? "The VM change time was null" : "The VM change time was ok"));
@@ -89,7 +92,8 @@ public class IaaSPricingModellerCost implements IaaSPricingModellerCostInterface
             VM.setEnergyConsumedLast(newEnergyValue);
         } catch (NullPointerException ex) {
             logger.error("The update to the energy value failed for VM: " + VM.getVMid() + ". " +
-                    "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + VM.getChangeTime().getTimeInMillis(), ex);
+                    "The start time for the energy usage query is: " + VM.getStartTime().getTimeInMillis() + " and the end time is: " + lessChangeTime, ex);
+            
             //for testing
             difference = 100;
 

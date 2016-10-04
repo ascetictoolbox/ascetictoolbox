@@ -78,7 +78,7 @@ public class PredictionTest
 
 	@Test
     public void testPrediction() throws Exception {
-		class readmsg extends TimerTask{
+/*		class readmsg extends TimerTask{
 			 AmqpBasicListener listener;
 			 String previousmsg = null;
 			public readmsg( AmqpBasicListener listener){
@@ -105,9 +105,9 @@ public class PredictionTest
 			}
 			
 		}
-       
+  */     
         IaaSPricingModeller prModeller = new IaaSPricingModeller(null);
-     //  AmqpMessageReceiver receiver = new AmqpMessageReceiver("localhost:5672", "guest", "guest", "test.topic2",true);
+    /* //  AmqpMessageReceiver receiver = new AmqpMessageReceiver("localhost:5672", "guest", "guest", "test.topic2",true);
       AmqpBasicListener listener = new AmqpBasicListener();
      //  receiver.setMessageConsumer(listener);
         
@@ -125,20 +125,20 @@ public class PredictionTest
          **/
        // System.out.println("Predicted charges for scheme 2:" + prModeller.getVMChargesPrediction(2, 2, 20.0, 2, 3600L, "a1"));  
         //System.out.println("Predicted price for scheme 2:" + prModeller.getVMPricePerHourPrediction(2, 2, 20.0, 2, 3600L, "a1")); 
-
-        prModeller.initializeVM("el", 0, "435e", "1");
+        
+        prModeller.initializeVM("el", 1, "435e", "1");
 
        // prModeller.initializeVM("el2", 1, "435e", "1");
-     Thread.sleep(10000);
+     Thread.sleep(70000);
    //  listener.onMessage(null);
 
-   //    System.out.println("Initial charges for VM:"+prModeller.getVMFinalCharges("el", false));
+      System.out.println("Initial charges for VM:"+prModeller.getVMFinalCharges("el", false));
    // Thread.sleep(20000);
    // System.out.println(listener.getMessage());
 
    //  Thread.sleep(20000);
    //  System.out.println(listener.getMessage());    
-      System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", true));
+    //  System.out.println("Final charges for VM:"+prModeller.getVMFinalCharges("el", true));
     //   System.out.println("Final charges for APP:"+prModeller.getAppFinalCharges("1", true));
       //Prediction for Pricing Scheme 0
 

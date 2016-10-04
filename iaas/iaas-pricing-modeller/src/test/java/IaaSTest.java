@@ -24,24 +24,12 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.AfterClass;
-
 import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-
-
-
-
-
-
-
-
 import eu.ascetic.amqp.client.AmqpBasicListener;
 import eu.ascetic.amqp.client.AmqpMessageReceiver;
 import eu.ascetic.asceticarchitecture.iaas.iaaspricingmodeller.*;
@@ -78,25 +66,63 @@ public class IaaSTest
 
 	@Test
     public void testPrediction() throws Exception {
-      
-        IaaSPricingModeller prModeller = new IaaSPricingModeller(2, null);
+		class readmsg extends TimerTask{
+			 AmqpBasicListener listener;
+			 String previousmsg = null;
+			public readmsg( AmqpBasicListener listener){
+				this.listener = listener;
+			}
+			
+			@Override
+			public void run() {
+
+				try {
+					String newmsg = listener.getMessage();
+					if (newmsg!=null){
+						if (newmsg!=previousmsg){
+							System.out.println(newmsg);
+							previousmsg = newmsg;
+						}
+					}
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+		}
+		 IaaSPricingModeller prModeller = new IaaSPricingModeller(2, null);
+		 
+		 AmqpBasicListener listener = new AmqpBasicListener();
+		 
+		 Client queue = new Client();
+	     queue.setup("localhost:5672", "guest", "guest");
+	     queue.registerListener("ENERGY.PRICE", listener);
+	     Timer timer = new Timer (true);
+	     long delay = 20;
+		 timer.scheduleAtFixedRate(new readmsg(listener), TimeUnit.SECONDS.toMillis(delay), 100);
+
+        
      
         prModeller.initializeVM("VMID1", 1, "Host1", "APPID1");
+        System.out.println("ok");
+        
+        Thread.sleep(10000);
 
+      //  prModeller.changeEnergyPrice();
+        System.out.println(prModeller.getVMFinalCharges("VMID1", false));
         
-        Thread.sleep(20000);
-
-        prModeller.changeEnergyPrice();
-     //   prModeller.getVMFinalCharges("VMID1", false);
+        Thread.sleep(40000);
+     //   prModeller.resizeVM("VMID1", 16, 56688, 256000);
         
-        Thread.sleep(20000);
-        prModeller.resizeVM("VMID1", 16, 56688, 256000);
+      //  Thread.sleep(20000);
+        System.out.println(prModeller.getVMFinalCharges("VMID1", false));
+        prModeller.getAppFinalCharges("APPD1", false);
         
-        Thread.sleep(20000);
-        prModeller.getVMFinalCharges("VMID1", false);
-        
-        Thread.sleep(20000);
-        prModeller.getVMFinalCharges("VMID1", true);
+       // Thread.sleep(20000);
+       // prModeller.getVMFinalCharges("VMID1", true);
         
     }
 	

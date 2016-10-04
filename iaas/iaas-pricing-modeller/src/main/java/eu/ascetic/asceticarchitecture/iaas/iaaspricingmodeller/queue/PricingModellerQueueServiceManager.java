@@ -54,17 +54,17 @@ public class PricingModellerQueueServiceManager {
 		
 		}
 
-		public void sendToQueue(String queue,GenericPricingMessage msg) throws Exception{
+		public void sendToQueue(GenericPricingMessage msg) throws Exception{
 			try{
 			
 			//queuePublisher.sendMessage(queue, MessageParserUtility.buildStringMessage(message));
 				IaaSPricingQueuePublisher.sendMessage(msg.MsgToString(msg));
 			
-			LOGGER.info("PaaS Pr. Modeller queue manager has sent a message to "+queue);
+			LOGGER.info("PaaS Pr. Modeller queue manager has sent a message ");
 		//	LOGGER.debug("EM queue manager built this message "+MessageParserUtility.buildStringMessage(message));
 			}
 			catch (NullPointerException ex){
-				LOGGER.info("PaaS pricing modeller queue manager could not send the message to "+queue);
+				LOGGER.info("PaaS pricing modeller queue manager could not send the message");
 			}
 		}	
 		
