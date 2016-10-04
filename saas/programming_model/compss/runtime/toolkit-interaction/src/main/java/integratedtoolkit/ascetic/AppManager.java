@@ -44,10 +44,15 @@ public class AppManager {
                 		} else {
                 			System.out.println(vm.getIPv4() + " dismissed because it has no compatible Implementations.");
                 		}
+                	}else{
+                		System.out.println("VM:" +IPv4 + "already treated");
                 	}
+                }else{
+                	System.out.println("VM:" +IPv4 + "is not active");
                 }
             }
         } catch (Exception e) {
+        	System.out.println("Exception discovering VMs");
             e.printStackTrace();
         }
         return newResources;

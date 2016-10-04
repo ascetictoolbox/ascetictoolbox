@@ -57,6 +57,7 @@ public class VM {
 
     public VM(eu.ascetic.paas.applicationmanager.model.VM vm) {
         logger.info("Creating a new VM");
+        System.out.println("Detected VM " + vm.getIp());
         this.vm = vm;
         String ovfId = vm.getOvfId();
         Integer count = componentCount.get(ovfId);
@@ -96,7 +97,7 @@ public class VM {
         eventWeights = Configuration.getEventWeights(ovfId);
         coresEnergy = 0;
         coresCost = 0;
-        System.out.println("Detected VM " + vm.getIp());
+        
         System.out.println("\tIdle");
         System.out.println("\t\t Power: " + idlePower);
         System.out.println("\t\t Price: " + idlePrice);
