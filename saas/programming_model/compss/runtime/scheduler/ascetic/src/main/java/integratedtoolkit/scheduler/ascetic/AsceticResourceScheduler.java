@@ -140,8 +140,10 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 			synchronized (gaps) {
 				if (opAction != null) {
 					((AsceticSchedulingInformation) opAction.getSchedulingInfo()).addSuccessor(action);
+					
 					Gap opActionGap = new Gap(0, 0, opAction, null, 0);
 					((AsceticSchedulingInformation) action.getSchedulingInfo()).addPredecessor(opActionGap);
+					System.out.println(" Creating gap "+opActionGap.toString()+ " with optimization action with "+ opAction.getEventId() +" and "+ action.getEventId());
 				} else {
 					scheduleUsingGaps(action, gaps);
 				}
@@ -754,6 +756,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 		actionDSI.clearPredecessors();
 		actionDSI.clearSuccessors();
 		actionDSI.setToReschedule(false);
+		System.out.println("Manage Running action: "+ action.getEventId());
 		state.runningAction(impl, p, endTime);
 	}
 
