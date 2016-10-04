@@ -31,8 +31,9 @@ public class AppManager {
             List<eu.ascetic.paas.applicationmanager.model.VM> vms = uploader.getDeploymentVMDescriptions(applicationId, deploymentId);
 
             for (eu.ascetic.paas.applicationmanager.model.VM rvm : vms) {
+                String IPv4 = rvm.getIp();
+                System.out.println("VM:" +IPv4 +" with status " +rvm.getStatus());
                 if (rvm.getStatus()!=null && rvm.getStatus().equals("ACTIVE")){
-                	String IPv4 = rvm.getIp();
                 	VM vm = detectedVMs.get(IPv4);
                 	if (vm == null) {
                 		vm = new VM(rvm);
@@ -66,6 +67,7 @@ public class AppManager {
         try {
             c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
         } catch (Exception e) {
+        	System.out.println("Error getting estimations. Setting defaults");
             e.printStackTrace();
             c = null;
         }

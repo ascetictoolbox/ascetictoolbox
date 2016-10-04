@@ -154,6 +154,10 @@ public class VM {
                         if (power[coreId][implId] <= 0) {
                             power[coreId][implId] = c.getPowerValue();
                         }
+                    }else{
+                    	System.err.println("Estimations returned null. Could not update the energy consumtion for"
+                                + " core " + coreId + " implementation " + implId
+                                + " in " + vm.getIp());
                     }
                     logger.debug("\t\t CURRENT VALUES for " + getIPv4()
                             + ": Core " + coreId + " impl " + implId
