@@ -66,6 +66,7 @@ public class FunctionalTest {
 		
 		DefaultApi api = new DefaultApi();
 		api.getApiClient().setBasePath("http://localhost:8080");
+		String runId = "14";
 		
 		Experiment exp = getExperiment("News Asset Experiment","newsAsset", "News Asset", "This is a test experiment",
 				mi.getSaaSProvider());
@@ -73,13 +74,13 @@ public class FunctionalTest {
 		try {
 			System.out.println("start");
 			List<String> vms = exp.getDeployment("490").getComponents().stream().map(comp -> comp.getName()).collect(Collectors.toList());
-			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", exp.getDeployment("490"), exp.getEvent());
+			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", exp.getDeployment("490"),runId, exp.getEvent());
 			System.out.println("number of scopes : "+ eventScopes.size());
 			Map<String,ScopeFilter> scopes = new HashMap<>();
 			for(KPI kpi:exp.getKpis()){
 				scopes.put(kpi.getName(),new ExplicitScope(eventScopes));
 			}
-			Snapshot s = mi.takeSnapshot("dzqfesghsef",exp, "A snapshot", "This is a snapshot", "490",scopes);
+			Snapshot s = mi.takeSnapshot("dzqfesghsef",exp, "A snapshot", "This is a snapshot", "490",runId,scopes);
 			System.out.println("computed");
 			api.snapshotsPost(s);
 			System.out.println("saved and end");
@@ -95,19 +96,20 @@ public class FunctionalTest {
 		
 		DefaultApi api = new DefaultApi();
 		api.getApiClient().setBasePath("http://localhost:8080");
+		String runId = "14";
 		
 		Experiment exp = getExperiment("News Asset Experiment","newsAsset", "News Asset", "this is a test experiment",mi.getSaaSProvider());
 		
 		try {
 			System.out.println("start");
 			List<String> vms = exp.getDeployment("490").getComponents().stream().map(comp -> comp.getName()).collect(Collectors.toList());
-			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", exp.getDeployment("490"), exp.getEvent());
+			List<Scope> eventScopes = ScopeFactory.getScopeByEvent("newsAsset", exp.getDeployment("490"),runId, exp.getEvent());
 			System.out.println("number of scopes : "+ eventScopes.size());
 			Map<String,ScopeFilter> scopes = new HashMap<>();
 			for(KPI kpi:exp.getKpis()){
 				scopes.put(kpi.getName(),new ExplicitScope(eventScopes));
 			}
-			Snapshot s = mi.takeSnapshot("dqzdzqdzqdef",exp, "A snapshot", "This is a snapshot", "490",scopes);
+			Snapshot s = mi.takeSnapshot("dqzdzqdzqdef",exp, "A snapshot", "This is a snapshot", "490",runId,scopes);
 			System.out.println("computed");
 			api.snapshotsPost(s);
 			System.out.println("saved and end");

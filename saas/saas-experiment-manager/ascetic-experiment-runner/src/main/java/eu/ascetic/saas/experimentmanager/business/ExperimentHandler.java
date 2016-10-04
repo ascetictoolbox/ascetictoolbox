@@ -14,6 +14,7 @@ import eu.ascetic.saas.experimentmanager.models.Deployment;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
 import eu.ascetic.saas.experimentmanager.models.KPI;
 import eu.ascetic.saas.experimentmanager.models.Metric;
+import eu.ascetic.saas.experimentmanager.models.ScopableItem;
 import eu.ascetic.saas.experimentmanager.models.Scope;
 import eu.ascetic.saas.experimentmanager.models.ScopeFilter;
 import eu.ascetic.saas.experimentmanager.paasAPI.InformationProvider;
@@ -32,12 +33,12 @@ public class ExperimentHandler {
 	}
 	
 	public Snapshot takeSnapshot(String experimentId, Experiment experiment, String label, 
-			String description, String deplName, Map<String,ScopeFilter> scopeFilters)  throws MetricDefinitionIncorrectException{
+			String description, String deplName, String runId, Map<String,ScopeFilter> scopeFilters)  throws MetricDefinitionIncorrectException{
 		Deployment deployment = experiment.getDeployment(deplName);
 		
 		Snapshot s= new Snapshot();
 		s.setDate(new Date());
-		s.setDeplId(saaSProvider.getDeploymentId(deployment.getName()));
+		s.setDeplId(deployment.getId());
 		s.setDeplName(deployment.getName());
 		s.setDescription(description);
 		s.setExperimentId(experimentId);
@@ -45,22 +46,32 @@ public class ExperimentHandler {
 		
 		s.setVms(ExperimentAdaptator.getVMs(deployment));
 		
-		s.setMeasures(computeMeasure(experiment,deployment, scopeFilters));
+		s.setMeasures(computeMeasure(experiment,deployment, runId, scopeFilters));
 		
 		return s;
 	}
 	
-	private List<Measure> computeMeasure(Experiment exp, Deployment deployment, Map<String,ScopeFilter> scopes)  throws MetricDefinitionIncorrectException{
+	private List<Measure> computeMeasure(Experiment exp, Deployment deployment, String runId, Map<String,ScopeFilter> scopeFilters)  throws MetricDefinitionIncorrectException{
 		List <Measure> measures = new ArrayList<>();
-		
+		List<String> computed = new ArrayList<>();
+		List<String> notFound = new ArrayList<>();
 		for (KPI kpi: exp.getKpis()){
-			if (scopes.containsKey(kpi.getName())){
-				for (Scope scope: scopes.get(kpi.getName()).list(kpi, exp.getApplicationId(), deployment, exp.getEvent())){
+			if (scopeFilters.containsKey(kpi.getName())){
+				List<Scope> scopes = scopeFilters.get(kpi.getName()).list(kpi, exp.getApplicationId(), deployment, runId, exp.getEvent());
+				
+				String log = "Perfoming computeMeasure on KPI " + kpi.getName()+ "\n";
+				for (Scope scope: scopes){
+					log+=" - scope : "+scope.getRefersTo().toString() + "\n";
+				}
+				Logger.getLogger("Experiment Runner").info(log);
+				for (Scope scope: scopes){
 					Measure measure = measure(kpi.getMetric(),scope);
 					if(measure != null){
+						computed.add("kpi="+kpi.getName()+",metric="+kpi.getMetric().getName()+",scope="+scope.getRefersTo().toString()+",measure="+measure.getValue());
 						measures.add(measure);
 					}
 					else{
+						notFound.add("kpi="+kpi.getName()+",metric="+kpi.getMetric().getName()+",scope="+scope.getRefersTo().toString());
 						Logger.getLogger("Experiment Runner").warning("Can't properly compute measure for kpi " + kpi.getName() + " on scope "+ scope);
 					}
 				}
@@ -70,12 +81,27 @@ public class ExperimentHandler {
 			}
 		}
 		
+		String report = "********RESULT REPORT:********\n\n**SUCCEED**\n";
+		for(String e:computed){
+			report+=" - "+e+"\n";
+		}
+		report+= "\n**FAILED**\n";
+		for(String e:notFound){
+			report+=" - "+e+"\n";
+		}
+		Logger.getLogger("Experiment Runner").info(report);
+		
 		return measures;
 	}
 	
 	public Measure measure(Metric metric, Scope s) throws MetricDefinitionIncorrectException {
 		Logger.getLogger("ExperimentHandler").info("computing measure for metric "
 				+metric.getName() +  " on scope on size "+s.getScopableItems().size());
+		Logger.getLogger("ExperimentHandler").info("List of scopable items :");
+		for(ScopableItem si:s.getScopableItems()){
+			Logger.getLogger("ExperimentHandler").info(si.getReference());	
+		}
+		
 		Measure m = new Measure();
 		m.setMetric(metric.getName());
 		m.setRefersTo(s.getRefersTo().stream().map(str->{

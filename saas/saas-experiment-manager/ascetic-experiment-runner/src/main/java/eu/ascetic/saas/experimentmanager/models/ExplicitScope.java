@@ -23,7 +23,7 @@ public class ExplicitScope implements ScopeFilter {
 	}
 
 	@Override
-	public List<Scope> list(KPI kpi, String applicationId, Deployment deployments, List<Event> events) {
+	public List<Scope> list(KPI kpi, String applicationId, Deployment deployments, String runId, List<Event> events) {
 		return scopes;
 	}
 

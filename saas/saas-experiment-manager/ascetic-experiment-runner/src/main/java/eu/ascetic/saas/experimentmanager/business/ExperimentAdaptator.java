@@ -19,10 +19,8 @@ public class ExperimentAdaptator {
 		pexp.setAppId(exp.getApplicationId());
 		pexp.setName(exp.getName());
 		pexp.setDescription(exp.getDescription());
-		
 		pexp.setEvents(getEvents(exp.getEvent()));
 		pexp.setKpis(getKPIs(exp.getKpis()));
-		
 		return pexp;
 	}
 	
@@ -33,7 +31,11 @@ public class ExperimentAdaptator {
 			eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event pe = 
 					new eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Event();
 		
-			pe.setName(e.getName());
+			String eventName = e.getName();
+			eventName = eventName.substring(0, eventName.lastIndexOf("-"));
+			eventName = eventName.substring(0, eventName.lastIndexOf("-"));
+			
+			pe.setName(eventName);
 			pe.setDescription("Launched by : "+e.getLaunchCmd());
 			pevents.add(pe);
 		}
@@ -53,6 +55,7 @@ public class ExperimentAdaptator {
 			metrics.add(getMetric(kpi.getMetric()));
 			pkpi.setMetrics(metrics);
 			pkpi.setDescription(kpi.getDescription());
+			pkpi.setUnit(kpi.getUnit());
 			pkpis.add(pkpi);
 		}
 		return pkpis;
@@ -77,7 +80,7 @@ public class ExperimentAdaptator {
 		m.setDescription(metric.getDescription());
 		m.setName(metric.getName());
 		m.setType(metric.getType());
-		
+		m.setUnit(metric.getUnit());
 		return m;
 	}
 }

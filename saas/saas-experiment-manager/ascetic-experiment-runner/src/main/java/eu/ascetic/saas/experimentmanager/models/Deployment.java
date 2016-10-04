@@ -2,7 +2,11 @@ package eu.ascetic.saas.experimentmanager.models;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import eu.ascetic.saas.experimentmanager.paasAPI.InformationProvider;
 
 
 public class Deployment {
@@ -32,6 +36,7 @@ public class Deployment {
 		this.components = components;
 		linkComponents();
 	}
+	
 
 	public String getId() {
 		return id;
@@ -52,6 +57,18 @@ public class Deployment {
 	private String id;
 	private List<Component> components;
 	
-	
+	public void populateComponents(InformationProvider ip, String appId) throws Exception{
+		if(components==null||components.isEmpty()){
+			components = new ArrayList<>();
+			Map<String,String> vms = ip.listOfVM(appId, this.getId());
+			for(Map.Entry<String,String> vm:vms.entrySet()){
+				PhysicalComponent pc = new PhysicalComponent();
+				pc.setDepl(this);
+				pc.setName(vm.getKey());
+				pc.setDescription(vm.getValue());
+				components.add(pc);
+			}
+		}
+	}
 
 }

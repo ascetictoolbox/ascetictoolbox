@@ -18,23 +18,26 @@ import eu.ascetic.saas.experimentmanager.models.Event;
 import eu.ascetic.saas.experimentmanager.models.Experiment;
 import eu.ascetic.saas.experimentmanager.models.KPI;
 import eu.ascetic.saas.experimentmanager.models.ScopeFilter;
+import eu.ascetic.saas.experimentmanager.paasAPI.InformationProvider;
+import eu.ascetic.saas.experimentmanager.paasAPI.InformationProviderFactory;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.api.ApiException;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.client.DefaultApi;
 import eu.ascetic.saas.experimentmanager.saasKnowledgeBaseClient.model.Snapshot;
 
 public class API {
-	public static Snapshot run(String expId, Experiment exp, String deplName, String description, String scopeDefinitionPath){
+	public static Snapshot run(String expId, Experiment exp, String deplName, String description, String scopeDefinitionPath, String runId, String urlToApplicationManager, String urlToApplicationMonitor){
 		if ((!scopeDefinitionPath.startsWith("//")) && scopeDefinitionPath.startsWith("/")){
 			scopeDefinitionPath = "/"+ scopeDefinitionPath;
 		}
-		Logger.getLogger("Experiment Runner").info("begin snapshot computation...");
-		Map<String,ScopeFilter> scopeFilters = getScope(scopeDefinitionPath);
 		
-		ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-		ExperimentHandler mi = (ExperimentHandler) context.getBean("MeasureInterceptor");
+		Logger.getLogger("Experiment Runner").info("begin snapshot computation...");
+		Map<String,ScopeFilter> scopeFilters = getScopeFilters(scopeDefinitionPath);
+		
+		InformationProvider ip = InformationProviderFactory.getDefaultProvider(urlToApplicationManager, urlToApplicationMonitor);
+		ExperimentHandler mi = new ExperimentHandler(ip);
 		
 		try {
-			return mi.takeSnapshot(expId, exp, "A snapshot", description, deplName, scopeFilters);
+			return mi.takeSnapshot(expId, exp, "A snapshot", description, deplName, runId, scopeFilters);
 		} catch (MetricDefinitionIncorrectException e) {
 			e.printStackTrace();
 			return null;
@@ -61,7 +64,7 @@ public class API {
 		return kpis;
 	}
 	
-	public static List<Deployment> getDeployment(String filepath){
+	private static List<Deployment> getDeployment(String filepath){
 		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
 			filepath = "/"+ filepath;
 		}
@@ -71,7 +74,7 @@ public class API {
 		return depls;
 	}
 	
-	public static Map<String,ScopeFilter> getScope(String filepath){
+	public static Map<String,ScopeFilter> getScopeFilters(String filepath){
 		if ((!filepath.startsWith("//")) && filepath.startsWith("/")){
 			filepath = "/"+ filepath;
 		}
@@ -89,12 +92,21 @@ public class API {
 		return new Experiment(label,appId, appName, description, events,depls,kpis);
 	}
 	
-	public static Experiment loadExperiment(String experimentFile){
+	public static Experiment loadExperiment(String experimentFile, String urlToApplicationManager, String urlToApplicationMonitor) throws Exception{
 		if ((!experimentFile.startsWith("//")) && experimentFile.startsWith("/")){
 			experimentFile = "/"+ experimentFile;
 		}
 		ApplicationContext context = new FileSystemXmlApplicationContext(experimentFile);
-		return (Experiment) context.getBean("Experiment");
+		
+		Experiment exp= (Experiment) context.getBean("Experiment");
+		
+		InformationProvider ip = InformationProviderFactory.getDefaultProvider(urlToApplicationManager, urlToApplicationMonitor);
+		
+		for(Deployment depl: exp.getDeployments()){
+			depl.populateComponents(ip,exp.getApplicationId());
+		}
+		
+		return exp;
 	}
 	
 	public static String expId(String persistServiceBaseUrl, Experiment exp) throws ApiException{

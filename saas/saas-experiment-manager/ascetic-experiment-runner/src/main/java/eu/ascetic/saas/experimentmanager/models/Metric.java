@@ -8,6 +8,7 @@ public abstract class Metric {
 	private String name;
 	private String description;
 	private String type;
+	private String unit;
 	
 	public String get(Scope scope) throws MetricDefinitionIncorrectException, NoMeasureException {
 		return null;
@@ -41,6 +42,16 @@ public abstract class Metric {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+
+	public String getUnit() {
+		return unit;
+	}
+
+
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 
 

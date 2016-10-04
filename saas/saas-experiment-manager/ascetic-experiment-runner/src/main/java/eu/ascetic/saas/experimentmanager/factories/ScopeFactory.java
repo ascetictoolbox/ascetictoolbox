@@ -19,6 +19,7 @@ public class ScopeFactory {
 	
 	private static List<String> itemLabels = new ArrayList<String>(){{
 		add("appId");
+		add("runId");
 		add("deplId");
 		add("event");
 		add("vmId");
@@ -62,7 +63,7 @@ public class ScopeFactory {
 	
 	
 	public static List<Scope> getFullDeploymentScope(String appId, 
-			Deployment deployment, List<Event> events){
+			Deployment deployment, String runId, List<Event> events){
 		LinkedList<String> componentNames = new LinkedList<String>();
 		for (Component component:deployment.getComponents()){
 			componentNames.add(component.getName());
@@ -79,6 +80,7 @@ public class ScopeFactory {
 		
 		List<String> staticPart=new ArrayList<String>(){{
 			add(appId);
+			add(runId);
 		}};
 		
 		List<String> pivots=new ArrayList<String>(){{
@@ -95,7 +97,7 @@ public class ScopeFactory {
 	}
 	
 	public static List<Scope> getScopeByEvent(String appId, 
-			Deployment deployment, List<Event> events
+			Deployment deployment, String runId, List<Event> events
 			){
 		LinkedList<LinkedList<String>> axes = new LinkedList<>();
 		axes.add(new LinkedList<String>(
@@ -103,6 +105,7 @@ public class ScopeFactory {
 		
 		List<String> staticPart=new ArrayList<String>(){{
 			add(appId);
+			add(runId);
 			add(deployment.getId());
 		}};
 		
@@ -117,12 +120,13 @@ public class ScopeFactory {
 	}
 	
 	public static List<Scope> getScopeByEventNoVM(String appId, 
-			Deployment deployment, List<Event> events
+			Deployment deployment, String runId, List<Event> events
 			){
 		LinkedList<LinkedList<String>> axes = new LinkedList<>();
 		
 		List<String> staticPart=new ArrayList<String>(){{
 			add(appId);
+			add(runId);
 			add(deployment.getId());
 		}};
 		

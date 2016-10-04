@@ -6275,6 +6275,7 @@ saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/ScopeFilter.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/models/WebserviceValue.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProvider.java -text
+saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProviderFactory.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/paasAPI/InformationProviderImpl.java -text
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/util/Generator.java -text svneol=unset#text/plain
 saas/saas-experiment-manager/ascetic-experiment-runner/src/main/java/eu/ascetic/saas/experimentmanager/wslayer/Handler.java -text

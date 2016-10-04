@@ -54,6 +54,8 @@ public class KPI {
 		this.name = name;
 	}
 
-	
+	public String getUnit(){
+		return this.metric.getUnit();
+	}
 
 }

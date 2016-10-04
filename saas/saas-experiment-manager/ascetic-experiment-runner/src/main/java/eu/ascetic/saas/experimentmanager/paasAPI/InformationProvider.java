@@ -1,6 +1,7 @@
 package eu.ascetic.saas.experimentmanager.paasAPI;
 
 import java.util.List;
+import java.util.Map;
 
 public interface InformationProvider {
 
@@ -9,6 +10,8 @@ public interface InformationProvider {
 	List<String> listDeployments(String appId);
 
 	List<String> listVirtualMachine(String appId, String deplId) throws Exception;
+	
+	public Map<String,String> listOfVM(String appId, String deplId) throws Exception;
 
 	List<String> listEventIds(String appId, String deplId) throws Exception;
 	
@@ -21,6 +24,5 @@ public interface InformationProvider {
 
 	public void setUrlToApplicationMonitor(String urlToApplicationMonitor) ;
 	
-	public String getDeploymentId(String deploymentName);
 	
 }

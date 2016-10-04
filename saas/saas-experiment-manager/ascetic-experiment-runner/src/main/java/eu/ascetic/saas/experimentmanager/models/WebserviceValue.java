@@ -2,6 +2,8 @@ package eu.ascetic.saas.experimentmanager.models;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import eu.ascetic.saas.experimentmanager.exception.MetricDefinitionIncorrectException;
 import eu.ascetic.saas.experimentmanager.exception.NoMeasureException;
@@ -82,13 +84,15 @@ public class WebserviceValue extends Metric {
 		
 		try {
 			return WSBasic.getSingle(url,format,query,post);
-		} catch (WSException e) {
-			throw new NoMeasureException("Measure doesn't exist for metric : " + this.getName() + " on scope " + scope,e);
 		} catch (IncorrectRessourceFormatException e) {
 			throw new MetricDefinitionIncorrectException("Incorrect resource format for metric : " + this.getName(),e);
 		} catch (ResponseParsingException e) {
 			throw new MetricDefinitionIncorrectException("Incorrect resource format for metric : " + this.getName(),e);
-		}
+		} catch (Exception e) {
+			Logger.getLogger("eu.ascetic.saas.experimentmanager.models").log(Level.WARNING,
+					"Measure doesn't exist for metric : " + this.getName() + " on scope " + scope, e);
+			throw new NoMeasureException("Measure doesn't exist for metric : " + this.getName() + " on scope " + scope,e);
+		} 
 	}
 	
 
