@@ -225,13 +225,17 @@ public class LocalOptimizationState {
     }
 
     public void runningAction(Implementation impl, AsceticProfile p, long pendingTime) {
-        reserveResources(impl.getRequirements(), 0);
-        if (impl.getCoreId() != null && impl.getImplementationId() != null) {
-            runningImplementationsCount[impl.getCoreId()][impl.getImplementationId()]++;
-            endRunningActions = Math.max(endRunningActions, pendingTime);
-            double power = p.getPower();
-            runningEnergy += pendingTime * power;
-            runningCost += p.getPrice();
+        if (impl!=null){
+        	reserveResources(impl.getRequirements(), 0);
+        	if (impl.getCoreId() != null && impl.getImplementationId() != null) {
+        		runningImplementationsCount[impl.getCoreId()][impl.getImplementationId()]++;
+        		endRunningActions = Math.max(endRunningActions, pendingTime);
+        		double power = p.getPower();
+        		runningEnergy += pendingTime * power;
+        		runningCost += p.getPrice();
+        	}
+        }else{
+        	System.out.println("Action has a null implementation");
         }
     }
 

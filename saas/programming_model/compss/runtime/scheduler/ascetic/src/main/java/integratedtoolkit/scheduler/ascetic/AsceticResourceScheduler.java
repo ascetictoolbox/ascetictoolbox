@@ -756,7 +756,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 		actionDSI.clearPredecessors();
 		actionDSI.clearSuccessors();
 		actionDSI.setToReschedule(false);
-		System.out.println("Manage Running action: "+ action.getEventId());
+		System.out.println("Manage Running action: "+ action.toString());
 		state.runningAction(impl, p, endTime);
 	}
 

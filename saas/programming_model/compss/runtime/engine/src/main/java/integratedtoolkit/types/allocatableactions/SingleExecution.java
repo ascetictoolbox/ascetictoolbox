@@ -367,6 +367,7 @@ public class SingleExecution<P extends Profile, T extends WorkerResourceDescript
         this.assignImplementation(bestImpl);
         this.assignResource(bestWorker);
         logger.debug(debugString.toString());
+        System.out.println("Assigning action " + this + " to worker" + bestWorker + " with implementation " + bestImpl.getImplementationId() + "\n");
         logger.info("Assigning action " + this + " to worker" + bestWorker + " with implementation " + bestImpl.getImplementationId() + "\n");
         bestWorker.initialSchedule(this);
     }
