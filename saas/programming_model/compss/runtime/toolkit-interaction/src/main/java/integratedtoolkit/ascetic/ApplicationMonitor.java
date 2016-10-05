@@ -46,7 +46,7 @@ public class ApplicationMonitor {
         try {
             StringRequestEntity sre = new StringRequestEntity(
                     "{\"appId\":\"" + Configuration.getApplicationId()
-                    + "\", \"nodeId\":\"" + vm.getProviderId()
+                    + "\", \"nodeId\":\"" + vm.getAMId()
                     + "\", \"instanceId\":\"" + Configuration.getDeploymentId()
                     + "\", \"data\":{ \"ip\":\"" + vm.getIPv4()
                     + "\", \"eventType\":\"" + eventType
