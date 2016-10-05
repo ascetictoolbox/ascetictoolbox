@@ -160,7 +160,7 @@ public class VM {
                                 + " core " + coreId + " implementation " + implId
                                 + " in " + vm.getIp());
                     }
-                    logger.debug("\t\t CURRENT VALUES for " + getIPv4()
+                    System.out.println("\t\t CURRENT VALUES for " + getIPv4()
                             + ": Core " + coreId + " impl " + implId
                             + " Power:  " + power[coreId][implId]
                             + " Price: " + price[coreId][implId]);
