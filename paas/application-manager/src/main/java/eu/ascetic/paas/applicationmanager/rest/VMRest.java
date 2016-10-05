@@ -536,7 +536,7 @@ public class VMRest extends AbstractRest {
 			int cpu = vm.getCpuActual();
 			int ram = (int) vm.getRamActual();
 			
-			double storage = (double) vm.getDiskActual() * 1024l;
+			double storage = (double) vm.getDiskActual();
 			
 			if(priceModellerClient == null) {
 				priceModellerClient = PriceModellerClient.getInstance();

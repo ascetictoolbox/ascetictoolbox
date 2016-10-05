@@ -820,7 +820,7 @@ public class DeploymentRest extends AbstractRest {
 			for(VM vm : deployment.getVms()) {
 				 VMinfo vmInfo = new VMinfo(vm.getRamActual(), 
 						 					vm.getCpuActual(), 
-						 					vm.getDiskActual() * 1024l,
+						 					vm.getDiskActual(),
 						 					duration);
 				 
 				 vmInfos.add(vmInfo);

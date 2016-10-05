@@ -39,7 +39,6 @@ import eu.ascetic.paas.applicationmanager.model.VM;
 @Service("PriceModellerService")
 public class PriceModellerBean implements InitializingBean {
 	private static Logger logger = Logger.getLogger(PriceModellerBean.class);
-	private PriceModellerClient priceModellerClient;
 	@Autowired
 	private DeploymentDAO deploymentDAO;
 
@@ -47,9 +46,6 @@ public class PriceModellerBean implements InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logger.info("Initializing Price Modeller...");
-    	
-		priceModellerClient = PriceModellerClient.getInstance();
 		
 		logger.info("Loading information from actual running deployments using DeploymentDAO: " + deploymentDAO);
 		if(deploymentDAO != null) {
@@ -57,29 +53,34 @@ public class PriceModellerBean implements InitializingBean {
 
 			for(Deployment deployment : deployments) {
 				logger.info("Adding information of deployment: " + deployment.getId() + " of application: " + deployment.getApplication().getName());
-				LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
-
-				for(VM vm : deployment.getVms()) {
-
-					int priceSchema = 0;
-					if(vm.getPriceSchema() != null) {
-						priceSchema = vm.getPriceSchema().intValue();
-					}
-
-					logger.info("Adding information of VM: " + vm.getId() + ", RAM:" + vm.getRamActual() + ", CPU:" + vm.getCpuActual() + ", Disk:" +  vm.getDiskActual() + ", Schema:" + priceSchema + ", ProviderID:" + vm.getProviderId());
-
-					VMinfo vmInfo = new VMinfo(vm.getId(), (double) vm.getRamActual(), (double) vm.getCpuActual(), (double) vm.getDiskActual(), priceSchema, vm.getProviderId());
-					vmInfos.add(vmInfo);
-				}
-
-				priceModellerClient.initializeApplication(deployment.getApplication().getName(), deployment.getId(), vmInfos);
+				
+				PriceModellerBean.initializeDeployment(deployment);
 			}
 		} else {
 			logger.error("No possible to connect with DB, deploymentDAO is null!!!!");
 		}
 	}
+	
+	public static void initializeDeployment(Deployment deployment) {
+		LinkedList<VMinfo> vmInfos = new LinkedList<VMinfo>();
+		
+		for(VM vm : deployment.getVms()) {
+
+			int priceSchema = 0;
+			if(vm.getPriceSchema() != null) {
+				priceSchema = vm.getPriceSchema().intValue();
+			}
+
+			logger.info("Adding information of VM: " + vm.getId() + ", RAM:" + vm.getRamActual() + ", CPU:" + vm.getCpuActual() + ", Disk:" +  vm.getDiskActual() + ", Schema:" + priceSchema + ", ProviderID:" + vm.getProviderId());
+
+			VMinfo vmInfo = new VMinfo(vm.getId(), (double) vm.getRamActual(), (double) vm.getCpuActual(), (double) vm.getDiskActual(), priceSchema, vm.getProviderId());
+			vmInfos.add(vmInfo);
+		}
+
+		PriceModellerClient.getInstance().initializeApplication(deployment.getApplication().getName(), deployment.getId(), vmInfos);
+	}
 
 	public PriceModellerClient getPriceModeller() {
-		return priceModellerClient;
+		return PriceModellerClient.getInstance();
 	}
 }

@@ -21,6 +21,7 @@ import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.applicationmanager.ovf.OVFUtils;
 import eu.ascetic.paas.applicationmanager.ovf.VMLimits;
+import eu.ascetic.paas.applicationmanager.pm.PriceModellerBean;
 import eu.ascetic.paas.applicationmanager.providerregistry.PRClient;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.ImageUploader;
 import eu.ascetic.paas.applicationmanager.vmmanager.client.VmManagerClient;
@@ -237,11 +238,17 @@ public class DeployEventHandler {
 					}
 
 					deployment.setStatus(Dictionary.APPLICATION_STATUS_DEPLOYED);
+					
+					// We initialize the application at the PriceModellerBean
+					try {
+						logger.info("Initializing the deployment into the PriceModeller");
+						PriceModellerBean.initializeDeployment(deployment);
+					} catch(NullPointerException ex) {
+						logger.warn("PriceModeller object does not exist!!!");
+					}
+					
 					// We save the changes to the DB
 					deploymentDAO.update(deployment);
-
-				
-				
 			} catch(OvfRuntimeException ex) {
 				logger.info("Error parsing OVF file: " + ex.getMessage());
 				ex.printStackTrace();
