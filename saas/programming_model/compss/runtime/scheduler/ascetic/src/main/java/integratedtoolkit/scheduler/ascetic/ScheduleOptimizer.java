@@ -105,7 +105,7 @@ public class ScheduleOptimizer extends Thread {
                     OptimizationWorker receiver = recIt.next();
                     if (move(candidate, donor, receiver)) {
                         hasDonated = true;
-			return;
+			break;
                     }
                 }
             }
