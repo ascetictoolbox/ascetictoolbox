@@ -42,8 +42,10 @@ public class Configuration {
 
     public static String zabbixUrl = "http://192.168.3.199/zabbix/api_jsonrpc.php";	//Y2
     public static String zabbixPassword = "Brandmeldeanlage104"; //Y2
-
-	
+    
+    public static String zabbixAutoLogoutTime = "990";
+    public static String virtualMachinesGroupName = "Virtual Machines";
+    public static String vmTemplateName = "Template.Virt.Libvirt";	
 	
     private static final String zabbixConfigurationFile = "ascetic-zabbix-api.properties";
 
