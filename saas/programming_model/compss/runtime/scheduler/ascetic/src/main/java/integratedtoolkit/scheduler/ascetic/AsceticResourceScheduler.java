@@ -237,9 +237,21 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 					gIt.remove();
 				}
 			}
-			for (Gap g : resources) {
-				addGap(g);
-				AllocatableAction gapAction = g.getOrigin();
+			for (Gap newGap : resources) {
+                AllocatableAction gapAction = newGap.getOrigin();
+                boolean merged=false;
+                for (Gap registeredGap: gaps){
+                    if (registeredGap.getOrigin() == gapAction){
+                        ResourceDescription registeredResources = registeredGap.getResources();
+                        ResourceDescription releasedResources = newGap.getResources();
+                        registeredResources.increaseDynamic(releasedResources);
+                        merged=true;
+                           break;
+                    }
+                }
+                if (!merged){
+                    addGap(newGap);
+                }
 				if (gapAction != null) {
 					((AsceticSchedulingInformation) gapAction.getSchedulingInfo()).unlock();
 				}
