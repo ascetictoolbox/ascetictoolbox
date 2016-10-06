@@ -26,7 +26,7 @@ public class VM {
 
     protected static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
     protected static final boolean debug = logger.isDebugEnabled();
-    private static final long UPDATE_FREQ = 30000;
+    private static final long UPDATE_FREQ = 60000;
     private long lastUpdate = 0l;
 
     private HashMap<AllocatableAction, JobExecution> runningJobs = new HashMap<AllocatableAction, JobExecution>();
@@ -146,10 +146,10 @@ public class VM {
                     try {
                         c = appManager.getEstimations("" + vm.getId(), coreId, implId);
                     } catch (ApplicationUploaderException ex) {
-                        System.err.println("Could not update the energy consumtion for"
+                        System.err.println("*** Exception updating estimations for"
                                 + " core " + coreId + " implementation " + implId
                                 + " in " + vm.getIp());
-                        ex.printStackTrace(System.err);
+                        //ex.printStackTrace(System.err);
                     }
                     if (c != null) {
                         if (price[coreId][implId] <= 0) {
