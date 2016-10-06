@@ -146,7 +146,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		logger.info("ChargesCalculator calculation of charges");
 		double charges;
 		double chargesOnIaaS = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
-		charges = chargesOnIaaS;
+		charges = 100;
 		try{
 			double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, null);
 		//	System.out.println("Charges on IaaS: " + chargesOnIaaS);

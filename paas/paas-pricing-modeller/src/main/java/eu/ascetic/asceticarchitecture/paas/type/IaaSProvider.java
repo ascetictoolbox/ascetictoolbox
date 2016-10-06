@@ -37,16 +37,17 @@ public class IaaSProvider {
 		
 		IaaSID = id;
 		distribution.setDistribution(0.6, 0.3, 0.1); 
-		int IaaSid = Integer.parseInt(IaaSID.trim());
+		//int IaaSid = Integer.parseInt(IaaSID.trim());
 		
-		int even= IaaSid%2;
-		if (even == 0){
+		//int even= IaaSid%2;
+		//if (even == 0){
+		if (IaaSID.contains("0")){
 			staticResourcePrice = 0.14;}
 			else{
 				staticResourcePrice = 0.20;
 			}
 	
-			if (even == 0){
+			if (IaaSID.contains("0")){
 				resourcePrice = 0.07;}
 			else{
 				resourcePrice = 0.1;
