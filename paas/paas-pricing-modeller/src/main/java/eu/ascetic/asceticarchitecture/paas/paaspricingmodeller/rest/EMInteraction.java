@@ -15,12 +15,13 @@ public class EMInteraction {
 
     public double getEnergyofVM(String applicationID, String deploymentID, String VMid, String startTime, String endTime){
     	RestVMClient client = new RestVMClient(applicationID, deploymentID);
-    	double response = client.getEnergyConsumption(Double.class, VMid, null, startTime, endTime);
     	try {
+    		double response = client.getEnergyConsumption(Double.class, VMid, null, startTime, endTime);
+    	
             JAXBContext jaxbContext = JAXBContext.newInstance(Double.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-         //   double deployment = (double) jaxbUnmarshaller.unmarshal(response);
-         //   return deployment;
+      //      double deployment = (double) jaxbUnmarshaller.unmarshal(response);
+       //     return deployment;
             return response;
         } catch (JAXBException ex) {
             Logger.getLogger(EMInteraction.class.getName()).log(Level.SEVERE, null, ex);
@@ -31,8 +32,9 @@ public class EMInteraction {
     
     public double getPredictedEnergyofVM(String applicationID, String deploymentID, String VMid, String duration){
     	RestVMClient client = new RestVMClient(applicationID, deploymentID);
-    	double response = client.getEnergyEstimation(Double.class, VMid, null, duration);
+    	
     	try {
+    		double response = client.getEnergyEstimation(Double.class, VMid, null, duration);
             JAXBContext jaxbContext = JAXBContext.newInstance(Double.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
          //   double deployment = (double) jaxbUnmarshaller.unmarshal(response);

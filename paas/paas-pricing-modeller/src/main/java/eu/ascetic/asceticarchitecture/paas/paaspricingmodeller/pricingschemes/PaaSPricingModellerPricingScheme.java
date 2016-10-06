@@ -206,7 +206,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	        
 	        Date endDate = new Date(VM.getChangeTime().getTimeInMillis());
 	        String endDateISO = df.format(endDate);
-	        System.out.println("start " + startDateISO + " end " + endDateISO + " difference "+(endDate.getTime()-startDate.getTime()));
+	     //   System.out.println("start " + startDateISO + " end " + endDateISO + " difference "+(endDate.getTime()-startDate.getTime()));
 	        
 	      //  ZonedDateTime zdt1 = ZonedDateTime.ofInstant(Instant.ofEpochMilli(VM.getEnergyChargesAll().getTime().getTimeInMillis()), ZoneId.systemDefault());
 	     //   System.out.println(zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -217,7 +217,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	    	    double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), startDateISO, endDateISO);
 	       //	double energy = response.getEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), zdt1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),zdt2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 	        	VM.updateEnergyConsumption(energy/1000);
-	        	System.out.println("Energy taken from EM: " +energy);
+	        //	System.out.println("Energy taken from EM: " +energy);
 	        	return energy/1000;
 	        }
 	       catch (Exception ex){

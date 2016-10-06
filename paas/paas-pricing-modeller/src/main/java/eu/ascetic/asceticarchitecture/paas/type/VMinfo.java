@@ -30,13 +30,23 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.pricingschemes.Pr
 
 public class VMinfo extends VMBasic{
 	static Logger logger = Logger.getLogger(PaaSPricingModellerPricingScheme.class);
+	boolean dependentScheme = false;
+	
+	public void setDependentSchemeFalse(){
+		dependentScheme = true;
+	}
+	
+	public boolean getDependentScheme(){
+		return dependentScheme;
+	}
 	
 	public VMinfo (double RAM, double CPU, double storage, long predictedDuration){
 		this.RAM = RAM/1024;
 		this.CPU = CPU;
 		this.storage = storage;
 		this.predictedDuration=predictedDuration;
-		this.scheme = initializeScheme(0);
+		this.scheme = initializeScheme(1);
+		setDependentSchemeFalse();
 		schemeToChange = true;
 		time = new TimeParameters();
 		energyInfo.setCurrentTotalConsumption(0.0);		
@@ -47,7 +57,7 @@ public class VMinfo extends VMBasic{
 		IaaSProvider Prov = new IaaSProvider("0");
 		IaaSProviders.put("0", Prov);
 		setIaaSProvider(IaaSProviders.get("0"));
-		logger.info("PaaS Pricing Modeller: This is VMinfo 1");
+	//	System.out.println("PaaS Pricing Modeller: This is VMinfo 1");
 	}
 	
 

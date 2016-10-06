@@ -126,7 +126,7 @@ public double getTotalCharges(VMinfo VM) {
 //TESTED
 private double getResourcePrice(VMinfo VM){
 	double price = VM.getIaaSProvider().getPriceSec(VM.getIaaSProvider().getResoucePrice());
-//	System.out.println("Scheme B: price of provider " + VM.getIaaSProvider().getID()+" is "+price);
+	//System.out.println("Scheme B: price of provider " + VM.getIaaSProvider().getID()+" is "+price);
 	return price;
 }
 

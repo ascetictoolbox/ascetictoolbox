@@ -87,7 +87,7 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	
 ////////////////////////////////// App and VM Charges //////////////////////
 	//TESTED
-	public double getAppCurrentTotalCharges(int depl, HashMap<Integer,Double> energyOfVMs){
+	public double getAppCurrentTotalCharges(int depl, HashMap<Integer,Double> energyOfVMs, int DepSchemeID){
 		 if (allApps.containsKey(depl)) {
 			
 			 List <Integer> vm = new ArrayList<Integer>();
@@ -96,9 +96,12 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	            double currentcharges = 0;
 	            double energy = 0.0;
 	            for (int i=0; i<app.getNumberOfVMs();i++){
-	            	
 	            	int VMid = app.getVM(i).getVMid();
 	            	VMinfo VM = app.getVM(i);
+	            	if (VM.getDependentScheme()){
+	            		VM.setSchemeID(DepSchemeID);
+	            		VM.setScheme(DepSchemeID);
+	            	}
 	            	if(VM.isActive()){
 	            	  vm.add(VMid); 
 	            	  if (energyOfVMs!=null){
@@ -118,9 +121,10 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	            		 currentcharges = currentcharges + VM.getCurrentCharges();
 	            	}
 	            }
+	            app.setCurrentCharges(currentcharges);
+    			app.setTotalCharges(totalcharges);
 	            try{
-        			app.setCurrentCharges(currentcharges);
-        			app.setTotalCharges(totalcharges);
+        			
         		//	 System.out.println("Billing: current charges of app are "+ app.getCurrentCharges());
         			// logger.info("Billing: current charges of app are "+ app.getCurrentCharges());
          			 producer.sendToQueue("PMBILLING", app.getVM().getIaaSProvider().getID(), app.getId(), vm, Unit.TOTALCHARGES, app.getTotalCharges());
@@ -136,7 +140,8 @@ public class PaaSPricingModellerBilling extends PaaSPricingModellerRegistration 
 	            lastEnergyNotCalculatedFromPaaS=app.getEnergyFailed();
 	            return totalcharges;
 	        } else {
-	            return 0;
+	        	//Didn't find the deployment
+	            return -2;
 	        }
 
 	}

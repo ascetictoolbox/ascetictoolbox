@@ -139,6 +139,12 @@ public class DeploymentInfo {
 	public void setVMs(LinkedList<VMinfo> listofVMs){
 		for (int i=0; i<listofVMs.size();i++){
 			VMs.add(listofVMs.get(i));
+			if (listofVMs.get(i).getDependentScheme()){
+				listofVMs.get(i).setSchemeID(this.getSchemeId());
+				listofVMs.get(i).setScheme(this.getSchemeId());
+
+			}
+				
 		//	System.out.println("DeloymentInfo: I added this VM "+ VMs.get(i).getVMid());
 		}
 	}

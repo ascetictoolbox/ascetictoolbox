@@ -146,19 +146,21 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		logger.info("ChargesCalculator calculation of charges");
 		double charges;
 		double chargesOnIaaS = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
-		charges = 100;
-		try{
-			double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, null);
+		double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, null, schemeID);
 		//	System.out.println("Charges on IaaS: " + chargesOnIaaS);
 		//	System.out.println("Charges on PaaS: " + chargesOnPaaS);
-			charges = chargesOnPaaS;
-			}
-		catch(NullPointerException e){
-			logger.error("PM getAppTotalCharges could not calculate the charges coming from PaaS");
-			charges = chargesOnIaaS;
-		}
 		if (billing.getEnergyFlag()){
 			charges=chargesOnIaaS;
+		}
+		
+		if (chargesOnPaaS>chargesOnIaaS){
+			charges = chargesOnPaaS;
+		}
+		else if(chargesOnIaaS>0){
+			charges = chargesOnIaaS;
+		}
+		else{
+			charges = 100;
 		}
 		return charges;
 		//System.out.println("ChargesCalculator calculation of charges");		
@@ -168,7 +170,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges, HashMap<Integer,Double> energyOfVMs) throws Exception{
 			logger.info("ChargesCalculator calculation of charges");
 			double chargesOnIaaS = billing.getAppCurrentTotalCharges(deplID, IaaSCharges);
-			double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, energyOfVMs);
+			double chargesOnPaaS = billing.getAppCurrentTotalCharges(deplID, energyOfVMs, schemeID);
 			//System.out.println("Charges on IaaS: " + chargesOnIaaS);
 			//System.out.println("Charges on PaaS: " + chargesOnPaaS);
 			
