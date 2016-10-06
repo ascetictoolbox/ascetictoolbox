@@ -92,10 +92,10 @@ public class ZabbixApiClientTest {
 //			testGetPowerFromAllHosts(client);
 //			insertSeparator("getEnergyFromAllHosts");
 //			testGetEnergyFromAllHosts(client);
-//			insertSeparator("getVms");
-//			testGetVms(client);
-			insertSeparator("getMetricsForAsceticMetricPusher");
-			testGetMetricsForAsceticMetricPusher(client);
+			insertSeparator("getVms");
+			testGetVms(client);
+//			insertSeparator("getMetricsForAsceticMetricPusher");
+//			testGetMetricsForAsceticMetricPusher(client);
 	}
 
 

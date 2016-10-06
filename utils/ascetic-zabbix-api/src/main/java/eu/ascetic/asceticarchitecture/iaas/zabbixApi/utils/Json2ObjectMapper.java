@@ -50,7 +50,9 @@ public class Json2ObjectMapper {
 		host.setName(hmJsonHost.get(Dictionary.HOST_NAME));
 		Object hostGroups = (Object) hmJsonHost.get("groups");
 		ArrayList<LinkedHashMap<String, String>> parsedHosts = (ArrayList<LinkedHashMap<String, String>>) hostGroups;
-		host.setGroups(getHostGroups(parsedHosts));
+		if (parsedHosts != null){
+			host.setGroups(getHostGroups(parsedHosts));	
+		}		
 		return host;
 	}
         

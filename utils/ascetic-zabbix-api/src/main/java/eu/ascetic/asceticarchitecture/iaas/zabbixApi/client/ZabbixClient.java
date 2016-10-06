@@ -217,6 +217,7 @@ public class ZabbixClient {
 
         } catch (Exception e) {
             log.error(e.getMessage() + "\n");
+            System.out.println(e.getMessage());
         }
         return host;
     }
