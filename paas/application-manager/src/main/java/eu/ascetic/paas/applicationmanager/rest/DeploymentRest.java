@@ -433,10 +433,16 @@ public class DeploymentRest extends AbstractRest {
 		
 		List<VmCost> vmCosts = new ArrayList<VmCost>();
 		
-		for(Map.Entry<String, List<String>> entry : providerVMIds.entrySet()) {
-			VmManagerClient vmManagerClient = prClient.getVMMClient(Integer.parseInt(entry.getKey()));
-			logger.info("Asking for the costs of the VMs: " + entry.getValue() + " in provider: " + entry.getKey());
-			vmCosts.addAll(vmManagerClient.getVMCosts(entry.getValue()));
+		try {
+			for(Map.Entry<String, List<String>> entry : providerVMIds.entrySet()) {
+				VmManagerClient vmManagerClient = prClient.getVMMClient(Integer.parseInt(entry.getKey()));
+				logger.info("Asking for the costs of the VMs: " + entry.getValue() + " in provider: " + entry.getKey());
+				vmCosts.addAll(vmManagerClient.getVMCosts(entry.getValue()));
+			}
+		} catch(NullPointerException ex) {
+			logger.warn("Null pointer exception getting IaaS Costs for VMs");
+			logger.warn(ex.getStackTrace());
+			logger.warn(ex.getMessage());
 		}
 		
 		double totalCost = 0.0;
