@@ -145,14 +145,14 @@ public class VM {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
                 	System.out.println("\t\t CURRENT VALUES for " + getIPv4());
                 	Cost c = null;
-                    try {
+                    /*try {
                         c = appManager.getEstimations("" + vm.getId(), coreId, implId);
                     } catch (ApplicationUploaderException ex) {
                         System.err.println("*** Exception updating estimations for"
                                 + " core " + coreId + " implementation " + implId
                                 + " in " + vm.getIp());
                         //ex.printStackTrace(System.err);
-                    }
+                    }*/
                     if (c != null) {
                         if (price[coreId][implId] <= 0) {
                             price[coreId][implId] = c.getCharges();
@@ -165,11 +165,12 @@ public class VM {
                         }else{
                         	System.out.println("\t\t\t Obtained: Power are "+c.getPowerValue());
                         }
-                    }else{
+                    }/*else{
                     	System.out.println("Estimations returned null. Could not update the energy consumtion for"
                                 + " core " + coreId + " implementation " + implId
                                 + " in " + vm.getIp());
-                    }
+                        
+                    }*/
                     System.out.println("\t\t Final VALUES for " + getIPv4()
                             + ": Core " + coreId + " impl " + implId
                             + " Power:  " + power[coreId][implId]
