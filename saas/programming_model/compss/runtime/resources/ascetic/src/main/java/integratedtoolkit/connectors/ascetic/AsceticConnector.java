@@ -116,6 +116,7 @@ public class AsceticConnector implements Cost, Connector {
              }
              */
             try {
+            	
                 Ascetic.requestVMDestruction(worker);
             } catch (Exception e) {
                 System.err.println("Error deleting VM " + worker.getName());

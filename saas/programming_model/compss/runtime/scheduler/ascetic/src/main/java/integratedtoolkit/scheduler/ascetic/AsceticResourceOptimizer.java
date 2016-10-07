@@ -577,9 +577,9 @@ printLog();
         ConfigurationCost(long time, double idlePower, double fixedEnergy, double idlePrice, double fixedCost) {
             this.time = time/1000;
             this.energy = (idlePower * time + fixedEnergy) / 3_600_000;
-            this.cost = (idlePrice * (time / 3_600_000)) + fixedCost;
+            this.cost = (idlePrice * ((double)(time / 3_600_000))) + fixedCost;
             this.power = idlePower + (fixedEnergy/time);
-            this.price = idlePrice + (fixedCost/(time / 3_600_000));
+            this.price = idlePrice + (fixedCost/((double)(time / 3_600_000)));
             
         }
 
