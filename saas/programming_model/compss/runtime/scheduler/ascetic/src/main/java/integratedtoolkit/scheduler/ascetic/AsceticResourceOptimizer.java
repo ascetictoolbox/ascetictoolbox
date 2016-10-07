@@ -39,29 +39,40 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             long timeBoundary = Ascetic.getTimeBoundary();
             double energyBoundary = Ascetic.getEnergyBoundary();
             double costBoundary = Ascetic.getEconomicalBoundary();
-
+            double powerBoundary = Ascetic.getPowerBoundary();
+            double priceBoundary = Ascetic.getPriceBoundary();
             addToLog("Boundaries\n"
                     + "\tTime: " + timeBoundary + "s\n"
                     + "\tEnergy: " + energyBoundary + "Wh\n"
-                    + "\tCost: " + costBoundary + "€\n");
+                    + "\tCost: " + costBoundary + "€\n"
+                    + "\tPower: "+ powerBoundary + "W\n"
+                    + "\tPrice: "+ priceBoundary + "€/h\n");
+            		
 
             long elapsedTime = Ascetic.getAccumulatedTime();
             double elapsedEnergy = Ascetic.getAccumulatedEnergy();
-            double elapsedCost = Ascetic.getAccumulatedEnergy();
-
+            double elapsedCost = Ascetic.getAccumulatedCost();
+            double elapsedPower = Ascetic.getCurrentPower();
+            double elapsedPrice = Ascetic.getCurrentPrice();
+            
             addToLog("Elapsed\n"
                     + "\tTime: " + elapsedTime + "s\n"
                     + "\tEnergy: " + elapsedEnergy + "Wh\n"
-                    + "\tCost: " + elapsedCost + "€\n");
+                    + "\tCost: " + elapsedCost + "€\n"
+                    + "\tPower: "+ elapsedPower + "W\n"
+                    + "\tPrice: "+ elapsedPrice + "€/h\n");
 
             long timeBudget = timeBoundary - elapsedTime;
             double energyBudget = energyBoundary - elapsedEnergy;
             double costBudget = costBoundary - elapsedCost;
-
+            double powerBudget = powerBoundary - elapsedPower;
+            double priceBudget = priceBoundary - elapsedPrice;
             addToLog("Budget\n"
                     + "\tTime: " + timeBudget + "s\n"
                     + "\tEnergy: " + energyBudget + "Wh - " + (energyBudget * 3600) + "J\n"
-                    + "\tCost: " + costBudget + "€\n");
+                    + "\tCost: " + costBudget + "€\n"
+                    + "\tPower: "+ powerBudget + "W\n"
+                    + "\tPrice: "+ priceBudget + "€/h\n");
 
             ResourceScheduler[] workers = ts.getWorkers();
             Resource[] allResources = new Resource[workers.length];
@@ -158,6 +169,10 @@ printLog();
     private boolean doesImproveTime(Action candidate, Action reference, double energyBudget, double costBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
+        if (cCost.power > rCost.power || cCost.price > rCost.price){
+        	addToLog("\t\t Surpasses the cost or price budget");
+        	return false;
+        }
         if (cCost.time < rCost.time) {
             if (cCost.energy > energyBudget) {
                 addToLog("\t\t Surpasses the energy budget\n");
@@ -188,6 +203,10 @@ printLog();
     private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, double timeBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
+        if (cCost.power > rCost.power || cCost.price > rCost.price){
+        	addToLog("\t\t Surpasses the cost or price budget");
+        	return false;
+        }
         if (cCost.cost < rCost.cost) {
             if (cCost.energy > energyBudget) {
                 addToLog("\t\t Surpasses the energy budget " + cCost.energy + " > " + energyBudget + "\n");
@@ -218,6 +237,10 @@ printLog();
     private boolean doesImproveEnergy(Action candidate, Action reference, double timeBudget, double costBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
+        if (cCost.power > rCost.power || cCost.price > rCost.price){
+        	addToLog("\t\t Surpasses the cost or price budget");
+        	return false;
+        }
         if (cCost.energy < rCost.energy) {
             if (cCost.time > timeBudget) {
                 addToLog("\t\t Surpasses the time budget\n");
@@ -369,7 +392,7 @@ printLog();
         long time = minTime;
         double idlePower = 0;
         double actionsEnergy = 0;
-        double idleCost = 0;
+        double idlePrice = 0;
         double actionsCost = 0;
         for (Resource r : resources) {
             double rActionsEnergy = r.startEnergy;
@@ -377,7 +400,7 @@ printLog();
             addToLog("\t" + (r.worker != null ? r.worker.getName() : " NEW") + "\n");
             time = Math.max(time, r.time);
             idlePower += r.idlePower;
-            idleCost += r.idlePrice;
+            idlePrice += r.idlePrice;
 
             for (int coreId = 0; coreId < r.counts.length; coreId++) {
                 rActionsEnergy += r.counts[coreId] * r.profiles[coreId].getPower() * r.profiles[coreId].getAverageExecutionTime();
@@ -385,14 +408,14 @@ printLog();
             }
             actionsEnergy += rActionsEnergy;
             actionsCost += rActionsCost;
-            addToLog("\t\t Time: " + time + "\n");
+            addToLog("\t\t Time: " + time + "ms\n");
             addToLog("\t\tactions Cost:" + rActionsCost + " € -> total " + actionsCost + "€\n");
-            addToLog("\t\tIdle Price:" + r.idlePrice + " € -> total " + idleCost + "€\n");
+            addToLog("\t\tIdle Price:" + r.idlePrice + " €/h -> total " + idlePrice + "€/h\n");
             addToLog("\t\tactions Energy:" + rActionsEnergy + " mJ -> total " + actionsEnergy + "mJ\n");
-            addToLog("\t\tIdle Energy:" + r.idlePower + " mJ -> total " + idlePower + "mJ\n");
+            addToLog("\t\tIdle Power:" + r.idlePower + " W -> total " + idlePower + "W\n");
 
         }
-        return new ConfigurationCost(time, idlePower, actionsEnergy + minEnergy, idleCost, actionsCost + minCost);
+        return new ConfigurationCost(time, idlePower, actionsEnergy + minEnergy, idlePrice, actionsCost + minCost);
     }
 
     private class Resource {
@@ -548,18 +571,25 @@ printLog();
         long time;
         double energy;
         double cost;
+        double power;
+        double price;
 
         ConfigurationCost(long time, double idlePower, double fixedEnergy, double idlePrice, double fixedCost) {
-            this.time = time / 1000;
+            this.time = time/1000;
             this.energy = (idlePower * time + fixedEnergy) / 3_600_000;
-            this.cost = idlePrice + fixedCost;
+            this.cost = (idlePrice * (time / 3_600_000)) + fixedCost;
+            this.power = idlePower + (fixedEnergy/time);
+            this.price = idlePrice + (fixedCost/(time / 3_600_000));
+            
         }
 
         @Override
         public String toString() {
             return "\tTime: " + time + "s\n"
                     + "\tEnergy: " + energy + "Wh\n"
-                    + "\tCost: " + cost + "€\n";
+                    + "\tCost: " + cost + "€\n"
+                    + "\tPower: " + power + "W\n"
+            		+ "\tPrice: " + price + "€/h\n";
         }
     }
 

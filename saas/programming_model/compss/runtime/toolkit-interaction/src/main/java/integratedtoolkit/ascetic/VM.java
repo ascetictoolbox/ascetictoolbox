@@ -54,6 +54,8 @@ public class VM {
     private long[][] times;
     private double coresEnergy;
     private double coresCost;
+    private long startTime;
+    private long endTime = -1;
 
     public VM(eu.ascetic.paas.applicationmanager.model.VM vm) {
         logger.info("Creating a new VM");
@@ -97,7 +99,7 @@ public class VM {
         eventWeights = Configuration.getEventWeights(ovfId);
         coresEnergy = 0;
         coresCost = 0;
-        
+        startTime = System.currentTimeMillis();
         System.out.println("\tIdle");
         System.out.println("\t\t Power: " + idlePower);
         System.out.println("\t\t Price: " + idlePrice);
@@ -239,7 +241,15 @@ public class VM {
     }
 
     public double getAccumulatedCost() {
-        return this.coresCost;
+    	long currentEndTime = System.currentTimeMillis();
+    	if (endTime>0){
+        	currentEndTime = endTime;
+        }
+    	double runningCost = getRunningCost();
+    	double idleCost = idlePrice*((currentEndTime - startTime) / (3600 * 1000));
+    	double totalCost = idleCost + coresCost +runningCost;
+    	System.out.println("Acc. Cost for VM "+ getIPv4()+": "+totalCost+" ("+idleCost+","+coresCost+","+runningCost+")");
+    	return totalCost;
     }
 
     public double getRunningPower() {
@@ -264,7 +274,15 @@ public class VM {
     }
 
     public double getAccumulatedEnergy() {
-        return this.coresEnergy;
+        long currentEndTime = System.currentTimeMillis();
+    	if (endTime>0){
+        	currentEndTime = endTime;
+        }
+    	double runningEnergy = getRunningEnergy();
+    	double idleEnergy = idlePower* ((currentEndTime - startTime) / (3600 * 1000));
+    	double totalEnergy = idleEnergy + coresEnergy + runningEnergy;
+    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresCost+","+runningEnergy+")");
+    	return totalEnergy;
     }
 
     public long getExecutionTime(int coreId, int implId) {
@@ -341,4 +359,25 @@ public class VM {
             this.startTime = System.currentTimeMillis();
         }
     }
+
+	public void setEndTime() {
+		this.endTime=System.currentTimeMillis();
+		
+	}
+
+	public double getCurrentPower() {
+		if (endTime>0){
+			return 0;
+		}else{
+			return idlePower + getRunningPower();
+		}
+	}
+	
+	public double getCurrentPrice() {
+		if (endTime>0){
+			return 0;
+		}else{
+			return idlePrice + getRunningPrice();
+		}
+	}
 }

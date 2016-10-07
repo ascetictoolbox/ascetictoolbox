@@ -67,8 +67,8 @@ public class AppManager {
         try {
             c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
         } catch (Exception e) {
-        	System.out.println("Error getting estimations. Setting defaults");
-            e.printStackTrace();
+        	System.out.println("Exception getting estimations. Setting defaults");
+            //e.printStackTrace();
             c = null;
         }
         return c;

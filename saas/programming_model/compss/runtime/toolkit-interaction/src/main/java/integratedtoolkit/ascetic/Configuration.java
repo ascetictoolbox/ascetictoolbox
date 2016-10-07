@@ -38,6 +38,8 @@ public class Configuration {
     private final static long performanceBoundary;
     private final static float energyBoundary;
     private final static float economicalBoundary;
+    private final static float powerBoundary;
+    private final static float priceBoundary;
     private final static OptimizationParameter optimizationParameter;
     private final static boolean FAKE_AM;
     private final static long DISCOVERY_PERIOD;
@@ -91,6 +93,10 @@ public class Configuration {
         energyBoundary = Float.parseFloat(ppString);
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getCostOptimizationBoundary();
         economicalBoundary = Float.parseFloat(ppString);
+        ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPriceRequirement();
+        priceBoundary = Float.parseFloat(ppString);
+        ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPowerRequirement();
+        powerBoundary = Float.parseFloat(ppString);
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getOptimizationParameter();
         String opParam = ppString.toLowerCase();
         if (opParam.equals("energy")) {
@@ -282,9 +288,17 @@ public class Configuration {
     public static float getEnergyBoundary() {
         return energyBoundary;
     }
+    
+    public static float getPowerBoundary() {
+        return powerBoundary;
+    }
 
     public static float getEconomicalBoundary() {
         return economicalBoundary;
+    }
+    
+    public static float getPriceBoundary() {
+        return priceBoundary;
     }
 
     public static OptimizationParameter getOptimizationParameter() {
