@@ -26,7 +26,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
     @Override
     protected void initialCreations() {
         try {
-            Thread.sleep(20_000l);
+            Thread.sleep(40_000l);
         } catch (Exception e) {
         }
     }

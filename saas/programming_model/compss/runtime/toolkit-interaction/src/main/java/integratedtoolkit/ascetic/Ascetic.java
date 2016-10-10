@@ -53,6 +53,7 @@ public class Ascetic {
         }
 
         try {
+        	Thread.sleep(20_000);
         	//System.out.println("***** Initial Values ******");
             //initEnergy = APP_MANAGER.getAccumulatedEnergy();
             //System.out.println("* - Initial Energy: "+initEnergy);

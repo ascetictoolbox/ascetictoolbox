@@ -36,7 +36,7 @@ public class ResourceOptimizer extends Thread {
     private static final boolean debug = logger.isDebugEnabled();
 
     // Sleep times
-    private static final int SLEEP_TIME = 20_000;
+    private static final int SLEEP_TIME = 60_000;
     private static final int EVERYTHING_BLOCKED_MAX_RETRIES = 3;
 
     // Error messages
