@@ -210,14 +210,16 @@ public class VM {
         runningJobs.put(action, new JobExecution(action, impl));
     }
 
-    public void endJob(AllocatableAction action) {
+    public synchronized void endJob(AllocatableAction action) {
         long currentTime = System.currentTimeMillis();
         JobExecution je = runningJobs.get(action);
         int coreId = je.impl.getCoreId();
         int implId = je.impl.getImplementationId();
-        coresEnergy += power[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
-        coresCost += price[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
+        double time = (double)((currentTime - je.startTime) / (3600 * 1000));
+        coresEnergy += power[coreId][implId] * time;
+        coresCost += price[coreId][implId] * time;
         runningJobs.remove(action);
+        System.out.println("VM: action with duration "+time+" has updated cost ("+ coresCost + ") and energy(" + coresEnergy + ")");
     }
 
     public double getRunningPrice() {
@@ -246,8 +248,9 @@ public class VM {
     	if (endTime>0){
         	currentEndTime = endTime;
         }
+    	double time = ((double)((currentEndTime - startTime) / (3600 * 1000)));
     	double runningCost = getRunningCost();
-    	double idleCost = idlePrice*((double)((currentEndTime - startTime) / (3600 * 1000)));
+    	double idleCost = idlePrice * time;
     	double totalCost = idleCost + coresCost +runningCost;
     	System.out.println("Acc. Cost for VM "+ getIPv4()+": "+totalCost+" ("+idleCost+","+coresCost+","+runningCost+")");
     	return totalCost;
@@ -269,7 +272,8 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            energy += power[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
+            double time = (double)((currentTime - je.startTime) / (3600 * 1000));
+            energy += power[coreId][implId] * time;
         }
         return energy;
     }
@@ -279,10 +283,11 @@ public class VM {
     	if (endTime>0){
         	currentEndTime = endTime;
         }
+    	double time = ((double)((currentEndTime - startTime) / (3600 * 1000)));
     	double runningEnergy = getRunningEnergy();
-    	double idleEnergy = idlePower* (double)((currentEndTime - startTime) / (3600 * 1000));
+    	double idleEnergy = idlePower * time;
     	double totalEnergy = idleEnergy + coresEnergy + runningEnergy;
-    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresEnergy+","+runningEnergy+")");
+    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresEnergy+","+runningEnergy+")Time:"+ time);
     	return totalEnergy;
     }
 
