@@ -215,8 +215,8 @@ public class VM {
         JobExecution je = runningJobs.get(action);
         int coreId = je.impl.getCoreId();
         int implId = je.impl.getImplementationId();
-        coresEnergy += power[coreId][implId] * (currentTime - je.startTime) / (3600 * 1000);
-        coresCost += price[coreId][implId] * (currentTime - je.startTime) / (3600 * 1000);
+        coresEnergy += power[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
+        coresCost += price[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
         runningJobs.remove(action);
     }
 
@@ -236,7 +236,7 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            cost += price[coreId][implId] * (currentTime - je.startTime) / (3600 * 1000);
+            cost += price[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
         }
         return cost;
     }
@@ -247,7 +247,7 @@ public class VM {
         	currentEndTime = endTime;
         }
     	double runningCost = getRunningCost();
-    	double idleCost = idlePrice*((currentEndTime - startTime) / (3600 * 1000));
+    	double idleCost = idlePrice*((double)((currentEndTime - startTime) / (3600 * 1000)));
     	double totalCost = idleCost + coresCost +runningCost;
     	System.out.println("Acc. Cost for VM "+ getIPv4()+": "+totalCost+" ("+idleCost+","+coresCost+","+runningCost+")");
     	return totalCost;
@@ -269,7 +269,7 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            energy += power[coreId][implId] * (currentTime - je.startTime) / (3600 * 1000);
+            energy += power[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
         }
         return energy;
     }
@@ -280,9 +280,9 @@ public class VM {
         	currentEndTime = endTime;
         }
     	double runningEnergy = getRunningEnergy();
-    	double idleEnergy = idlePower* ((currentEndTime - startTime) / (3600 * 1000));
+    	double idleEnergy = idlePower* (double)((currentEndTime - startTime) / (3600 * 1000));
     	double totalEnergy = idleEnergy + coresEnergy + runningEnergy;
-    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresCost+","+runningEnergy+")");
+    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresEnergy+","+runningEnergy+")");
     	return totalEnergy;
     }
 
