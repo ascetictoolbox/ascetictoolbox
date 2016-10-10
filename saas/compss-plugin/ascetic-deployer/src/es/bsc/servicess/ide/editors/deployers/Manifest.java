@@ -159,11 +159,11 @@ public class Manifest {
 		setConstraints(component, maxConstraints, prMeta);
 		log.debug("Setting signatures in product");
 		boolean addElements = true;
-		
+		String type = packMeta.getPackageType(packName);
 		if (master)
 			addElements = false;
 		else{
-			String type = packMeta.getPackageType(packName);
+			
 			log.debug("Package "+ packName +" has type "+ type);
 			if (type.equals(Constants.ORCH_PACK_TYPE))
 				addElements = false;
@@ -175,8 +175,9 @@ public class Manifest {
 		component.setAntiAffinityConstraints("Low");
 		*/
 		log.debug("Setting Allocation and elasticity rules");
+		boolean isMaster = type.equals(Constants.ORCH_PACK_TYPE) || type.equals(Constants.ALL_PACK_TYPE);
 		setAllocation(component, els, minCoreInstancesPerMachine,
-				minCoreInstances, maxCoreInstances);
+				minCoreInstances, maxCoreInstances, isMaster);
 		/* TODO: Component elasticity not supported by ASCETIC year 1
 		setElasticity(manifest, component.getComponentId(), els, minCoreInstancesPerMachine, 
 				minCoreInstances, maxCoreInstances, op_prop);
@@ -561,7 +562,7 @@ public class Manifest {
 	private void setAllocation(VirtualSystem component, String[] els,
 			Map<String, Integer> minCoreInstancesPerMachine,
 			Map<String, Integer> minCoreInstances,
-			Map<String, Integer> maxCoreInstances) throws Exception {
+			Map<String, Integer> maxCoreInstances, boolean isMaster) throws Exception {
 		if (els!=null){
 			int[] min_values = new int[els.length];
 			int[] max_values = new int[els.length];
@@ -581,10 +582,15 @@ public class Manifest {
 				setAsceticProductSection(component);
 			}
 			ps = component.getProductSectionAtIndex(0);
-			ps.setLowerBound(
-				min_values[min_values.length - 1]);
-			ps.setUpperBound(
-				max_values[max_values.length - 1]);
+			if (!isMaster){
+				ps.setLowerBound(
+						min_values[min_values.length - 1]);
+				ps.setUpperBound(
+						max_values[max_values.length - 1]);
+			}else{
+				ps.setLowerBound(1);
+				ps.setUpperBound(1);
+			}
 		}else
 			throw(new Exception("Array of elements is null"));
 			
