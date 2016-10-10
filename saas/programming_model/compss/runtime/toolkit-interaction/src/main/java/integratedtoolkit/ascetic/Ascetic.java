@@ -53,11 +53,11 @@ public class Ascetic {
         }
 
         try {
-        	System.out.println("***** Initial Values ******");
-            initEnergy = APP_MANAGER.getAccumulatedEnergy();
-            System.out.println("* - Initial Energy: "+initEnergy);
-            initCost = APP_MANAGER.getAccumulatedCost();
-            System.out.println("* - Initial Cost: "+initCost);
+        	//System.out.println("***** Initial Values ******");
+            //initEnergy = APP_MANAGER.getAccumulatedEnergy();
+            //System.out.println("* - Initial Energy: "+initEnergy);
+            //initCost = APP_MANAGER.getAccumulatedCost();
+            //System.out.println("* - Initial Cost: "+initCost);
             
         } catch (Exception e) {
             logger.error("Error getting accumulated energy or cost", e);

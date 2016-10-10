@@ -50,8 +50,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             		
 
             long elapsedTime = Ascetic.getAccumulatedTime();
-            double elapsedEnergy = Ascetic.getAccumulatedEnergy();
-            double elapsedCost = Ascetic.getAccumulatedCost();
+            double elapsedEnergy = Ascetic.getExpectedAccumulatedEnergy();
+            double elapsedCost = Ascetic.getExpectedAccumulatedCost();
             double elapsedPower = 0d;//Ascetic.getCurrentPower();
             double elapsedPrice = 0d;//Ascetic.getCurrentPrice();
             
@@ -96,7 +96,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             LinkedList<Action> actions = generatePossibleActions(allResources, load);
             Action action = this.selectBestAction(actualAction, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
             addToLog("Action to perform: " + action.title + "\n");
-printLog();
+            printLog();
             System.out.println("Performing " + action.title);
             super.logger.debug("ASCETIC: Performing " + action.title);
             action.perform();

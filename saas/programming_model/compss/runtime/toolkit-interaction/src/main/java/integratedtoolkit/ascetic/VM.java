@@ -219,7 +219,6 @@ public class VM {
         coresEnergy += power[coreId][implId] * time;
         coresCost += price[coreId][implId] * time;
         runningJobs.remove(action);
-        System.out.println("VM: action with duration "+time+" has updated cost ("+ coresCost + ") and energy(" + coresEnergy + ")");
     }
 
     public double getRunningPrice() {
@@ -238,7 +237,8 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            cost += price[coreId][implId] * (double)((currentTime - je.startTime) / (3600 * 1000));
+            double time = ((double)(currentTime - je.startTime) / (double)(3600 * 1000));
+            cost += price[coreId][implId] * time;
         }
         return cost;
     }
@@ -272,7 +272,7 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            double time = (double)((currentTime - je.startTime) / (3600 * 1000));
+            double time = ((double)(currentTime - je.startTime) / (double) (3600 * 1000));
             energy += power[coreId][implId] * time;
         }
         return energy;
@@ -283,11 +283,11 @@ public class VM {
     	if (endTime>0){
         	currentEndTime = endTime;
         }
-    	double time = ((double)((currentEndTime - startTime) / (3600 * 1000)));
+    	double time = ((double)(currentEndTime - startTime) / (double)(3600 * 1000));
     	double runningEnergy = getRunningEnergy();
     	double idleEnergy = idlePower * time;
     	double totalEnergy = idleEnergy + coresEnergy + runningEnergy;
-    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresEnergy+","+runningEnergy+")Time:"+ time);
+    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresEnergy+","+runningEnergy+") Time:"+ time);
     	return totalEnergy;
     }
 
