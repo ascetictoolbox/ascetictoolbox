@@ -169,7 +169,7 @@ printLog();
     private boolean doesImproveTime(Action candidate, Action reference, double energyBudget, double costBudget, double powerBudget, double priceBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
-        if (cCost.power > rCost.power || cCost.price > rCost.price){
+        if (cCost.power > powerBudget || cCost.price > priceBudget){
         	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
         	return false;
         }
