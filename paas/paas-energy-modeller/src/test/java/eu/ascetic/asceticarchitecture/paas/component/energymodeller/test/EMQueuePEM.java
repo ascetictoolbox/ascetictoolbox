@@ -15,8 +15,8 @@
  */
 package eu.ascetic.asceticarchitecture.paas.component.energymodeller.test;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+//import java.sql.Timestamp;
+//import java.util.Calendar;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.que
 public class EMQueuePEM {
 	
 	private static AmqpClient paasQm;
-	private static AmqpClient iaasQm;
+	// private static AmqpClient iaasQm;
 	private static ApplicationRegistry registry;
 	private static DataConsumptionHandler dataCollectorHandler;
 	private static CpuFeaturesHandler cpuFeaturesHandler;
@@ -46,7 +46,7 @@ public class EMQueuePEM {
 	@BeforeClass
 	public static void setup() {
 		paasQm = new AmqpClient();
-		iaasQm =  new AmqpClient();
+		// iaasQm =  new AmqpClient();
 		try {			
 			
 			// dev enb
@@ -56,14 +56,14 @@ public class EMQueuePEM {
 			//MAXIM: paasQm.setup("192.168.0.8:32778", "admin", "admin", "PEMENERGY");
 			//MAXIM: iaasQm.setup("192.168.0.8:32778", "admin", "admin");
 			paasQm.setup("192.168.3.222:5673", "guest", "guest", "PEMENERGY");
-			iaasQm.setup("192.168.3.223:5673", "guest", "guest");
+			// iaasQm.setup("192.168.3.223:5673", "guest", "guest");
 			
 			registry = ApplicationRegistry.getRegistry("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
 			dataCollectorHandler = DataConsumptionHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
 			cpuFeaturesHandler = CpuFeaturesHandler.getHandler("com.mysql.jdbc.Driver","jdbc:mysql://192.168.0.7:3306/ascetic_paas_em","root","root");
 			
-			queueManager = new EnergyModellerQueueServiceManager(iaasQm,paasQm,registry,dataCollectorHandler,cpuFeaturesHandler);
-			
+			queueManager = new EnergyModellerQueueServiceManager(paasQm,registry,dataCollectorHandler,cpuFeaturesHandler);
+						
 			boolean enablePowerFromIaas = true; // Power values from IaaS
 			// boolean enablePowerFromIaas = false; // Power values from PaaS
 			String defaultProviderId = "00000";

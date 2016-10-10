@@ -51,8 +51,12 @@ public class AmqpClient {
 	private Connection connection;
 	private String user = "admin";
 	private String password = "admin";
-	private Session session;
-	
+	// M. Fontanella - 10/10/2016 - BEGIN
+	//private Session session;
+	private Session sessionProducer;
+	private Session sessionConsumer;
+	// M. Fontanella - 10/10/2016 - END
+		
 	private final static Logger LOGGER = Logger.getLogger(AmqpClient.class.getName());
 	
 	//	private String url = "10.15.5.55:61616";
@@ -102,15 +106,23 @@ public class AmqpClient {
         connection = factory.createConnection(this.user, this.password);
         connection.setExceptionListener(new MyExceptionListener());
         connection.start();
-        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
+        // M. Fontanella - 10/10/2016 - BEGIN
+        //session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        sessionProducer = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        sessionConsumer = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        // M. Fontanella - 10/10/2016 - END
+        LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
 		
 		// Create a Session for each queue
         destinationPrediction = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.predictionTopic);
         destinationMeasurement = (Destination) context.lookup(this.monitoringQueueTopic+"."+this.monitoringTopic);
         
-		producerPrediction = session.createProducer(destinationPrediction);
-		producerMeasurement = session.createProducer(destinationMeasurement);
+        // M. Fontanella - 10/10/2016 - BEGIN
+		//producerPrediction = session.createProducer(destinationPrediction);
+		//producerMeasurement = session.createProducer(destinationMeasurement);
+		producerPrediction = sessionProducer.createProducer(destinationPrediction);
+		producerMeasurement = sessionProducer.createProducer(destinationMeasurement);
+		// M. Fontanella - 10/10/2016 - END
 
 		LOGGER.info("Connection started");
 		
@@ -147,7 +159,11 @@ public class AmqpClient {
         connection = factory.createConnection(this.user, this.password);
         connection.setExceptionListener(new MyExceptionListener());
         connection.start();
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        // M. Fontanella - 10/10/2016 - BEGIN        
+		//session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		sessionProducer = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		sessionConsumer = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		// M. Fontanella - 10/10/2016 - END
 		LOGGER.info("Connection topic "+this.monitoringQueueTopic+"."+this.monitoringTopic);
 
 		LOGGER.info("Connection started without topics registration");		
@@ -161,10 +177,16 @@ public class AmqpClient {
 		LOGGER.info("Sending to queue "+queue+" Message "+ message);		
 		try {
 			if (queue=="prediction"){
-				TextMessage messagetext = session.createTextMessage(message);
+				// M. Fontanella - 10/10/2016 - BEGIN				
+				//TextMessage messagetext = session.createTextMessage(message);
+				TextMessage messagetext = sessionProducer.createTextMessage(message);
+				// M. Fontanella - 10/10/2016 - END
 				producerPrediction.send( messagetext);
 			} else {
-				TextMessage messagetext = session.createTextMessage(message);
+				// M. Fontanella - 10/10/2016 - BEGIN				
+				//TextMessage messagetext = session.createTextMessage(message);
+				TextMessage messagetext = sessionProducer.createTextMessage(message);
+				// M. Fontanella - 10/10/2016 - END
 				producerMeasurement.send( messagetext);
 			}
 		} catch (JMSException e) {
@@ -180,16 +202,20 @@ public class AmqpClient {
 		/* 26-09-2016 - BEGIN */
 		LOGGER.info("Registering listener "+topic);
 		/* 26-09-2016 - END */
-		try {			
-			Destination thisDestination = session.createTopic(topic);			
-			MessageConsumer thisConsumer = session.createConsumer(thisDestination);
+		try {
+			// M. Fontanella - 10/10/2016 - BEGIN
+			//Destination thisDestination = session.createTopic(topic);			
+			//MessageConsumer thisConsumer = session.createConsumer(thisDestination);
+			Destination thisDestination = sessionConsumer.createTopic(topic);			
+			MessageConsumer thisConsumer = sessionConsumer.createConsumer(thisDestination);
+			// M. Fontanella - 10/10/2016 - END			
 			thisConsumer.setMessageListener(listener);
 		
 		} catch (JMSException e1) {
         	/* 26-09-2016 - BEGIN */
-        	System.out.println("AmqpClient-registerListener - topic " + topic + " - (EXCEPTION) Caught:" + e1);
-        	e1.printStackTrace();
-        	LOGGER.info("Received EXCEPTION in registerListener (topic "+topic+")");
+        	// System.out.println("AmqpClient-registerListener - topic " + topic + " - (EXCEPTION) Caught:" + e1);
+			LOGGER.info("Received EXCEPTION in registerListener topic "+topic+": "+e1);
+        	e1.printStackTrace();        	
         	/* 26-09-2016 - END */			
 		}		
 	}
@@ -198,13 +224,18 @@ public class AmqpClient {
 
     	producerMeasurement.close();
     	producerPrediction.close();
-        session.close();
+    	// M. Fontanella - 10/10/2016 - BEGIN
+    	//session.close();
+    	sessionProducer.close();
+    	sessionConsumer.close();
+    	// M. Fontanella - 10/10/2016 - END
         connection.close();
     }
 
     private static class MyExceptionListener implements ExceptionListener {
         @Override
         public void onException(JMSException exception) {
+        	LOGGER.info("Connection ExceptionListener fired, exiting.");
             System.out.println("Connection ExceptionListener fired, exiting.");
             exception.printStackTrace(System.out);
             System.exit(1);

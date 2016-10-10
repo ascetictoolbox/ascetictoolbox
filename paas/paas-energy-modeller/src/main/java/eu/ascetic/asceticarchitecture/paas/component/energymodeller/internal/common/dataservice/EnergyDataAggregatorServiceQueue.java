@@ -384,12 +384,12 @@ public class EnergyDataAggregatorServiceQueue {
 	// TODO to be removed, for the moment is the only way to map the IaaS VM with the PaaS VM
 	public String translatePaaSFromIaasID(String providerid, String deployid, String paasvmid){
 
-		logger.info(" I will translate for this "+deployid+" the paas id " + paasvmid);
+		logger.info("I will translate for this "+deployid+" the paas VM id " + paasvmid);
 		
 		SqlSession session = applicationRegistry.getSession();
 		AppRegistryMapper registryMapper = session.getMapper(AppRegistryMapper.class);
 		String iaasVmId = registryMapper.selectFromIaaSID(providerid,deployid,paasvmid);
-		logger.info(" I translated to " + paasvmid + " the iaas id " + iaasVmId);
+		logger.info("I translated the PaaS VM id " + paasvmid + " to the IaaS VM id " + iaasVmId);
 		session.close();
 		return iaasVmId;
 	}

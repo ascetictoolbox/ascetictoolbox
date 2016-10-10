@@ -151,7 +151,7 @@ public class EnergyModellerQueueServiceManager {
 	            try {
 	            	
 	            	// 26-09-2016 - BEGIN
-                	LOGGER.info("Before received information from ActiveMQ");
+                	LOGGER.info("Before received information from ActiveMQ (DEPLOYED/DELETED topic)");
                 	// 26-09-2016 - END
                 	
                 	if (message instanceof TextMessage) {
@@ -276,10 +276,9 @@ public class EnergyModellerQueueServiceManager {
 	                }	                
 	            } catch (Exception e) {
 	            	// 26-09-2016 - BEGIN
-	            	LOGGER.info("EnergyModellerQueueServiceManager (EXCEPTION) Caught:" + e);
+	            	LOGGER.info("Received EXCEPTION while writing app events:" + e);
 	            	e.printStackTrace();
 	            	//LOGGER.error("Received EXCEPTION while writing app events");
-	            	LOGGER.info("Received EXCEPTION while writing app events");
 	            	// 26-09-2016 - END	                
 	            }
 	        }      
@@ -298,7 +297,10 @@ public class EnergyModellerQueueServiceManager {
 			
 	        public void onMessage(Message message) {
 		            try {
-		            	
+		            	// 26-09-2016 - BEGIN
+	                	LOGGER.info("Before received information from ActiveMQ (METRIC topic)");
+	                	// 26-09-2016 - END
+	                	
 		                if (message instanceof TextMessage) {
 		                	TextMessage textMessage = (TextMessage) message;
 		                    LOGGER.debug("Received start message" + textMessage.getText() + "'"+textMessage.getJMSDestination());
@@ -379,35 +381,47 @@ public class EnergyModellerQueueServiceManager {
 		                    	int count = appmapper.checkVM(dc.getProviderid(), dc.getApplicationid(), dc.getDeploymentid(), paasvmid);
 		                    	appsession.close();
 		                    	if (count==0){
-		                    		LOGGER.debug("Received  valid measure for a provider/application/deployment/vm not in the registry");
+		                    		// 26-09-2016 - BEGIN
+		                    		// LOGGER.debug("Received  valid measure for a provider/application/deployment/vm not in the registry ("+ArgString+")");
+		                    		LOGGER.info("Received  valid measure for a provider/application/deployment/vm not in the registry ("+ArgString+")");
+		                    		// 26-09-2016 - END
 		                    		return;
 		                    	}
 		                    	
 		                    	if (jsontext.findValue("timestamp")==null){
-		                    		LOGGER.info("Unable to parse AMQP deployment message, missing timestamp");
+		                    		LOGGER.info("Unable to parse AMQP deployment message, missing timestamp ("+ArgString+")");
 		                    		return;
 		                    	}                	
 		                    		                    	
 		                    	long timestamp =  jsontext.findValue("timestamp").longValue();
 		                    	if (timestamp <=0){
-		                    	 	LOGGER.warn("Received non valid timestamp " +timestamp );
+		                    		// 26-09-2016 - BEGIN
+		                    	 	//LOGGER.warn("Received non valid timestamp " +timestamp+" ("+ArgString+")");
+		                    	 	LOGGER.info("Received non valid timestamp " +timestamp+" ("+ArgString+")");
+		                    	 	// 26-09-2016 - END
 		                    	 	return;
 		                    	}
 		                    			                    	
 		                    	dc.setTime(timestamp);
 		                    	
 		                    	if (jsontext.findValue("value")==null){
-		                    		LOGGER.info("Unable to parse AMQP deployment message, missing value");
+		                    		LOGGER.info("Unable to parse AMQP deployment message, missing value ("+ArgString+")");
 		                    		return;
 		                    	}	                    
 			                                        	
 		                    	double value = jsontext.findValue("value").doubleValue();		                    	
 		                    	if (value <0){
-	                            	LOGGER.warn("Received non valid measure " +value);
+		                    		// 26-09-2016 - BEGIN
+	                            	//LOGGER.warn("Received non valid measure " +value+" ("+ArgString+")");
+	                            	LOGGER.info("Received non valid measure " +value+" ("+ArgString+")");
+	                            	// 26-09-2016 - END
 	                            	return;
 	                            }
 		                    	
-		                    	LOGGER.debug("Received "+measureType +" measure "+value );
+		                    	// 26-09-2016 - BEGIN
+		                    	//LOGGER.debug("Received "+measureType +" measure "+value+" ("+ArgString+")");
+		                    	LOGGER.info("Received "+measureType +" measure "+value+" ("+ArgString+")");
+		                    	// 26-09-2016 - END
 		                    	
 		                    	switch(measureType) {
 	                    			case "net-power":
@@ -431,20 +445,21 @@ public class EnergyModellerQueueServiceManager {
 		                		if (samples == 0){		                    	
 		                    	
 		                    		datamapper.createMeasurement(dc);		                    		
-		                    		LOGGER.info("Write "+measureType+" "+value+" for provider "+providerid+", vm "+paasvmid+"time "+timestamp);		                    	
+		                    		LOGGER.info("Write "+measureType+" "+value+" timestamp "+timestamp+" ("+ArgString+")");		                    	
         	
        		
-		                    		LOGGER.info("Received METRIC message");
+		                    		LOGGER.info("Received METRIC message ("+ArgString+")");
 		                    	} else {
 
-		                    		LOGGER.info("Received an existing METRIC message for timestamp="+timestamp+" (ignored)");
+		                    		LOGGER.info("Received an existing METRIC message for timestamp="+timestamp+" (ignored)"+" ("+ArgString+")");
 		                    	}
 		                    	
 		                    	datasession.close();		                    		                    	
 		                    }
 			                }
 		            } catch (Exception e) {
-		                System.out.println("EXCEPTION while inserting data about measurements:" + e);
+		            	LOGGER.info("Received EXCEPTION while inserting data about measurements:" + e);
+		                // System.out.println("EXCEPTION while inserting data about measurements:" + e);
 		                e.printStackTrace();
 		            }
 		        }

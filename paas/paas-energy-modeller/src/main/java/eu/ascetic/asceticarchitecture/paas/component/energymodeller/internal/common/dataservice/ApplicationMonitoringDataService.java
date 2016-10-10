@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import com.google.gson.JsonArray;
@@ -33,6 +34,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.database.table.DataEvent;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.ApplicationRegistry;
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.data.ibatis.mapper.AppRegistryMapper;
+/* M. Fontanella - 04/10/2016 - BEGIN */
+import eu.ascetic.asceticarchitecture.paas.component.energymodeller.internal.common.dataservice.EnergyDataAggregatorServiceQueue;
+/* M. Fontanella - 04/10/2016 - END */
+ 
 
 public class ApplicationMonitoringDataService  {
 	private static int MILLIS_IN_A_DAY = 86400000;
@@ -40,6 +47,10 @@ public class ApplicationMonitoringDataService  {
 	private static final Logger logger = Logger.getLogger(ApplicationMonitoringDataService.class);
 	//private DataEventDAOImpl dataevent;
 	private EventDataService eventDataManager;
+	
+	/* M. Fontanella - 04/10/2016 - BEGIN */
+	private EnergyDataAggregatorServiceQueue energyServiceForIaasId;
+	/* M. Fontanella - 04/10/2016 - END */
 	
 	
 	private String AMPath = "http://localhost:9000/query";
@@ -92,6 +103,10 @@ public class ApplicationMonitoringDataService  {
 			logger.info("Now getting events for app " + applicationid);
 			logger.info("Now getting events for dep " + deploymentid);
 			logger.info("Now getting events for vm " + vmid);
+			/* M. Fontanella - 04/10/2016 - BEGIN */
+			// String iaasid = energyServiceForIaasId.translatePaaSFromIaasID(providerid, deploymentid, vmid);
+			/* M. Fontanella - 04/10/2016 - END */			 
+			
 			String requestEntity;
 	    	// Assumption: an application can not run simultaneously on different provider id
 			// otherwise this change will be required: 
