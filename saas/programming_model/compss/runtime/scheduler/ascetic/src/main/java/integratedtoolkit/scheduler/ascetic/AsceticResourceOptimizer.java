@@ -52,8 +52,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             long elapsedTime = Ascetic.getAccumulatedTime();
             double elapsedEnergy = Ascetic.getAccumulatedEnergy();
             double elapsedCost = Ascetic.getAccumulatedCost();
-            double elapsedPower = Ascetic.getCurrentPower();
-            double elapsedPrice = Ascetic.getCurrentPrice();
+            double elapsedPower = 0d;//Ascetic.getCurrentPower();
+            double elapsedPrice = 0d;//Ascetic.getCurrentPrice();
             
             addToLog("Elapsed\n"
                     + "\tTime: " + elapsedTime + "s\n"
@@ -94,7 +94,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             addToLog(currentSim.toString());
 
             LinkedList<Action> actions = generatePossibleActions(allResources, load);
-            Action action = this.selectBestAction(actualAction, actions, timeBudget, energyBudget, costBudget);
+            Action action = this.selectBestAction(actualAction, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
             addToLog("Action to perform: " + action.title + "\n");
 printLog();
             System.out.println("Performing " + action.title);
@@ -137,7 +137,7 @@ printLog();
         return actions;
     }
 
-    private Action selectBestAction(Action currentAction, LinkedList<Action> candidates, double timeBudget, double energyBudget, double costBudget) {
+    private Action selectBestAction(Action currentAction, LinkedList<Action> candidates, double timeBudget, double energyBudget, double costBudget, double powerBudget, double priceBudget) {
         addToLog("SELECTING BEST ACTION ACCORDING TO " + Ascetic.getSchedulerOptimization() + "\n");
         Action bestAction = currentAction;
         for (Action action : candidates) {
@@ -145,13 +145,13 @@ printLog();
             addToLog("\tChecking " + action.title + "\n");
             switch (Ascetic.getSchedulerOptimization()) {
                 case TIME:
-                    improves = doesImproveTime(action, bestAction, energyBudget, costBudget);
+                    improves = doesImproveTime(action, bestAction, energyBudget, costBudget, powerBudget, priceBudget);
                     break;
                 case COST:
-                    improves = doesImproveCost(action, bestAction, energyBudget, timeBudget);
+                    improves = doesImproveCost(action, bestAction, energyBudget, timeBudget, powerBudget, priceBudget);
                     break;
                 case ENERGY:
-                    improves = doesImproveEnergy(action, bestAction, timeBudget, costBudget);
+                    improves = doesImproveEnergy(action, bestAction, timeBudget, costBudget, powerBudget, priceBudget);
                     break;
                 default:
                 //UNKNOWN: DO NOTHING!!!
@@ -166,11 +166,11 @@ printLog();
         return bestAction;
     }
 
-    private boolean doesImproveTime(Action candidate, Action reference, double energyBudget, double costBudget) {
+    private boolean doesImproveTime(Action candidate, Action reference, double energyBudget, double costBudget, double powerBudget, double priceBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
         if (cCost.power > rCost.power || cCost.price > rCost.price){
-        	addToLog("\t\t Surpasses the cost or price budget");
+        	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
         	return false;
         }
         if (cCost.time < rCost.time) {
@@ -200,11 +200,11 @@ printLog();
         return false;
     }
 
-    private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, double timeBudget) {
+    private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, double timeBudget, double powerBudget, double priceBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
-        if (cCost.power > rCost.power || cCost.price > rCost.price){
-        	addToLog("\t\t Surpasses the cost or price budget");
+        if (cCost.power > powerBudget || cCost.price > priceBudget){
+        	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
         	return false;
         }
         if (cCost.cost < rCost.cost) {
@@ -234,11 +234,11 @@ printLog();
         return false;
     }
 
-    private boolean doesImproveEnergy(Action candidate, Action reference, double timeBudget, double costBudget) {
+    private boolean doesImproveEnergy(Action candidate, Action reference, double timeBudget, double costBudget, double powerBudget, double priceBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
-        if (cCost.power > rCost.power || cCost.price > rCost.price){
-        	addToLog("\t\t Surpasses the cost or price budget");
+        if (cCost.power > powerBudget || cCost.price > priceBudget){
+        	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
         	return false;
         }
         if (cCost.energy < rCost.energy) {
@@ -579,7 +579,8 @@ printLog();
             this.energy = (idlePower * time + fixedEnergy) / 3_600_000;
             this.cost = (idlePrice * ((double)(time / 3_600_000))) + fixedCost;
             this.power = idlePower + (fixedEnergy/time);
-            this.price = idlePrice + (fixedCost/((double)(time / 3_600_000)));
+            this.price = idlePrice + (double)((fixedCost *3_600_000)/time);            
+            System.out.println("Calculated price: " + idlePrice +"+(("+fixedCost+"*3_600_000)/"+time+")="+this.price);
             
         }
 
