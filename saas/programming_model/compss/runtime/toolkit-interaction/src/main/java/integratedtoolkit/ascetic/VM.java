@@ -215,7 +215,7 @@ public class VM {
         JobExecution je = runningJobs.get(action);
         int coreId = je.impl.getCoreId();
         int implId = je.impl.getImplementationId();
-        double time = (double)((currentTime - je.startTime) / (3600 * 1000));
+        double time = ((double)(currentTime - je.startTime) / (double)(3600 * 1000));
         coresEnergy += power[coreId][implId] * time;
         coresCost += price[coreId][implId] * time;
         runningJobs.remove(action);
@@ -248,7 +248,7 @@ public class VM {
     	if (endTime>0){
         	currentEndTime = endTime;
         }
-    	double time = ((double)((currentEndTime - startTime) / (3600 * 1000)));
+    	double time = (((double)(currentEndTime - startTime) / (double)(3600 * 1000)));
     	double runningCost = getRunningCost();
     	double idleCost = idlePrice * time;
     	double totalCost = idleCost + coresCost +runningCost;
