@@ -188,10 +188,12 @@ public class SystemCall implements Runnable {
         try {
             while ((line = reader.readLine()) != null) {
                 LOGGER.debug("Script output: " + line);
+                System.out.println("Script output: " + line);
                 output.add(line);
             }
         } catch (IOException e) {
             LOGGER.error("Error!", e);
+            e.printStackTrace();
             returnValue = RETURN_VALUE_ON_ERROR;
             throw new SystemCallException("Failed to read line from stdout!",
                     e);
@@ -209,6 +211,7 @@ public class SystemCall implements Runnable {
             process.waitFor();
         } catch (InterruptedException e) {
             LOGGER.error("Error!", e);
+            e.printStackTrace();
             returnValue = RETURN_VALUE_ON_ERROR;
             throw new SystemCallException(
                     "Interrupted while waiting for process to terminate!", e);

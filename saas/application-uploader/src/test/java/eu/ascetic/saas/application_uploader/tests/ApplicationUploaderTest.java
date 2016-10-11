@@ -35,8 +35,8 @@ import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 
 public class ApplicationUploaderTest {
 	private static String APP_ID = "JEPlus";
-	private static String DEPLOYMENT_ID= "1149";
-	private static String VM_ID= "3117";
+	private static String DEPLOYMENT_ID= "1155";
+	private static String VM_ID= "3134";
 	/*@Test
 	public void uploadApptest() throws ApplicationUploaderException {
 		ApplicationUploader uploader = new ApplicationUploader("http://10.4.0.16/application-manager");

@@ -153,8 +153,10 @@ public class SystemCallRemote extends SystemCall {
 
         // Run the command...
         LOGGER.info("Runnning system call command: " + commandString);
+        System.out.println("Runnning system call command: " + commandString);
         execute(systemCallCommand);
         LOGGER.debug("Return value is: " + returnValue);
+        System.out.println("Return value is: " + returnValue);
     }
 
     /**
