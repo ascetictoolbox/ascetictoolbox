@@ -442,7 +442,7 @@ public class VMRestTest extends AbstractTest {
 		deployment.setSchema(2);
 		when(deploymentDAO.getById(1)).thenReturn(deployment);
 		
-		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 1024d, 22.0d, 2, 10,22)).thenReturn(1.1d);
+		when(priceModellerClient.getEventPredictedCharges(1, 1, 10, 1.0d, 22.0d, 2, 10,22)).thenReturn(1.1d);
 		
 		Response response = vmRest.getCostEstimation("app-name", "1", "2", "loquesea");
 		assertEquals(200, response.getStatus());
