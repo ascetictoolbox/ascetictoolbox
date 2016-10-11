@@ -149,6 +149,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 				}
 			}
 		} catch (Exception e) {
+			System.out.println(" Exception in initial schedule");
 			e.printStackTrace();
 		}
 	}
@@ -770,7 +771,6 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 		actionDSI.clearPredecessors();
 		actionDSI.clearSuccessors();
 		actionDSI.setToReschedule(false);
-		System.out.println("Manage Running action: "+ action.toString());
 		state.runningAction(impl, p, endTime);
 	}
 
@@ -788,11 +788,13 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 				try {
 					action.tryToLaunch();
 				} catch (InvalidSchedulingException ise2) {
-					//Impossible exception. 
+					//Impossible exception.
+					System.out.println("Invalid Scheduling Exception");
 					ise2.printStackTrace();
 				}
 			} catch (BlockedActionException | UnassignedActionException be) {
 				//Can not happen since there was an original source
+				System.out.println("Blocked or unassigned Exception");
 				be.printStackTrace();
 			}
 		}
