@@ -58,7 +58,9 @@ public class ScheduleOptimizer extends Thread {
             try {
                 Thread.sleep(difference);
             } catch (InterruptedException ie) {
-                //Do nothing. Wake up in case of shutdown received
+            	System.out.println("Scheduling optimizer interrumpted");
+            	ie.printStackTrace();
+            	//Do nothing. Wake up in case of shutdown received
             }
         }
     }
@@ -71,7 +73,8 @@ public class ScheduleOptimizer extends Thread {
     public void globalOptimization(long optimizationTS,
             ResourceScheduler<?, ?>[] workers
     ) {
-        int workersCount = workers.length;
+    	System.out.println("*** Performming Optimization***");
+    	int workersCount = workers.length;
         if (workersCount == 0) {
             return;
         }
@@ -89,6 +92,7 @@ public class ScheduleOptimizer extends Thread {
 
             //Perform local optimizations
             for (int i = 0; i < workersCount; i++) {
+            	System.out.println("-- Local Optimization for "+optimizedWorkers[i].getName()+"--");
                 optimizedWorkers[i].localOptimization(optimizationTS);
                 System.out.println(optimizedWorkers[i].getName() + " will end at " + optimizedWorkers[i].getDonationIndicator());
             }
@@ -238,13 +242,18 @@ public class ScheduleOptimizer extends Thread {
                 try {
                     action.tryToLaunch();
                 } catch (InvalidSchedulingException ise2) {
-                    //Impossible exception. 
+                	System.out.println("Invalid Scheduling Exception");
+                	ise2.printStackTrace();
+                	//Impossible exception. 
                 }
             } catch (BlockedActionException | UnassignedActionException be) {
-                //Can not happen since there was an original source
+            	System.out.println("Blocked or unassigned action");
+            	be.printStackTrace();//Can not happen since there was an original source
             }
         } catch (BlockedActionException | UnassignedActionException be) {
             //Can not happen since there was an original source
+        	System.out.println("Blocked or unassigned action 2");
+        	be.printStackTrace();
         }
     }
 
