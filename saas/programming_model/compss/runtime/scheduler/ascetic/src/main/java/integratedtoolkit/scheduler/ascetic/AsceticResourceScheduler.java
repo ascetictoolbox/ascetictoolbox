@@ -393,6 +393,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         //No changes in the Gap structure
 
 		//Scan actions: Filters ready and selectable actions
+		System.out.println("Scanning Actions");
 		scanActions(state);
 		//Gets all the pending schedulings
 		LinkedList<AllocatableAction> newPendingSchedulings = new LinkedList();
@@ -401,12 +402,13 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 			AsceticSchedulingInformation opDSI = (AsceticSchedulingInformation) opAction.getSchedulingInfo();
 			pendingSchedulings = opDSI.replaceSuccessors(newPendingSchedulings);
 		}
-
+		System.out.println("Classify Pending scheduling");
 		//Classify pending actions: Filters ready and selectable actions
 		classifyPendingSchedulings(pendingSchedulings, state);
 		classifyPendingUnschedulings(state);
 
 		//ClassifyActions
+		System.out.println("Reschedule tasks");
 		LinkedList<Gap> newGaps = rescheduleTasks(state, actions);
 		System.out.println(this.getName() + " is running: ");
 		for (AllocatableAction aa : state.getRunningActions()) {

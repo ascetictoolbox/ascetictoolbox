@@ -100,6 +100,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             System.out.println("Performing " + action.title);
             super.logger.debug("ASCETIC: Performing " + action.title);
             action.perform();
+            System.out.println(action.title +  " performed" );
         } catch (Exception e) {
             e.printStackTrace();
         }
