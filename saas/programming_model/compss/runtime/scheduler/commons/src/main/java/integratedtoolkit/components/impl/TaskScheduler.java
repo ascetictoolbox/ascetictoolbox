@@ -387,7 +387,12 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
 
     public LinkedList<AllocatableAction<P, T>> getHostedActions(Worker<T> worker) {
         ResourceScheduler<P, T> ui = workers.get(worker);
-        return ui.getHostedActions();
+        if (ui != null) {
+            hostedActions = ui.getHostedActions();
+        } else {
+            hostedActions = new LinkedList<AllocatableAction<P, T>>();
+        }
+        return hostedActions;
     }
 
     public LinkedList<AllocatableAction<P, T>> getBlockedActionsOnResource(Worker<T> worker) {
