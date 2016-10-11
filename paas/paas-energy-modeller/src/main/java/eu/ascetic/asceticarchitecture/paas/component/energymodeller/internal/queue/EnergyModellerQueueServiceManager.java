@@ -456,7 +456,7 @@ public class EnergyModellerQueueServiceManager {
 		                    	
 		                    	datasession.close();		                    		                    	
 		                    }
-			                }
+		                }
 		            } catch (Exception e) {
 		            	LOGGER.info("Received EXCEPTION while inserting data about measurements:" + e);
 		                // System.out.println("EXCEPTION while inserting data about measurements:" + e);

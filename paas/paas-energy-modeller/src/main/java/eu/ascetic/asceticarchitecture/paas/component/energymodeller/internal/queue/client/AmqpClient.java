@@ -206,7 +206,8 @@ public class AmqpClient {
 			// M. Fontanella - 10/10/2016 - BEGIN
 			//Destination thisDestination = session.createTopic(topic);			
 			//MessageConsumer thisConsumer = session.createConsumer(thisDestination);
-			Destination thisDestination = sessionConsumer.createTopic(topic);			
+			String topicPreFetchSize = topic+"?consumer.prefetchSize=1";
+			Destination thisDestination = sessionConsumer.createTopic(topicPreFetchSize);			
 			MessageConsumer thisConsumer = sessionConsumer.createConsumer(thisDestination);
 			// M. Fontanella - 10/10/2016 - END			
 			thisConsumer.setMessageListener(listener);
