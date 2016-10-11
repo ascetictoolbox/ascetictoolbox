@@ -397,7 +397,13 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
 
     public LinkedList<AllocatableAction<P, T>> getBlockedActionsOnResource(Worker<T> worker) {
         ResourceScheduler<P, T> ui = workers.get(worker);
-        return ui.getBlockedActions();
+        LinkedList<AllocatableAction<P, T>> blockedActions;
+        if (ui != null) {
+            blockedActions = ui.getBlockedActions();
+        } else {
+            blockedActions = new LinkedList<AllocatableAction<P, T>>();
+        }
+        return blockedActions;
     }
 
     public String getCoresMonitoringData(String prefix) {
