@@ -101,7 +101,7 @@ public class ThreadElement implements IThreadElement {
     public ThreadElement(String threadName, State threadState,
             long blockedTime, long blockedCount, long waitedTime,
             long waitedCount, String lockName, String lockOwnerName,
-            boolean isSuspended, boolean isDeadlocked, double cpuUsage) {
+            boolean isSuspended, boolean isDeadlocked, double cpuUsage, double power) {
         this.threadName = threadName;
         this.threadState = threadState;
         this.blockedTime = blockedTime;
@@ -113,6 +113,7 @@ public class ThreadElement implements IThreadElement {
         this.isSuspended = isSuspended;
         this.isDeadlocked = isDeadlocked;
         this.cpuUsage = cpuUsage;
+        this.power = power;
     }
 
     /*
@@ -296,8 +297,8 @@ public class ThreadElement implements IThreadElement {
         buffer.append("lockOwner=\"").append(getLockOwnerName()).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append("suspended=\"").append(isSuspended).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append("deadlocked=\"").append(isDeadlocked).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("cpuUsage=\"").append(cpuUsage).append("\">\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("powerUsage=\"").append(getPower()).append("\">\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("cpuUsage=\"").append(cpuUsage).append("\" "); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("power=\"").append(getPower()).append("\">\n"); //$NON-NLS-1$ //$NON-NLS-2$
         
         for (StackTraceElement element : stackTraceElements) {
             buffer.append("\t\t<frame "); //$NON-NLS-1$

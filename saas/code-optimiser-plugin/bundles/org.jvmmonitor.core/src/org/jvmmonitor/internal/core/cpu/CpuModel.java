@@ -64,6 +64,9 @@ public class CpuModel implements ICpuModel {
 
     /** The max value of method invocation count in all method invocations. */
     private int maxInvocationCount;
+    
+    /** The maximum energy consumed in all method invocations. */
+    private double maxTotalEnergy;
 
     /**
      * The constructor.
@@ -209,12 +212,18 @@ public class CpuModel implements ICpuModel {
         maxTotalTime = 0;
         maxSelfTime = 0;
         maxInvocationCount = 0;
+        maxTotalEnergy = 0;
 
         for (ThreadNode<MethodNode> rootNode : hotSpotThreads) {
             long totalTime = rootNode.getTotalTime();
             if (totalTime > maxTotalTime) {
                 maxTotalTime = totalTime;
             }
+
+            double totalEnergy = rootNode.getTotalEnergy();
+            if (totalEnergy > maxTotalEnergy) {
+                maxTotalEnergy = totalEnergy;
+            }            
 
             for (ITreeNode node : rootNode.getChildren()) {
                 int count = ((MethodNode) node).getInvocationCount();
@@ -237,6 +246,13 @@ public class CpuModel implements ICpuModel {
     public long getMaxTotalTime() {
         return maxTotalTime;
     }
+    
+    /*
+     * @see ICpuModel#getMaxTotalEnergy()
+     */
+    public double getMaxTotalEnergy() {
+        return maxTotalEnergy;
+    }    
 
     /*
      * @see ICpuModel#getMaxSelfTime()
@@ -425,9 +441,10 @@ public class CpuModel implements ICpuModel {
      */
     private void addFocusedHotSpotNodes(ICallTreeNode frame) {
         String methodName = frame.getName();
-        MethodNode node = new MethodNode(this, methodName, null);
+        MethodNode node = new MethodNode(this, methodName, null, 0);
         node.incrementCount(frame.getInvocationCount());
         node.incrementTime(frame.getSelfTime());
+        node.incrementTotalEnergy(frame.getTotalEnergy());
         focusedHotSpotRoots.put(methodName, node);
 
         for (CallTreeNode child : ((CallTreeNode) frame).getChildren()) {
@@ -436,10 +453,12 @@ public class CpuModel implements ICpuModel {
                 node = focusedHotSpotRoots.get(methodName);
                 node.incrementCount(child.getInvocationCount());
                 node.incrementTime(child.getSelfTime());
+                node.incrementTotalEnergy(child.getSelfTotalEnergy());
             } else {
-                node = new MethodNode(this, methodName, null);
+                node = new MethodNode(this, methodName, null,0);
                 node.incrementCount(child.getInvocationCount());
                 node.incrementTime(child.getSelfTime());
+                node.incrementTotalEnergy(child.getSelfTotalEnergy());
                 focusedHotSpotRoots.put(methodName, node);
             }
             addFocusedHotSpotNodes(child);

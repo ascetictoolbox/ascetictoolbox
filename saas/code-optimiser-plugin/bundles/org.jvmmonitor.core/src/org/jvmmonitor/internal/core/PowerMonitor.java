@@ -291,13 +291,11 @@ public class PowerMonitor implements IPowerMonitor {
      * @throws JvmCoreException
      */
     private ObjectName validateAgent() throws JvmCoreException {
-        System.err.println("Start Validate Agent");
         if (!jvm.isRemote() && !JvmModel.getInstance().getAgentLoadHandler()
                 .isAgentLoaded()) {
             throw new JvmCoreException(IStatus.ERROR,
                     Messages.agentNotLoadedMsg, new Exception());
         }
-        System.err.println("End Validate Agent");
         return jvm.getMBeanServer().getObjectName(POWER_MXBEAN_NAME);
     }
 

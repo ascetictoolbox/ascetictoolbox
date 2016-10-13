@@ -46,10 +46,11 @@ abstract public class AbstractMethodNode implements IMethodNode {
      *            The thread node
      */
     public AbstractMethodNode(ICpuModel cpuModel, String name,
-            ThreadNode<? extends IMethodNode> thread) {
+            ThreadNode<? extends IMethodNode> thread, double energy) {
         this.cpuModel = cpuModel;
         qualifiedMethodName = name;
         threadNode = thread;
+        totalEnergy = energy;
 
         // get method name
         int index = qualifiedMethodName.indexOf('(');

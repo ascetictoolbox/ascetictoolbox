@@ -86,13 +86,15 @@ public class ThreadDumpSaxEventHandler extends DefaultHandler {
             String isSuspended = attributes.getValue("suspended"); //$NON-NLS-1$
             String isDeadlocked = attributes.getValue("deadlocked"); //$NON-NLS-1$
             String cpuUsage = attributes.getValue("cpuUsage"); //$NON-NLS-1$
+            String power = attributes.getValue("power");  //$NON-NLS-1$
             currentlyParsedThread = new ThreadElement(threadName,
                     State.valueOf(threadState), Long.parseLong(blockedTime),
                     Long.parseLong(blockedCount), Long.parseLong(waitedTime),
                     Long.parseLong(waitedCount), lockName, lockOwnerName,
                     Boolean.parseBoolean(isSuspended),
                     Boolean.parseBoolean(isDeadlocked),
-                    Double.parseDouble(cpuUsage));
+                    Double.parseDouble(cpuUsage),
+                    Double.parseDouble(power));
             stackTraceElements = new ArrayList<StackTraceElement>();
             return;
         }

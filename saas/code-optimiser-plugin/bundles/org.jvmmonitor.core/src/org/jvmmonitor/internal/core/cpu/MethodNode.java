@@ -28,10 +28,11 @@ public class MethodNode extends AbstractMethodNode {
      *            The thread node
      */
     public MethodNode(ICpuModel cpuModel, String name,
-            ThreadNode<MethodNode> thread) {
-        super(cpuModel, name, thread);
+            ThreadNode<MethodNode> thread, double energy) {
+        super(cpuModel, name, thread, energy);
 
         selfTime = 0;
+        totalEnergy = 0;
         invocationCount = 0;
     }
 
@@ -119,13 +120,22 @@ public class MethodNode extends AbstractMethodNode {
     }
     
     /**
-     * 
+     * This increments the energy consumption fo this method node
+     * via power and duration values.
      * @param power
      * @param duration
      */
     public void incrementAveragePower(double power, long duration) {
         totalEnergy = totalEnergy + (power * duration);
-    }   
+    }
+    
+    /**
+     * This increments the energy consumption of this method node
+     * @param energy
+     */
+    public void incrementTotalEnergy(double energy) {
+        totalEnergy = totalEnergy + energy;
+    }     
     
     /**
      * 

@@ -48,9 +48,15 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
 
     /** The total time [ns] for currently parsed thread */
     private long threadTotalTime;
+    
+    /** The total energy consumption for currently parsed thread */
+    private double threadTotalEnergy;
 
     /** The total time [ns] for currently parsed frame tree */
     private long frameTotalTime;
+    
+    /** The total energy for the currently parsed frame tree */
+    private double frameTotalEnergy;
 
     /** The profile info. */
     private IProfileInfo info;
@@ -67,7 +73,9 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
         this.monitor = monitor;
         this.cpuModel = cpuModel;
         threadTotalTime = 0;
+        threadTotalEnergy = 0;
         frameTotalTime = 0;
+        frameTotalEnergy = 0;
     }
 
     /*
@@ -143,12 +151,15 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
         // thread
         if ("thread".equals(name)) { //$NON-NLS-1$
             currentCallTreeThreadNode.setTotalTime(threadTotalTime);
+            currentCallTreeThreadNode.setTotalEnergy(threadTotalEnergy);
             currentCallTreeThreadNode = null;
             currentHotSpotThreadNode.setTotalTime(threadTotalTime);
+            currentHotSpotThreadNode.setTotalEnergy(threadTotalEnergy);
             currentHotSpotThreadNode = null;
             currentRootFrameNode = null;
             currentFrameNode = null;
             threadTotalTime = 0;
+            threadTotalEnergy = 0;
             return;
         }
 
@@ -160,16 +171,20 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
                 long selfTime = parentFrameNode.getSelfTime()
                         - currentFrameNode.getTotalTime();
                 parentFrameNode.setSelfTime(selfTime);
+                // parentFrameNode.setTotalEnergy(energy); //TODO ??
                 storeMethods(currentFrameNode);
                 currentFrameNode = parentFrameNode;
             } else {
                 storeMethods(currentFrameNode);
 
                 currentRootFrameNode.setTotalTime(frameTotalTime);
+                currentRootFrameNode.setTotalEnergy(frameTotalEnergy);
                 currentRootFrameNode = null;
                 currentFrameNode = null;
                 threadTotalTime += frameTotalTime;
+                threadTotalEnergy += frameTotalEnergy;
                 frameTotalTime = 0;
+                frameTotalEnergy = 0;
             }
         }
     }
@@ -193,33 +208,44 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
         String methodName = attributes.getValue("name"); //$NON-NLS-1$
         int count = Integer.parseInt(attributes.getValue("cnt")); //$NON-NLS-1$
         long time = Long.parseLong(attributes.getValue("time")); //$NON-NLS-1$
-
+        double energy = 0.0;
+        try {
+            if (attributes.getValue("energy") != null) {
+                energy = Double.parseDouble(attributes.getValue("energy")); //$NON-NLS-1$
+            }
+        } catch (NullPointerException ex) {
+            
+        }
         if (currentRootFrameNode == null) {
             currentRootFrameNode = (CallTreeNode) currentCallTreeThreadNode
                     .getChild(methodName);
             if (currentRootFrameNode == null) {
                 currentRootFrameNode = new CallTreeNode(cpuModel, methodName,
-                        time, count, currentCallTreeThreadNode);
+                        time, count, currentCallTreeThreadNode, energy);
                 currentCallTreeThreadNode.addChild(currentRootFrameNode);
             } else {
                 currentRootFrameNode.setTotalTime(time);
+                currentRootFrameNode.setTotalEnergy(energy);
                 currentRootFrameNode.setInvocationCount(count);
             }
             currentFrameNode = currentRootFrameNode;
             frameTotalTime += time;
+            frameTotalEnergy += energy;
         } else {
             CallTreeNode childFrameNode = currentFrameNode.getChild(methodName);
             if (childFrameNode == null) {
                 childFrameNode = new CallTreeNode(cpuModel, methodName, time,
-                        count, currentFrameNode, currentCallTreeThreadNode);
+                        count, currentFrameNode, currentCallTreeThreadNode, energy);
                 currentFrameNode.addChild(childFrameNode);
             } else {
                 childFrameNode.setTotalTime(time);
+                childFrameNode.setTotalEnergy(energy);
                 childFrameNode.setInvocationCount(count);
             }
             currentFrameNode = childFrameNode;
         }
         currentFrameNode.setSelfTime(time);
+        currentFrameNode.setTotalEnergy(energy);
     }
 
     /**
@@ -235,6 +261,7 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
 
         // get time and count of frame
         long time = frame.getSelfTime();
+        double energy = frame.getSelfTotalEnergy();
         int count = 0;
         try {
             count = Integer.valueOf(frame.getInvocationCount());
@@ -246,10 +273,11 @@ public class CpuDumpSaxEventHandler extends DefaultHandler {
         // increment the time and count
         if (method == null) {
             method = new MethodNode(cpuModel, methodName,
-                    currentHotSpotThreadNode);
+                    currentHotSpotThreadNode, 0);
             currentHotSpotThreadNode.addChild(method);
         }
         method.incrementTime(time);
         method.incrementCount(count);
+        method.incrementTotalEnergy(energy);
     }
 }
