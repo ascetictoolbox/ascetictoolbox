@@ -167,26 +167,31 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return bestAction;
     }
 
-    private boolean doesImproveTime(Action candidate, Action reference, double energyBudget, double costBudget, double powerBudget, double priceBudget) {
+
+    private static <T extends Comparable> boolean isAcceptable(T candidate, T reference, T budget) {
+        if (reference.compareTo(budget) > 0) {
+            return candidate.compareTo(reference) <= 0;
+        } else {
+            return candidate.compareTo(budget) <= 0;
+        }
+    }
+
+    private boolean doesImproveTime(Action candidate, Action reference, double energyBudget, double costBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
-        if (cCost.power > powerBudget || cCost.price > priceBudget){
-        	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
-        	return false;
-        }
         if (cCost.time < rCost.time) {
-            if (cCost.energy > energyBudget) {
+            if (!isAcceptable(cCost.energy, rCost.energy, energyBudget)) {
                 addToLog("\t\t Surpasses the energy budget\n");
             } else {
-                if (cCost.cost > costBudget) {
+                if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
                     addToLog("\t\t Surpasses the cost budget\n");
                 }
             }
-            return cCost.energy <= energyBudget && cCost.cost <= costBudget;
+            return isAcceptable(cCost.energy, rCost.energy, energyBudget) && isAcceptable(cCost.cost, rCost.cost, costBudget);
         } else {
             if (cCost.time == rCost.time) {
                 if (cCost.energy < rCost.energy) {
-                    return cCost.cost <= costBudget;
+                    return isAcceptable(cCost.cost, rCost.cost, costBudget);
                 } else {
                     if (cCost.energy == rCost.energy) {
                         return cCost.cost < rCost.cost;
@@ -201,26 +206,22 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return false;
     }
 
-    private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, double timeBudget, double powerBudget, double priceBudget) {
+    private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, double timeBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
-        if (cCost.power > powerBudget || cCost.price > priceBudget){
-        	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
-        	return false;
-        }
         if (cCost.cost < rCost.cost) {
-            if (cCost.energy > energyBudget) {
+            if (!isAcceptable(cCost.energy, rCost.energy, energyBudget)) {
                 addToLog("\t\t Surpasses the energy budget " + cCost.energy + " > " + energyBudget + "\n");
             } else {
-                if (cCost.time > timeBudget) {
+                if (!isAcceptable(cCost.time, rCost.time, timeBudget)) {
                     addToLog("\t\t Surpasses the time budget " + cCost.time + " > " + timeBudget + "\n");
                 }
             }
-            return cCost.energy <= energyBudget && cCost.time <= timeBudget;
+            return isAcceptable(cCost.energy, rCost.energy, energyBudget) && isAcceptable(cCost.time, rCost.time, timeBudget);
         } else {
             if (cCost.cost == rCost.cost) {
                 if (cCost.time < rCost.time) {
-                    return cCost.energy <= energyBudget;
+                    return isAcceptable(cCost.energy, rCost.energy, energyBudget);
                 } else {
                     if (cCost.time == rCost.time) {
                         return cCost.energy < rCost.energy;
@@ -235,26 +236,22 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return false;
     }
 
-    private boolean doesImproveEnergy(Action candidate, Action reference, double timeBudget, double costBudget, double powerBudget, double priceBudget) {
+    private boolean doesImproveEnergy(Action candidate, Action reference, double timeBudget, double costBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
-        if (cCost.power > powerBudget || cCost.price > priceBudget){
-        	addToLog("\t\t Surpasses the power ("+cCost.power+">"+powerBudget+") or price budget ("+cCost.price+">"+priceBudget+")");
-        	return false;
-        }
         if (cCost.energy < rCost.energy) {
-            if (cCost.time > timeBudget) {
+            if (!isAcceptable(cCost.time, rCost.time, timeBudget)) {
                 addToLog("\t\t Surpasses the time budget\n");
             } else {
-                if (cCost.cost > costBudget) {
+                if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
                     addToLog("\t\t Surpasses the cost budget\n");
                 }
             }
-            return cCost.time <= timeBudget && cCost.cost <= costBudget;
+            return isAcceptable(cCost.time, rCost.time, timeBudget) && !isAcceptable(cCost.cost, rCost.cost, costBudget);
         } else {
             if (cCost.energy == rCost.energy) {
                 if (cCost.time < rCost.time) {
-                    return cCost.cost <= costBudget;
+                    return isAcceptable(cCost.cost, rCost.cost, costBudget);
                 } else {
                     if (cCost.time == rCost.time) {
                         return cCost.cost < rCost.cost;
