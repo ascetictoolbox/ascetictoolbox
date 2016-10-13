@@ -8,6 +8,7 @@ import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Profile;
+import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.SchedulingInformation;
 import integratedtoolkit.types.Score;
 import integratedtoolkit.types.WorkloadState;
@@ -450,6 +451,10 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         WorkloadState response = createWorkloadState();
         updateWorkloadState(response);
         return response;
+    }
+
+    public LinkedList<ResourceCreationRequest> getPendingCreations() {
+        return ResourceManager.getPendingCreationRequests();
     }
 
     protected WorkloadState createWorkloadState() {

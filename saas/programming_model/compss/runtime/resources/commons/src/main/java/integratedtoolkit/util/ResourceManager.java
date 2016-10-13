@@ -593,6 +593,12 @@ public class ResourceManager {
         return state;
     }
 
+
+    public static LinkedList<ResourceCreationRequest> getPendingCreationRequests() {
+        return CloudManager.getPendingRequests();
+    }
+
+
     /**
      * Prints out the information about the pending requests
      *

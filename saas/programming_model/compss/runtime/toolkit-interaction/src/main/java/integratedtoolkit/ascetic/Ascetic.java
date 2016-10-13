@@ -318,9 +318,9 @@ public class Ascetic {
         return vm.getExecutionTime(coreId, implId);
     }
 
-    public static boolean canReplicateComponent(String componentName) {
+    public static boolean canReplicateComponent(String componentName, int extra) {
         int currentVMs = VM.getComponentCount(componentName);
-        return Configuration.withinBoundaries(componentName, currentVMs + 1);
+        return Configuration.withinBoundaries(componentName, currentVMs + 1 + extra);
     }
 
     public static boolean canTerminateVM(Worker w) {

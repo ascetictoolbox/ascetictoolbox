@@ -4,15 +4,18 @@ import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.types.AsceticProfile;
 import integratedtoolkit.types.AsceticScore;
 import integratedtoolkit.types.Implementation;
+import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.Score;
 import integratedtoolkit.types.WorkloadState;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.MethodResourceDescription;
+import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ResourceManager;
 import integratedtoolkit.util.ResourceOptimizer;
 import integratedtoolkit.util.ResourceScheduler;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class AsceticResourceOptimizer extends ResourceOptimizer {
@@ -75,7 +78,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     + "\tPrice: "+ priceBudget + "€/h\n");
 
             ResourceScheduler[] workers = ts.getWorkers();
-            Resource[] allResources = new Resource[workers.length];
+            LinkedList<ResourceCreationRequest> creations = ts.getPendingCreations();
+            Resource[] allResources = new Resource[workers.length + creations.size()];
 
             addToLog("Current Resources\n");
             int[] load = new int[workload.getCoreCount()];
@@ -85,7 +89,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                 addToLog("\tCore " + coreId + ": " + load[coreId] + "\n");
             }
 
-            ConfigurationCost actualCost = getContext(allResources, load, workers);
+            HashMap<String, Integer> pendingCreations = new HashMap<String, Integer>();
+            ConfigurationCost actualCost = getContext(allResources, load, workers, creations, pendingCreations);
             Action actualAction = new Action(actualCost);
             addToLog(actualAction.toString());
 
@@ -93,7 +98,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             Action currentSim = new Action(simCost);
             addToLog(currentSim.toString());
 
-            LinkedList<Action> actions = generatePossibleActions(allResources, load);
+            LinkedList<Action> actions = generatePossibleActions(allResources, load, pendingCreations);
             Action action = this.selectBestAction(actualAction, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
             addToLog("Action to perform: " + action.title + "\n");
             printLog();
@@ -106,10 +111,14 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         }
     }
 
-    private LinkedList<Action> generatePossibleActions(Resource[] allResources, int[] load) {
+    private LinkedList<Action> generatePossibleActions(Resource[] allResources, int[] load, HashMap<String, Integer> pendingCreations) {
         LinkedList<Action> actions = new LinkedList<Action>();
         for (String componentName : Ascetic.getComponentNames()) {
-            if (Ascetic.canReplicateComponent(componentName)) {
+            Integer pendingCreation = pendingCreations.get(componentName);
+            if (pendingCreation == null) {
+                pendingCreation = 0;
+            }
+            if (Ascetic.canReplicateComponent(componentName, pendingCreation)) {
                 Resource[] resources = new Resource[allResources.length + 1];
                 System.arraycopy(allResources, 0, resources, 0, allResources.length);
                 resources[allResources.length] = createResourceForComponent(componentName);
@@ -119,22 +128,22 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                 actions.add(a);
             }
         }
-
-            for (int i = 0; i < allResources.length; i++) {
-                Resource excludedWorker = allResources[i];
-                if (!(excludedWorker.worker.hasPendingModifications()) && Ascetic.canTerminateVM(excludedWorker.worker.getResource())) {
-                    Resource[] resources = new Resource[allResources.length - 1];
-                    System.arraycopy(allResources, 0, resources, 0, i);
-                    System.arraycopy(allResources, i + 1, resources, i, resources.length - i);
-                    long time = excludedWorker.startTime;
-                    double energy = excludedWorker.idlePower * time + excludedWorker.startEnergy;
-                    double cost = excludedWorker.startCost;
-                    ConfigurationCost cc = simulate(load, resources, time, energy, cost);
-                    Action a = new Action.Remove(excludedWorker, cc);
-                    addToLog(a.toString());
-                    actions.add(a);
-                }
+        
+        for (int i = 0; i < allResources.length; i++) {
+            Resource excludedWorker = allResources[i];
+            if (!(excludedWorker.hasPendingModifications()) && Ascetic.canTerminateVM(excludedWorker.getResource())) {
+                Resource[] resources = new Resource[allResources.length - 1];
+                System.arraycopy(allResources, 0, resources, 0, i);
+                System.arraycopy(allResources, i + 1, resources, i, resources.length - i);
+                long time = excludedWorker.startTime;
+                double energy = excludedWorker.idlePower * time + excludedWorker.startEnergy;
+                double cost = excludedWorker.startCost;
+                ConfigurationCost cc = simulate(load, resources, time, energy, cost);
+                Action a = new Action.Remove(excludedWorker, cc);
+                addToLog(a.toString());
+                actions.add(a);
             }
+        }
         return actions;
     }
 
@@ -142,21 +151,26 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         addToLog("SELECTING BEST ACTION ACCORDING TO " + Ascetic.getSchedulerOptimization() + "\n");
         Action bestAction = currentAction;
         for (Action action : candidates) {
+
             boolean improves = false;
-            addToLog("\tChecking " + action.title + "\n");
-            switch (Ascetic.getSchedulerOptimization()) {
-                case TIME:
-                    improves = doesImproveTime(action, bestAction, energyBudget, costBudget, powerBudget, priceBudget);
-                    break;
-                case COST:
-                    improves = doesImproveCost(action, bestAction, energyBudget, timeBudget, powerBudget, priceBudget);
-                    break;
-                case ENERGY:
-                    improves = doesImproveEnergy(action, bestAction, timeBudget, costBudget, powerBudget, priceBudget);
-                    break;
-                default:
-                //UNKNOWN: DO NOTHING!!!
+            if (action.cost.power > powerBudget || action.cost.price > priceBudget) {
+                addToLog("\t\t Surpasses the power (" + action.cost.power + ">" + powerBudget + ") or price budget (" + action.cost.price + ">" + priceBudget + ")");
+            } else {
+                addToLog("\tChecking " + action.title + "\n");
+                switch (Ascetic.getSchedulerOptimization()) {
+                    case TIME:
+                        improves = doesImproveTime(action, bestAction, energyBudget, costBudget);
+                        break;
+                    case COST:
+                        improves = doesImproveCost(action, bestAction, energyBudget, timeBudget);
+                        break;
+                    case ENERGY:
+                        improves = doesImproveEnergy(action, bestAction, timeBudget, costBudget);
+                        break;
+                    default:
+                    //UNKNOWN: DO NOTHING!!!
                 }
+            }
             if (improves) {
                 addToLog("\t\t" + action.title + " becomes the preferred option\n");
                 bestAction = action;
@@ -166,6 +180,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         }
         return bestAction;
     }
+
 
 
     private static <T extends Comparable> boolean isAcceptable(T candidate, T reference, T budget) {
@@ -266,7 +281,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return false;
     }
 
-    private ConfigurationCost getContext(Resource[] allResources, int[] load, ResourceScheduler[] workers) {
+    private ConfigurationCost getContext(Resource[] allResources, int[] load, ResourceScheduler[] workers, LinkedList<ResourceCreationRequest> creations, HashMap<String, Integer> pendingCreations) {
         long time = 0;
         double actionsCost = 0;
         double idlePrice = 0;
@@ -345,6 +360,55 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             resourceId++;
         }
 
+        for (ResourceCreationRequest crc : creations) {
+            String componentType = crc.getRequested().getType();
+            addToLog("\tName: REQUESTED " + componentType + "\n");
+            Integer pendingCreation = pendingCreations.get(componentType);
+            if (pendingCreation == null) {
+                pendingCreation = 0;
+            }
+            pendingCreation++;
+            pendingCreations.put(componentType, pendingCreation);
+            Resource r = createResourceForComponent(crc.getRequested().getType());
+            allResources[resourceId] = r;
+            
+            addToLog("\t\tTime: 0 ms -> total " + time + "\n");
+            addToLog("\t\tactions Cost: 0 € -> total " + actionsCost + "€\n");
+            idlePrice += r.idlePrice;
+            addToLog("\t\tIdle Price:" + r.idlePrice + " € -> total " + idlePrice + "€\n");
+            addToLog("\t\tactions Energy:0 mJ -> total " + actionsEnergy + "mJ\n");
+            idlePower += r.idlePower;
+            addToLog("\t\tIdle Power:" + r.idlePower + " W -> total " + idlePower + "W\n");
+            
+            r.startTime = 0;
+            r.startCost = 0;
+            r.startEnergy = 0;
+            
+            addToLog("\t\tCore Information:\n");
+            StringBuilder[] coreInfo = new StringBuilder[CoreManager.getCoreCount()];
+            Implementation[] impls = new Implementation[CoreManager.getCoreCount()];
+            for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
+                coreInfo[coreId] = new StringBuilder("\t\t\tCore " + coreId + "\n");
+                int favId = 0;
+                int favCount = 0;
+                load[coreId] += 0;
+                coreInfo[coreId].append("\t\t\t\tImplementation 0: 0, 0 of'em already running\n");
+                for (int implId = 1; implId < CoreManager.getCoreImplementations(coreId).length; implId++) {
+                    coreInfo[coreId].append("\t\t\t\tImplementation " + implId + ": 0, 0 of'em already running\n");
+                }
+                coreInfo[coreId].append("\t\t\t\tFavorite Implementation 0\n");
+            }
+            
+            for (int coreId = 0; coreId < CoreManager.getCoreImplementations(coreId).length; coreId++) {
+                coreInfo[coreId].append("\t\t\t\tProfile " + r.profiles[coreId] + "\n");
+                coreInfo[coreId].append("\t\t\t\tCapacity " + r.capacity[coreId] + "\n");
+                addToLog(coreInfo[coreId].toString());
+            }
+            
+            resourceId++;
+        }
+        
+
         return new ConfigurationCost(time, idlePower, actionsEnergy, idlePrice, actionsCost);
     }
 
@@ -395,7 +459,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         for (Resource r : resources) {
             double rActionsEnergy = r.startEnergy;
             double rActionsCost = r.startCost;
-            addToLog("\t" + (r.worker != null ? r.worker.getName() : " NEW") + "\n");
+            addToLog("\t" + (r.worker != null ? r.getName() : " NEW") + "\n");
             time = Math.max(time, r.time);
             idlePower += r.idlePower;
             idlePrice += r.idlePrice;
@@ -417,7 +481,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
     }
 
     private class Resource {
-
+        
         AsceticResourceScheduler worker;
         double idlePower;
         double idlePrice;
@@ -428,11 +492,33 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         double startCost;
         long time;
         int[] counts;
-
+        
         public void clear() {
             time = startTime;
             counts = new int[profiles.length];
         }
+        
+        private boolean hasPendingModifications() {
+            if (worker != null) {
+                return worker.hasPendingModifications();
+            }
+            return true;
+        }
+        
+        private Worker getResource() {
+            if (worker != null) {
+                return worker.getResource();
+            }
+            return null;
+        }
+        
+        private String getName() {
+            if (worker != null) {
+                return worker.getName();
+            }
+            return "TEMPORARY";
+        }
+        
     }
 
     private Resource createResourceForComponent(String componentName) {
@@ -551,13 +637,13 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
 
             public Remove(Resource res, ConfigurationCost cost) {
                 super(cost);
-                title = "Remove " + res.worker.getName();
+                title = "Remove " + res.getName();
                 this.res = res;
             }
 
             public void perform() {
                 logger.debug("ASCETIC: Performing Remove action " + this);
-                CloudMethodWorker worker = (CloudMethodWorker) res.worker.getResource();
+                CloudMethodWorker worker = (CloudMethodWorker) res.getResource();
                 CloudMethodResourceDescription reduction = new CloudMethodResourceDescription((CloudMethodResourceDescription) worker.getDescription());
                 ResourceManager.reduceCloudWorker(worker, reduction, new LinkedList());
             }
