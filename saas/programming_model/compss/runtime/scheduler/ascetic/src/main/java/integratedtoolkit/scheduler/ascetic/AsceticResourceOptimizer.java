@@ -145,7 +145,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return actions;
     }
 
-    private Action selectBestAction(Action currentAction, LinkedList<Action> candidates, double timeBudget, double energyBudget, double costBudget, double powerBudget, double priceBudget) {
+    private Action selectBestAction(Action currentAction, LinkedList<Action> candidates, long timeBudget, double energyBudget, double costBudget, double powerBudget, double priceBudget) {
         addToLog("SELECTING BEST ACTION ACCORDING TO " + Ascetic.getSchedulerOptimization() + "\n");
         Action bestAction = currentAction;
         for (Action action : candidates) {
@@ -217,7 +217,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return false;
     }
 
-    private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, double timeBudget) {
+    private boolean doesImproveCost(Action candidate, Action reference, double energyBudget, long timeBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
         if (cCost.cost < rCost.cost) {
@@ -247,7 +247,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return false;
     }
 
-    private boolean doesImproveEnergy(Action candidate, Action reference, double timeBudget, double costBudget) {
+    private boolean doesImproveEnergy(Action candidate, Action reference, long timeBudget, double costBudget) {
         ConfigurationCost cCost = candidate.cost;
         ConfigurationCost rCost = reference.cost;
         if (cCost.energy < rCost.energy) {
@@ -382,11 +382,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
 
             addToLog("\t\tCore Information:\n");
             StringBuilder[] coreInfo = new StringBuilder[CoreManager.getCoreCount()];
-            Implementation[] impls = new Implementation[CoreManager.getCoreCount()];
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 coreInfo[coreId] = new StringBuilder("\t\t\tCore " + coreId + "\n");
-                int favId = 0;
-                int favCount = 0;
                 load[coreId] += 0;
                 coreInfo[coreId].append("\t\t\t\tImplementation 0: 0, 0 of'em already running\n");
                 for (int implId = 1; implId < CoreManager.getCoreImplementations(coreId).length; implId++) {
