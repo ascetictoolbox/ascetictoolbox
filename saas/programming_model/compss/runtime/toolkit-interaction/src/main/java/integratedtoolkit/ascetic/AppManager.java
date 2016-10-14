@@ -67,20 +67,16 @@ public class AppManager {
         try {
             c = uploader.getEventCostEstimationInVM(applicationId, deploymentId, eventType, id);
         } catch (Exception e) {
-        	System.out.println("Exception getting estimations. Setting defaults");
-            //e.printStackTrace();
             c = null;
         }
         return c;
     }
 
     public double getAccumulatedEnergy() throws ApplicationUploaderException {
-        //return 0;
         return uploader.getDeploymentEnergyConsumption(applicationId, deploymentId);
     }
 
     public double getAccumulatedCost() throws ApplicationUploaderException {
-        //return 0;
         return uploader.getDeploymentCostConsumption(applicationId, deploymentId);
 
     }

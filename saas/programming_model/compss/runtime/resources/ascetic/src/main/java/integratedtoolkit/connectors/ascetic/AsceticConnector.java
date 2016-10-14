@@ -90,33 +90,7 @@ public class AsceticConnector implements Cost, Connector {
         }
 
         public void run() {
-            /*
-             System.out.println("----------SHUTTING DOWN " + worker.getName());
-             ResourceUpdate ru = ResourceManager.reduceCloudWorker(worker, reduction, new LinkedList());
-             try {
-             System.out.println("Waiting to release enough resources to reduce");
-             ru.waitForCompletion();
-             } catch (Exception e) {
-             System.out.println("ERROR: Exception raised on worker reduction");
-             e.printStackTrace();
-             }
-
-             System.out.println("RETRIEVING DATA FROM " + worker.getName());
-             worker.retrieveData(true);
-             Semaphore sem = new Semaphore(0);
-             ShutdownListener sl = new ShutdownListener(sem);
-             System.out.println("Stopping worker " + worker.getName() + "...");
-             worker.stop(sl);
-
-             sl.enable();
-             try {
-             sem.acquire();
-             } catch (Exception e) {
-             System.out.println("ERROR: Exception raised on worker shutdown");
-             }
-             */
-            try {
-            	
+            try {            	
                 Ascetic.requestVMDestruction(worker);
             } catch (Exception e) {
                 System.err.println("Error deleting VM " + worker.getName());

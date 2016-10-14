@@ -58,8 +58,6 @@ public class ScheduleOptimizer extends Thread {
             try {
                 Thread.sleep(difference);
             } catch (InterruptedException ie) {
-            	System.out.println("Scheduling optimizer interrumpted");
-            	ie.printStackTrace();
             	//Do nothing. Wake up in case of shutdown received
             }
         }
@@ -73,7 +71,6 @@ public class ScheduleOptimizer extends Thread {
     public void globalOptimization(long optimizationTS,
             ResourceScheduler<?, ?>[] workers
     ) {
-    	System.out.println("*** Performming Optimization***");
     	int workersCount = workers.length;
         if (workersCount == 0) {
             return;
@@ -89,10 +86,9 @@ public class ScheduleOptimizer extends Thread {
         while (hasDonated) {
             optimizationTS = System.currentTimeMillis();
             hasDonated = false;
-
+            System.out.println("-----------------------------------------");
             //Perform local optimizations
             for (int i = 0; i < workersCount; i++) {
-            	System.out.println("-- Local Optimization for "+optimizedWorkers[i].getName()+"--");
                 optimizedWorkers[i].localOptimization(optimizationTS);
                 System.out.println(optimizedWorkers[i].getName() + " will end at " + optimizedWorkers[i].getDonationIndicator());
             }
@@ -109,11 +105,11 @@ public class ScheduleOptimizer extends Thread {
                     OptimizationWorker receiver = recIt.next();
                     if (move(candidate, donor, receiver)) {
                         hasDonated = true;
-			break;
+			            break;
                     }
                 }
             }
-
+            System.out.println("-----------------------------------------");
         }
     }
 
@@ -242,17 +238,16 @@ public class ScheduleOptimizer extends Thread {
                 try {
                     action.tryToLaunch();
                 } catch (InvalidSchedulingException ise2) {
-                	System.out.println("Invalid Scheduling Exception");
                 	ise2.printStackTrace();
                 	//Impossible exception. 
                 }
             } catch (BlockedActionException | UnassignedActionException be) {
-            	System.out.println("Blocked or unassigned action");
-            	be.printStackTrace();//Can not happen since there was an original source
+                //Can not happen since there was an original source
+            	be.printStackTrace();
+                
             }
         } catch (BlockedActionException | UnassignedActionException be) {
             //Can not happen since there was an original source
-        	System.out.println("Blocked or unassigned action 2");
         	be.printStackTrace();
         }
     }

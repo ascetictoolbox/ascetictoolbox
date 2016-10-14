@@ -53,12 +53,11 @@ public class Ascetic {
         }
 
         try {
-        	Thread.sleep(20_000);
-        	//System.out.println("***** Initial Values ******");
-            //initEnergy = APP_MANAGER.getAccumulatedEnergy();
-            //System.out.println("* - Initial Energy: "+initEnergy);
-            //initCost = APP_MANAGER.getAccumulatedCost();
-            //System.out.println("* - Initial Cost: "+initCost);
+        	System.out.println("***** Initial Values ******");
+            initEnergy = APP_MANAGER.getAccumulatedEnergy();
+            System.out.println("* - Initial Energy: "+initEnergy);
+            initCost = APP_MANAGER.getAccumulatedCost();
+            System.out.println("* - Initial Cost: "+initCost);
             
         } catch (Exception e) {
             logger.error("Error getting accumulated energy or cost", e);
@@ -136,6 +135,14 @@ public class Ascetic {
        return currentExpectedCost;
     }
 
+    public static double getCurrentPrice(){
+    	double currentExpectedPrice = 0d;
+        for (VM vm: resources.values()){
+        	currentExpectedPrice+=vm.getCurrentPrice();
+        }
+        return currentExpectedPrice;
+    }
+    
     public static double getAccumulatedEnergy() {
         try {
             double accumulatedEnergy = APP_MANAGER.getAccumulatedEnergy();
@@ -162,13 +169,6 @@ public class Ascetic {
         return currentExpectedPower;
     }
     
-    public static double getCurrentPrice(){
-    	double currentExpectedPrice = 0d;
-        for (VM vm: resources.values()){
-        	currentExpectedPrice+=vm.getCurrentPrice();
-        }
-        return currentExpectedPrice;
-    }
 
     public static long getAccumulatedTime() {
         return (System.currentTimeMillis() - initTime) / 1000;

@@ -341,7 +341,6 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         worker.pendingModification(modification);
         ReduceWorkerAction action = new ReduceWorkerAction(generateSchedulingInformation(), worker, this, modification);
         try {
-            System.out.println("Scheduling Reduce worker action");
         	action.schedule(worker, (Score) null);
             action.tryToLaunch();
         } catch (Exception e) {

@@ -52,7 +52,6 @@ public class ApplicationMonitor {
                     + "\", \"eventType\":\"" + eventType
                     + "\", \"eventWeight\":\"" + eventWeight
                     + "\"}}", "application/json", "UTF-8");
-            System.out.println("Postin event " + sre.getContent() + " at App Monitor");
             method.setRequestEntity(sre);
             client.executeMethod(method);
             br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
@@ -61,10 +60,8 @@ public class ApplicationMonitor {
             readLine = readLine.substring(8);
             int index = readLine.indexOf("\"");
             String id = readLine.substring(0, index);
-            System.out.println("Posted event " + eventType + " at App Monitor with id " + id);
             return id;
         } catch (Exception e) {
-            System.out.println("Error starting event");
             e.printStackTrace();
         } finally {
             method.releaseConnection();
@@ -94,42 +91,12 @@ public class ApplicationMonitor {
         HttpClient client = new HttpClient();
         try {
             client.executeMethod(method);
-            System.out.println("Stop event method for " + eventId + " executed.");
         } catch (Exception e) {
 
             e.printStackTrace();
         } finally {
             method.releaseConnection();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-
-        HttpClient client = new HttpClient();
-        PostMethod method = new PostMethod(endpoint + "event");
-        method.setRequestEntity(new StringRequestEntity("{\"appId\":\"JEPlus\", \"nodeId\":\"a305c18f-dd76-4515-b9b9-1fc488368bbc\", \"instanceId\":\"549\", \"data\":{ \"ip\":\"192.168.13.10\", \"eventType\":\"core0impl0\"}}", "application/json", "UTF-8"));
-        try {
-            client.executeMethod(method);
-            BufferedReader br = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
-            //System.out.println("Return: " +new String(method.getResponseBody()));
-            String readLine;
-            readLine = br.readLine();
-            readLine = readLine.substring(8);
-            int index = readLine.indexOf("\"");
-            String id = readLine.substring(0, index);
-            //startEvent(vm, "core0impl0");
-
-            System.out.println("ID is " + id + "(" + readLine + ")");
-            Thread.sleep(20000);
-            stopEvent(id);
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        } finally {
-            method.releaseConnection();
-        }
-        //stopEvent("5602c3a0f4bb2e377080bb7b");
-
     }
 
     private static String generateEventType(int coreId, int implId) {

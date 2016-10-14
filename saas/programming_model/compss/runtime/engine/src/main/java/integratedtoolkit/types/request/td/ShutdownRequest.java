@@ -49,7 +49,6 @@ public class ShutdownRequest<P extends Profile, T extends WorkerResourceDescript
 
     @Override
     public void process(TaskScheduler<P,T> ts) throws ShutdownException {
-        //ts.shutdown();
         logger.debug("Processing ShutdownRequest request...");
         SingleExecution.shutdown();
         ts.shutdown();
