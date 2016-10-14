@@ -98,7 +98,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             addToLog(currentSim.toString());
 
             LinkedList<Action> actions = generatePossibleActions(allResources, load, pendingCreations);
-            Action action = this.selectBestAction(actualAction, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
+            Action action = this.selectBestAction(currentSim, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
             addToLog("Action to perform: " + action.title + "\n");
             printLog();
             System.out.println("Performing " + action.title);
