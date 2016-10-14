@@ -22,7 +22,6 @@ import integratedtoolkit.nio.master.configuration.NIOConfiguration;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
-import integratedtoolkit.util.CoreManager;
 import integratedtoolkit.util.ResourceManager;
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,9 +30,11 @@ public class WorkerStarter extends Thread {
 
     private static final long BOOT_TIMEOUT = 60_000;
     private final VM vm;
+    private ResourceCreationRequest rcr;
 
-    public WorkerStarter(VM vm) {
+    public WorkerStarter(VM vm, ResourceCreationRequest rcr) {
         this.vm = vm;
+        this.rcr = rcr;
     }
 
     public void run() {
@@ -51,7 +52,6 @@ public class WorkerStarter extends Thread {
                 return;
             }
         }
-
         CloudMethodWorker worker = null;
         CloudMethodResourceDescription desc = (CloudMethodResourceDescription) vm.getDescription();
         try {
@@ -66,7 +66,6 @@ public class WorkerStarter extends Thread {
             return;
         }
         vm.setWorker(worker);
-        ResourceCreationRequest rcr = new ResourceCreationRequest(desc, new int[CoreManager.getCoreCount()][0], "Ascetic");
         ResourceManager.addCloudWorker(rcr, worker, vm.getCompatibleImplementations());
 
     }

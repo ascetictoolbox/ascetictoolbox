@@ -70,7 +70,7 @@ public class AsceticConnector implements Cost, Connector {
 
         public void run() {
             try {
-                Ascetic.requestVMCreation(rR.getRequested().getImage().getImageName(), rR.getRequested().getType());
+                Ascetic.requestVMCreation(rR);
             } catch (Exception e) {
                 System.err.println("Error creating new VM " + rR.getRequested().getType());
                 e.printStackTrace();

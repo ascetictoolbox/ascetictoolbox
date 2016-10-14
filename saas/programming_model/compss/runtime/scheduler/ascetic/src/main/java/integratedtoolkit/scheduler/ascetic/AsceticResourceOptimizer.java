@@ -48,22 +48,21 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     + "\tTime: " + timeBoundary + "s\n"
                     + "\tEnergy: " + energyBoundary + "Wh\n"
                     + "\tCost: " + costBoundary + "€\n"
-                    + "\tPower: "+ powerBoundary + "W\n"
-                    + "\tPrice: "+ priceBoundary + "€/h\n");
-            		
-
+                    + "\tPower: " + powerBoundary + "W\n"
+                    + "\tPrice: " + priceBoundary + "€/h\n");
+            
             long elapsedTime = Ascetic.getAccumulatedTime();
             double elapsedEnergy = Ascetic.getExpectedAccumulatedEnergy();
             double elapsedCost = Ascetic.getExpectedAccumulatedCost();
             double elapsedPower = 0d;//Ascetic.getCurrentPower();
             double elapsedPrice = 0d;//Ascetic.getCurrentPrice();
-            
+
             addToLog("Elapsed\n"
                     + "\tTime: " + elapsedTime + "s\n"
                     + "\tEnergy: " + elapsedEnergy + "Wh\n"
                     + "\tCost: " + elapsedCost + "€\n"
-                    + "\tPower: "+ elapsedPower + "W\n"
-                    + "\tPrice: "+ elapsedPrice + "€/h\n");
+                    + "\tPower: " + elapsedPower + "W\n"
+                    + "\tPrice: " + elapsedPrice + "€/h\n");
 
             long timeBudget = timeBoundary - elapsedTime;
             double energyBudget = energyBoundary - elapsedEnergy;
@@ -74,8 +73,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     + "\tTime: " + timeBudget + "s\n"
                     + "\tEnergy: " + energyBudget + "Wh - " + (energyBudget * 3600) + "J\n"
                     + "\tCost: " + costBudget + "€\n"
-                    + "\tPower: "+ powerBudget + "W\n"
-                    + "\tPrice: "+ priceBudget + "€/h\n");
+                    + "\tPower: " + powerBudget + "W\n"
+                    + "\tPrice: " + priceBudget + "€/h\n");
 
             ResourceScheduler[] workers = ts.getWorkers();
             LinkedList<ResourceCreationRequest> creations = ts.getPendingCreations();
@@ -105,7 +104,6 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             System.out.println("Performing " + action.title);
             super.logger.debug("ASCETIC: Performing " + action.title);
             action.perform();
-            System.out.println(action.title +  " performed" );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -128,7 +126,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                 actions.add(a);
             }
         }
-        
+
         for (int i = 0; i < allResources.length; i++) {
             Resource excludedWorker = allResources[i];
             if (!(excludedWorker.hasPendingModifications()) && Ascetic.canTerminateVM(excludedWorker.getResource())) {
@@ -180,8 +178,6 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         }
         return bestAction;
     }
-
-
 
     private static <T extends Comparable> boolean isAcceptable(T candidate, T reference, T budget) {
         if (reference.compareTo(budget) > 0) {
@@ -371,7 +367,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             pendingCreations.put(componentType, pendingCreation);
             Resource r = createResourceForComponent(crc.getRequested().getType());
             allResources[resourceId] = r;
-            
+
             addToLog("\t\tTime: 0 ms -> total " + time + "\n");
             addToLog("\t\tactions Cost: 0 € -> total " + actionsCost + "€\n");
             idlePrice += r.idlePrice;
@@ -379,11 +375,11 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             addToLog("\t\tactions Energy:0 mJ -> total " + actionsEnergy + "mJ\n");
             idlePower += r.idlePower;
             addToLog("\t\tIdle Power:" + r.idlePower + " W -> total " + idlePower + "W\n");
-            
+
             r.startTime = 0;
             r.startCost = 0;
             r.startEnergy = 0;
-            
+
             addToLog("\t\tCore Information:\n");
             StringBuilder[] coreInfo = new StringBuilder[CoreManager.getCoreCount()];
             Implementation[] impls = new Implementation[CoreManager.getCoreCount()];
@@ -398,16 +394,15 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                 }
                 coreInfo[coreId].append("\t\t\t\tFavorite Implementation 0\n");
             }
-            
-            for (int coreId = 0; coreId < CoreManager.getCoreImplementations(coreId).length; coreId++) {
+
+            for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 coreInfo[coreId].append("\t\t\t\tProfile " + r.profiles[coreId] + "\n");
                 coreInfo[coreId].append("\t\t\t\tCapacity " + r.capacity[coreId] + "\n");
                 addToLog(coreInfo[coreId].toString());
             }
-            
+
             resourceId++;
         }
-        
 
         return new ConfigurationCost(time, idlePower, actionsEnergy, idlePrice, actionsCost);
     }
@@ -431,7 +426,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
     }
 
     private ConfigurationCost simulate(int[] counts, Resource[] resources, long minTime, double minEnergy, double minCost) {
-        addToLog("Simulation\n");
+//        addToLog("Simulation\n");
         int[] workingCounts = new int[counts.length];
         System.arraycopy(counts, 0, workingCounts, 0, counts.length);
         SortedList sl = new SortedList(resources.length);
@@ -459,7 +454,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         for (Resource r : resources) {
             double rActionsEnergy = r.startEnergy;
             double rActionsCost = r.startCost;
-            addToLog("\t" + (r.worker != null ? r.getName() : " NEW") + "\n");
+//            addToLog("\t" + (r.worker != null ? r.getName() : " NEW") + "\n");
             time = Math.max(time, r.time);
             idlePower += r.idlePower;
             idlePrice += r.idlePrice;
@@ -470,18 +465,18 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
             actionsEnergy += rActionsEnergy;
             actionsCost += rActionsCost;
-            addToLog("\t\t Time: " + time + "ms\n");
-            addToLog("\t\tactions Cost:" + rActionsCost + " € -> total " + actionsCost + "€\n");
-            addToLog("\t\tIdle Price:" + r.idlePrice + " €/h -> total " + idlePrice + "€/h\n");
-            addToLog("\t\tactions Energy:" + rActionsEnergy + " mJ -> total " + actionsEnergy + "mJ\n");
-            addToLog("\t\tIdle Power:" + r.idlePower + " W -> total " + idlePower + "W\n");
+//            addToLog("\t\t Time: " + time + "ms\n");
+//            addToLog("\t\tactions Cost:" + rActionsCost + " € -> total " + actionsCost + "€\n");
+//            addToLog("\t\tIdle Price:" + r.idlePrice + " €/h -> total " + idlePrice + "€/h\n");
+//            addToLog("\t\tactions Energy:" + rActionsEnergy + " mJ -> total " + actionsEnergy + "mJ\n");
+//            addToLog("\t\tIdle Power:" + r.idlePower + " W -> total " + idlePower + "W\n");
 
         }
         return new ConfigurationCost(time, idlePower, actionsEnergy + minEnergy, idlePrice, actionsCost + minCost);
     }
 
     private class Resource {
-        
+
         AsceticResourceScheduler worker;
         double idlePower;
         double idlePrice;
@@ -492,33 +487,33 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         double startCost;
         long time;
         int[] counts;
-        
+
         public void clear() {
             time = startTime;
             counts = new int[profiles.length];
         }
-        
+
         private boolean hasPendingModifications() {
             if (worker != null) {
                 return worker.hasPendingModifications();
             }
             return true;
         }
-        
+
         private Worker getResource() {
             if (worker != null) {
                 return worker.getResource();
             }
             return null;
         }
-        
+
         private String getName() {
             if (worker != null) {
                 return worker.getName();
             }
             return "TEMPORARY";
         }
-        
+
     }
 
     private Resource createResourceForComponent(String componentName) {
@@ -659,13 +654,13 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         double price;
 
         ConfigurationCost(long time, double idlePower, double fixedEnergy, double idlePrice, double fixedCost) {
-            this.time = time/1000;
+            this.time = time / 1000;
             this.energy = (idlePower * time + fixedEnergy) / 3_600_000;
-            this.cost = (idlePrice * ((double)(time / 3_600_000))) + fixedCost;
-            this.power = idlePower + (fixedEnergy/time);
-            this.price = idlePrice + (double)((fixedCost *3_600_000)/time);            
-            System.out.println("Calculated price: " + idlePrice +"+(("+fixedCost+"*3_600_000)/"+time+")="+this.price);
-            
+            this.cost = (idlePrice * ((double) (time / 3_600_000))) + fixedCost;
+            this.power = idlePower + (fixedEnergy / time);
+            this.price = idlePrice + (double) ((fixedCost * 3_600_000) / time);
+            System.out.println("Calculated price: " + idlePrice + "+((" + fixedCost + "*3_600_000)/" + time + ")=" + this.price);
+
         }
 
         @Override
@@ -674,7 +669,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     + "\tEnergy: " + energy + "Wh\n"
                     + "\tCost: " + cost + "€\n"
                     + "\tPower: " + power + "W\n"
-            		+ "\tPrice: " + price + "€/h\n";
+                    + "\tPrice: " + price + "€/h\n";
         }
     }
 

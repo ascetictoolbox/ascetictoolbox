@@ -12,7 +12,10 @@ import org.apache.log4j.Logger;
 import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
 import integratedtoolkit.ascetic.fake.FakeAppManager;
 import integratedtoolkit.scheduler.types.AllocatableAction;
+import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.resources.MethodResourceDescription;
+import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
+import integratedtoolkit.util.CoreManager;
 
 import java.util.LinkedList;
 
@@ -28,6 +31,7 @@ public class Ascetic {
     public static boolean changes = false;
 
     private static final HashMap<String, VM> resources = new HashMap<String, VM>();
+    private static final HashMap<String, LinkedList<ResourceCreationRequest>> pendingRequests = new HashMap<String, LinkedList<ResourceCreationRequest>>();
 
     private static double currentCost = 0;
     private static double currentPower = 0;
@@ -35,7 +39,7 @@ public class Ascetic {
     private static double initEnergy = 0d;
     private static double initCost = 0d;
     private static long initTime = System.currentTimeMillis();
-    
+
     protected static final Logger logger = Logger.getLogger(Loggers.TS_COMP);
     protected static final boolean debug = logger.isDebugEnabled();
 
@@ -52,19 +56,24 @@ public class Ascetic {
             APP_MANAGER = new AppManager(applicationId, deploymentId, amEndpoint);
         }
 
+        System.out.println("***** Initial Values ******");
         try {
-        	System.out.println("***** Initial Values ******");
             initEnergy = APP_MANAGER.getAccumulatedEnergy();
-            System.out.println("* - Initial Energy: "+initEnergy);
-            initCost = APP_MANAGER.getAccumulatedCost();
-            System.out.println("* - Initial Cost: "+initCost);
-            
+            System.out.println("* - Initial Energy: " + initEnergy);
         } catch (Exception e) {
-            logger.error("Error getting accumulated energy or cost", e);
-            System.out.println("Error getting accumulated energy");
+            logger.error("Error getting accumulated energy", e);
             e.printStackTrace();
         }
 
+        try {
+
+            initCost = APP_MANAGER.getAccumulatedCost();
+            System.out.println("* - Initial Cost: " + initCost);
+        } catch (Exception e) {
+            logger.error("Error getting accumulated cost", e);
+            e.printStackTrace();
+        }
+        
         monitor = new AsceticMonitor();
         monitor.setName("Ascetic Monitor");
         monitor.start();
@@ -79,14 +88,24 @@ public class Ascetic {
     }
 
     public static void discoverNewResources() {
-        System.out.println("Discovering new Resources");
         try {
             for (VM vm : APP_MANAGER.getNewResources()) {
                 resources.put(vm.getIPv4(), vm);
-                (new WorkerStarter(vm)).start();
+                ResourceCreationRequest rcr = null;
+                synchronized (pendingRequests) {
+                    LinkedList<ResourceCreationRequest> reqs = pendingRequests.get(vm.getComponentId());
+                    if (reqs != null) {
+                        rcr = reqs.poll();
+                    }
+                }
+                if (rcr == null) {
+                    CloudMethodResourceDescription desc = (CloudMethodResourceDescription) vm.getDescription();
+                    rcr = new ResourceCreationRequest(desc, new int[CoreManager.getCoreCount()][0], "Ascetic");
+                }
+                (new WorkerStarter(vm, rcr)).start();
             }
         } catch (Exception e) {
-            logger.error("Error getting resources");
+            e.printStackTrace();
         }
     }
 
@@ -126,23 +145,23 @@ public class Ascetic {
         }
 
     }
-    
+
     public static double getExpectedAccumulatedCost() {
-       double currentExpectedCost = 0d;
-       for (VM vm: resources.values()){
-       	currentExpectedCost+=vm.getAccumulatedCost();
-       }
-       return currentExpectedCost;
+        double currentExpectedCost = 0d;
+        for (VM vm : resources.values()) {
+            currentExpectedCost += vm.getAccumulatedCost();
+        }
+        return currentExpectedCost;
     }
 
-    public static double getCurrentPrice(){
-    	double currentExpectedPrice = 0d;
-        for (VM vm: resources.values()){
-        	currentExpectedPrice+=vm.getCurrentPrice();
+    public static double getCurrentPrice() {
+        double currentExpectedPrice = 0d;
+        for (VM vm : resources.values()) {
+            currentExpectedPrice += vm.getCurrentPrice();
         }
         return currentExpectedPrice;
     }
-    
+
     public static double getAccumulatedEnergy() {
         try {
             double accumulatedEnergy = APP_MANAGER.getAccumulatedEnergy();
@@ -152,23 +171,22 @@ public class Ascetic {
             return initEnergy;
         }
     }
-    
+
     public static double getExpectedAccumulatedEnergy() {
         double currentExpectedEnergy = 0d;
-        for (VM vm: resources.values()){
-        	currentExpectedEnergy+=vm.getAccumulatedEnergy();
+        for (VM vm : resources.values()) {
+            currentExpectedEnergy += vm.getAccumulatedEnergy();
         }
         return currentExpectedEnergy;
     }
-    
-    public static double getCurrentPower(){
-    	double currentExpectedPower = 0d;
-        for (VM vm: resources.values()){
-        	currentExpectedPower+=vm.getCurrentPower();
+
+    public static double getCurrentPower() {
+        double currentExpectedPower = 0d;
+        for (VM vm : resources.values()) {
+            currentExpectedPower += vm.getCurrentPower();
         }
         return currentExpectedPower;
     }
-    
 
     public static long getAccumulatedTime() {
         return (System.currentTimeMillis() - initTime) / 1000;
@@ -192,9 +210,24 @@ public class Ascetic {
                 && (nextPower < Configuration.getEnergyBoundary()));
     }
 
-    public static void requestVMCreation(String image, String type) throws ApplicationUploaderException {
-        System.out.println("Requesting a " +type + " instance with image " + image + " to the APP_MANAGER");
-        APP_MANAGER.requestVMCreation(type);
+    public static void requestVMCreation(ResourceCreationRequest rcr) throws ApplicationUploaderException {
+        String image = rcr.getRequested().getImage().getImageName();
+        String type = rcr.getRequested().getType();
+        System.out.println("Requesting a " + type + " instance with image " + image + " to the APP_MANAGER");
+        LinkedList<ResourceCreationRequest> reqs;
+        synchronized (pendingRequests) {
+            reqs = pendingRequests.get(type);
+            if (reqs == null) {
+                reqs = new LinkedList<ResourceCreationRequest>();
+                pendingRequests.put(type, reqs);
+            }
+        }
+        reqs.addLast(rcr);
+        try {
+            APP_MANAGER.requestVMCreation(type);
+        } catch (Exception e) {
+            reqs.remove(rcr);
+        }
     }
 
     public static void requestVMDestruction(Worker worker) throws ApplicationUploaderException {
@@ -203,7 +236,7 @@ public class Ascetic {
         String amId = Integer.toString(vm.getAMId());
         System.out.println(" *** Requesting destruction of " + worker.getName() + "(ID: " + amId + ") to the APP_MANAGER");
         APP_MANAGER.requestVMDestruction(amId);
-        System.out.println(" *** "+ worker.getName() + "(ID: " + amId + ") destroyed");
+        System.out.println(" *** " + worker.getName() + "(ID: " + amId + ") destroyed");
         vm.setEndTime();
     }
 
@@ -271,11 +304,11 @@ public class Ascetic {
     public static double getEnergyBoundary() {
         return Configuration.getEnergyBoundary();
     }
-    
+
     public static double getPowerBoundary() {
         return Configuration.getPowerBoundary();
     }
-    
+
     public static double getPriceBoundary() {
         return Configuration.getPriceBoundary();
     }
@@ -348,12 +381,10 @@ public class Ascetic {
             }
             System.out.println("***** Ascetic Monitoring stopped ******");
             System.out.println("-Elapsed Time: " + Ascetic.getAccumulatedTime());
-            System.out.println("-Total Cost: " + Ascetic.getAccumulatedCost()+ "("+getExpectedAccumulatedCost()+")");
-            System.out.println("-Total Energy: " + Ascetic.getAccumulatedEnergy()+ "("+getExpectedAccumulatedEnergy()+")");
+            System.out.println("-Total Cost: " + Ascetic.getAccumulatedCost() + "(" + getExpectedAccumulatedCost() + ")");
+            System.out.println("-Total Energy: " + Ascetic.getAccumulatedEnergy() + "(" + getExpectedAccumulatedEnergy() + ")");
             System.out.println("***************************************");
         }
     }
-
-    
 
 }

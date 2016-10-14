@@ -408,6 +408,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 		}
         //No changes in the Gap structure
 
+        
+        System.out.println("\tScanning "+this);
 		//Scan actions: Filters ready and selectable actions
 		scanActions(state);
 		//Gets all the pending schedulings
@@ -418,7 +420,9 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 			pendingSchedulings = opDSI.replaceSuccessors(newPendingSchedulings);
 		}
 		//Classify pending actions: Filters ready and selectable actions
+        System.out.println("\tPendingSchedulings "+this);
 		classifyPendingSchedulings(pendingSchedulings, state);
+        System.out.println("\tPendingUnschedulings "+this);
 		classifyPendingUnschedulings(state);
 
 		//ClassifyActions

@@ -32,22 +32,21 @@ public class AppManager {
 
             for (eu.ascetic.paas.applicationmanager.model.VM rvm : vms) {
                 String IPv4 = rvm.getIp();
-                if (rvm.getStatus()!=null && rvm.getStatus().equals("ACTIVE")){
-                	VM vm = detectedVMs.get(IPv4);
-                	if (vm == null) {
-                		vm = new VM(rvm);
-                		vm.updateConsumptions(this);
-                		detectedVMs.put(IPv4, vm);
-                		if (!vm.getCompatibleImplementations().isEmpty()) {
-                			newResources.add(vm);
-                		} else {
-                			System.out.println(vm.getIPv4() + " dismissed because it has no compatible Implementations.");
-                		}
-                	}
+                if (rvm.getStatus() != null && rvm.getStatus().equals("ACTIVE")) {
+                    VM vm = detectedVMs.get(IPv4);
+                    if (vm == null) {
+                        vm = new VM(rvm);
+                        vm.updateConsumptions(this);
+                        detectedVMs.put(IPv4, vm);
+                        if (!vm.getCompatibleImplementations().isEmpty()) {
+                            newResources.add(vm);
+                        } else {
+                            System.out.println(vm.getIPv4() + " dismissed because it has no compatible Implementations.");
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
-        	System.out.println("Exception discovering VMs");
             e.printStackTrace();
         }
         return newResources;
