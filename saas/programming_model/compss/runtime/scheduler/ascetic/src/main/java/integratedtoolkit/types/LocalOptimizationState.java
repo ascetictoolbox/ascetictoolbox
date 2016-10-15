@@ -121,19 +121,19 @@ public class LocalOptimizationState {
     }
 
     public void releaseResources(long expectedStart, AllocatableAction action) {
-        if (action.getAssignedImplementation()!=null){
-        	Gap gap;
-        	gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
-        	AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
-        	dsi.addGap();
-        	gaps.add(gap);
-        	if (missingResources != null) {
-        		ResourceDescription empty = gap.getResources().copy();
-        		topStartTime = gap.getInitialTime();
-        		ResourceDescription.reduceCommonDynamics(empty, missingResources);
-        	}
-        }else{
-        	System.out.println("**** Action has null implementation. Nothing done at release resources *** ");
+        if (action.getAssignedImplementation() != null) {
+            Gap gap;
+            gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
+            AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
+            dsi.addGap();
+            gaps.add(gap);
+            if (missingResources != null) {
+                ResourceDescription empty = gap.getResources().copy();
+                topStartTime = gap.getInitialTime();
+                ResourceDescription.reduceCommonDynamics(empty, missingResources);
+            }
+        } else {
+            System.out.println("**** Action has null implementation. Nothing done at release resources *** ");
         }
     }
 
@@ -229,17 +229,17 @@ public class LocalOptimizationState {
     }
 
     public void runningAction(Implementation impl, AsceticProfile p, long pendingTime) {
-        if (impl!=null){
-        	reserveResources(impl.getRequirements(), 0);
-        	if (impl.getCoreId() != null && impl.getImplementationId() != null) {
-        		runningImplementationsCount[impl.getCoreId()][impl.getImplementationId()]++;
-        		endRunningActions = Math.max(endRunningActions, pendingTime);
-        		double power = p.getPower();
-        		runningEnergy += pendingTime * power;
-        		runningCost += p.getPrice();
-        	}
-        }else{
-        	System.out.println("**** Action has a null implementation. Nothing done for reserving resources ***");
+        if (impl != null) {
+            reserveResources(impl.getRequirements(), 0);
+            if (impl.getCoreId() != null && impl.getImplementationId() != null) {
+                runningImplementationsCount[impl.getCoreId()][impl.getImplementationId()]++;
+                endRunningActions = Math.max(endRunningActions, pendingTime);
+                double power = p.getPower();
+                runningEnergy += pendingTime * power;
+                runningCost += p.getPrice();
+            }
+        } else {
+            System.out.println("**** Action has a null implementation. Nothing done for reserving resources ***");
         }
     }
 
@@ -297,14 +297,17 @@ public class LocalOptimizationState {
         rbaDSI.addSuccessor(action);
         Gap opActionGap = new Gap(0, 0, resourceBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
         aDSI.addPredecessor(opActionGap);
+        rbaDSI.unlock();
     }
 
     public void dataBlockedAction(AllocatableAction action) {
         AsceticSchedulingInformation aDSI = (AsceticSchedulingInformation) action.getSchedulingInfo();
         AsceticSchedulingInformation dbaDSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
+        dbaDSI.lock();
         dbaDSI.addSuccessor(action);
         Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
         aDSI.addPredecessor(opActionGap);
+        dbaDSI.unlock();
     }
 
     public LinkedList<AllocatableAction> getResourceBlockedActions() {

@@ -156,13 +156,13 @@ public class AsceticSchedulingInformation<P extends Profile, T extends WorkerRes
     }
 
     public void lock() {
-        l.lock();
-    }
+                l.lock();
+            }
 
     public void unlock() {
         l.unlock();
     }
-
+    
     public void unlockCompletely() {
         while (l.getHoldCount() > 1) {
             l.unlock();

@@ -306,6 +306,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
             //Register all successors as Blocked Actions
             state.blockDataSuccessors(dsi);
+            dsi.unlock();
             rescheduledActions.add(action);
             return new LinkedList<SchedulingEvent<P, T>>();
         }
