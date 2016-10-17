@@ -50,7 +50,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     + "\tCost: " + costBoundary + "€\n"
                     + "\tPower: " + powerBoundary + "W\n"
                     + "\tPrice: " + priceBoundary + "€/h\n");
-            
+
             long elapsedTime = Ascetic.getAccumulatedTime();
             double elapsedEnergy = Ascetic.getExpectedAccumulatedEnergy();
             double elapsedCost = Ascetic.getExpectedAccumulatedCost();
@@ -193,11 +193,10 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.time < rCost.time) {
             if (!isAcceptable(cCost.energy, rCost.energy, energyBudget)) {
                 addToLog("\t\t Surpasses the energy budget\n");
-                
-            } else {
-                if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
-                    addToLog("\t\t Surpasses the cost budget\n");
-                }
+
+            }
+            if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
+                addToLog("\t\t Surpasses the cost budget\n");
             }
             return isAcceptable(cCost.energy, rCost.energy, energyBudget) && isAcceptable(cCost.cost, rCost.cost, costBudget);
         } else {
@@ -212,8 +211,21 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     }
                 }
             } else {
+                if (rCost.energy > energyBudget && cCost.energy < rCost.energy) {
+                    if (isAcceptable(cCost.cost, rCost.cost, costBudget)) {
+                        addToLog("\t\t Time's higher than the currently selected option. But energy is closer to the boundary\n");
+                    }
+                    return isAcceptable(cCost.cost, rCost.cost, costBudget);
+                }
+
+                if (rCost.cost > costBudget && cCost.cost < rCost.cost) {
+                    if (isAcceptable(cCost.energy, rCost.energy, costBudget)) {
+                        addToLog("\t\t Time's higher than the currently selected option. But cost is closer to the boundary\n");
+                    }
+                    return isAcceptable(cCost.energy, rCost.energy, costBudget);
+                }
                 addToLog("\t\t Time's higher than the currently selected option\n");
-                
+
             }
         }
         return false;
@@ -225,11 +237,11 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.cost < rCost.cost) {
             if (!isAcceptable(cCost.energy, rCost.energy, energyBudget)) {
                 addToLog("\t\t Surpasses the energy budget " + cCost.energy + " > " + energyBudget + "\n");
-            } else {
-                if (!isAcceptable(cCost.time, rCost.time, timeBudget)) {
-                    addToLog("\t\t Surpasses the time budget " + cCost.time + " > " + timeBudget + "\n");
-                }
             }
+            if (!isAcceptable(cCost.time, rCost.time, timeBudget)) {
+                addToLog("\t\t Surpasses the time budget " + cCost.time + " > " + timeBudget + "\n");
+            }
+
             return isAcceptable(cCost.energy, rCost.energy, energyBudget) && isAcceptable(cCost.time, rCost.time, timeBudget);
         } else {
             if (cCost.cost == rCost.cost) {
@@ -243,6 +255,18 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     }
                 }
             } else {
+                if (rCost.time > timeBudget && cCost.time < rCost.time) {
+                    if (isAcceptable(cCost.energy, rCost.energy, energyBudget)) {
+                        addToLog("\t\t Cost's higher than the currently selected option. But time is closer to the boundary\n");
+                    }
+                    return isAcceptable(cCost.cost, rCost.cost, energyBudget);
+                }
+                if (rCost.energy > energyBudget && cCost.energy < rCost.energy) {
+                    if (isAcceptable(cCost.time, rCost.time, timeBudget)) {
+                        addToLog("\t\t Energy's higher than the currently selected option. But energy is closer to the boundary\n");
+                    }
+                    return isAcceptable(cCost.time, rCost.time, timeBudget);
+                }
                 addToLog("\t\t Cost's higher than the currently selected option\n");
             }
         }
@@ -255,24 +279,9 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.energy < rCost.energy) {
             if (!isAcceptable(cCost.time, rCost.time, timeBudget)) {
                 addToLog("\t\t Surpasses the time budget\n");
-                //Jorge: Added because of time boundary not fulfilled 
-                if (rCost.time > timeBudget && cCost.time < rCost.time) {
-                	addToLog("\t\t Surpasses time budget. But time is closer to the boundary\n");
-                	if (isAcceptable(cCost.cost, rCost.cost, costBudget)){
-                		return true;
-                	}
-                }		
-                if(rCost.cost > costBudget && cCost.cost < rCost.cost) {
-                	addToLog("\t\t Surpasses cost boundary. But time is closer to the boundary\n");
-                	if (isAcceptable(cCost.time, rCost.time, timeBudget)){
-                		return true;
-                	}
-                }
-                //End added Jorge
-            } else {
-                if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
-                	addToLog("\t\t Surpasses the cost budget\n");
-                }
+            }
+            if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
+                addToLog("\t\t Surpasses the cost budget\n");
             }
             return isAcceptable(cCost.time, rCost.time, timeBudget) && !isAcceptable(cCost.cost, rCost.cost, costBudget);
         } else {
@@ -287,21 +296,19 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     }
                 }
             } else {
-                //Jorge: Added because of time boundary not fulfilled 
                 if (rCost.time > timeBudget && cCost.time < rCost.time) {
-                	addToLog("\t\t Energy's higher than the currently selected option. But time is closer to the boundary\n");
-                	if (isAcceptable(cCost.cost, rCost.cost, costBudget)){
-                		return true;
-                	}
-                }		
-                if(rCost.cost > costBudget && cCost.cost < rCost.cost) {
-                	addToLog("\t\t Energy's higher than the currently selected option. But time is closer to the boundary\n");
-                	if (isAcceptable(cCost.time, rCost.time, timeBudget)){
-                		return true;
-                	}
+                    if (isAcceptable(cCost.cost, rCost.cost, costBudget)) {
+                        addToLog("\t\t Energy's higher than the currently selected option. But time is closer to the boundary\n");
+                    }
+                    return isAcceptable(cCost.cost, rCost.cost, costBudget);
                 }
-                //End added Jorge
-                addToLog("\t\t Energy's higher than the currently selected option. Checking Boundaries\n");
+                if (rCost.cost > costBudget && cCost.cost < rCost.cost) {
+                    if (isAcceptable(cCost.time, rCost.time, timeBudget)) {
+                        addToLog("\t\t Energy's higher than the currently selected option. But time is closer to the boundary\n");
+                    }
+                    return isAcceptable(cCost.time, rCost.time, timeBudget);
+                }
+                addToLog("\t\t Energy's higher than the currently selected option.\n");
             }
         }
         return false;
