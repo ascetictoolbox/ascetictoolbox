@@ -89,7 +89,8 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             }
 
             HashMap<String, Integer> pendingCreations = new HashMap<String, Integer>();
-            ConfigurationCost actualCost = getContext(allResources, load, workers, creations, pendingCreations);
+            HashMap<String, Integer> pendingReductions = new HashMap<String, Integer>();
+            ConfigurationCost actualCost = getContext(allResources, load, workers, creations, pendingCreations, pendingReductions);
             Action actualAction = new Action(actualCost);
             addToLog(actualAction.toString());
 
@@ -97,7 +98,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             Action currentSim = new Action(simCost);
             addToLog(currentSim.toString());
 
-            LinkedList<Action> actions = generatePossibleActions(allResources, load, pendingCreations);
+            LinkedList<Action> actions = generatePossibleActions(allResources, load, pendingCreations, pendingReductions);
             Action action = this.selectBestAction(currentSim, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
             addToLog("Action to perform: " + action.title + "\n");
             printLog();
@@ -108,7 +109,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         }
     }
 
-    private LinkedList<Action> generatePossibleActions(Resource[] allResources, int[] load, HashMap<String, Integer> pendingCreations) {
+    private LinkedList<Action> generatePossibleActions(Resource[] allResources, int[] load, HashMap<String, Integer> pendingCreations, HashMap<String, Integer> pendingReductions) {
         LinkedList<Action> actions = new LinkedList<Action>();
         for (String componentName : Ascetic.getComponentNames()) {
             Integer pendingCreation = pendingCreations.get(componentName);
@@ -128,17 +129,25 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
 
         for (int i = 0; i < allResources.length; i++) {
             Resource excludedWorker = allResources[i];
-            if (!(excludedWorker.hasPendingModifications()) && Ascetic.canTerminateVM(excludedWorker.getResource())) {
-                Resource[] resources = new Resource[allResources.length - 1];
-                System.arraycopy(allResources, 0, resources, 0, i);
-                System.arraycopy(allResources, i + 1, resources, i, resources.length - i);
-                long time = excludedWorker.startTime;
-                double energy = excludedWorker.idlePower * time + excludedWorker.startEnergy;
-                double cost = excludedWorker.startCost;
-                ConfigurationCost cc = simulate(load, resources, time, energy, cost);
-                Action a = new Action.Remove(excludedWorker, cc);
-                addToLog(a.toString());
-                actions.add(a);
+
+            if (!(excludedWorker.hasPendingModifications())) {
+                String componentName = ((CloudMethodResourceDescription) excludedWorker.getResource().getDescription()).getType();
+                Integer pendingReduction = pendingReductions.get(componentName);
+                if (pendingReduction == null) {
+                    pendingReduction = 0;
+                }
+                if (Ascetic.canTerminateVM(excludedWorker.getResource(), pendingReduction)) {
+                    Resource[] resources = new Resource[allResources.length - 1];
+                    System.arraycopy(allResources, 0, resources, 0, i);
+                    System.arraycopy(allResources, i + 1, resources, i, resources.length - i);
+                    long time = excludedWorker.startTime;
+                    double energy = excludedWorker.idlePower * time + excludedWorker.startEnergy;
+                    double cost = excludedWorker.startCost;
+                    ConfigurationCost cc = simulate(load, resources, time, energy, cost);
+                    Action a = new Action.Remove(excludedWorker, cc);
+                    addToLog(a.toString());
+                    actions.add(a);
+                }
             }
         }
         return actions;
@@ -311,7 +320,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         return false;
     }
 
-    private ConfigurationCost getContext(Resource[] allResources, int[] load, ResourceScheduler[] workers, LinkedList<ResourceCreationRequest> creations, HashMap<String, Integer> pendingCreations) {
+    private ConfigurationCost getContext(Resource[] allResources, int[] load, ResourceScheduler[] workers, LinkedList<ResourceCreationRequest> creations, HashMap<String, Integer> pendingCreations, HashMap<String, Integer> pendingDestructions) {
         long time = 0;
         double actionsCost = 0;
         double idlePrice = 0;
@@ -386,6 +395,15 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                 r.capacity[coreId] = aw.getSimultaneousCapacity(impls[coreId]);
                 coreInfo[coreId].append("\t\t\t\tCapacity " + r.capacity[coreId] + "\n");
                 addToLog(coreInfo[coreId].toString());
+            }
+            if (r.hasPendingModifications()) {
+                String componentType = ((CloudMethodResourceDescription) r.getResource().getDescription()).getType();
+                Integer pendingDestruction = pendingCreations.get(componentType);
+                if (pendingDestruction == null) {
+                    pendingDestruction = 0;
+                }
+                pendingDestruction++;
+                pendingCreations.put(componentType, pendingDestruction);
             }
             resourceId++;
         }
@@ -483,8 +501,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                 sl.add(r);
             }
         }
-        
-        
+
         // Summary Execution
         long time = minTime;
         double idlePower = 0;

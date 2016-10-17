@@ -73,7 +73,7 @@ public class Ascetic {
             logger.error("Error getting accumulated cost", e);
             e.printStackTrace();
         }
-        
+
         monitor = new AsceticMonitor();
         monitor.setName("Ascetic Monitor");
         monitor.start();
@@ -356,12 +356,12 @@ public class Ascetic {
         return Configuration.withinBoundaries(componentName, currentVMs + 1 + extra);
     }
 
-    public static boolean canTerminateVM(Worker w) {
+    public static boolean canTerminateVM(Worker w, int pendingRemoves) {
         String IPv4 = w.getName();
         VM vm = resources.get(IPv4);
         String componentName = vm.getComponentId();
         int currentVMs = VM.getComponentCount(componentName);
-        return Configuration.withinBoundaries(componentName, currentVMs - 1);
+        return Configuration.withinBoundaries(componentName, currentVMs - 1 - pendingRemoves);
     }
 
     private static class AsceticMonitor extends Thread {
