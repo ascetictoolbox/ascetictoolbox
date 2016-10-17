@@ -101,7 +101,6 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             Action action = this.selectBestAction(currentSim, actions, timeBudget, energyBudget, costBudget, powerBudget, priceBudget);
             addToLog("Action to perform: " + action.title + "\n");
             printLog();
-            System.out.println("Performing " + action.title);
             super.logger.debug("ASCETIC: Performing " + action.title);
             action.perform();
         } catch (Exception e) {
@@ -461,9 +460,16 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
 //        addToLog("Simulation\n");
         int[] workingCounts = new int[counts.length];
         System.arraycopy(counts, 0, workingCounts, 0, counts.length);
-        SortedList sl = new SortedList(resources.length);
+        LinkedList<Resource> executable = new LinkedList();
         for (Resource r : resources) {
             r.clear();
+            if (r.canExecute()) {
+                executable.add(r);
+            }
+        }
+
+        SortedList sl = new SortedList(executable.size());
+        for (Resource r : executable) {
             sl.initialAdd(r);
         }
 
@@ -471,14 +477,14 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             while (workingCounts[coreId] > 0) {
                 //Pressumes that all CE runs in every resource
                 Resource r = sl.peek();
-                if (!r.hasPendingModifications()) {
-                    r.time += r.profiles[coreId].getAverageExecutionTime();
-                    r.counts[coreId] += Math.min(r.capacity[coreId], workingCounts[coreId]);
-                    workingCounts[coreId] -= r.capacity[coreId];
-                    sl.add(r);
-                }
+                r.time += r.profiles[coreId].getAverageExecutionTime();
+                r.counts[coreId] += Math.min(r.capacity[coreId], workingCounts[coreId]);
+                workingCounts[coreId] -= r.capacity[coreId];
+                sl.add(r);
             }
         }
+        
+        
         // Summary Execution
         long time = minTime;
         double idlePower = 0;
@@ -525,6 +531,13 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         public void clear() {
             time = startTime;
             counts = new int[profiles.length];
+        }
+
+        private boolean canExecute() {
+            if (worker != null) {
+                return !worker.hasPendingModifications();
+            }
+            return true;
         }
 
         private boolean hasPendingModifications() {
@@ -655,7 +668,6 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
 
             public void perform() {
                 logger.debug("ASCETIC: Performing Add action " + this);
-                System.out.println("Performing " + this);
                 ResourceManager.createResources("Ascetic", component, component + "-img");
             }
         }
