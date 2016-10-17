@@ -1,6 +1,7 @@
 package integratedtoolkit.types.resources;
 
 import integratedtoolkit.types.COMPSsWorker;
+import integratedtoolkit.types.CloudImageDescription;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.resources.configuration.MethodConfiguration;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
@@ -57,7 +58,8 @@ public class CloudMethodWorker extends MethodWorker {
             providerName = new String("");
         }
         sb.append(prefix).append("<Provider>").append(providerName).append("</Provider>").append("\n");
-        String imageName = ((CloudMethodResourceDescription) description).getName();
+        CloudImageDescription image = ((CloudMethodResourceDescription) description).getImage();
+        String imageName = image.getImageName();
         if (imageName == null) {
             imageName = new String("");
         }
