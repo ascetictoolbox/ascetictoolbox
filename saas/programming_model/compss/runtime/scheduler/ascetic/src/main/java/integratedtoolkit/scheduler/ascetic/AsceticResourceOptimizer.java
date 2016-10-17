@@ -193,7 +193,6 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
         if (cCost.time < rCost.time) {
             if (!isAcceptable(cCost.energy, rCost.energy, energyBudget)) {
                 addToLog("\t\t Surpasses the energy budget\n");
-
             }
             if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
                 addToLog("\t\t Surpasses the cost budget\n");
@@ -241,7 +240,6 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             if (!isAcceptable(cCost.time, rCost.time, timeBudget)) {
                 addToLog("\t\t Surpasses the time budget " + cCost.time + " > " + timeBudget + "\n");
             }
-
             return isAcceptable(cCost.energy, rCost.energy, energyBudget) && isAcceptable(cCost.time, rCost.time, timeBudget);
         } else {
             if (cCost.cost == rCost.cost) {
@@ -473,10 +471,12 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             while (workingCounts[coreId] > 0) {
                 //Pressumes that all CE runs in every resource
                 Resource r = sl.peek();
-                r.time += r.profiles[coreId].getAverageExecutionTime();
-                r.counts[coreId] += Math.min(r.capacity[coreId], workingCounts[coreId]);
-                workingCounts[coreId] -= r.capacity[coreId];
-                sl.add(r);
+                if (!r.hasPendingModifications()) {
+                    r.time += r.profiles[coreId].getAverageExecutionTime();
+                    r.counts[coreId] += Math.min(r.capacity[coreId], workingCounts[coreId]);
+                    workingCounts[coreId] -= r.capacity[coreId];
+                    sl.add(r);
+                }
             }
         }
         // Summary Execution
