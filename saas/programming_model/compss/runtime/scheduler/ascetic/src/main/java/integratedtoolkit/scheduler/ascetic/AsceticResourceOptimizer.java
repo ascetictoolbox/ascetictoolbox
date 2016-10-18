@@ -403,7 +403,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
                     pendingDestruction = 0;
                 }
                 pendingDestruction++;
-                pendingCreations.put(componentType, pendingDestruction);
+                pendingDestructions.put(componentType, pendingDestruction);
             }
             resourceId++;
         }
