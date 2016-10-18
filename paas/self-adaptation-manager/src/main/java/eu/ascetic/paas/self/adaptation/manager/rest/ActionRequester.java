@@ -19,6 +19,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.ClientResponse;
 import es.bsc.vmmclient.models.Node;
+import es.bsc.vmmclient.models.NodesResponse;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
@@ -448,12 +449,12 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
     public List<Node> getProviderHostInfo() {
         ProviderHostInfoClient client = new ProviderHostInfoClient("1"); //TODO fix this
         Gson gson = new Gson();
-        javax.ws.rs.core.Response responseObj = client.getHostInfo(javax.ws.rs.core.Response.class);
-        String response = (String) responseObj.getEntity();
-        Type listType = new TypeToken<ArrayList<Node>>() {
+        ClientResponse responseObj = client.getHostInfo(ClientResponse.class);
+        String response = responseObj.getEntity(String.class);
+        Type listType = new TypeToken<ArrayList<Slot>>() {
         }.getType();
-        ArrayList<Node> output = gson.fromJson(response, listType);
-        return output;
+        NodesResponse output = gson.fromJson(response, NodesResponse.class);
+        return output.getNodes();
     }
 
     @Override
