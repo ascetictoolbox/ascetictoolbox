@@ -128,11 +128,13 @@ public class ScheduleOptimizer extends Thread {
             if (topIndicator > indicator) {
                 receiversPQ.add(ow);
             } else {
-                topIndicator = indicator;
-                for (OptimizationWorker extop : top) {
-                    receiversPQ.add(extop);
+                if (indicator > topIndicator) {
+                    topIndicator = indicator;
+                    for (OptimizationWorker extop : top) {
+                        receiversPQ.add(extop);
+                    }
+                    top.clear();
                 }
-                top.clear();
                 top.add(ow);
             }
         }

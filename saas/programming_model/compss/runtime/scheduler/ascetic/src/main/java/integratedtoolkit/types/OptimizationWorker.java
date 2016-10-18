@@ -34,8 +34,4 @@ public class OptimizationWorker {
         return resource;
     }
 
-
-
-
-
 }

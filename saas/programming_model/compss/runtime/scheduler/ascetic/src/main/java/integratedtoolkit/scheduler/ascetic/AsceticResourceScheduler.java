@@ -848,11 +848,19 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     }
 
     public long getFirstGapExpectedStart() {
-        return gaps.peekFirst().getInitialTime();
+        Gap g = gaps.peekFirst();
+        if (g == null) {
+            return 0;
+        }
+        return g.getInitialTime();
     }
 
     public long getLastGapExpectedStart() {
-        return gaps.peekLast().getInitialTime();
+        Gap g = gaps.peekLast();
+        if (g == null) {
+            return 0;
+        }
+        return g.getInitialTime();
     }
 
     @Override

@@ -85,4 +85,8 @@ public class AsceticScheduler<P extends Profile, T extends WorkerResourceDescrip
     protected void updateWorkloadState(WorkloadState state) {
         super.updateWorkloadState(state);
     }
+
+    protected void workerRemoved(ResourceScheduler<P, T> resource) {
+        AsceticResourceScheduler ars = (AsceticResourceScheduler) resource;
+    }
 }
