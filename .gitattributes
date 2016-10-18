@@ -6380,6 +6380,8 @@ saas/saas-modelling/ascetic-deployment-profile/model.profile.notation -text
 saas/saas-modelling/ascetic-deployment-profile/model.profile.uml -text
 saas/saas-modelling/ascetic-experiment-based-methodology/ASCETIC-Experiment-SaaS-Reqs-Design-Approach.jucm -text
 saas/saas-modelling/eclipse-dependencies.p2f -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor.plugins/eu.ascetic.acceleo.deploymentprofileextractor.ui_1.0.0.201610180814.jar -text
+saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor.plugins/eu.ascetic.acceleo.deploymentprofileextractor_1.0.0.201610180814.jar -text
 saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/.classpath -text
 saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/LICENSE.TXT -text
 saas/saas-modelling/eu.ascetic.acceleo.deploymentprofileextractor/META-INF/MANIFEST.MF -text
