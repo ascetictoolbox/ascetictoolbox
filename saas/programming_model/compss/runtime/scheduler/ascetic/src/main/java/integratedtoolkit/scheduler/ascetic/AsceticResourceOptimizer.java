@@ -333,7 +333,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             r.worker = (AsceticResourceScheduler) w;
 
             AsceticResourceScheduler aw = (AsceticResourceScheduler) w;
-            addToLog("\tName:" + aw.getName() + "\n");
+            addToLog("\tName:" + aw.getName() + (r.hasPendingModifications() ? " (IS TO BE DELETED)" : "") + "\n");
 
             time = Math.max(time, aw.getLastGapExpectedStart());
             addToLog("\t\tTime:" + aw.getLastGapExpectedStart() + " ms -> total " + time + "\n");

@@ -298,6 +298,7 @@ public class LocalOptimizationState {
         Gap opActionGap = new Gap(0, 0, resourceBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
         aDSI.addPredecessor(opActionGap);
         rbaDSI.unlock();
+        updateConsumptions(action);
     }
 
     public void dataBlockedAction(AllocatableAction action) {
@@ -308,6 +309,7 @@ public class LocalOptimizationState {
         Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
         aDSI.addPredecessor(opActionGap);
         dbaDSI.unlock();
+        updateConsumptions(action);
     }
 
     public LinkedList<AllocatableAction> getResourceBlockedActions() {
