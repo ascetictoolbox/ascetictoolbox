@@ -99,14 +99,19 @@ public class RuntimeMonitor implements Runnable {
         while (keepRunning) {
             try {
                 // Print XML state for Monitor
-                getXMLTaskState();
+            	logger.debug("GetXMLTaskState");
+            	getXMLTaskState();
 
                 // Print current task graph
+            	logger.debug("printCurrentTaskGraph");
                 printCurrentGraph();
 
                 // Print load and resources information on log
+                logger.debug("printCurrentLoad");
                 printCurrentLoad();
+                logger.debug("printResourcesState");
                 ResourceManager.printResourcesState();
+                logger.debug("Sleeping for "+sleepTime);
                 Thread.sleep(sleepTime);
             } catch (Exception e) {
                 logger.error(ERROR_GENERATING_DATA, e);
@@ -123,12 +128,16 @@ public class RuntimeMonitor implements Runnable {
 
         try {
             while (running) {
+            	logger.debug("Shutdown Sleep for "+sleepTime);
                 Thread.sleep(sleepTime);
             }
+            
             // Print XML state for Monitor
+            logger.debug("SD: GetXMLTaskState");
             getXMLTaskState();
 
             // Print current task graph
+            logger.debug("SD: printCurrentTaskGraph");
             printCurrentGraph();
         } catch (Exception e) {
             logger.error(ERROR_GENERATING_DATA, e);
