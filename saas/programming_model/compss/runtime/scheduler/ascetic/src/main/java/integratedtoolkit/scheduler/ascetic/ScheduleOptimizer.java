@@ -58,7 +58,7 @@ public class ScheduleOptimizer extends Thread {
             try {
                 Thread.sleep(difference);
             } catch (InterruptedException ie) {
-            	//Do nothing. Wake up in case of shutdown received
+                //Do nothing. Wake up in case of shutdown received
             }
         }
     }
@@ -71,7 +71,7 @@ public class ScheduleOptimizer extends Thread {
     public void globalOptimization(long optimizationTS,
             ResourceScheduler<?, ?>[] workers
     ) {
-    	int workersCount = workers.length;
+        int workersCount = workers.length;
         if (workersCount == 0) {
             return;
         }
@@ -93,9 +93,10 @@ public class ScheduleOptimizer extends Thread {
                 System.out.println(optimizedWorkers[i].getName() + " will end at " + optimizedWorkers[i].getDonationIndicator());
             }
 
-            OptimizationWorker donor = determineDonorAndReceivers(optimizedWorkers, receivers);
+            LinkedList<OptimizationWorker> donors = determineDonorAndReceivers(optimizedWorkers, receivers);
 
-            while (!hasDonated) {
+            while (!hasDonated && !donors.isEmpty()) {
+                OptimizationWorker donor = donors.remove();
                 AllocatableAction candidate = donor.pollDonorAction();
                 if (candidate == null) {
                     break;
@@ -105,7 +106,7 @@ public class ScheduleOptimizer extends Thread {
                     OptimizationWorker receiver = recIt.next();
                     if (move(candidate, donor, receiver)) {
                         hasDonated = true;
-			            break;
+                        break;
                     }
                 }
             }
@@ -113,14 +114,14 @@ public class ScheduleOptimizer extends Thread {
         }
     }
 
-    public static OptimizationWorker determineDonorAndReceivers(
+    public static LinkedList<OptimizationWorker> determineDonorAndReceivers(
             OptimizationWorker[] workers,
             LinkedList<OptimizationWorker> receivers
     ) {
         receivers.clear();
         PriorityQueue<OptimizationWorker> receiversPQ = new PriorityQueue<OptimizationWorker>(1, getReceptionComparator());
         long topIndicator = Long.MIN_VALUE;
-        OptimizationWorker top = null;
+        LinkedList<OptimizationWorker> top = new LinkedList();
 
         for (OptimizationWorker ow : workers) {
             long indicator = ow.getDonationIndicator();
@@ -128,10 +129,11 @@ public class ScheduleOptimizer extends Thread {
                 receiversPQ.add(ow);
             } else {
                 topIndicator = indicator;
-                if (top != null) {
-                    receiversPQ.add(top);
+                for (OptimizationWorker extop : top) {
+                    receiversPQ.add(extop);
                 }
-                top = ow;
+                top.clear();
+                top.add(ow);
             }
         }
         OptimizationWorker ow;
@@ -214,7 +216,7 @@ public class ScheduleOptimizer extends Thread {
         AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
         long currentEnd = dsi.getExpectedEnd();
 
-        if (bestImpl != null && currentEnd > receiver.getResource().getLastGapExpectedStart() + bestTime) {
+        if (bestImpl != null && currentEnd > receiver.getResource().getFirstGapExpectedStart() + bestTime) {
             System.out.println("Moving " + action + " from " + donor.getName() + " to " + receiver.getName());
             unschedule(action);
             schedule(action, bestImpl, receiver);
@@ -238,17 +240,17 @@ public class ScheduleOptimizer extends Thread {
                 try {
                     action.tryToLaunch();
                 } catch (InvalidSchedulingException ise2) {
-                	ise2.printStackTrace();
-                	//Impossible exception. 
+                    ise2.printStackTrace();
+                    //Impossible exception. 
                 }
             } catch (BlockedActionException | UnassignedActionException be) {
                 //Can not happen since there was an original source
-            	be.printStackTrace();
-                
+                be.printStackTrace();
+
             }
         } catch (BlockedActionException | UnassignedActionException be) {
             //Can not happen since there was an original source
-        	be.printStackTrace();
+            be.printStackTrace();
         }
     }
 
