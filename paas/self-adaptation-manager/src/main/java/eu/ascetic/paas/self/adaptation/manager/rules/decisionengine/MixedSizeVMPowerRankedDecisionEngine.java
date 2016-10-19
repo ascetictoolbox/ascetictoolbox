@@ -105,7 +105,11 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
                 vmsToRemove = vmsToRemove + (vmsToRemove.isEmpty() ? "" : ",") + toRemove.getVm().getId();
             }
             //get the next VM to delete
-            toRemove = vmsList.get(vmsList.size() - 1);
+            if (!vmsList.isEmpty()) {
+                toRemove = vmsList.get(vmsList.size() - 1);
+            } else {
+                break;
+            }
         }
         if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
             response.setVmId("");
@@ -192,7 +196,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
                 response.setAdaptationDetails("Adding a VM would breach SLA criteria");
                 response.setPossibleToAdapt(false);
                 return response;
-            }            
+            }
         }
         String typesToAddSize = "";
         int count = 0;
