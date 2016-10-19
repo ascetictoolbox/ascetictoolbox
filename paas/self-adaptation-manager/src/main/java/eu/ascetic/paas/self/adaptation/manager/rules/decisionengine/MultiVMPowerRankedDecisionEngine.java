@@ -138,7 +138,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         response.setAdaptationDetails(vmTypeToAdd);
         List<String> typesToAdd = getVmTypesToConsolidateHost(response, vmTypeToAdd);
         if (typesToAdd.isEmpty()) {
-            response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+            response.setAdaptationDetails("No types to add. No solution was found");
             response.setPossibleToAdapt(false);
             return response;
         }          

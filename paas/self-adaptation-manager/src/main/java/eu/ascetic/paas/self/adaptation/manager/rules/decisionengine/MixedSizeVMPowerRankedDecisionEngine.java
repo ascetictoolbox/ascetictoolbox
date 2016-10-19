@@ -189,7 +189,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             typeSizesToAdd.add(vmToPlace.getFreeCpus() + "");
         }
         if (typesToAdd.isEmpty()) {
-            response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+            response.setAdaptationDetails("No types to add. No solution was found");
             response.setPossibleToAdapt(false);
             return response;
         }    
