@@ -51,6 +51,10 @@ public class CoreManager {
     public static int getCoreCount() {
         return coreCount;
     }
+    
+    public static int getNumberCoreImplementations(int impl){
+    	return implementations[impl].length;
+    }
 
     public static void resizeStructures(int newCoreCount) {
         if (implementations != null) {

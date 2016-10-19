@@ -522,7 +522,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
 
         coresInfo.append(prefix).append("</CoresInfo>\n");
         return coresInfo.toString();
-    }
+    }*/
 
     public final WorkloadState getWorkload() {
         WorkloadState response = createWorkloadState();
