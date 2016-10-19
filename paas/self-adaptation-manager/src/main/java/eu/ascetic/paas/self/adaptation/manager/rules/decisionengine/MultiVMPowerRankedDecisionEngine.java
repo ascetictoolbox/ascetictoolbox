@@ -133,13 +133,13 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         response.setAdaptationDetails(vmTypeToAdd);
         List<String> typesToAdd = getVmTypesToConsolidateHost(response, vmTypeToAdd);
         while (!getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
+            //Remove excess new VMs i.e. breach other SLA Rules
+            typesToAdd.remove(0);
             if (typesToAdd.isEmpty()) {
                 response.setAdaptationDetails("Adding a VM would breach SLA criteria");
                 response.setPossibleToAdapt(false);
                 return response;
-            }  
-            //Remove excess new VMs i.e. breach other SLA Rules
-            typesToAdd.remove(0);
+            }              
         }
       
         if (typesToAdd.size() == 1) {
