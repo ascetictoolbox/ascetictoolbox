@@ -210,7 +210,6 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
     public void tryToLaunch() throws InvalidSchedulingException {
         //gets the lock on the action
         lock.lock();
-        System.out.println(this + " gets Lock on TryToLaunch");
         if ( // has an assigned resource where to run
                 selectedResource != null
                 && // has not been started yet
@@ -222,7 +221,6 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
 
             //Invalid scheduling -> Should run in a specific resource and the assigned resource is not the required
             if (isSchedulingConstrained() && this.getConstrainingPredecessor().getAssignedResource() != selectedResource) {
-                System.out.println(this + "unlocks.Invalid Resource!");
                 // Allow other threads to access the action
                 lock.unlock();
                 // Notify invalid scheduling
@@ -231,7 +229,6 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
             // Correct resource and task ready to run
             execute();
         } else {
-            System.out.println(this + "unlocks. Unexecutable" + (selectedResource != null ? "" : " unassigned resource,") + (state == State.RUNNABLE ? "" : " " + state + ",") + (!hasDataPredecessors() ? "" : " data dependencies,") + (schedulingInfo.isExecutable() ? "" : " schedulerBlock"));
             lock.unlock();
         }
     }
@@ -253,7 +250,6 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
             // execute won't be executed again since tryToLaunch is blocked
             state = State.WAITING;
             selectedResource.waitOnResource(this);
-            System.out.println(this + "unlocks. Paused due to lack of resources");
             // Allow other threads to execute the task (complete and error executor)
             lock.unlock();
         }
@@ -264,7 +260,6 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
         // Blocks other tryToLaunch
         state = State.RUNNING;
         // Allow other threads to execute the task (complete and error executor)
-        System.out.println(this + "unlocks. Runs.");
         lock.unlock();
         reserveResources();
         profile = selectedResource.generateProfileForAllocatable(this);
