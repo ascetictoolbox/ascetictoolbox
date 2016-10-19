@@ -186,16 +186,13 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         }
         while (!getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
             if (typesToAdd.isEmpty()) {
-                break;
+                response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+                response.setPossibleToAdapt(false);
+                return response;
             }
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
             typeSizesToAdd.remove(0);
-        }
-        if (typesToAdd.isEmpty()) {
-            response.setAdaptationDetails("Adding a VM would breach SLA criteria");
-            response.setPossibleToAdapt(false);
-            return response;
         }
         String typesToAddSize = "";
         int count = 0;
