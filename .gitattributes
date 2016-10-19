@@ -3721,6 +3721,7 @@ saas/ascetic-application-packager/src/main/resources/application-packager.proper
 saas/ascetic-application-packager/src/main/resources/atc-single-definitivo-feb2016.xml -text
 saas/ascetic-application-packager/src/main/resources/cfg.properties -text
 saas/ascetic-application-packager/src/main/resources/log4j.properties -text
+saas/ascetic-application-packager/target/ascetic-application-packager-1.0.0-SNAPSHOT.jar -text
 saas/ascetic-eclipse-site/category.xml -text
 saas/ascetic-eclipse-site/pom.xml -text
 saas/code-optimiser-plugin/bundles/org.jvmmonitor.agent/META-INF/MANIFEST.MF -text
