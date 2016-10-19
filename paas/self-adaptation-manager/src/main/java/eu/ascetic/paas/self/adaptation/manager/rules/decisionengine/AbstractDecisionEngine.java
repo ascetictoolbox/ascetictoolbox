@@ -325,9 +325,17 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         int currentCount = getActuator().getVmCountOfGivenType(response.getApplicationId(),
                 response.getDeploymentId(),
                 vmOvfType);
-        int upperBound = details.getUpperBound();
-        int answer = upperBound - currentCount;
-        return (answer < 0 ? 0 : answer); //The answer must be positive
+        try {
+            int upperBound = details.getUpperBound();
+            int answer = upperBound - currentCount;
+            return (answer < 0 ? 0 : answer); //The answer must be positive
+        } catch (NullPointerException ex) {
+            /**
+             * This is thrown in the event the upper bound is missing.
+             * Thus it is always + 1 of the current value.
+             */
+            return currentCount + 1;
+        }
     }
 
     /**
