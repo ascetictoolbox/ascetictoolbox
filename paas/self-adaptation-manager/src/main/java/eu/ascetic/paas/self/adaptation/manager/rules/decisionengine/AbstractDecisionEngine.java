@@ -25,6 +25,7 @@ import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -257,29 +258,46 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
      * removed for example).
      * @return The list of VMs and there power consumption
      */
-    public TreeMap<VM, Double> getVMPowerList(Response response, List<Integer> vmIds) {
-        TreeMap<VM, Double> answer = new TreeMap<>();
+    public ArrayList<PowerVmMapping> getVMPowerList(Response response, List<Integer> vmIds) {
+        ArrayList<PowerVmMapping> answer = new ArrayList<>();
         for (Integer vmId : vmIds) {
             double power = getActuator().getPowerUsageVM(response.getApplicationId(), response.getDeploymentId(), "" + vmId);
             VM vm = getActuator().getVM(response.getApplicationId(), response.getDeploymentId(), vmId + "");
-            answer.put(vm, power);
+            answer.add(new PowerVmMapping(power, vm));
         }
+        Collections.sort(answer);
         return answer;
     }
-
+    
     /**
-     * This ranks vm objects by their power consumption
-     * @param list The list/tree map sorted by VM.
-     * @return The list of vms sorted by power consumption, low to high (i.e. 
-     * natural ordering for the double type).
+     * This maps a power measurement to a VM.
      */
-    public TreeMap<Double, VM> sortVMPowerList(TreeMap<VM, Double> list) {
-        TreeMap<Double, VM> answer = new TreeMap<>();
-        for (Map.Entry<VM, Double> current : list.entrySet()) {
-            answer.put(current.getValue(), current.getKey());
+    public class PowerVmMapping implements Comparable<PowerVmMapping> {
+        
+        private final Double power;
+        private final VM vm;
+
+        public PowerVmMapping(double power, VM vm) {
+            this.power = power;
+            this.vm = vm;
         }
-        return answer;
-    }       
+
+        public Double getPower() {
+            return power;
+        }
+
+        public VM getVm() {
+            return vm;
+        }       
+
+        @Override
+        public int compareTo(PowerVmMapping o) {
+            return this.power.compareTo(o.power);
+        }
+        
+        
+        
+    }
 
     /**
      * This looks at the host with the most power consumption and looks how to
