@@ -83,16 +83,16 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
         double valueRemoved = 0.0;
         String vmsToRemove = ""; //i.e. VMs_TO_REMOVE= ....
-        TreeMap<Double, VM> vmsList = sortVMPowerList(getVMPowerList(response, vmIds));
-        Map.Entry<Double, VM> toRemove = vmsList.lastEntry();
+        ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);
+        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);
         while (valueRemoved < targetDifference) {
             if (toRemove == null) {
                 break; //exit when no more vms to delete
             }
             if (response.getVmId() == null || response.getVmId().isEmpty()) {
-                response.setVmId(toRemove.getValue().getId() + "");
-                valueRemoved = valueRemoved + toRemove.getKey();
-                vmsToRemove = toRemove.getValue().getId() + "";
+                response.setVmId(toRemove.getVm().getId() + "");
+                valueRemoved = valueRemoved + toRemove.getPower();
+                vmsToRemove = toRemove.getVm().getId() + "";
             } else {
                 /**
                  * Multiple VMs to delete, in order to meet criteria, thus
@@ -101,11 +101,11 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
                  */
                 response.setActionType(Response.AdaptationType.SCALE_TO_N_VMS);
 
-                response.setAdaptationDetails("VM_TYPE=" + toRemove.getValue().getOvfId() + ";VMs_TO_REMOVE=" + vmsToRemove);
-                vmsToRemove = vmsToRemove + (vmsToRemove.isEmpty() ? "" : ",") + toRemove.getValue().getId();
+                response.setAdaptationDetails("VM_TYPE=" + toRemove.getVm().getOvfId() + ";VMs_TO_REMOVE=" + vmsToRemove);
+                vmsToRemove = vmsToRemove + (vmsToRemove.isEmpty() ? "" : ",") + toRemove.getVm().getId();
             }
             //get the next VM to delete
-            vmsList.lowerEntry(valueRemoved);
+            toRemove = vmsList.get(vmsList.size() - 1);
         }
         if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
             response.setVmId("");
