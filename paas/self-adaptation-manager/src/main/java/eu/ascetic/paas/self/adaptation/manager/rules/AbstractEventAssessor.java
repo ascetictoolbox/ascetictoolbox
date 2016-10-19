@@ -101,7 +101,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 responseBroadcasterThread.setDaemon(true);
                 responseBroadcasterThread.start();
             } catch (JMSException | NamingException ex) {
-                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (logging) {
                 responseHistoryLogger = new ResponseHistoryLogger(new File("ResponseLog.csv"), true);
@@ -182,7 +182,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 if (actuator != null && answer.isPossibleToAdapt()) {
                     actuator.actuate(answer);
                     Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "Actuator - Performing Work");                    
+                    if (responseBroadcaster != null && responseBroadcasterThread.isAlive()) {
                     responseBroadcaster.broadcastChange(answer);
+                    }
                 }
                 if (logging) {
                     responseHistoryLogger.printToFile(answer);
