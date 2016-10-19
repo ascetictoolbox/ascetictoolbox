@@ -88,7 +88,7 @@ public class CompleteGraphViewModel {
     	String[] createSVG = {
     			"/bin/sh",
     			"-c",
-    			"dot -T svg "+ location +" > " + System.getProperty("catalina.base") + File.separator + "webapps" + File.separator + "compss-monitor" + File.separator + target};
+    			"dot -T svg "+ location +" > " + System.getenv("CATALINA_BASE") + File.separator + "webapps" + File.separator + "monitor" + File.separator + target};
 		Process p1 = Runtime.getRuntime().exec(createSVG);
 		p1.waitFor();
 		
@@ -96,14 +96,14 @@ public class CompleteGraphViewModel {
 		String[] addJSScript = {
 				"/bin/sh",
 				"-c",
-				"sed -i \"s/\\<g id\\=\\\"graph0/script xlink:href\\=\\\"SVGPan.js\\\"\\/\\>\\n\\<g id\\=\\\"viewport/\" " + System.getProperty("catalina.base") + File.separator + "webapps" + File.separator + "compss-monitor" + File.separator + target};
+				"sed -i \"s/\\<g id\\=\\\"graph0/script xlink:href\\=\\\"SVGPan.js\\\"\\/\\>\\n\\<g id\\=\\\"viewport/\" " + System.getenv("CATALINA_BASE") + File.separator + "webapps" + File.separator + "monitor" + File.separator + target};
 		Process p2 = Runtime.getRuntime().exec(addJSScript);
 		p2.waitFor();
 		
 		String[] createViewBox = {
 				"/bin/sh",
 				"-c",
-				"sed -i \"s/<svg .*/<svg xmlns\\=\\\"http:\\/\\/www.w3.org\\/2000\\/svg\\\" xmlns:xlink\\=\\\"http:\\/\\/www.w3.org\\/1999\\/xlink\\\"\\>/g\" " + System.getProperty("catalina.base") + File.separator + "webapps" + File.separator + "compss-monitor" + File.separator + target};
+				"sed -i \"s/<svg .*/<svg xmlns\\=\\\"http:\\/\\/www.w3.org\\/2000\\/svg\\\" xmlns:xlink\\=\\\"http:\\/\\/www.w3.org\\/1999\\/xlink\\\"\\>/g\" " + System.getenv("CATALINA_BASE") + File.separator + "webapps" + File.separator + "monitor" + File.separator + target};
 		Process p3 = Runtime.getRuntime().exec(createViewBox);
 		p3.waitFor();
 

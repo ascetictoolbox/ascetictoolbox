@@ -453,6 +453,8 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             for (int coreId = 0; coreId < coreCount; coreId++) {
                 for (Implementation<T> impl : runningCoreImpls[coreId]) {
                     int implId = impl.getImplementationId();
+                    logger.debug("R[" + ui+ "] Accumulating " + implementationsProfile[coreId][implId] + " from "
+                    		+ ui.getProfile(impl));
                     implementationsProfile[coreId][implId].accumulate(ui.getProfile(impl));
                 }
             }
