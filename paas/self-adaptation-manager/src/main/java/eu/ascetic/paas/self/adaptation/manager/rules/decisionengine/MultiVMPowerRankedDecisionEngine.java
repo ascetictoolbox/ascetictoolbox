@@ -98,7 +98,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
             if (!vmsList.isEmpty()) {
                 toRemove = vmsList.get(vmsList.size() - 1);
             } else {
-                break;
+                break; //exit when no more vms to delete
             }
         }
         if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
@@ -137,6 +137,11 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         }
         response.setAdaptationDetails(vmTypeToAdd);
         List<String> typesToAdd = getVmTypesToConsolidateHost(response, vmTypeToAdd);
+        if (typesToAdd.isEmpty()) {
+            response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+            response.setPossibleToAdapt(false);
+            return response;
+        }          
         while (!getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);

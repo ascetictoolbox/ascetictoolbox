@@ -83,8 +83,8 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
         double valueRemoved = 0.0;
         String vmsToRemove = ""; //i.e. VMs_TO_REMOVE= ....
-        ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);
-        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);
+        ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);         
+        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);          
         while (valueRemoved < targetDifference) {
             if (toRemove == null) {
                 break; //exit when no more vms to delete
@@ -108,7 +108,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             if (!vmsList.isEmpty()) {
                 toRemove = vmsList.get(vmsList.size() - 1);
             } else {
-                break;
+                break; //exit when no more vms to delete
             }
         }
         if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
@@ -188,6 +188,11 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             typesToAdd.add(vmTypePreference);
             typeSizesToAdd.add(vmToPlace.getFreeCpus() + "");
         }
+        if (typesToAdd.isEmpty()) {
+            response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+            response.setPossibleToAdapt(false);
+            return response;
+        }    
         while (!getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
