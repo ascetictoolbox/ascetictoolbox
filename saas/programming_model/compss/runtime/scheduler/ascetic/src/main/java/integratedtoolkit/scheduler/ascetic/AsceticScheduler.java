@@ -3,6 +3,10 @@ package integratedtoolkit.scheduler.ascetic;
 import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.types.AsceticScore;
 import integratedtoolkit.components.impl.TaskScheduler;
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
+import integratedtoolkit.scheduler.exceptions.BlockedActionException;
+import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
+import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.AsceticProfile;
 import integratedtoolkit.types.Implementation;
@@ -14,7 +18,11 @@ import integratedtoolkit.util.ResourceScheduler;
 import integratedtoolkit.types.resources.Worker;
 import integratedtoolkit.types.resources.WorkerResourceDescription;
 import integratedtoolkit.util.CoreManager;
+import integratedtoolkit.util.ErrorManager;
 import integratedtoolkit.util.ResourceOptimizer;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AsceticScheduler<P extends Profile, T extends WorkerResourceDescription> extends TaskScheduler<P, T> {
 
@@ -88,5 +96,32 @@ public class AsceticScheduler<P extends Profile, T extends WorkerResourceDescrip
 
     protected void workerRemoved(ResourceScheduler<P, T> resource) {
         AsceticResourceScheduler ars = (AsceticResourceScheduler) resource;
+        LinkedList<AllocatableAction> blockedActions = ars.getAllBlockedActions();
+        for (AllocatableAction action : blockedActions) {
+            try {
+                ars.unscheduleAction(action);
+            } catch (ActionNotFoundException ex) {
+                //Task was already moved from the worker. Do nothing!
+                continue;
+            }
+            Score actionScore = getActionScore(action);
+            try {
+                scheduleAction(action, actionScore);
+                try {
+                    action.tryToLaunch();
+                } catch (InvalidSchedulingException ise) {
+                    action.schedule(action.getConstrainingPredecessor().getAssignedResource(), actionScore);
+                    try {
+                        action.tryToLaunch();
+                    } catch (InvalidSchedulingException ise2) {
+                        //Impossible exception. 
+                    }
+                }
+            } catch (UnassignedActionException ure) {
+                lostAction(action);
+            } catch (BlockedActionException bae) {
+                blockedAction(action);
+            }
+        }
     }
 }

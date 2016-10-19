@@ -1,5 +1,6 @@
 package integratedtoolkit.util;
 
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.Profile;
@@ -120,12 +121,12 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
     public P generateProfileForAllocatable(AllocatableAction action) {
         return (P) new Profile();
     }
+
     /* ------------------------------------------------
      * ------------------------------------------------
      * --------- RUNNING ACTIONS MANAGEMENT -----------
      * ------------------------------------------------
      * ----------------------------------------------*/
-
     public final void hostAction(AllocatableAction<P, T> action) {
         running.add(action);
     }
@@ -184,11 +185,11 @@ public class ResourceScheduler<P extends Profile, T extends WorkerResourceDescri
         //the tasks when there are not enough resources available.
     }
 
-    public LinkedList<AllocatableAction<P, T>> unscheduleAction(AllocatableAction<P, T> action) {
+    public LinkedList<AllocatableAction<P, T>> unscheduleAction(AllocatableAction<P, T> action) throws ActionNotFoundException {
         return new LinkedList<AllocatableAction<P, T>>();
     }
 
-    public final void cancelAction(AllocatableAction<P, T> action) {
+    public final void cancelAction(AllocatableAction<P, T> action) throws ActionNotFoundException {
         blocked.remove(action);
         unscheduleAction(action);
     }

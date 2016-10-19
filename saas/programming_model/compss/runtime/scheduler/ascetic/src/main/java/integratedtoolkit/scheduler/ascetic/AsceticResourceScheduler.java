@@ -1,6 +1,7 @@
 package integratedtoolkit.scheduler.ascetic;
 
 import integratedtoolkit.ascetic.Ascetic;
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
@@ -43,8 +44,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 
     private OptimizationAction opAction;
     private Set<AllocatableAction> pendingUnschedulings = new HashSet<AllocatableAction>();
-    private LinkedList<AllocatableAction> resourceBlockedActions = new LinkedList<AllocatableAction>();
-    private LinkedList<AllocatableAction> dataBlockedActions = new LinkedList<AllocatableAction>();
+    private AllocatableAction resourceBlockingAction = new OptimizationAction();
+    private AllocatableAction dataBlockingAction = new OptimizationAction();
     private long expectedEndTimeRunning;
 
     public AsceticResourceScheduler(Worker<T> w) {
@@ -152,7 +153,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     }
 
     @Override
-    public LinkedList<AllocatableAction<P, T>> unscheduleAction(AllocatableAction<P, T> action) {
+    public LinkedList<AllocatableAction<P, T>> unscheduleAction(AllocatableAction<P, T> action) throws ActionNotFoundException {
+        super.unscheduleAction(action);
         LinkedList<AllocatableAction<P, T>> freeActions = new LinkedList<AllocatableAction<P, T>>();
 
         AsceticSchedulingInformation<P, T> actionDSI = (AsceticSchedulingInformation<P, T>) action.getSchedulingInfo();
@@ -166,6 +168,18 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         }
         //Block Action
         actionDSI.lock();
+
+        if (!actionDSI.isScheduled() || action.getAssignedResource() != this) {
+            for (Gap pGap : actionDSI.getPredecessors()) {
+                AllocatableAction pred = pGap.getOrigin();
+                AsceticSchedulingInformation predDSI = (AsceticSchedulingInformation<P, T>) pred.getSchedulingInfo();
+                predDSI.unlock();
+            }
+            actionDSI.unscheduled();
+            actionDSI.unlock();
+            throw new ActionNotFoundException();
+        }
+
         //For each predecessor consuming resources ->
         //  Register resources depending on a predecessor
         //  Remove the scheduling dependency on the predecessor
@@ -250,19 +264,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
             }
             for (Gap newGap : resources) {
                 AllocatableAction gapAction = newGap.getOrigin();
-                boolean merged = false;
-                for (Gap registeredGap : gaps) {
-                    if (registeredGap.getOrigin() == gapAction) {
-                        ResourceDescription registeredResources = registeredGap.getResources();
-                        ResourceDescription releasedResources = newGap.getResources();
-                        registeredResources.increaseDynamic(releasedResources);
-                        merged = true;
-                        break;
-                    }
-                }
-                if (!merged) {
-                    addGap(newGap);
-                }
+                addGap(newGap);
                 if (gapAction != null) {
                     ((AsceticSchedulingInformation) gapAction.getSchedulingInfo()).unlock();
                 }
@@ -300,7 +302,25 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
                 expectedStart = Math.max(expectedStart, predEnd);
             }
         }
+
         AsceticSchedulingInformation<P, T> schedInfo = (AsceticSchedulingInformation<P, T>) action.getSchedulingInfo();
+
+        if (expectedStart == Long.MAX_VALUE) {
+            //There is some data dependency with blocked tasks in some resource
+            Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
+            AsceticSchedulingInformation dbaDSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
+            dbaDSI.lock();
+            schedInfo.lock();
+            dbaDSI.addSuccessor(action);
+            schedInfo.addPredecessor(opActionGap);
+            schedInfo.setExpectedStart(Long.MAX_VALUE);
+            schedInfo.setExpectedEnd(Long.MAX_VALUE);
+            schedInfo.scheduled();
+            dbaDSI.unlock();
+            schedInfo.unlock();
+            return;
+        }
+
         Implementation<T> impl = action.getAssignedImplementation();
         AsceticProfile p = (AsceticProfile) getProfile(impl);
         ResourceDescription constraints = impl.getRequirements().copy();
@@ -313,7 +333,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         while (gapIt.hasNext() && !fullyCoveredReqs) {
             Gap gap = gapIt.next();
             if (gap.getInitialTime() <= expectedStart) {
-                useGap(gap, action, constraints, predecessors);
+                useGap(gap, constraints, predecessors);
                 fullyCoveredReqs = constraints.isDynamicUseless();
                 if (gap.getResources().isDynamicUseless()) {
                     gapIt.remove();
@@ -325,12 +345,36 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         while (gapIt.hasNext() && !fullyCoveredReqs) {
             Gap gap = gapIt.next();
             if (gap.getInitialTime() > expectedStart) {
-                useGap(gap, action, constraints, predecessors);
-                fullyCoveredReqs = constraints.isDynamicUseless();
-                if (gap.getResources().isDynamicUseless()) {
-                    gapIt.remove();
+                if (gap.getInitialTime() < Long.MAX_VALUE) {
+                    useGap(gap, constraints, predecessors);
+                    fullyCoveredReqs = constraints.isDynamicUseless();
+                    if (gap.getResources().isDynamicUseless()) {
+                        gapIt.remove();
+                    }
                 }
             }
+        }
+
+        if (!fullyCoveredReqs) {
+            //Action gets blocked due to lack of resources
+            for (Gap pGap : predecessors) {
+                addGap(pGap);
+                AllocatableAction<P, T> predecessor = (AllocatableAction<P, T>) pGap.getOrigin();
+                AsceticSchedulingInformation<P, T> predDSI = ((AsceticSchedulingInformation<P, T>) predecessor.getSchedulingInfo());
+                predDSI.unlock();
+            }
+            Gap opActionGap = new Gap(0, 0, resourceBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
+            AsceticSchedulingInformation rbaDSI = (AsceticSchedulingInformation) resourceBlockingAction.getSchedulingInfo();
+            rbaDSI.lock();
+            schedInfo.lock();
+            rbaDSI.addSuccessor(action);
+            schedInfo.addPredecessor(opActionGap);
+            schedInfo.scheduled();
+            schedInfo.setExpectedStart(Long.MAX_VALUE);
+            schedInfo.setExpectedEnd(Long.MAX_VALUE);
+            rbaDSI.unlock();
+            schedInfo.unlock();
+            return;
         }
 
         // Lock acces to the current task
@@ -370,7 +414,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         }
     }
 
-    private void useGap(Gap gap, AllocatableAction action, ResourceDescription resources, LinkedList<Gap> predecessors) {
+    private void useGap(Gap gap, ResourceDescription resources, LinkedList<Gap> predecessors) {
         AllocatableAction<P, T> predecessor = (AllocatableAction<P, T>) gap.getOrigin();
         ResourceDescription gapResource = gap.getResources();
         ResourceDescription usedResources = ResourceDescription.reduceCommonDynamics(gapResource, resources);
@@ -466,15 +510,18 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     public LinkedList<AllocatableAction> scanActions(LocalOptimizationState state) {
         LinkedList<AllocatableAction> runningActions = new LinkedList<AllocatableAction>();
         PriorityQueue<AllocatableAction> actions = new PriorityQueue<AllocatableAction>(1, getScanComparator());
-
-        for (AllocatableAction gapAction : dataBlockedActions) {
+        AsceticSchedulingInformation blockSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
+        LinkedList<AllocatableAction> blockActions = blockSI.getSuccessors();
+        for (AllocatableAction gapAction : blockActions) {
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
             dsi.lock();
             dsi.setOnOptimization(true);
             actions.add(gapAction);
         }
 
-        for (AllocatableAction gapAction : resourceBlockedActions) {
+        blockSI = (AsceticSchedulingInformation) resourceBlockingAction.getSchedulingInfo();
+        blockActions = blockSI.getSuccessors();
+        for (AllocatableAction gapAction : blockActions) {
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) gapAction.getSchedulingInfo();
             dsi.lock();
             dsi.setOnOptimization(true);
@@ -739,8 +786,8 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
         this.runningImplementationsCount = state.getRunningImplementations();
         this.runningActionsEnergy = state.getRunningEnergy();
         this.runningActionsCost = state.getRunningCost();
-        this.resourceBlockedActions = state.getResourceBlockedActions();
-        this.dataBlockedActions = state.getDataBlockedActions();
+        this.resourceBlockingAction = state.getResourceBlockingAction();
+        this.dataBlockingAction = state.getDataBlockingAction();
 
         return state.getGaps();
     }
@@ -836,15 +883,29 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
     }
 
     private void addGap(Gap g) {
-        Iterator<Gap> gapIt = gaps.iterator();
-        int index = 0;
-        Gap gap;
-        while (gapIt.hasNext()
-                && (gap = gapIt.next()) != null
-                && gap.getInitialTime() <= g.getInitialTime()) {
-            index++;
+
+        AllocatableAction gapAction = g.getOrigin();
+        ResourceDescription releasedResources = g.getResources();
+        boolean merged = false;
+        for (Gap registeredGap : gaps) {
+            if (registeredGap.getOrigin() == gapAction) {
+                ResourceDescription registeredResources = registeredGap.getResources();
+                registeredResources.increaseDynamic(releasedResources);
+                merged = true;
+                break;
+            }
         }
-        gaps.add(index, g);
+        if (!merged) {
+            Iterator<Gap> gapIt = gaps.iterator();
+            int index = 0;
+            Gap gap;
+            while (gapIt.hasNext()
+                    && (gap = gapIt.next()) != null
+                    && gap.getInitialTime() <= g.getInitialTime()) {
+                index++;
+            }
+            gaps.add(index, g);
+        }
     }
 
     public long getFirstGapExpectedStart() {
@@ -922,6 +983,23 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 
     public int[][] getRunningImplementationCounts() {
         return this.runningImplementationsCount;
+    }
+
+    public LinkedList<AllocatableAction> getAllBlockedActions() {
+        LinkedList<AllocatableAction> blockedActions = new LinkedList();
+        blockedActions.addAll(super.getBlockedActions());
+
+        AsceticSchedulingInformation baDSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
+        baDSI.lock();
+        blockedActions.addAll(baDSI.getSuccessors());
+        baDSI.unlock();
+
+        baDSI = (AsceticSchedulingInformation) resourceBlockingAction.getSchedulingInfo();
+        baDSI.lock();
+        blockedActions.addAll(baDSI.getSuccessors());
+        baDSI.unlock();
+
+        return blockedActions;
     }
 
 }

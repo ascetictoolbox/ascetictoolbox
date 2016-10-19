@@ -1,6 +1,7 @@
 package integratedtoolkit.scheduler.types;
 
 import integratedtoolkit.log.Loggers;
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.FailedActionException;
 import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
@@ -371,7 +372,18 @@ public abstract class AllocatableAction<P extends Profile, T extends WorkerResou
             pred.dataSuccessors.remove(this);
         }
 
-        selectedResource.cancelAction(this);
+        boolean cancelled = false;
+        while (!cancelled) {
+            try {
+                selectedResource.cancelAction(this);
+            } catch (ActionNotFoundException anfe) {
+                //Action has been moved to another resource
+                //Wait to have a new resource to cancel its execution
+                while (selectedResource == null) {
+
+                }
+            }
+        }
 
         //Remove data links
         //Triggering failure on Data Predecessors

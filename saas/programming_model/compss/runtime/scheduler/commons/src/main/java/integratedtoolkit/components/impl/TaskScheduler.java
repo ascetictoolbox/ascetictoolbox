@@ -1,6 +1,7 @@
 package integratedtoolkit.components.impl;
 
 import integratedtoolkit.log.Loggers;
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.FailedActionException;
 import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 
@@ -88,13 +90,21 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                 }
             }
         } catch (UnassignedActionException ure) {
-            StringBuilder info = new StringBuilder("Scheduler has lost track of action ");
-            info.append(action.toString());
-            ErrorManager.fatal(info.toString());
+            lostAction(action);
         } catch (BlockedActionException bae) {
-            logger.info("Blocked Action: " + action);
-            blockedActions.addAction(action);
+            blockedAction(action);
         }
+    }
+
+    protected void blockedAction(AllocatableAction action) {
+        logger.info("Blocked Action: " + action);
+        blockedActions.addAction(action);
+    }
+
+    protected void lostAction(AllocatableAction action) {
+        StringBuilder info = new StringBuilder("Scheduler has lost track of action ");
+        info.append(action.toString());
+        ErrorManager.fatal(info.toString());
     }
 
     /**
@@ -122,11 +132,19 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             try {
                 dependencyFreeAction(dataFreeAction);
             } catch (BlockedActionException bae) {
-                logger.info("Blocked Action: " + action);
-                blockedActions.addAction(action);
+                blockedAction(action);
             }
         }
-        LinkedList<AllocatableAction<P, T>> resourceFree = resource.unscheduleAction(action);
+
+        LinkedList<AllocatableAction<P, T>> resourceFree;
+        try {
+            resourceFree = resource.unscheduleAction(action);
+        } catch (ActionNotFoundException ex) {
+            //Once the action starts running should cannot be moved from the resource
+            resourceFree = new LinkedList();
+
+        }
+
         workerLoadUpdate((ResourceScheduler<P, T>) action.getAssignedResource());
         HashSet<AllocatableAction<P, T>> freeTasks = new HashSet<AllocatableAction<P, T>>();
         freeTasks.addAll(dataFreeActions);
@@ -150,8 +168,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                 info.append(action.toString());
                 ErrorManager.fatal(info.toString());
             } catch (BlockedActionException bae) {
-                logger.info("Blocked Action: " + action);
-                blockedActions.addAction(action);
+                blockedAction(action);
             }
         }
     }
@@ -168,7 +185,13 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         LinkedList<AllocatableAction<P, T>> resourceFree;
         try {
             action.error();
-            resourceFree = resource.unscheduleAction(action);
+            try {
+                resourceFree = resource.unscheduleAction(action);
+            } catch (Exception e) {
+                //Once the action starts running should cannot be moved from the resource
+                resourceFree = new LinkedList();
+            }
+
             Score actionScore = getActionScore(action);
             try {
                 scheduleAction(action, actionScore);
@@ -189,8 +212,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                 ErrorManager.fatal(info.toString());
 
             } catch (BlockedActionException ex) {
-                logger.info("Blocked Action: " + action);
-                blockedActions.addAction(action);
+                blockedAction(action);
                 if (action.getImplementations().length > 0) {
                     int coreId = action.getImplementations()[0].getCoreId();
                     readyCounts[coreId]--;
@@ -203,7 +225,11 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             }
             resourceFree = new LinkedList<AllocatableAction<P, T>>();
             for (AllocatableAction<P, T> failed : action.failed()) {
-                resourceFree.addAll(resource.unscheduleAction(failed));
+                try {
+                    resourceFree.addAll(resource.unscheduleAction(failed));
+                } catch (ActionNotFoundException anfe) {
+                    //Once the action starts running should cannot be moved from the resource
+                }
             }
             workerLoadUpdate(action.getAssignedResource());
         }
@@ -225,8 +251,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                 info.append(action.toString());
                 ErrorManager.fatal(info.toString());
             } catch (BlockedActionException bae) {
-                logger.info("Blocked Action: " + action);
-                blockedActions.addAction(action);
+                blockedAction(action);
             }
         }
     }
@@ -294,8 +319,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         }
     }
 
-    
-	private final void increasedWorkerResources(ResourceScheduler<P, T> worker, ResourceUpdate<?> modification) {
+    private final void increasedWorkerResources(ResourceScheduler<P, T> worker, ResourceUpdate<?> modification) {
         //Inspect blocked actions to be freed
         LinkedList<AllocatableAction<P, T>> stillBlocked = new LinkedList<AllocatableAction<P, T>>();
         for (AllocatableAction<P, T> action : blockedActions.removeAllCompatibleActions(worker.getResource())) {
@@ -341,7 +365,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         worker.pendingModification(modification);
         ReduceWorkerAction action = new ReduceWorkerAction(generateSchedulingInformation(), worker, this, modification);
         try {
-        	action.schedule(worker, (Score) null);
+            action.schedule(worker, (Score) null);
             action.tryToLaunch();
         } catch (Exception e) {
             //Can not be blocked nor unassigned
@@ -349,7 +373,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     }
 
     private final void reducedWorkerResources(ResourceScheduler<P, T> worker, ResourceUpdate<?> modification) {
-        
+
         if (worker.getExecutableCores().isEmpty()) {
             synchronized (workers) {
                 workers.remove(worker.getResource());
@@ -389,7 +413,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     public LinkedList<AllocatableAction<P, T>> getHostedActions(Worker<T> worker) {
         ResourceScheduler<P, T> ui = workers.get(worker);
         LinkedList<AllocatableAction<P, T>> hostedActions;
-		if (ui != null) {
+        if (ui != null) {
             hostedActions = ui.getHostedActions();
         } else {
             hostedActions = new LinkedList<AllocatableAction<P, T>>();
@@ -474,12 +498,12 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             LinkedList<Implementation<T>>[] impls = ui.getExecutableImpls();
             for (int coreId = 0; coreId < coreCount; coreId++) {
                 for (Implementation<T> impl : impls[coreId]) {
-                	if (debug){
-                    	logger.debug("Profile before accumulate: " + ui.getProfile(impl));
+                    if (debug) {
+                        logger.debug("Profile before accumulate: " + ui.getProfile(impl));
                     }
-                	coreProfile[coreId].accumulate(ui.getProfile(impl));
-                    if (debug){
-                    	logger.debug("Profile after accumulate: " + ui.getProfile(impl));
+                    coreProfile[coreId].accumulate(ui.getProfile(impl));
+                    if (debug) {
+                        logger.debug("Profile after accumulate: " + ui.getProfile(impl));
                     }
                 }
             }

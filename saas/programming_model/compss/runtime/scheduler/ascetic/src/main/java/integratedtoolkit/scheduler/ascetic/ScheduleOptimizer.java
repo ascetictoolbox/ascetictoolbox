@@ -1,5 +1,6 @@
 package integratedtoolkit.scheduler.ascetic;
 
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
@@ -219,9 +220,13 @@ public class ScheduleOptimizer extends Thread {
         long currentEnd = dsi.getExpectedEnd();
 
         if (bestImpl != null && currentEnd > receiver.getResource().getFirstGapExpectedStart() + bestTime) {
-            System.out.println("Moving " + action + " from " + donor.getName() + " to " + receiver.getName());
-            unschedule(action);
-            schedule(action, bestImpl, receiver);
+            try {
+                System.out.println("Moving " + action + " from " + donor.getName() + " to " + receiver.getName());
+                unschedule(action);
+                schedule(action, bestImpl, receiver);
+            } catch (ActionNotFoundException anfe) {
+                //Action was already moved from the resource. Recompute Optimizations!!!
+            }
             return true;
         }
         return false;
@@ -256,7 +261,7 @@ public class ScheduleOptimizer extends Thread {
         }
     }
 
-    public void unschedule(AllocatableAction action) {
+    public void unschedule(AllocatableAction action) throws ActionNotFoundException {
         AsceticResourceScheduler resource = (AsceticResourceScheduler) action.getAssignedResource();
         resource.unscheduleAction(action);
     }

@@ -1,6 +1,7 @@
 package integratedtoolkit.types.allocatiableaction;
 
 
+import integratedtoolkit.scheduler.exceptions.ActionNotFoundException;
 import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.FailedActionException;
 import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
@@ -643,7 +644,7 @@ public class AllocatableActionTest<P extends Profile, T extends WorkerResourceDe
      --------------------- SCHEDULER ACTIONS ------------------
      ----------------------------------------------------------
      --------------------------------------------------------*/
-    public void completed(AllocatableAction<P,T> action) throws BlockedActionException, UnassignedActionException, InvalidSchedulingException {
+    public void completed(AllocatableAction<P,T> action) throws BlockedActionException, UnassignedActionException, InvalidSchedulingException, ActionNotFoundException {
         ResourceScheduler<P,T> resource = action.getAssignedResource();
         LinkedList<AllocatableAction<P,T>> dataFree = action.completed();
         LinkedList<AllocatableAction<P,T>> resourceFree = resource.unscheduleAction(action);
@@ -655,7 +656,7 @@ public class AllocatableActionTest<P extends Profile, T extends WorkerResourceDe
         }
     }
 
-    public void error(AllocatableAction<P,T> action) throws BlockedActionException, UnassignedActionException, InvalidSchedulingException {
+    public void error(AllocatableAction<P,T> action) throws BlockedActionException, UnassignedActionException, InvalidSchedulingException, ActionNotFoundException {
         ResourceScheduler<P,T> resource = action.getAssignedResource();
         LinkedList<AllocatableAction<P,T>> resourceFree;
         try {

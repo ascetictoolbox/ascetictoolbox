@@ -312,14 +312,12 @@ public class LocalOptimizationState {
         updateConsumptions(action);
     }
 
-    public LinkedList<AllocatableAction> getResourceBlockedActions() {
-        AsceticSchedulingInformation rbaDSI = (AsceticSchedulingInformation) resourceBlockingAction.getSchedulingInfo();
-        return rbaDSI.getSuccessors();
+    public AllocatableAction getResourceBlockingAction() {
+        return resourceBlockingAction;
     }
 
-    public LinkedList<AllocatableAction> getDataBlockedActions() {
-        AsceticSchedulingInformation dbaDSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
-        return dbaDSI.getSuccessors();
+    public AllocatableAction getDataBlockingAction() {
+        return dataBlockingAction;
     }
 
     public void classifyAction(
