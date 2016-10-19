@@ -2,7 +2,7 @@ package integratedtoolkit.types;
 
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.connectors.Connector;
-import integratedtoolkit.connectors.Cost;
+import integratedtoolkit.connectors.Metrics;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.util.CloudImageManager;
@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import integratedtoolkit.log.Loggers;
+
 import org.apache.log4j.Logger;
 
 public class CloudProvider {
@@ -28,8 +29,8 @@ public class CloudProvider {
     private CloudTypeManager typeManager;
 
     private Connector connector;
-    private Cost cost;
-
+    private Metrics metrics;
+    
     //Loggers
     private static final Logger logger = Logger.getLogger(Loggers.CM_COMP);
     private static final String WARN_NO_COMPATIBLE_TYPE = "WARN: Cannot find any compatible instanceType";
@@ -50,7 +51,7 @@ public class CloudProvider {
         Constructor<?> ctor = conClass.getDeclaredConstructors()[0];
         Object conector = ctor.newInstance(name, connectorProperties);
         connector = (Connector) conector;
-        cost = (Cost) conector;
+        metrics = (Metrics) conector;
     }
 
     /*
@@ -80,11 +81,27 @@ public class CloudProvider {
     }
 
     public float getCurrentCostPerHour() {
-        return cost.currentCostPerHour();
+        return metrics.currentCostPerHour();
     }
 
+    public float getEstimatedTotalCost() {
+        return metrics.getExpectedTotalCost();
+    }
+    
+    public float getEstimatedTotalEnergy() {
+        return metrics.getExpectedTotalEnergy();
+    }
+    
     public float getTotalCost() {
-        return cost.getTotalCost();
+        return metrics.getTotalCost();
+    }
+    
+    public float getTotalTime() {
+        return metrics.getTotalTime();
+    }
+    
+    public float getTotalEnergy() {
+        return metrics.getTotalEnergy();
     }
 
     public Set<String> getAllImageNames() {
@@ -187,7 +204,7 @@ public class CloudProvider {
             }
             result.setProviderName(images.get(0).getProviderName());
             result.setImage(images.get(0));
-            result.setValue(cost.getMachineCostPerHour(result));
+            result.setValue(metrics.getMachineCostPerHour(result));
         } else {
             logger.warn(WARN_NO_VALID_INSTANCE);
         }
@@ -201,7 +218,7 @@ public class CloudProvider {
             CloudImageDescription image = imgManager.getImage(imageName);
             result.setProviderName(name);
             result.setImage(image);
-            result.setValue(cost.getMachineCostPerHour(result));
+            result.setValue(metrics.getMachineCostPerHour(result));
         } else {
             logger.warn(WARN_NO_VALID_INSTANCE);
         }

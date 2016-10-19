@@ -447,6 +447,23 @@ public class ResourceManager {
     public static float getCurrentCostPerHour() {
         return CloudManager.currentCostPerHour();
     }
+    /**
+     * The CloudManager computes the accumulated cost of the execution
+     *
+     * @return cost of the whole execution
+     */
+    public static float getEstimatedTotalCost() {
+        return CloudManager.getEstimatedTotalCost();
+    }
+    
+    /**
+     * The CloudManager computes the accumulated cost of the execution
+     *
+     * @return cost of the whole execution
+     */
+    public static float getEstimatedTotalEnergy() {
+        return CloudManager.getEstimatedTotalEnergy();
+    }
 
     /**
      * The CloudManager computes the accumulated cost of the execution
@@ -455,6 +472,24 @@ public class ResourceManager {
      */
     public static float getTotalCost() {
         return CloudManager.getTotalCost();
+    }
+    
+    /**
+     * The CloudManager computes the accumulated cost of the execution
+     *
+     * @return cost of the whole execution
+     */
+    public static float getTotalEnergy() {
+        return CloudManager.getTotalEnergy();
+    }
+    
+    /**
+     * The CloudManager computes the accumulated cost of the execution
+     *
+     * @return cost of the whole execution
+     */
+    public static float getElapsedTime() {
+        return CloudManager.getTotalTime();
     }
 
     /* ********************************************************************

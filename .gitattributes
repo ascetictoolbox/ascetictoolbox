@@ -4423,7 +4423,6 @@ saas/programming_model/compss/runtime/config/xml/projects/examples/services/proj
 saas/programming_model/compss/runtime/config/xml/projects/pom.xml -text
 saas/programming_model/compss/runtime/config/xml/projects/project_schema.svg -text
 saas/programming_model/compss/runtime/config/xml/projects/project_schema.xsd -text
-saas/programming_model/compss/runtime/config/xml/projects/src/main/java/META-INF/sun-jaxb.episode -text
 saas/programming_model/compss/runtime/config/xml/projects/src/main/java/integratedtoolkit/types/project/ProjectFile.java -text
 saas/programming_model/compss/runtime/config/xml/projects/src/main/java/integratedtoolkit/types/project/Validator.java -text
 saas/programming_model/compss/runtime/config/xml/projects/src/main/java/integratedtoolkit/types/project/exceptions/InvalidElementException.java -text
@@ -4438,7 +4437,6 @@ saas/programming_model/compss/runtime/config/xml/resources/examples/services/res
 saas/programming_model/compss/runtime/config/xml/resources/pom.xml -text
 saas/programming_model/compss/runtime/config/xml/resources/resources_schema.svg -text
 saas/programming_model/compss/runtime/config/xml/resources/resources_schema.xsd -text
-saas/programming_model/compss/runtime/config/xml/resources/src/main/java/META-INF/sun-jaxb.episode -text
 saas/programming_model/compss/runtime/config/xml/resources/src/main/java/integratedtoolkit/types/resources/ResourcesFile.java -text
 saas/programming_model/compss/runtime/config/xml/resources/src/main/java/integratedtoolkit/types/resources/Validator.java -text
 saas/programming_model/compss/runtime/config/xml/resources/src/main/java/integratedtoolkit/types/resources/exceptions/InvalidElementException.java -text
@@ -4538,6 +4536,7 @@ saas/programming_model/compss/runtime/resources/commons/src/main/java/integrated
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/Connector.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/ConnectorException.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/Cost.java -text
+saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/Metrics.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/VM.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/test/Test.java -text
 saas/programming_model/compss/runtime/resources/commons/src/main/java/integratedtoolkit/connectors/utils/CreationThread.java -text

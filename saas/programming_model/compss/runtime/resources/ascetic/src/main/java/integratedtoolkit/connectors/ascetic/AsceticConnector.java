@@ -4,12 +4,14 @@ import integratedtoolkit.ascetic.Ascetic;
 import integratedtoolkit.connectors.Connector;
 import integratedtoolkit.connectors.ConnectorException;
 import integratedtoolkit.connectors.Cost;
+import integratedtoolkit.connectors.Metrics;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.resources.CloudMethodWorker;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
+
 import java.util.HashMap;
 
-public class AsceticConnector implements Cost, Connector {
+public class AsceticConnector implements Metrics, Cost, Connector {
 
     public AsceticConnector(String providerName, HashMap<String, String> props) {
 
@@ -23,6 +25,25 @@ public class AsceticConnector implements Cost, Connector {
 
     public void terminate(CloudMethodWorker worker, CloudMethodResourceDescription reduction) {
         new ResourceTerminator(worker, reduction).start();
+    }
+    
+    @Override
+    public Float getExpectedTotalEnergy() {
+        return (float) Ascetic.getExpectedAccumulatedEnergy();
+    }
+
+    @Override
+    public Float getExpectedTotalCost() {
+        return (float) Ascetic.getExpectedAccumulatedCost();
+    }
+    
+    @Override
+    public Float getTotalEnergy() {
+        return (float) Ascetic.getAccumulatedEnergy();
+    }
+
+    public long getTotalTime(){
+    	return (long) Ascetic.getAccumulatedTime();
     }
 
     @Override

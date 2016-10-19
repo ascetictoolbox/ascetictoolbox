@@ -149,12 +149,6 @@
       <artifactId>master</artifactId>
       <version>0.0.1-SNAPSHOT</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>comons</artifactId>
-          <groupId>eu.ascetic.saas.programming-model.runtime.adaptors.nio</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 </project>

@@ -125,10 +125,10 @@ public class MonitorXmlParser {
         String monitorLocation = Properties.BASE_PATH + Constants.MONITOR_XML_FILE;
         logger.debug("Parsing XML file for statistics...");
         //Reset attribute
-        statisticsParameters = new String[1];
+        statisticsParameters = new String[3];
 
         //Show monitor location
-        logger.debug("Monitor Location : " + monitorLocation);
+        logger.debug("Monitor Location: " + monitorLocation);
 
         //Compute attribute
         try {
@@ -148,12 +148,18 @@ public class MonitorXmlParser {
                 //NO COMPSs item --> empty
                 return;
             }
-
             nl = COMPSs.getChildNodes();
             for (int i = 0; i < nl.getLength(); i++) {
                 Node n = nl.item(i);
+                logger.debug("Node <" + n.getNodeName() + ">: " + n.getTextContent() );
                 if (n.getNodeName().equals("AccumulatedCost")) {
                     statisticsParameters[0] = n.getTextContent();
+                }
+                if (n.getNodeName().equals("AccumulatedEnergy")) {
+                    statisticsParameters[1] = n.getTextContent();
+                }
+                else if (n.getNodeName().equals("ElapsedTime")) {
+                    statisticsParameters[2] = n.getTextContent();
                 }
             }
         } catch (Exception e) {

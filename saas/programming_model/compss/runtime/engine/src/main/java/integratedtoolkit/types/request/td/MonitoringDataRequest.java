@@ -82,7 +82,9 @@ public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDe
 
         monitorData.append(prefix).append("<ResourceInfo>").append("\n");
         monitorData.append(ResourceManager.getPendingRequestsMonitorData(prefix + "\t"));
+        logger.debug("Printing workers info from ts.getWorkers() [" + ts.getWorkers().length + "]");
         for (ResourceScheduler rs : ts.getWorkers()) {
+        	logger.debug("Printing worker " + rs.getResource().getName());
             Worker<T> worker = (Worker<T>) rs.getResource();
             monitorData.append(prefix + "\t").append("<Resource id=\"" + worker.getName() + "\">").append("\n");
             //CPU, Core, Memory, Disk, Provider, Image --> Inside resource
@@ -100,8 +102,11 @@ public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDe
             monitorData.append(prefix + "\t").append("</Resource>").append("\n");
         }
         monitorData.append(prefix).append("</ResourceInfo>").append("\n");
+        
+        monitorData.append(prefix).append("<AccumulatedCost>" + ResourceManager.getEstimatedTotalCost() + "</AccumulatedCost>").append("\n");
+        monitorData.append(prefix).append("<AccumulatedEnergy>" + ResourceManager.getEstimatedTotalEnergy() + "</AccumulatedEnergy>").append("\n");
+        monitorData.append(prefix).append("<ElapsedTime>" + ResourceManager.getElapsedTime() + "</ElapsedTime>").append("\n");
 
-        monitorData.append(prefix).append("<AccumulatedCost>" + ResourceManager.getTotalCost() + "</AccumulatedCost>").append("\n");
         response = monitorData.toString();
         sem.release();
     }

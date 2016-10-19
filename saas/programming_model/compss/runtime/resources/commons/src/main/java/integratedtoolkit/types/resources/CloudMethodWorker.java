@@ -59,9 +59,14 @@ public class CloudMethodWorker extends MethodWorker {
         }
         sb.append(prefix).append("<Provider>").append(providerName).append("</Provider>").append("\n");
         CloudImageDescription image = ((CloudMethodResourceDescription) description).getImage();
-        String imageName = image.getImageName();
-        if (imageName == null) {
-            imageName = new String("");
+        String imageName = null;
+
+        imageName = ((CloudMethodResourceDescription) description).getName();
+        if (image != null){
+        	imageName = image.getImageName();
+        }
+        if (imageName == null){
+        	imageName = new String("");
         }
         sb.append(prefix).append("<Image>").append(imageName).append("</Image>").append("\n");
 

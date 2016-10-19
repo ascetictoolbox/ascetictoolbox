@@ -151,6 +151,7 @@ public class Ascetic {
         for (VM vm : resources.values()) {
             currentExpectedCost += vm.getAccumulatedCost();
         }
+        logger.debug("E-Accumulated Cost: " + currentExpectedCost);
         return currentExpectedCost;
     }
 
@@ -177,6 +178,7 @@ public class Ascetic {
         for (VM vm : resources.values()) {
             currentExpectedEnergy += vm.getAccumulatedEnergy();
         }
+        logger.debug("E-Accumulated Energy: " + currentExpectedEnergy);
         return currentExpectedEnergy;
     }
 

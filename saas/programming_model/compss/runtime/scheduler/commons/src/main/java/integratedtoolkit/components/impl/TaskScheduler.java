@@ -8,6 +8,7 @@ import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.Implementation;
+import integratedtoolkit.types.MethodImplementation;
 import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.SchedulingInformation;
@@ -431,8 +432,61 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         }
         return blockedActions;
     }
-
     public String getCoresMonitoringData(String prefix) {
+        // Create size structure for profiles
+        int coreCount = CoreManager.getCoreCount();
+        Profile[][] implementationsProfile = new Profile[coreCount][];
+        for (int i = 0; i < coreCount; ++i) {
+            int implsCount = CoreManager.getNumberCoreImplementations(i);
+            implementationsProfile[i] = new Profile[implsCount];
+            for (int j = 0; j < implsCount; ++j) {
+                implementationsProfile[i][j] = new Profile();
+            }
+        }
+
+        // Retrieve information from workers
+        for (ResourceScheduler<P, T> ui : workers.values()) {
+            if (ui == null) {
+                continue;
+            }
+            LinkedList<Implementation<T>>[] runningCoreImpls = ui.getExecutableImpls();
+            for (int coreId = 0; coreId < coreCount; coreId++) {
+                for (Implementation<T> impl : runningCoreImpls[coreId]) {
+                    int implId = impl.getImplementationId();
+                    implementationsProfile[coreId][implId].accumulate(ui.getProfile(impl));
+                }
+            }
+        }
+
+        // Construct information string
+        StringBuilder coresInfo = new StringBuilder();
+        coresInfo.append(prefix).append("<CoresInfo>").append("\n");
+        for (int coreId = 0; coreId < implementationsProfile.length; ++coreId) {
+            for (int implId = 0; implId < implementationsProfile[coreId].length; ++implId) {
+            	String signature = "";
+            	Implementation i = CoreManager.getCoreImplementations(coreId)[implId];
+            	for (Entry<String, Implementation> e : CoreManager.SIGNATURE_TO_IMPL.entrySet()){
+            		if (e.getValue().equals(i)){
+            			signature = e.getKey();
+            		}
+            	}
+            	coresInfo.append(prefix).append("\t").append("<Core id=\"").append(coreId).append("\" signature=\"" + signature + "\">").append("\n");
+
+                coresInfo.append(prefix).append("\t\t").append("<MeanExecutionTime>").append(implementationsProfile[coreId][implId].getAverageExecutionTime()).append("</MeanExecutionTime>\n");
+                coresInfo.append(prefix).append("\t\t").append("<MinExecutionTime>").append(implementationsProfile[coreId][implId].getMinExecutionTime()).append("</MinExecutionTime>\n");
+                coresInfo.append(prefix).append("\t\t").append("<MaxExecutionTime>").append(implementationsProfile[coreId][implId].getMaxExecutionTime()).append("</MaxExecutionTime>\n");
+                coresInfo.append(prefix).append("\t\t").append("<ExecutedCount>").append(implementationsProfile[coreId][implId].getExecutionCount()).append("</ExecutedCount>\n");
+                coresInfo.append(prefix).append("\t").append("</Core>").append("\n");
+
+            }
+        }
+      
+        coresInfo.append(prefix).append("</CoresInfo>").append("\n");
+
+        return coresInfo.toString();
+    }
+
+    /*public String getCoresMonitoringData(String prefix) {
         StringBuilder coresInfo = new StringBuilder();
         coresInfo.append(prefix).append("<CoresInfo>\n");
 
@@ -449,7 +503,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             LinkedList<Implementation<T>>[] impls = ui.getExecutableImpls();
             for (int coreId = 0; coreId < coreCount; coreId++) {
                 for (Implementation<T> impl : impls[coreId]) {
-                    coreProfile[coreId].accumulate(ui.getProfile(impl));
+                    coreProfile[coreId][impl.getImplementationId()].accumulate(ui.getProfile(impl));
                 }
             }
         }
@@ -459,9 +513,9 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             String signature = entry.getKey();
             coresInfo.append(prefix).append("\t").append("<Core id=\"").append(coreId).append("\" signature=\"" + signature + "\">").append("\n");
 
-            coresInfo.append(prefix).append("\t\t").append("<MeanExecutionTime>").append(coreProfile[coreId].getAverageExecutionTime()).append("</MeanExecutionTime>\n");
-            coresInfo.append(prefix).append("\t\t").append("<MinExecutionTime>").append(coreProfile[coreId].getMinExecutionTime()).append("</MinExecutionTime>\n");
-            coresInfo.append(prefix).append("\t\t").append("<MaxExecutionTime>").append(coreProfile[coreId].getMaxExecutionTime()).append("</MaxExecutionTime>\n");
+            coresInfo.append(prefix).append("\t\t").append("<MeanExecutionTime>").append(coreProfile[coreId][implId]).append("</MeanExecutionTime>\n");
+            coresInfo.append(prefix).append("\t\t").append("<MinExecutionTime>").append(coreProfile[coreId][implId]).append("</MinExecutionTime>\n");
+            coresInfo.append(prefix).append("\t\t").append("<MaxExecutionTime>").append(coreProfile[coreId][implId]).append("</MaxExecutionTime>\n");
             coresInfo.append(prefix).append("\t\t").append("<ExecutedCount>").append(coreProfile[coreId].getExecutionCount()).append("</ExecutedCount>\n");
             coresInfo.append(prefix).append("\t").append("</Core>").append("\n");
         }

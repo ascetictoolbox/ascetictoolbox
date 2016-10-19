@@ -559,6 +559,58 @@ public class CloudManager {
         }
         return total;
     }
+    /**
+     * The CloudManager computes the estimated accumulated cost of the execution
+     *
+     * @return cost of the whole execution
+     */
+    public static float getEstimatedTotalCost() {
+        float total = 0;
+        for (CloudProvider cp : providers.values()) {
+            total += cp.getEstimatedTotalCost();
+        }
+        return total;
+    }
+
+    
+    /**
+     * The CloudManager returns the elapsed time of the execution
+     *
+     * @return time of the whole execution
+     */
+    public static float getTotalTime() {
+        float total = 0;
+        for (CloudProvider cp : providers.values()) {
+        	total = Math.max(total, cp.getTotalTime());
+        }
+        return total;
+    }
+    
+    /**
+     * The CloudManager computes the accumulated energy of the execution
+     *
+     * @return energy of the whole execution
+     */
+    public static float getTotalEnergy() {
+        float total = 0;
+        for (CloudProvider cp : providers.values()) {
+            total += cp.getTotalEnergy();
+        }
+        return total;
+    }
+    
+    /**
+     * The CloudManager computes the estimated accumulated energy of the execution
+     *
+     * @return energy of the whole execution
+     */
+    public static float getEstimatedTotalEnergy() {
+        float total = 0;
+        for (CloudProvider cp : providers.values()) {
+            total += cp.getEstimatedTotalEnergy();
+        }
+        return total;
+    }
 
     /**
      * Returns how long will take a resource to be ready since the CloudManager

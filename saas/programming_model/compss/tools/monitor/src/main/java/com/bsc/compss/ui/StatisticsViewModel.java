@@ -18,9 +18,15 @@ public class StatisticsViewModel {
     public void init () {
     	statistics = new LinkedList<StatisticParameter>();
     	
-    	//Add accumulated cost
-    	StatisticParameter accumulatedCost = new StatisticParameter("Accumulated Cost", "0.0", "0.0");
+    	//Add accumulated cost, energy and time
+    	StatisticParameter accumulatedCost = new StatisticParameter("Cost", "0.0", "0.0");
+    	StatisticParameter accumulatedEnergy = new StatisticParameter("Energy", "0.0", "0.0");
+    	StatisticParameter elapsedTime = new StatisticParameter("Elapsed Time", "0.0", "0.0");
+    	
+
     	statistics.add(accumulatedCost);
+    	statistics.add(accumulatedEnergy);
+    	statistics.add(elapsedTime);
     }
     
     public List<StatisticParameter> getStatistics () {
