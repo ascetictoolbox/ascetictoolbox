@@ -46,6 +46,72 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         SlotAwareDeployer deployer = new SlotAwareDeployer();
         List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10);
         System.out.println(solutions);
+        System.out.println(solutions.get(0));
+    }
+    
+    public void testSlotAwareDeploymentFake26servers() {
+        Map<String, Node> nodesTable = new HashMap<String, Node>();
+        nodesTable.put("hostD", new Node("hostD", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostF", new Node("hostF", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostG", new Node("hostG", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostH", new Node("hostH", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostI", new Node("hostI", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostA", new Node("hostA", 8, 8*1024, 80, 6, 6*1024, 60, 0));
+        nodesTable.put("hostJ", new Node("hostJ", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostK", new Node("hostK", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostL", new Node("hostL", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostB", new Node("hostB", 8, 8*1024, 80, 4, 4*1024, 40, 0));
+        nodesTable.put("hostM", new Node("hostM", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostN", new Node("hostN", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostO", new Node("hostO", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostP", new Node("hostP", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostQ", new Node("hostQ", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostR", new Node("hostR", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostS", new Node("hostS", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostT", new Node("hostT", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostU", new Node("hostU", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostC", new Node("hostC", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostV", new Node("hostV", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostW", new Node("hostW", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostX", new Node("hostX", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostY", new Node("hostY", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("hostZ", new Node("hostZ", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        
+        List<Slot> slots = new ArrayList<>();
+        slots.add(new Slot("hostD", 8, 800, 8000));
+        slots.add(new Slot("hostF", 8, 800, 8000));
+        slots.add(new Slot("hostG", 8, 800, 8000));
+        slots.add(new Slot("hostH", 8, 800, 8000));
+        slots.add(new Slot("hostI", 8, 800, 8000));
+        slots.add(new Slot("hostJ", 8, 800, 8000));
+        slots.add(new Slot("hostK", 8, 800, 8000));
+        slots.add(new Slot("hostL", 8, 800, 8000));
+        slots.add(new Slot("hostM", 8, 800, 8000));
+        slots.add(new Slot("hostN", 8, 800, 8000));
+        slots.add(new Slot("hostO", 8, 800, 8000));
+        slots.add(new Slot("hostA", 2, 200, 2000));
+        slots.add(new Slot("hostP", 8, 800, 8000));
+        slots.add(new Slot("hostQ", 8, 800, 8000));
+        slots.add(new Slot("hostB", 4, 400, 4000));
+        slots.add(new Slot("hostR", 8, 800, 8000));
+        slots.add(new Slot("hostS", 8, 800, 8000));
+        slots.add(new Slot("hostT", 8, 800, 8000));
+        slots.add(new Slot("hostU", 8, 800, 8000));
+        slots.add(new Slot("hostV", 8, 800, 8000));
+        slots.add(new Slot("hostW", 8, 800, 8000));
+        slots.add(new Slot("hostC", 8, 800, 8000));
+        slots.add(new Slot("hostX", 8, 800, 8000));
+        slots.add(new Slot("hostY", 8, 800, 8000));
+        slots.add(new Slot("hostZ", 8, 800, 8000));
+
+        int minCpus = 2;
+        int maxCpus = 4;
+        int totalCpusToAdd = 6;
+        
+        SlotAwareDeployer deployer = new SlotAwareDeployer();
+        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10);
+        System.out.println(solutions);
+        System.out.println(solutions.get(0));
     }
     
     public void testSlotAwareDeploymentMultiProviderFake() {
