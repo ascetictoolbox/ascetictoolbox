@@ -15,13 +15,12 @@
  */
 package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 
-import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This ranks the VMs to create destroy etc based upon power consumption. It may
@@ -98,6 +97,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
             if (!vmsList.isEmpty()) {
                 toRemove = vmsList.get(vmsList.size() - 1);
             } else {
+                Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");
                 break; //exit when no more vms to delete
             }
         }
@@ -120,20 +120,26 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
             return response;
         }
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(), response.getDeploymentId());
+        Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "VMs Types available to add: {0}", vmOvfTypes.size());
         if (vmOvfTypes.isEmpty()) {
             response.setAdaptationDetails("Could not find a VM OVF type to add");
             response.setPossibleToAdapt(false);
             return response;
         }
-        Collections.shuffle(vmOvfTypes);
-        //Give preference to any VM type specified in the rule.
-        String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
         String vmTypeToAdd;
-        //Check that the preferential type can be added
-        if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
-            vmTypeToAdd = vmTypePreference;
-        } else { //If no preference is given then pick the best alternative
-            vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
+        if (vmOvfTypes.size() == 1) {
+            //If there is one option only select it
+            vmTypeToAdd = vmOvfTypes.get(0);
+        } else {
+            Collections.shuffle(vmOvfTypes);
+            //Give preference to any VM type specified in the rule.
+            String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
+            //Check that the preferential type can be added
+            if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
+                vmTypeToAdd = vmTypePreference;
+            } else { //If no preference is given then pick the best alternative
+                vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
+            }
         }
         response.setAdaptationDetails(vmTypeToAdd);
         List<String> typesToAdd = getVmTypesToConsolidateHost(response, vmTypeToAdd);
@@ -142,7 +148,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
             response.setPossibleToAdapt(false);
             return response;
         }          
-        while (!getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
+        while (!getCanVmBeAdded(response, vmTypeToAdd, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
             if (typesToAdd.isEmpty()) {

@@ -18,7 +18,6 @@ package eu.ascetic.paas.self.adaptation.manager.rules.decisionengine;
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
 import es.bsc.vmmclient.models.VmRequirements;
-import eu.ascetic.paas.applicationmanager.model.VM;
 import eu.ascetic.paas.self.adaptation.manager.ovf.OVFUtils;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.Response;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.SlotSolution;
@@ -30,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * This ranks the VMs to create destroy etc based upon power consumption. It may
@@ -136,13 +134,18 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setPossibleToAdapt(false);
             return response;
         }
-        String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
-        String vmTypeToAdd;
-        //Check that the preferential type can be added
-        if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
-            vmTypeToAdd = vmTypePreference;
-        } else { //If no preference is given then pick the best alternative
-            vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
+        String vmTypeToAdd;        
+        if (vmOvfTypes.size() == 1) {
+            //If there is one option only select it
+            vmTypeToAdd = vmOvfTypes.get(0);
+        } else {
+            String vmTypePreference = response.getAdaptationDetail("VM_TYPE");
+            //Check that the preferential type can be added
+            if (vmTypePreference != null && vmOvfTypes.contains(vmTypePreference)) {
+                vmTypeToAdd = vmTypePreference;
+            } else { //If no preference is given then pick the best alternative
+                vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
+            } 
         }
         //Construct Host Information
         List<Slot> slots = getActuator().getSlots();
@@ -185,7 +188,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         }
         List<Slot> winningSolution = solutions.get(0).getSlots();
         for (Slot vmToPlace : winningSolution) {
-            typesToAdd.add(vmTypePreference);
+            typesToAdd.add(vmTypeToAdd);
             typeSizesToAdd.add(vmToPlace.getFreeCpus() + "");
         }
         if (typesToAdd.isEmpty()) {
@@ -193,7 +196,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setPossibleToAdapt(false);
             return response;
         }    
-        while (!getCanVmBeAdded(response, vmTypePreference, typesToAdd.size())) {
+        while (!getCanVmBeAdded(response, vmTypeToAdd, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
             typeSizesToAdd.remove(0);

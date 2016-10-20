@@ -410,7 +410,11 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         double answer = 0.0;
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            answer = answer + getPowerUsageVM(applicationId, deploymentId, vm.getId() + "");
+            double power = getPowerUsageVM(applicationId, deploymentId, vm.getId()+ "");
+            //This avoids error values been added to the total power consumption
+            if (power >= 0) {
+                answer = answer +  power;
+            }
         }
         return answer;
     }

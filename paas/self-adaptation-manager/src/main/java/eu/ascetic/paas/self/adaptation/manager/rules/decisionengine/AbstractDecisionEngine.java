@@ -29,7 +29,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The aim of this class is to decide given an event that has been assessed what
@@ -89,18 +90,34 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         //average power of the VM type to add
         double averagePower = actuator.getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(), vmOvfType);
+        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Avg power = {0}", averagePower);
         //The current total measured power consumption
         double totalMeasuredPower = actuator.getTotalPowerUsage(response.getApplicationId(), response.getDeploymentId());
+        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Total power = {0}", totalMeasuredPower);
         averagePower = averagePower * count;
         List<String> vmOvfTypes = getActuator().getVmTypesAvailableToAdd(response.getApplicationId(),
                 response.getDeploymentId());
         if (!vmOvfTypes.contains(vmOvfType)) {
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "VM type {0} isn't available to add", vmOvfType);
+            for (String type : vmOvfTypes) {
+                Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "VM type: {0} may be added.", type);
+            }
+            if (vmOvfTypes.isEmpty()) {
+                Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "No VM types were available to add.");
+            }
             return false;
         }
+        if (averagePower == 0 || totalMeasuredPower == 0) {
+            //Skip if the measured power values don't make any sense.
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING, "Measured Power Fault Average Power = {0}Total Power = {1}", new Object[]{averagePower, totalMeasuredPower});
+            return enoughSpaceForVM(response, vmOvfType);
+        }        
         String applicationID = response.getApplicationId();
         String deploymentID = response.getDeploymentId();
         SLALimits limits = actuator.getSlaLimits(applicationID, deploymentID);
         if (limits != null && limits.getPower() != null) {
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "New power = {0}", totalMeasuredPower + averagePower);
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Limit of power = {0}", limits.getPower());
             if (totalMeasuredPower + averagePower > Double.parseDouble(limits.getPower())) {
                 return false;
             }
@@ -137,6 +154,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         List<Slot> slots = actuator.getSlots(requirements);    
         if (slots.size() < vmCount) {
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Reporting not enough space for VMs");
             return false;
         }
         return true;
@@ -316,12 +334,14 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         List<Slot> slots = actuator.getSlots(requirements);
         if (slots.isEmpty()) {
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.SEVERE, "Error finding free slots available");
             return answer;
         }
         int count = getHostSlotCountWithFewestSlots(slots);
         int maxVms = getCountOfVMsPossibleToAdd(response, vmOvfType);
+        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Count = {0} MaxVMs = {1}", new Object[]{count, maxVms});        
         for (int i = 0; i < count; i++) {
-            if (count >= maxVms) {
+            if (i >= maxVms) {
                 return answer;
             }
             answer.add(vmOvfType);
@@ -367,7 +387,8 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         Integer score = Integer.MAX_VALUE;
         HashMap<String, Integer> hostSlots = slotCounter(slots);
         for (Map.Entry<String, Integer> hostSlot : hostSlots.entrySet()) {
-            if (hostSlot.getValue() < score) {
+            //Ensure this is a none full host with the lowest amount of free slots
+            if (hostSlot.getValue() < score && hostSlot.getValue() != 0) {
                 score = hostSlot.getValue();
             }
         }
