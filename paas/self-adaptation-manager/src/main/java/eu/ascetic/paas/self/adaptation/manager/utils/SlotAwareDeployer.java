@@ -230,9 +230,12 @@ public class SlotAwareDeployer {
         List<Slot> slotsClone = this.cloneSlots(slots);
         BigInteger numTries = //10*(n!)
             CombinationGenerator.getFactorial(slots.size()).multiply(BigInteger.TEN);
+        System.out.println("numTries( 10*(" + slots.size() + "!) ) = " + numTries);
         for(int i = 0; i < numTries.intValue(); i++){
             Collections.shuffle(slotsClone);
+            System.out.println("slotsClone("  + slotsClone.hashCode() + ") = " + slotsClone.toString());
             if(!out.containsKey(slotsClone.hashCode())){
+                System.out.println("Added to out.");
                 out.put(slotsClone.hashCode(), this.cloneSlots(slotsClone));
             }
         }
@@ -248,7 +251,7 @@ public class SlotAwareDeployer {
         }
         */
         
-        
+        System.out.println(out.toString());
         return out;
     }
 
