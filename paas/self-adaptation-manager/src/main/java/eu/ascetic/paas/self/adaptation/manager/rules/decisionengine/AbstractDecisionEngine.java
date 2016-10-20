@@ -109,7 +109,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         if (averagePower == 0 || totalMeasuredPower == 0) {
             //Skip if the measured power values don't make any sense.
-            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING, "Measured Power Fault Average Power = {0}Total Power = {1}", new Object[]{averagePower, totalMeasuredPower});
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING, "Measured Power Fault: Average Power = {0} Total Power = {1}", new Object[]{averagePower, totalMeasuredPower});
             return enoughSpaceForVM(response, vmOvfType);
         }        
         String applicationID = response.getApplicationId();

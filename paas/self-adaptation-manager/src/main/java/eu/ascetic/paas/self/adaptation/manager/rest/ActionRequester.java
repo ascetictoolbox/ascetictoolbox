@@ -494,7 +494,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                     addVM(applicationId, deploymentId, vmType);
                 } else {
                     //Set the cpu size here.
-                    addVM(applicationId, deploymentId, vmType, Integer.parseInt(sizes[i]));
+                    Double vmCount = Double.parseDouble(sizes[i]);
+                    addVM(applicationId, deploymentId, vmType, vmCount.intValue());
                 }
             }
         } else { //Remove VMs
