@@ -455,8 +455,6 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         Gson gson = new Gson();
         ClientResponse responseObj = client.getHostInfo(ClientResponse.class);
         String response = responseObj.getEntity(String.class);
-        Type listType = new TypeToken<ArrayList<Slot>>() {
-        }.getType();
         NodesResponse output = gson.fromJson(response, NodesResponse.class);
         return output.getNodes();
     }
