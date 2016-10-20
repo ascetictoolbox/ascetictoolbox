@@ -228,10 +228,9 @@ public class SlotAwareDeployer {
         Map<Integer, List<Slot>> out = new HashMap<>();
         
         List<Slot> slotsClone = this.cloneSlots(slots);
-        BigInteger numTries = //10*(n!)
-            CombinationGenerator.getFactorial(slots.size()).multiply(BigInteger.TEN);
-        System.out.println("numTries( 10*(" + slots.size() + "!) ) = " + numTries);
-        for(int i = 0; i < numTries.intValue(); i++){
+        int numTries = 100*slots.size();
+        System.out.println("numTries( 100*(" + slots.size() + ") ) = " + numTries);
+        for(int i = 0; i < numTries; i++){
             Collections.shuffle(slotsClone);
             System.out.println("slotsClone("  + slotsClone.hashCode() + ") = " + slotsClone.toString());
             if(!out.containsKey(slotsClone.hashCode())){
