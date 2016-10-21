@@ -89,19 +89,21 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
      */
     public Response deleteVM(Response response) {
         if (getActuator() == null) {
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.WARNING, "Unable to find actuator.");            
             response.setAdaptationDetails("Unable to find actuator.");
             response.setPossibleToAdapt(false);
             return response;
         }
         List<Integer> vmIds = getActuator().getVmIdsAvailableToRemove(response.getApplicationId(), response.getDeploymentId());
         if (vmIds == null) {
-            System.out.println("Internal Error list of deleteable VM Ids equals null.");
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.WARNING, "Internal Error list of deleteable VM Ids equals null.");
             response.setAdaptationDetails("Unable find a VM to delete.");
             response.setPossibleToAdapt(false);
             return response;
         }
         if (vmIds.isEmpty()) {
-            response.setAdaptationDetails("Could not find a VM to delete");
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Could not find a VM to delete");             
+            response.setAdaptationDetails("Could not find a VM to delete");   
             response.setPossibleToAdapt(false);
         }
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
@@ -132,6 +134,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             if (!vmsList.isEmpty()) {
                 toRemove = vmsList.get(vmsList.size() - 1);
             } else {
+                Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");                
                 break; //exit when no more vms to delete
             }
         }
@@ -177,6 +180,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         List<Slot> slots = getActuator().getSlots();
         if (slots.isEmpty()) {
             response.setAdaptationDetails("Adding a VM would breach SLA criteria");
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Adding a VM would breach SLA criteria");
             response.setPossibleToAdapt(false);
             return response;
         }
@@ -210,6 +214,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         if (solutions.isEmpty()) {
             response.setAdaptationDetails("No Slot solution was found");
             response.setPossibleToAdapt(false);
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "No Slot solution was found");
             return response;
         }
         List<Slot> winningSolution = solutions.get(0).getSlots();
@@ -220,6 +225,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         if (typesToAdd.isEmpty()) {
             response.setAdaptationDetails("No types to add. No solution was found");
             response.setPossibleToAdapt(false);
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Could not find a VM type to delete");
             return response;
         }
         while (!getCanVmBeAdded(response, vmTypeToAdd, typesToAdd.size())) {

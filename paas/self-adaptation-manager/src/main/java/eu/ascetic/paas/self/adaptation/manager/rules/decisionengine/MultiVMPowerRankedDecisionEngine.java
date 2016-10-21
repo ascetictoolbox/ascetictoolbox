@@ -55,18 +55,20 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
      */
     public Response deleteVM(Response response) {
         if (getActuator() == null) {
+            Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.WARNING, "Unable to find actuator.");            
             response.setAdaptationDetails("Unable to find actuator.");
             response.setPossibleToAdapt(false);
             return response;
         }
         List<Integer> vmIds = getActuator().getVmIdsAvailableToRemove(response.getApplicationId(), response.getDeploymentId());
         if (vmIds == null) {
-            System.out.println("Internal Error list of deleteable VM Ids equals null.");
+            Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Internal Error list of deleteable VM Ids equals null.");
             response.setAdaptationDetails("Unable find a VM to delete.");
             response.setPossibleToAdapt(false);
             return response;
         }
         if (vmIds.isEmpty()) {
+            Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Could not find a VM to delete");
             response.setAdaptationDetails("Could not find a VM to delete");
             response.setPossibleToAdapt(false);
         }
@@ -77,6 +79,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);
         while (valueRemoved < targetDifference) {
             if (toRemove == null) {
+                Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");
                 break; //exit when no more vms to delete
             }
             if (response.getVmId() == null || response.getVmId().isEmpty()) {
