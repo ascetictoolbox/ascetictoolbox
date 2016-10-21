@@ -111,7 +111,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
             //Skip if the measured power values don't make any sense.
             Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING, "Measured Power Fault: Average Power = {0} Total Power = {1}", new Object[]{averagePower, totalMeasuredPower});
             return enoughSpaceForVM(response, vmOvfType);
-        }        
+        }
         String applicationID = response.getApplicationId();
         String deploymentID = response.getDeploymentId();
         SLALimits limits = actuator.getSlaLimits(applicationID, deploymentID);
@@ -152,7 +152,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         if (requirements == null) {
             return true;
         }
-        List<Slot> slots = actuator.getSlots(requirements);    
+        List<Slot> slots = actuator.getSlots(requirements);
         if (slots.size() < vmCount) {
             Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Reporting not enough space for VMs");
             return false;
@@ -229,17 +229,21 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         if (vmOvfTypes.isEmpty()) {
             return "";
         }
-        String answer = vmOvfTypes.get(0);
-        double answersPower = 0;
-        for (String current : vmOvfTypes) {
-            double answersAvgPower = getActuator().getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(),
-                    current);
-            if (answersAvgPower < answersPower) {
-                answer = current;
-                answersPower = answersAvgPower;
+        String lowestAvgPowerType = vmOvfTypes.get(0);
+        double lowestAvgPower = Double.MAX_VALUE;
+        for (String currentVmType : vmOvfTypes) {
+            double currentTypesAvgPower = getActuator().getAveragePowerUsage(response.getApplicationId(), response.getDeploymentId(),
+                    currentVmType);
+            if (currentTypesAvgPower == 0) {
+                Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO,
+                        "The calculation of the lowest average power of a VM type saw a zero value for the type: {0}", currentVmType);
+            }
+            if ((currentTypesAvgPower < lowestAvgPower) && currentTypesAvgPower > 0) {
+                lowestAvgPowerType = currentVmType;
+                lowestAvgPower = currentTypesAvgPower;
             }
         }
-        return answer;
+        return lowestAvgPowerType;
     }
 
     /**
@@ -253,20 +257,33 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
      */
     public Integer getHighestPoweredVM(Response response, List<Integer> vmIds) {
         Integer answer = null;
-        double answerPower = Double.MAX_VALUE;
+        double answerPower = 0;
         String vmType = response.getAdaptationDetail("VM_TYPE");
+        if (vmIds.isEmpty()) {
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING,
+                    "No VMs were able to be deleted");
+            return answer;
+        }
         for (Integer vmId : vmIds) {
             double currentValue = getActuator().getPowerUsageVM(response.getApplicationId(), response.getDeploymentId(), "" + vmId);
+            if (currentValue == 0) {
+                Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING,
+                        "The calculation of the highest powered VM saw a zero value for VM: {0}", vmId);
+            }
             VM vm = getActuator().getVM(response.getApplicationId(), response.getDeploymentId(), vmId + "");
-            if (currentValue < answerPower && (vmType == null
-                    || vm.getOvfId().equals(vmType))) {
+            if (currentValue > answerPower && (vmType == null || vm.getOvfId().equals(vmType))) {
                 answer = vmId;
                 answerPower = currentValue;
             }
         }
+        if (answer == null) {
+            Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING,
+                    "No VM had the highest power thus defaulting to the first in the list");            
+            vmIds.get(0);
+        }
         return answer;
     }
-    
+
     /**
      * This gets the list of all vm objects from a given vmId and provides the
      * power consumption, ready for ranking
@@ -286,12 +303,12 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         Collections.sort(answer);
         return answer;
     }
-    
+
     /**
      * This maps a power measurement to a VM.
      */
     public class PowerVmMapping implements Comparable<PowerVmMapping> {
-        
+
         private final Double power;
         private final VM vm;
 
@@ -306,15 +323,13 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
 
         public VM getVm() {
             return vm;
-        }       
+        }
 
         @Override
         public int compareTo(PowerVmMapping o) {
             return this.power.compareTo(o.power);
         }
-        
-        
-        
+
     }
 
     /**
@@ -339,7 +354,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         }
         int count = getHostSlotCountWithFewestSlots(slots);
         int maxVms = getCountOfVMsPossibleToAdd(response, vmOvfType);
-        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Count = {0} MaxVMs = {1}", new Object[]{count, maxVms});        
+        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.INFO, "Count = {0} MaxVMs = {1}", new Object[]{count, maxVms});
         for (int i = 0; i < count; i++) {
             if (i >= maxVms) {
                 return answer;
@@ -369,8 +384,8 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
             return (answer < 0 ? 0 : answer); //The answer must be positive
         } catch (NullPointerException ex) {
             /**
-             * This is thrown in the event the upper bound is missing.
-             * Thus it is always + 1 of the current value.
+             * This is thrown in the event the upper bound is missing. Thus it
+             * is always + 1 of the current value.
              */
             return currentCount + 1;
         }

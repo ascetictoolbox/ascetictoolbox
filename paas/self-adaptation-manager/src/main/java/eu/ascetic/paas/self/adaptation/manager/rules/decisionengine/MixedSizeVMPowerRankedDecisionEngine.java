@@ -24,11 +24,16 @@ import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.SlotSolution;
 import eu.ascetic.paas.self.adaptation.manager.utils.SlotAwareDeployer;
 import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * This ranks the VMs to create destroy etc based upon power consumption. It may
@@ -37,6 +42,27 @@ import java.util.Map;
  * @author Richard Kavanagh
  */
 public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
+
+    private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
+    private int cpusToAdd = 10;
+    
+    public MixedSizeVMPowerRankedDecisionEngine() {
+        super();
+        try {
+            PropertiesConfiguration config;
+            if (new File(CONFIG_FILE).exists()) {
+                config = new PropertiesConfiguration(CONFIG_FILE);
+            } else {
+                config = new PropertiesConfiguration();
+                config.setFile(new File(CONFIG_FILE));
+            }
+            config.setAutoSave(true); //This will save the configuration file back to disk. In case the defaults need setting.
+            cpusToAdd = config.getInt("paas.self.adaptation.manager.mixed.size.decision.engine.cpustoadd", cpusToAdd);
+            config.setProperty("paas.self.adaptation.manager.mixed.size.decision.engine.cpustoadd", cpusToAdd);
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Error loading the configuration file.", ex);
+        }
+    }
 
     @Override
     public Response decide(Response response) {
@@ -81,8 +107,8 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
         double valueRemoved = 0.0;
         String vmsToRemove = ""; //i.e. VMs_TO_REMOVE= ....
-        ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);         
-        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);          
+        ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);
+        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);
         while (valueRemoved < targetDifference) {
             if (toRemove == null) {
                 break; //exit when no more vms to delete
@@ -134,7 +160,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setPossibleToAdapt(false);
             return response;
         }
-        String vmTypeToAdd;        
+        String vmTypeToAdd;
         if (vmOvfTypes.size() == 1) {
             //If there is one option only select it
             vmTypeToAdd = vmOvfTypes.get(0);
@@ -145,7 +171,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
                 vmTypeToAdd = vmTypePreference;
             } else { //If no preference is given then pick the best alternative
                 vmTypeToAdd = pickLowestAveragePower(response, vmOvfTypes);
-            } 
+            }
         }
         //Construct Host Information
         List<Slot> slots = getActuator().getSlots();
@@ -176,7 +202,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
          */
         List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots,
                 hosts,
-                reqs.getCpus() * 4, // Add upto 4 x the curent cpu default. 
+                cpusToAdd, //previously used: reqs.getCpus() * cpusToAdd
                 minCpus,
                 maxCpus,
                 reqs.getRamMb(),
@@ -195,7 +221,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setAdaptationDetails("No types to add. No solution was found");
             response.setPossibleToAdapt(false);
             return response;
-        }    
+        }
         while (!getCanVmBeAdded(response, vmTypeToAdd, typesToAdd.size())) {
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
