@@ -15,6 +15,7 @@ APP_MANAGER_URL=$3
 OVF_ID=$4
 SERVER_NAME=$5
 HAPROXY_CONFIG_FILE=$6
+AMQP_SERVER=$7
 #HAPROXY_BACKEND="newsasset_80"
 
 get_id() {
@@ -41,22 +42,22 @@ do
 
       vm_array=($vms_string)
 
-       for i in ${vm_array[@]}; do
-         vm=(${i//|/ })
+      for i in ${vm_array[@]}; do
+        vm=(${i//|/ })
 
-         if [ "${vm[1]}" = "$OVF_ID" ] && [ "${vm[0]}" = "$ID" ]
-         then
-           echo "            server ${SERVER_NAME}_${vm[0]} ${vm[2]}:80 check"  >> ${HAPROXY_CONFIG_FILE}
-           #echo "add server ${HAPROXY_BACKEND}/${SERVER_NAME}_${vm[0]}:80 check" | socat stdio /etc/haproxy/haproxysock
-           reload()
+        if [ "${vm[1]}" = "$OVF_ID" ] && [ "${vm[0]}" = "$ID" ]
+        then
+          echo "            server ${SERVER_NAME}_${vm[0]} ${vm[2]}:80 check"  >> ${HAPROXY_CONFIG_FILE}
+          #echo "add server ${HAPROXY_BACKEND}/${SERVER_NAME}_${vm[0]}:80 check" | socat stdio /etc/haproxy/haproxysock
+          reload
         fi
-       done
+      done
     elif [[ $line =~ $regex_vm_deleted ]]
     then
       get_id $line
       echo "DELETED: $ID"
       sed -i.bak "/${SERVER_NAME}_${ID}/d" ${HAPROXY_CONFIG_FILE}
       #echo "remove server ${HAPROXY_BACKEND}/${SERVER_NAME}_${ID}" | socat stdio /etc/haproxy/haproxysock
-      reload()
+      reload
     fi
-done < <( java -jar ./java/ascetic-amqp-console-client.jar -t APPLICATION.${APPLICATION_NAME}.DEPLOYMENT.${DEPLOYMENT_ID}.VM.\> 2>&1 )
+done < <( java -jar ./java/ascetic-amqp-console-client.jar -s ${AMQP_SERVER} -t APPLICATION.${APPLICATION_NAME}.DEPLOYMENT.${DEPLOYMENT_ID}.VM.\> 2>&1 )
