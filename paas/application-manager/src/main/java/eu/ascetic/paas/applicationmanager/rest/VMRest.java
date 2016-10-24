@@ -308,12 +308,12 @@ public class VMRest extends AbstractRest {
 			
 			logger.info("After the Deployment update");
 			
-			getEnergyModeller().writeDeploymentRequest("" +vmToDB.getProviderId(), 
-					                                   applicationName, 
-					                                   "" + deployment.getId(), 
-					                                   "" + vmToDB.getId(), 
-					                                   vmToDB.getProviderVmId(), 
-					                                   Dictionary.APPLICATION_STATUS_DEPLOYED);
+//			getEnergyModeller().writeDeploymentRequest("" +vmToDB.getProviderId(), 
+//					                                   applicationName, 
+//					                                   "" + deployment.getId(), 
+//					                                   "" + vmToDB.getId(), 
+//					                                   vmToDB.getProviderVmId(), 
+//					                                   Dictionary.APPLICATION_STATUS_DEPLOYED);
 			
 			AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
 		}

@@ -528,6 +528,14 @@ public class DeploymentRestTest extends AbstractTest {
 		vm2.setOvfId("ovf-vm2");
 		deployment.addVM(vm2);
 		
+		VM vm3 = new VM();
+		vm3.setId(3);
+		vm3.setIp("10.0.0.3");
+		vm3.setProviderVmId("aaaa-bbbb-3");
+		vm3.setStatus("ACTIVE");
+		vm3.setOvfId("ovf-vm3");
+		deployment.addVM(vm3);
+		
 		Image image1 = new Image();
 		image1.setDemo(false);
 		image1.setOvfHref("ovf-href1");
@@ -539,6 +547,7 @@ public class DeploymentRestTest extends AbstractTest {
 		image2.setOvfHref("ovf-href2");
 		image2.setProviderImageId("zzzz-2");
 		vm2.addImage(image2);
+		vm3.addImage(image2);
 		
 		Image image3 = new Image();
 		image3.setDemo(true);
@@ -573,11 +582,13 @@ public class DeploymentRestTest extends AbstractTest {
 																					
 																					boolean isTheList = true;
 																					
-																					if(!(ids.size() == 2)) isTheList = false; 
+																					if(!(ids.size() == 3)) isTheList = false; 
 																					
 																					if(!(ids.get(0).equals("1"))) isTheList = false;
 																					
 																					if(!(ids.get(1).equals("2"))) isTheList = false;
+																					
+																					if(!(ids.get(2).equals("3"))) isTheList = false;
 
 																					return isTheList;
 																				}
@@ -600,6 +611,7 @@ public class DeploymentRestTest extends AbstractTest {
 		verify(deploymentDAO, times(1)).update(deployment);
 		verify(vmManagerClient, times(1)).deleteVM("aaaa-bbbb-2");
 		verify(vmManagerClient, times(1)).deleteVM("aaaa-bbbb-1");
+		verify(vmManagerClient, times(1)).deleteVM("aaaa-bbbb-3");
 		verify(vmManagerClient, times(1)).deleteImage("zzzz-1");
 		verify(vmManagerClient, times(1)).deleteImage("zzzz-2");
 		verify(vmManagerClient, times(0)).deleteImage("zzzz-3");
@@ -615,7 +627,7 @@ public class DeploymentRestTest extends AbstractTest {
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);
-		assertEquals(3, listener.getTextMessages().size());
+		assertEquals(4, listener.getTextMessages().size());
 		
 		assertEquals("APPLICATION.app-name.DEPLOYMENT.1.VM.1.DELETED", listener.getTextMessages().get(0).getJMSDestination().toString());
 		assertEquals("app-name", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
@@ -629,10 +641,16 @@ public class DeploymentRestTest extends AbstractTest {
 		assertEquals("Status1", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getStatus());
 		assertEquals("ovf-vm2", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(1).getText()).getVms().get(0).getOvfId());
 		
-		assertEquals("APPLICATION.app-name.DEPLOYMENT.1.TERMINATED", listener.getTextMessages().get(2).getJMSDestination().toString());
+		assertEquals("APPLICATION.app-name.DEPLOYMENT.1.VM.3.DELETED", listener.getTextMessages().get(2).getJMSDestination().toString());
 		assertEquals("app-name", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getApplicationId());
 		assertEquals("1", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getDeploymentId());
-		assertEquals("TERMINATED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getStatus());
+		assertEquals("Status1", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getStatus());
+		assertEquals("ovf-vm3", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(2).getText()).getVms().get(0).getOvfId());
+		
+		assertEquals("APPLICATION.app-name.DEPLOYMENT.1.TERMINATED", listener.getTextMessages().get(3).getJMSDestination().toString());
+		assertEquals("app-name", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getApplicationId());
+		assertEquals("1", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getDeploymentId());
+		assertEquals("TERMINATED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(3).getText()).getStatus());
 	
 		receiver.close();
 	}

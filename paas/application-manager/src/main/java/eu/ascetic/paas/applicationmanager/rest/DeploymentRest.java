@@ -6,9 +6,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -352,11 +354,23 @@ public class DeploymentRest extends AbstractRest {
 			AmqpProducer.sendVMDeletedMessage(applicationName, deployment, vm);
 		}
 		
+		Set<String> imageIds = new HashSet<String>();
+		
 		for(Image image : images) {
 			if(!image.isDemo()) {
-				logger.info("DELETING IMAGE: " + image.getProviderImageId());
 				
-				vmManagerClient.deleteImage(image.getProviderImageId());
+				String id = image.getProviderImageId();
+				
+				logger.info("TRYING TO DELETE IMAGE: " + id);
+				
+				if(!imageIds.contains(id)) {
+					logger.info("DELETING IMAGE: " + id);
+					
+					imageIds.add(id);
+					vmManagerClient.deleteImage(id);
+				} else {
+					logger.info("IMAGE WITH ID: " + id + " WAS ALREADY PREVIOUSLY DELETED");
+				}
 			}
 		}
 		

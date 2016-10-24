@@ -1994,12 +1994,12 @@ public class VMRestTest extends AbstractTest {
 		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
 		
 		// Verify that the VM was notify to EM
-		verify(paasEnergyModeller, times(1)).writeDeploymentRequest("prod-id",
-				                                                    "threeTierWebApp",
-				                                                    "11", 
-				                                                    "0", 
-				                                                    "haproxy-vm1", 
-				                                                    Dictionary.APPLICATION_STATUS_DEPLOYED);
+//		verify(paasEnergyModeller, times(1)).writeDeploymentRequest("prod-id",
+//				                                                    "threeTierWebApp",
+//				                                                    "11", 
+//				                                                    "0", 
+//				                                                    "haproxy-vm1", 
+//				                                                    Dictionary.APPLICATION_STATUS_DEPLOYED);
 		
 		// We verify that the right messages were sent to the AMQP
 		Thread.sleep(500l);

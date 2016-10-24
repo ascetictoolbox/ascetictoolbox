@@ -227,12 +227,12 @@ public class DeployEventHandler {
 								AmqpProducer.sendVMDeployedMessage(applicationName, deployment, vmToDB);
 								
 								//notify EM of VM deployment
-								em.notifyVMChangeInStatus("" + deploymentEvent.getProviderId(),
-										                  applicationName,
-										                  "" + deployment.getId(), 
-										                  "" + vmToDB.getId(), 
-										                  vmToDB.getProviderVmId(), 
-										                  Dictionary.APPLICATION_STATUS_DEPLOYED);
+//								em.notifyVMChangeInStatus("" + deploymentEvent.getProviderId(),
+//										                  applicationName,
+//										                  "" + deployment.getId(), 
+//										                  "" + vmToDB.getId(), 
+//										                  vmToDB.getProviderVmId(), 
+//										                  Dictionary.APPLICATION_STATUS_DEPLOYED);
 							}
 						}
 					}
