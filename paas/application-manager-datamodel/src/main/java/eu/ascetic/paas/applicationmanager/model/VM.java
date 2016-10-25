@@ -108,6 +108,8 @@ public class VM {
 	private long numberVMsMin;
 	@XmlElement(name = "price-schema", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private Long priceSchema;
+	@XmlElement(name = "physical-host", namespace = APPLICATION_MANAGER_NAMESPACE)
+	private String physicalHost;
 	@XmlElement(name="link", namespace = APPLICATION_MANAGER_NAMESPACE)
 	private List<Link> links;
 	@XmlTransient
@@ -324,6 +326,14 @@ public class VM {
 	}
 	public void setPriceSchema(Long priceSchema) {
 		this.priceSchema = priceSchema;
+	}
+	
+	@Transient
+	public String getPhysicalHost() {
+		return physicalHost;
+	}
+	public void setPhysicalHost(String physicalHost) {
+		this.physicalHost = physicalHost;
 	}
 	
 	@ManyToOne(fetch=FetchType.EAGER)

@@ -53,6 +53,7 @@ public class VMTest {
 		vm.setNumberVMsMin(11);
 		vm.setSwapActual(13);
 		vm.setSwapMax(14);
+		vm.setPhysicalHost("physicalHost");
 		vm.setSwapMin(15);
 		vm.setPriceSchema(20l);
 		List<Image> images = new ArrayList<Image>();
@@ -61,6 +62,7 @@ public class VMTest {
 		vm.setLinks(links);
 		
 		assertEquals(1, vm.getId());
+		assertEquals("physicalHost", vm.getPhysicalHost());
 		assertEquals("href", vm.getHref());
 		assertEquals("ovfId", vm.getOvfId());
 		assertEquals("provider-id", vm.getProviderId());
