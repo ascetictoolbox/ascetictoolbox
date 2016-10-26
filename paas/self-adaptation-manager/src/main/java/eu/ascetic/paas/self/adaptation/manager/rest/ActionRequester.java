@@ -251,6 +251,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param ovfId The OVF id that indicates which VM type to instantiate
      * @param cpuSize The size of the cpu to use, must be at least 1 else the 
      * ovf default will be used instead.
+     * @param location specifies the preference for the VMs location, may also be left blank or given a null value.
      */
     public void addVM(String applicationId, String deploymentId, String ovfId, int cpuSize, String location) {
         RestVMClient client = new RestVMClient(applicationId, deploymentId);
