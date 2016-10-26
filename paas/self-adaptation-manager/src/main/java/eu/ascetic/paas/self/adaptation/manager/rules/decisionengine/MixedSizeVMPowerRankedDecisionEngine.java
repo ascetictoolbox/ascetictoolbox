@@ -196,6 +196,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         VmRequirements reqs = OVFUtils.getVMRequirementsFromOvfType(ovf, vmTypeToAdd);
         List<String> typesToAdd = new ArrayList<>();
         List<String> typeSizesToAdd = new ArrayList<>();
+        List<String> typeLocationToAdd = new ArrayList<>();
 
         int minCpus = system.getVirtualHardwareSection().getMinNumberOfVirtualCPUs();
         int maxCpus = system.getVirtualHardwareSection().getMaxNumberOfVirtualCPUs();
@@ -221,6 +222,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         for (Slot vmToPlace : winningSolution) {
             typesToAdd.add(vmTypeToAdd);
             typeSizesToAdd.add(vmToPlace.getFreeCpus() + "");
+            typeLocationToAdd.add(vmToPlace.getHostname() + "");
         }
         if (typesToAdd.isEmpty()) {
             response.setAdaptationDetails("No types to add. No solution was found");
@@ -232,6 +234,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             //Remove excess new VMs i.e. breach other SLA Rules
             typesToAdd.remove(0);
             typeSizesToAdd.remove(0);
+            typeLocationToAdd.remove(0);
             if (typesToAdd.isEmpty()) {
                 response.setAdaptationDetails("Adding a VM would breach SLA criteria");
                 response.setPossibleToAdapt(false);
@@ -244,11 +247,18 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             typesToAddSize = typesToAddSize + (count == 0 ? "" : ",") + size;
             count = count + 1;
         }
+        String typesToAddLocation = "";
+        int locCount = 0;
+        for (String location : typeLocationToAdd) {
+            typesToAddLocation = typesToAddLocation + (locCount == 0 ? "" : ",") + location;
+            locCount = locCount + 1; 
+        }        
         typesToAddSize = ";VM_SIZE=" + typesToAddSize;
+        typesToAddLocation = ";VM_LOCATION=" + typesToAddLocation;
         //In order to specify CPU size, even if one VM is added a SCALE TO N VMS action is used.
         response.setVmId("");
         response.setActionType(Response.AdaptationType.SCALE_TO_N_VMS);
-        response.setAdaptationDetails("VM_TYPE=" + vmTypeToAdd + ";VM_COUNT=" + typesToAdd.size() + typesToAddSize);
+        response.setAdaptationDetails("VM_TYPE=" + vmTypeToAdd + ";VM_COUNT=" + typesToAdd.size() + typesToAddSize + typesToAddLocation);
         return response;
     }
 
