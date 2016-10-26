@@ -88,23 +88,65 @@ public class Configuration {
         componentIdleCost = new HashMap<String, Cost>();
 
         String ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPerformanceOptimizationBoundary();
-        performanceBoundary = Long.parseLong(ppString);
+        long boundaryValue = Long.MAX_VALUE;
+        if (ppString != null) {
+            boundaryValue = Long.parseLong(ppString);
+            if (boundaryValue <= 0) {
+                boundaryValue = Long.MAX_VALUE;
+            }
+        }
+        performanceBoundary = boundaryValue;
+
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getEnergyOptimizationBoundary();
-        energyBoundary = Float.parseFloat(ppString);
+        boundaryValue = Long.MAX_VALUE;
+        if (ppString != null) {
+            boundaryValue = Long.parseLong(ppString);
+            if (boundaryValue <= 0) {
+                boundaryValue = Long.MAX_VALUE;
+            }
+        }
+        energyBoundary = boundaryValue;
+
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getCostOptimizationBoundary();
-        economicalBoundary = Float.parseFloat(ppString);
+        boundaryValue = Long.MAX_VALUE;
+        if (ppString != null) {
+            boundaryValue = Long.parseLong(ppString);
+            if (boundaryValue <= 0) {
+                boundaryValue = Long.MAX_VALUE;
+            }
+        }
+        economicalBoundary = boundaryValue;
+
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPriceRequirement();
-        priceBoundary = Float.parseFloat(ppString);
+        boundaryValue = Long.MAX_VALUE;
+        if (ppString != null) {
+            boundaryValue = Long.parseLong(ppString);
+            if (boundaryValue <= 0) {
+                boundaryValue = Long.MAX_VALUE;
+            }
+        }
+        priceBoundary = boundaryValue;
+
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPowerRequirement();
-        powerBoundary = Float.parseFloat(ppString);
+        boundaryValue = Long.MAX_VALUE;
+        if (ppString != null) {
+            boundaryValue = Long.parseLong(ppString);
+            if (boundaryValue <= 0) {
+                boundaryValue = Long.MAX_VALUE;
+            }
+        }
+        powerBoundary = boundaryValue;
+
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getOptimizationParameter();
         String opParam = ppString.toLowerCase();
         if (opParam.equals("energy")) {
             optimizationParameter = OptimizationParameter.ENERGY;
-        } else if (opParam.equals("cost")) {
-            optimizationParameter = OptimizationParameter.COST;
         } else {
-            optimizationParameter = OptimizationParameter.TIME;
+            if (opParam.equals("cost")) {
+                optimizationParameter = OptimizationParameter.COST;
+            } else {
+                optimizationParameter = OptimizationParameter.TIME;
+            }
         }
         parseComponents(ovf);
     }
@@ -198,23 +240,23 @@ public class Configuration {
                 System.out.println("Idle Cost: " + (idleCost == null ? "-" : idleCost.getCharges()));
                 System.out.println("Events");
                 for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
-                	int implCount = CoreManager.getCoreImplementations(coreId).length;
-                	System.out.println("\tCore " + coreId);
-                	for (int implId = 0; implId < implCount; implId++) {
-                		System.out.println("\t\tImplementation " + implId);
-                		System.out.println("\t\t\t Weight: " + eventWeights[coreId][implId]);
-                		System.out.println("\t\t\t Time: " + eventTimes[coreId][implId]);
-                		Cost c = eventCosts[coreId][implId];
-                		if (c == null) {
-                			System.out.println("\t\t\t Power: -W");
-                			System.out.println("\t\t\t Energy: -J");
-                			System.out.println("\t\t\t Cost: -€");
-                		} else {
-                			System.out.println("\t\t\t Power: " + c.getPowerValue() + "W");
-                			System.out.println("\t\t\t Energy: " + c.getPowerValue() * eventTimes[coreId][implId] / 1000 + "J");
-                			System.out.println("\t\t\t Cost: " + c.getCharges() + "€");
-                		}
-                	}
+                    int implCount = CoreManager.getCoreImplementations(coreId).length;
+                    System.out.println("\tCore " + coreId);
+                    for (int implId = 0; implId < implCount; implId++) {
+                        System.out.println("\t\tImplementation " + implId);
+                        System.out.println("\t\t\t Weight: " + eventWeights[coreId][implId]);
+                        System.out.println("\t\t\t Time: " + eventTimes[coreId][implId]);
+                        Cost c = eventCosts[coreId][implId];
+                        if (c == null) {
+                            System.out.println("\t\t\t Power: -W");
+                            System.out.println("\t\t\t Energy: -J");
+                            System.out.println("\t\t\t Cost: -€");
+                        } else {
+                            System.out.println("\t\t\t Power: " + c.getPowerValue() + "W");
+                            System.out.println("\t\t\t Energy: " + c.getPowerValue() * eventTimes[coreId][implId] / 1000 + "J");
+                            System.out.println("\t\t\t Cost: " + c.getCharges() + "€");
+                        }
+                    }
                 }
 
                 String propertyValue = vs.getProductSectionArray()[0].getPropertyByKey("asceticPMUser").getValue();
@@ -245,7 +287,7 @@ public class Configuration {
         proc.setComputingUnits(coreCount);
         proc.setSpeed(cpuspeed);
         rd.addProcessor(proc);
-        
+
         int memory = vs.getVirtualHardwareSection().getMemorySize();
         if (memory > 0) {
             rd.setMemorySize((float) memory / 1024f);
@@ -288,7 +330,7 @@ public class Configuration {
     public static float getEnergyBoundary() {
         return energyBoundary;
     }
-    
+
     public static float getPowerBoundary() {
         return powerBoundary;
     }
@@ -296,7 +338,7 @@ public class Configuration {
     public static float getEconomicalBoundary() {
         return economicalBoundary;
     }
-    
+
     public static float getPriceBoundary() {
         return priceBoundary;
     }
