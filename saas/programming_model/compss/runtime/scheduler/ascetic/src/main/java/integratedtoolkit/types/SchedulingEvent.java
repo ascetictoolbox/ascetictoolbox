@@ -129,7 +129,7 @@ public abstract class SchedulingEvent<P extends Profile, T extends WorkerResourc
 
                 //Fill previous gap space
                 if (gap.getInitialTime() != gapActionStart) {
-                    Gap previousGap = new Gap(gap.getInitialTime(), gapActionStart, gap.getOrigin(), gap.getResources(), 0);
+                    Gap previousGap = new Gap(gap.getInitialTime(), gapActionStart, gap.getOrigin(), gap.getResources().copy(), 0);
                     state.replaceTmpGap(gap, previousGap);
                     availableGaps = fillGap(worker, previousGap, rescheduledActions, state);
                 } else {

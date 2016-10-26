@@ -11,18 +11,11 @@ public class Gap {
     private final ResourceDescription resources;
     private final int capacity;
 
-    public Gap(long start, AllocatableAction<?,?> origin, ResourceDescription resources, int capacity) {
-        this.initialTime = start;
-        this.origin = origin;
-        this.resources = resources.copy();
-        this.capacity = capacity;
-    }
-
     public Gap(long start, long endTime, AllocatableAction<?,?> origin, ResourceDescription resources, int capacity) {
         this.initialTime = start;
         this.endTime = endTime;
         this.origin = origin;
-        this.resources = resources.copy();
+        this.resources = resources;
         this.capacity = capacity;
     }
 

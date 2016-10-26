@@ -307,7 +307,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
 
         if (expectedStart == Long.MAX_VALUE) {
             //There is some data dependency with blocked tasks in some resource
-            Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
+            Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements().copy(), 0);
             AsceticSchedulingInformation dbaDSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
             dbaDSI.lock();
             schedInfo.lock();
