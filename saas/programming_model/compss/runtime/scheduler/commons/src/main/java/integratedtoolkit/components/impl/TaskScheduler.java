@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
 import org.apache.log4j.Logger;
 
@@ -44,11 +43,24 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     protected static final boolean debug = logger.isDebugEnabled();
 
     private final ActionSet<P, T> blockedActions = new ActionSet<P, T>();
-    private int[] readyCounts = new int[CoreManager.getCoreCount()];
+    private int[] readyCounts;
     private final HashMap<Worker<T>, ResourceScheduler<P, T>> workers = new HashMap<Worker<T>, ResourceScheduler<P, T>>();
     private final ResourceOptimizer ro = getResourceOptimizer();
+    private Profile[][] offVMsProfiles;
 
     public TaskScheduler() {
+
+        int coreCount = 0;
+        readyCounts = new int[CoreManager.getCoreCount()];
+        for (int coreId = 0; coreId < coreCount; coreId++) {
+            int implCount = CoreManager.getNumberCoreImplementations(coreId);
+            Profile[] implProfiles = new Profile[implCount];
+            for (int implId = 0; implId < implCount; implId++) {
+                implProfiles[implId] = new Profile();
+            }
+            offVMsProfiles[coreId] = implProfiles;
+        }
+
         if (ro != null) {
             ro.start();
         }
@@ -61,7 +73,32 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
      */
     public final void coreElementsUpdated() {
         blockedActions.updateCoreCount();
-        readyCounts = new int[CoreManager.getCoreCount()];
+        int coreCount = CoreManager.getCoreCount();
+        int oldCoreCount = offVMsProfiles.length;
+        readyCounts = new int[coreCount];
+        Profile[][] offVMsProfiles = new Profile[coreCount][];
+        int coreId = 0;
+        for (; coreId < oldCoreCount; coreId++) {
+            int oldImplCount = offVMsProfiles[coreId].length;
+            int implCount = CoreManager.getNumberCoreImplementations(coreId);
+            if (oldImplCount != implCount) {
+                Profile[] implProfiles = new Profile[implCount];
+                System.arraycopy(this.offVMsProfiles[coreId], 0, implProfiles, 0, oldImplCount);
+                for (int implId = oldImplCount; implId < implCount; implId++) {
+                    implProfiles[implId] = new Profile();
+                }
+                offVMsProfiles[coreId] = implProfiles;
+            }
+        }
+        for (; coreId < coreCount; coreId++) {
+            int implCount = CoreManager.getNumberCoreImplementations(coreId);
+            Profile[] implProfiles = new Profile[implCount];
+            for (int implId = 0; implId < implCount; implId++) {
+                implProfiles[implId] = new Profile();
+            }
+            offVMsProfiles[coreId] = implProfiles;
+        }
+        this.offVMsProfiles = offVMsProfiles;
     }
 
     /**
@@ -378,6 +415,14 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         if (worker.getExecutableCores().isEmpty()) {
             synchronized (workers) {
                 workers.remove(worker.getResource());
+                int coreCount = CoreManager.getCoreCount();
+                LinkedList<Implementation<T>>[] runningCoreImpls = worker.getExecutableImpls();
+                for (int coreId = 0; coreId < coreCount; coreId++) {
+                    for (Implementation<T> impl : runningCoreImpls[coreId]) {
+                        int implId = impl.getImplementationId();
+                        offVMsProfiles[coreId][implId].accumulate(worker.getProfile(impl));
+                    }
+                }
             }
             this.workerRemoved(worker);
 
@@ -432,6 +477,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         }
         return blockedActions;
     }
+
     public String getCoresMonitoringData(String prefix) {
         // Create size structure for profiles
         int coreCount = CoreManager.getCoreCount();
@@ -444,6 +490,13 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             }
         }
 
+        for (int i = 0; i < coreCount; ++i) {
+            int implsCount = CoreManager.getNumberCoreImplementations(i);
+            for (int j = 0; j < implsCount; ++j) {
+                implementationsProfile[i][j].accumulate(offVMsProfiles[i][j]);
+            }
+        }
+
         // Retrieve information from workers
         for (ResourceScheduler<P, T> ui : workers.values()) {
             if (ui == null) {
@@ -453,8 +506,8 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             for (int coreId = 0; coreId < coreCount; coreId++) {
                 for (Implementation<T> impl : runningCoreImpls[coreId]) {
                     int implId = impl.getImplementationId();
-                    logger.debug("R[" + ui+ "] Accumulating " + implementationsProfile[coreId][implId] + " from "
-                    		+ ui.getProfile(impl));
+                    logger.debug("R[" + ui + "] Accumulating " + implementationsProfile[coreId][implId] + " from "
+                            + ui.getProfile(impl));
                     implementationsProfile[coreId][implId].accumulate(ui.getProfile(impl));
                 }
             }
@@ -465,14 +518,14 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         coresInfo.append(prefix).append("<CoresInfo>").append("\n");
         for (int coreId = 0; coreId < implementationsProfile.length; ++coreId) {
             for (int implId = 0; implId < implementationsProfile[coreId].length; ++implId) {
-            	String signature = "";
-            	Implementation i = CoreManager.getCoreImplementations(coreId)[implId];
-            	for (Entry<String, Implementation> e : CoreManager.SIGNATURE_TO_IMPL.entrySet()){
-            		if (e.getValue().equals(i)){
-            			signature = e.getKey();
-            		}
-            	}
-            	coresInfo.append(prefix).append("\t").append("<Core id=\"").append(coreId).append("\" signature=\"" + signature + "\">").append("\n");
+                String signature = "";
+                Implementation i = CoreManager.getCoreImplementations(coreId)[implId];
+                for (Entry<String, Implementation> e : CoreManager.SIGNATURE_TO_IMPL.entrySet()) {
+                    if (e.getValue().equals(i)) {
+                        signature = e.getKey();
+                    }
+                }
+                coresInfo.append(prefix).append("\t").append("<Core id=\"").append(coreId).append("\" signature=\"" + signature + "\">").append("\n");
 
                 coresInfo.append(prefix).append("\t\t").append("<MeanExecutionTime>").append(implementationsProfile[coreId][implId].getAverageExecutionTime()).append("</MeanExecutionTime>\n");
                 coresInfo.append(prefix).append("\t\t").append("<MinExecutionTime>").append(implementationsProfile[coreId][implId].getMinExecutionTime()).append("</MinExecutionTime>\n");
@@ -482,7 +535,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
 
             }
         }
-      
+
         coresInfo.append(prefix).append("</CoresInfo>").append("\n");
 
         return coresInfo.toString();
@@ -525,7 +578,6 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         coresInfo.append(prefix).append("</CoresInfo>\n");
         return coresInfo.toString();
     }*/
-
     public final WorkloadState getWorkload() {
         WorkloadState response = createWorkloadState();
         updateWorkloadState(response);
