@@ -65,6 +65,7 @@ public class Ascetic {
             e.printStackTrace();
         }
 
+        /*
         try {
 
             initCost = APP_MANAGER.getAccumulatedCost();
@@ -72,7 +73,7 @@ public class Ascetic {
         } catch (Exception e) {
             logger.error("Error getting accumulated cost", e);
             e.printStackTrace();
-        }
+        }*/
 
         monitor = new AsceticMonitor();
         monitor.setName("Ascetic Monitor");
@@ -383,8 +384,8 @@ public class Ascetic {
             }
             System.out.println("***** Ascetic Monitoring stopped ******");
             System.out.println("-Elapsed Time: " + Ascetic.getAccumulatedTime());
-            System.out.println("-Total Cost: " + Ascetic.getAccumulatedCost() + "(" + getExpectedAccumulatedCost() + ")");
-            System.out.println("-Total Energy: " + Ascetic.getAccumulatedEnergy() + "(" + getExpectedAccumulatedEnergy() + ")");
+            System.out.println("-Total Cost: " + Ascetic.getExpectedAccumulatedCost());
+            System.out.println("-Total Energy: " + Ascetic.getExpectedAccumulatedEnergy());
             System.out.println("***************************************");
         }
     }
