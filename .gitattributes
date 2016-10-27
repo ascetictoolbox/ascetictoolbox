@@ -4710,11 +4710,16 @@ saas/programming_model/compss/tools/monitor/src/main/webapp/images/colors/7.png 
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/colors/8.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/colors/9.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/blue.jpg -text
+saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/blue.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/green.jpg -text
+saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/green.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/green_original.jpg -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/red.jpg -text
+saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/red.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/red_original.jpg -text
+saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/signal.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/yellow.jpg -text
+saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/yellow.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/state/yellow_original.jpg -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/style/confirm.png -text
 saas/programming_model/compss/tools/monitor/src/main/webapp/images/style/discard.png -text
