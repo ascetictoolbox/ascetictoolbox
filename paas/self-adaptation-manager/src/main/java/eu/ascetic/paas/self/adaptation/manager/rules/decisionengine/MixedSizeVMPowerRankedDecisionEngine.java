@@ -133,6 +133,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             //get the next VM to delete
             if (!vmsList.isEmpty()) {
                 toRemove = vmsList.get(vmsList.size() - 1);
+                vmsList.remove(toRemove);
             } else {
                 Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");                
                 break; //exit when no more vms to delete
