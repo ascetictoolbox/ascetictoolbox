@@ -8,7 +8,6 @@ import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.Implementation;
-import integratedtoolkit.types.MethodImplementation;
 import integratedtoolkit.types.Profile;
 import integratedtoolkit.types.ResourceCreationRequest;
 import integratedtoolkit.types.SchedulingInformation;
@@ -49,9 +48,9 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
     private Profile[][] offVMsProfiles;
 
     public TaskScheduler() {
-
-        int coreCount = 0;
-        readyCounts = new int[CoreManager.getCoreCount()];
+        int coreCount = CoreManager.getCoreCount();
+        readyCounts = new int[coreCount];
+        offVMsProfiles = new Profile[coreCount][];
         for (int coreId = 0; coreId < coreCount; coreId++) {
             int implCount = CoreManager.getNumberCoreImplementations(coreId);
             Profile[] implProfiles = new Profile[implCount];
@@ -79,7 +78,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
         Profile[][] offVMsProfiles = new Profile[coreCount][];
         int coreId = 0;
         for (; coreId < oldCoreCount; coreId++) {
-            int oldImplCount = offVMsProfiles[coreId].length;
+            int oldImplCount = this.offVMsProfiles[coreId].length;
             int implCount = CoreManager.getNumberCoreImplementations(coreId);
             if (oldImplCount != implCount) {
                 Profile[] implProfiles = new Profile[implCount];
@@ -506,8 +505,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
             for (int coreId = 0; coreId < coreCount; coreId++) {
                 for (Implementation<T> impl : runningCoreImpls[coreId]) {
                     int implId = impl.getImplementationId();
-                    logger.debug("R[" + ui + "] Accumulating " + implementationsProfile[coreId][implId] + " from "
-                            + ui.getProfile(impl));
+                    logger.debug("R[" + ui + "] Accumulating " + implementationsProfile[coreId][implId] + " from " + ui.getProfile(impl));
                     implementationsProfile[coreId][implId].accumulate(ui.getProfile(impl));
                 }
             }

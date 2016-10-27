@@ -48,10 +48,13 @@ public class Profile {
     }
 
     public void accumulate(Profile profile) {
-        minTime = Math.min(minTime, profile.minTime);
-        averageTime = (profile.executions * profile.averageTime + executions * averageTime) / (executions + profile.executions);
-        maxTime = Math.max(maxTime, profile.maxTime);
-        executions += profile.executions;
+        long totalExecutions = executions + profile.executions;
+        if (totalExecutions > 0) {
+            minTime = Math.min(minTime, profile.minTime);
+            averageTime = (profile.executions * profile.averageTime + executions * averageTime) / totalExecutions;
+            maxTime = Math.max(maxTime, profile.maxTime);
+            executions += profile.executions;
+        }
     }
 
     public String toString() {
