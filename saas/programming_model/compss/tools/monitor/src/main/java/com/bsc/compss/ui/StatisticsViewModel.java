@@ -36,6 +36,12 @@ public class StatisticsViewModel {
     @Command
     @NotifyChange("statistics")
     public void update (String[] statisticsParameters) {
+    	String[] units = new String[statisticsParameters.length];
+    	
+    	units[0] = " €";
+    	units[1] = " Wh";
+    	units[2] = " s";
+    	
     	logger.debug("Updating Statistics ViewModel...");
     	//Erase all current resources
     	for (StatisticParameter param : statistics) {
@@ -44,7 +50,7 @@ public class StatisticsViewModel {
     	
     	//Import new values
     	for (int i = 0; i < statistics.size(); ++i) {
-    		statistics.get(i).setValue(statisticsParameters[i]);
+    		statistics.get(i).setValue(statisticsParameters[i] + units[i]);
     	}
     	
     	logger.debug("Statistics ViewModel updated");

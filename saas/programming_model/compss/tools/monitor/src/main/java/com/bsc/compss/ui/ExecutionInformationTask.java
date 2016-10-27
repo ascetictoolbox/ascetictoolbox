@@ -31,20 +31,20 @@ public class ExecutionInformationTask {
     public void setTaskStatus(String status) {
         if (status.equals(Constants.STATUS_TASK_CREATING)) {
             this.status = status;
-            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".jpg");
+            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".png");
         } else if (status.equals(Constants.STATUS_TASK_RUNNING)) {
             this.status = status;
-            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_RUNNING + ".jpg");
+            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_RUNNING + ".png");
         } else if (status.equals(Constants.STATUS_TASK_DONE)) {
             this.status = status;
-            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_DONE + ".jpg");
+            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_DONE + ".png");
         } else if (status.equals(Constants.STATUS_TASK_FAILED)) {
             this.status = status;
-            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".jpg");
+            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".png");
         } else {
             //Default value for error
             this.status = Constants.STATUS_TASK_FAILED;
-            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".jpg");
+            this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".png");
         }
     }
 
@@ -141,7 +141,7 @@ public class ExecutionInformationTask {
         	this.resubmited = false;
         	this.host = new String("");
         	this.status = new String(Constants.STATUS_CREATION);
-        	this.color = new String(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".jpg");
+        	this.color = new String(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".png");
         	this.executable = new String("");
         	this.arguments = new String("");
         }
@@ -151,7 +151,7 @@ public class ExecutionInformationTask {
             this.resubmited = resubmited;
             this.host = host;
             this.status = new String(Constants.STATUS_CREATION);
-            this.color = new String(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".jpg");
+            this.color = new String(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".png");
             this.executable = executable;
             this.arguments = args;
         }
@@ -185,20 +185,20 @@ public class ExecutionInformationTask {
         public void setStatus(String status) {
             if (status.equals(Constants.STATUS_TASK_CREATING)) {
                 this.status = status;
-                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".jpg");
+                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_CREATING + ".png");
             } else if (status.equals(Constants.STATUS_TASK_RUNNING)) {
                 this.status = status;
-                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_RUNNING + ".jpg");
+                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_RUNNING + ".png");
             } else if (status.equals(Constants.STATUS_TASK_DONE)) {
                 this.status = status;
-                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_DONE + ".jpg");
+                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_DONE + ".png");
             } else if (status.equals(Constants.STATUS_TASK_FAILED)) {
                 this.status = status;
-                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".jpg");
+                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".png");
             } else {
                 //Default value for error
                 this.status = Constants.STATUS_TASK_FAILED;
-                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".jpg");
+                this.setColor(File.separator + "images" + File.separator + "state" + File.separator + Constants.COLOR_TASK_FAILED + ".png");
             }
         }
 
