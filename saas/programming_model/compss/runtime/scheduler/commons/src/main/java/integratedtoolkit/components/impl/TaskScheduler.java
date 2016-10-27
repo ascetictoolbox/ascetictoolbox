@@ -525,8 +525,7 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                         signature = e.getKey();
                     }
                 }
-                coresInfo.append(prefix).append("\t").append("<Core id=\"").append(coreId).append("\" signature=\"" + signature + "\">").append("\n");
-
+                coresInfo.append(prefix).append("\t").append("<Core id=\"").append(coreId).append("\" signature=\"").append(signature).append("\">").append("\n");
                 coresInfo.append(prefix).append("\t\t").append("<MeanExecutionTime>").append(implementationsProfile[coreId][implId].getAverageExecutionTime()).append("</MeanExecutionTime>\n");
                 coresInfo.append(prefix).append("\t\t").append("<MinExecutionTime>").append(implementationsProfile[coreId][implId].getMinExecutionTime()).append("</MinExecutionTime>\n");
                 coresInfo.append(prefix).append("\t\t").append("<MaxExecutionTime>").append(implementationsProfile[coreId][implId].getMaxExecutionTime()).append("</MaxExecutionTime>\n");

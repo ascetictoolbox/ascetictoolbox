@@ -1,6 +1,5 @@
 package integratedtoolkit.types;
 
-
 public class Profile {
 
     private long executions;
@@ -14,7 +13,7 @@ public class Profile {
         this.minTime = Long.MAX_VALUE;
         this.averageTime = 100;
         this.maxTime = Long.MIN_VALUE;
-        startTime=System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
     }
 
     public void start() {
@@ -50,7 +49,7 @@ public class Profile {
 
     public void accumulate(Profile profile) {
         minTime = Math.min(minTime, profile.minTime);
-        averageTime = (profile.averageTime + executions * averageTime) / (executions + 1);
+        averageTime = (profile.executions * profile.averageTime + executions * averageTime) / (executions + profile.executions);
         maxTime = Math.max(maxTime, profile.maxTime);
         executions += profile.executions;
     }
