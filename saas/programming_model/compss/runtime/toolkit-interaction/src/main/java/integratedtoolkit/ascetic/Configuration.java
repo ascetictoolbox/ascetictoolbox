@@ -88,54 +88,57 @@ public class Configuration {
         componentIdleCost = new HashMap<String, Cost>();
 
         String ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPerformanceOptimizationBoundary();
-        long boundaryValue = Long.MAX_VALUE;
+        long boundaryLong = Long.MAX_VALUE;
         if (ppString != null) {
-            boundaryValue = Long.parseLong(ppString);
-            if (boundaryValue <= 0) {
-                boundaryValue = Long.MAX_VALUE;
+            boundaryLong = Long.parseLong(ppString);
+            if (boundaryLong <= 0) {
+                boundaryLong = Long.MAX_VALUE;
             }
         }
-        performanceBoundary = boundaryValue;
+        performanceBoundary = boundaryLong;
 
+        
+        
+        float boundaryFloat=0;
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getEnergyOptimizationBoundary();
-        boundaryValue = Long.MAX_VALUE;
+        boundaryFloat = Float.MAX_VALUE;
         if (ppString != null) {
-            boundaryValue = Long.parseLong(ppString);
-            if (boundaryValue <= 0) {
-                boundaryValue = Long.MAX_VALUE;
+            boundaryFloat = Float.parseFloat(ppString);
+            if (boundaryFloat <= 0) {
+                boundaryFloat = Float.MAX_VALUE;
             }
         }
-        energyBoundary = boundaryValue;
+        energyBoundary = boundaryFloat;
 
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getCostOptimizationBoundary();
-        boundaryValue = Long.MAX_VALUE;
+        boundaryFloat = Float.MAX_VALUE;
         if (ppString != null) {
-            boundaryValue = Long.parseLong(ppString);
-            if (boundaryValue <= 0) {
-                boundaryValue = Long.MAX_VALUE;
+            boundaryFloat = Float.parseFloat(ppString);
+            if (boundaryFloat <= 0) {
+                boundaryFloat = Float.MAX_VALUE;
             }
         }
-        economicalBoundary = boundaryValue;
+        economicalBoundary = boundaryFloat;
 
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPriceRequirement();
-        boundaryValue = Long.MAX_VALUE;
+        boundaryFloat = Float.MAX_VALUE;
         if (ppString != null) {
-            boundaryValue = Long.parseLong(ppString);
-            if (boundaryValue <= 0) {
-                boundaryValue = Long.MAX_VALUE;
+            boundaryFloat = Float.parseFloat(ppString);
+            if (boundaryFloat <= 0) {
+                boundaryFloat = Float.MAX_VALUE;
             }
         }
-        priceBoundary = boundaryValue;
+        priceBoundary = boundaryFloat;
 
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getPowerRequirement();
-        boundaryValue = Long.MAX_VALUE;
+        boundaryFloat = Float.MAX_VALUE;
         if (ppString != null) {
-            boundaryValue = Long.parseLong(ppString);
-            if (boundaryValue <= 0) {
-                boundaryValue = Long.MAX_VALUE;
+            boundaryFloat = Float.parseFloat(ppString);
+            if (boundaryFloat <= 0) {
+                boundaryFloat = Float.MAX_VALUE;
             }
         }
-        powerBoundary = boundaryValue;
+        powerBoundary = boundaryFloat;
 
         ppString = ovf.getVirtualSystemCollection().getProductSectionAtIndex(0).getOptimizationParameter();
         String opParam = ppString.toLowerCase();
