@@ -363,6 +363,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
          */
         private List<Response> filterAdaptationHistory() {
             ArrayList<Response> answer = new ArrayList<>();
+            if (historyLengthSeconds == 0) {
+            //Ensure automatic removal of all previous history records, without further testing.
+                return answer;
+            }            
             long now = System.currentTimeMillis();
             now = now / 1000;
             long filterTime = now - historyLengthSeconds;
