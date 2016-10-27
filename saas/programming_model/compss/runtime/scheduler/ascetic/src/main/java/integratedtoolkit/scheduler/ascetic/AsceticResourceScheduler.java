@@ -141,7 +141,7 @@ public class AsceticResourceScheduler<P extends Profile, T extends WorkerResourc
             synchronized (gaps) {
                 if (opAction != null) {
                     ((AsceticSchedulingInformation) opAction.getSchedulingInfo()).addSuccessor(action);
-                    Gap opActionGap = new Gap(0, 0, opAction, null, 0);
+                    Gap opActionGap = new Gap(0, 0, opAction, action.getAssignedImplementation().getRequirements().copy(), 0);
                     ((AsceticSchedulingInformation) action.getSchedulingInfo()).addPredecessor(opActionGap);
                 } else {
                     scheduleUsingGaps(action, gaps);

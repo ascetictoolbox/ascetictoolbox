@@ -123,7 +123,7 @@ public class LocalOptimizationState {
     public void releaseResources(long expectedStart, AllocatableAction action) {
         if (action.getAssignedImplementation() != null) {
             Gap gap;
-            gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements(), 0);
+            gap = new Gap(expectedStart, Long.MAX_VALUE, action, action.getAssignedImplementation().getRequirements().copy(), 0);
             AsceticSchedulingInformation dsi = (AsceticSchedulingInformation) action.getSchedulingInfo();
             dsi.addGap();
             gaps.add(gap);
@@ -295,7 +295,7 @@ public class LocalOptimizationState {
         AsceticSchedulingInformation rbaDSI = (AsceticSchedulingInformation) resourceBlockingAction.getSchedulingInfo();
         rbaDSI.lock();
         rbaDSI.addSuccessor(action);
-        Gap opActionGap = new Gap(0, 0, resourceBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
+        Gap opActionGap = new Gap(0, 0, resourceBlockingAction, action.getAssignedImplementation().getRequirements().copy(), 0);
         aDSI.addPredecessor(opActionGap);
         rbaDSI.unlock();
         updateConsumptions(action);
@@ -306,7 +306,7 @@ public class LocalOptimizationState {
         AsceticSchedulingInformation dbaDSI = (AsceticSchedulingInformation) dataBlockingAction.getSchedulingInfo();
         dbaDSI.lock();
         dbaDSI.addSuccessor(action);
-        Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements(), 0);
+        Gap opActionGap = new Gap(0, 0, dataBlockingAction, action.getAssignedImplementation().getRequirements().copy(), 0);
         aDSI.addPredecessor(opActionGap);
         dbaDSI.unlock();
         updateConsumptions(action);
