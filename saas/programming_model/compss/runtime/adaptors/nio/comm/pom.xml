@@ -1,20 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
 	<!-- GENERAL INFORMATION -->
 	<groupId>eu.ascetic.saas.programming-model.runtime.adaptors.nio</groupId>
-	<artifactId>comons</artifactId>
+	<artifactId>comm</artifactId>
 	<packaging>jar</packaging>
 	<parent>
-	    	<groupId>eu.ascetic.saas.programming-model.runtime.adaptors</groupId>
+		<groupId>eu.ascetic.saas.programming-model.runtime.adaptors</groupId>
 		<artifactId>nio</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-	    	<relativePath>..</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
-
-
 	<!-- PROJECT INFORMATION -->
-	<name>COMPSs Back-end NIO Commons</name>
+	<name>COMPSs Back-end NIO Communication Library</name>
 	<description>Classes shared among the Master node and the workers when using the NIO communication library to submit tasks and transfer data.</description>
 	<url>http://www.bsc.es</url>
 	<inceptionYear>2014</inceptionYear>
@@ -28,26 +27,20 @@
 		<name>BSC</name>
 		<url>http://www.bsc.es</url>
 	</organization>
-  
 	<!-- DEPENDENCIES -->
 	<dependencies>
 		<dependency>
-			<groupId>eu.ascetic.saas.programming-model.runtime.adaptors</groupId>
-			<artifactId>commons</artifactId>
-			<version>${project.version}</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>eu.ascetic.saas.programming-model.model</groupId>
-			<artifactId>api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>eu.ascetic.saas.programming-model.runtime.adaptors.nio</groupId>
-			<artifactId>comm</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+       <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 	</dependencies>
-	
 	<!-- BUILD -->
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -60,7 +53,6 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			
 			<!-- Copia les dependencies a la carpeta lib-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -69,11 +61,11 @@
 					<execution>
 						<id>copy</id>
 						<phase>packaging</phase>
-						<goals> 
-							<goal>copy-dependencies</goal> 
-						</goals> 
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory> 
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 							<silent>true</silent>
 						</configuration>
 					</execution>

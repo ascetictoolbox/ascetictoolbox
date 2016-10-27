@@ -136,14 +136,12 @@ public class VM {
     }
 
     public void updateConsumptions(AppManager appManager) {
-    	System.out.println(" *** Update Consumptions ****");
         if (System.currentTimeMillis() - lastUpdate > UPDATE_FREQ) {
             idlePower = idlePower;
             idlePrice = idlePrice;
-            System.out.println(" *** Update Consumptions ****");
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
-                	System.out.println("\t\t CURRENT VALUES for " + getIPv4());
+//                	System.out.println("\t\t CURRENT VALUES for " + getIPv4());
                 	Cost c = null;
                     /*try {
                         c = appManager.getEstimations("" + vm.getId(), coreId, implId);
@@ -156,25 +154,25 @@ public class VM {
                     if (c != null) {
                         if (price[coreId][implId] <= 0) {
                             price[coreId][implId] = c.getCharges();
-                        }else{
+                        }/*else{
                         	System.out.println("\t\t\t Obtained: Charges are "+c.getCharges());
-                        }
+                        }*/
                         
                         if (power[coreId][implId] <= 0) {
                             power[coreId][implId] = c.getPowerValue();
-                        }else{
+                        }/*else{
                         	System.out.println("\t\t\t Obtained: Power are "+c.getPowerValue());
-                        }
+                        }*/
                     }/*else{
                     	System.out.println("Estimations returned null. Could not update the energy consumtion for"
                                 + " core " + coreId + " implementation " + implId
                                 + " in " + vm.getIp());
                         
-                    }*/
+                    }
                     System.out.println("\t\t Final VALUES for " + getIPv4()
                             + ": Core " + coreId + " impl " + implId
                             + " Power:  " + power[coreId][implId]
-                            + " Price: " + price[coreId][implId]);
+                            + " Price: " + price[coreId][implId]);*/
                 }
             }
             lastUpdate = System.currentTimeMillis();

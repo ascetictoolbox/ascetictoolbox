@@ -147,7 +147,7 @@ public class NIOWorker extends NIOAgent {
 	@Override
 	public void setMaster(NIONode master) {
 		if (masterNode == null) {
-			masterNode = new NIONode(master.ip, masterPort);
+			masterNode = new NIONode(master.getIp(), masterPort);
 		}
 	}
 

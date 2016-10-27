@@ -288,7 +288,7 @@ public abstract class NIOAgent {
                 NIOTracer.emitDataTransferEvent(source.getName());
             }
             NIONode nn = uri.getHost();
-            if (nn.ip == null) {
+            if (nn.getIp() == null) {
                 nn = masterNode;
             }
             Connection c = null;
