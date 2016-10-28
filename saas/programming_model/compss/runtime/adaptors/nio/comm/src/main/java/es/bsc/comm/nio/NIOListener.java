@@ -27,8 +27,8 @@ import es.bsc.comm.nio.event.ConnectionEstablished;
 import es.bsc.comm.nio.event.EmptyBufferEvent;
 import java.util.HashSet;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 
 public class NIOListener extends Thread {
