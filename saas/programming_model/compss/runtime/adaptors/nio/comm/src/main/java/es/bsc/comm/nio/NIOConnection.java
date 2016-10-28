@@ -20,9 +20,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.LinkedList;
+import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 // NIO specific transfer
@@ -30,7 +31,7 @@ public class NIOConnection implements Connection, InternalConnection {
 
     protected static final Logger LOGGER = LogManager.getLogger(TransferManager.LOGGER_NAME);
 
-    private static final LinkedList<NIOConnection> PENDING_ESTABLISH_CONNECTIONS = new LinkedList<NIOConnection>();
+    private static final LinkedList<NIOConnection> PENDING_ESTABLISH_CONNECTIONS = new LinkedList<>();
 
     // Socket where transfer is made
     private SocketChannel sc;
@@ -67,10 +68,10 @@ public class NIOConnection implements Connection, InternalConnection {
         this.node = n;
 
         currentStage = null;
-        pendingStages = new LinkedList<Stage>();
+        pendingStages = new LinkedList<>();
 
-        receiveBuffer = new LinkedList<ByteBuffer>();
-        sendBuffer = new LinkedList<ByteBuffer>();
+        receiveBuffer = new LinkedList<>();
+        sendBuffer = new LinkedList<>();
 
         established = false;
         closedSocket = false;
@@ -217,6 +218,7 @@ public class NIOConnection implements Connection, InternalConnection {
         }
     }
 
+    @Override
     public void established() {
         established = true;
         handleNextTransfer();
@@ -463,7 +465,7 @@ public class NIOConnection implements Connection, InternalConnection {
         PENDING_ESTABLISH_CONNECTIONS.clear();
     }
 
-    public LinkedList<ByteBuffer> getSendBuffer() {
+    public List<ByteBuffer> getSendBuffer() {
         return sendBuffer;
     }
 

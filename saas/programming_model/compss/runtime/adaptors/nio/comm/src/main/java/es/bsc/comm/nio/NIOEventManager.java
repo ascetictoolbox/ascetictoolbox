@@ -67,7 +67,7 @@ public class NIOEventManager extends EventManager<NIOEvent> {
         LOGGER.debug("NIOEventManager handle specific stop");
         NIOListener.shutdown(closingConnection);
 
-        LinkedList<NIOEvent> privateEvents = new LinkedList<NIOEvent>();
+        LinkedList<NIOEvent> privateEvents = new LinkedList<>();
         while (nioListenerOn) {
             // Copy the events to a private list
             synchronized (this) {

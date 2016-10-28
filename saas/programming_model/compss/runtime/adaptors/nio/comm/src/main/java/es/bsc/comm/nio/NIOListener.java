@@ -27,8 +27,9 @@ import es.bsc.comm.nio.event.ConnectionEstablished;
 import es.bsc.comm.nio.event.EmptyBufferEvent;
 import java.util.HashSet;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class NIOListener extends Thread {
 
@@ -39,6 +40,7 @@ public class NIOListener extends Thread {
         private final int type;
         private final boolean close;
 
+
         public ChangeRequest(NIOConnection nc, Channel socket, int type, boolean close) {
             this.connection = nc;
             this.channel = socket;
@@ -47,12 +49,13 @@ public class NIOListener extends Thread {
         }
     }
 
+
     private static final Logger LOGGER = LogManager.getLogger(TransferManager.LOGGER_NAME);
 
-    private static final LinkedList<ChangeRequest> PENDING_CHANGES = new LinkedList<ChangeRequest>();
-    private static final HashSet<SocketChannel> OPEN_CHANNELS = new HashSet<SocketChannel>();
-    private static final HashMap<SocketChannel, ChangeRequest> PENDING_INTEREST = new HashMap<SocketChannel, ChangeRequest>();
-    private static final HashMap<Integer, ServerSocketChannel> SERVERS = new HashMap<Integer, ServerSocketChannel>();
+    private static final LinkedList<ChangeRequest> PENDING_CHANGES = new LinkedList<>();
+    private static final HashSet<SocketChannel> OPEN_CHANNELS = new HashSet<>();
+    private static final HashMap<SocketChannel, ChangeRequest> PENDING_INTEREST = new HashMap<>();
+    private static final HashMap<Integer, ServerSocketChannel> SERVERS = new HashMap<>();
 
     private static final String DEFAULT_ADDRESS_IP = "127.0.0.1";
     private static final int BACK_LOG = 7_000;
@@ -66,6 +69,7 @@ public class NIOListener extends Thread {
     private static NIOEventManager eventManager;
 
     private static NIOConnection closingConnection;
+
 
     public NIOListener() {
         super();
@@ -95,7 +99,7 @@ public class NIOListener extends Thread {
             ssc.configureBlocking(false);
             ssc.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 
-            InetSocketAddress inet = null;
+            InetSocketAddress inet;
             if (ip == null) {
                 inet = new InetSocketAddress(port);
             } else {
@@ -128,7 +132,8 @@ public class NIOListener extends Thread {
 
     public void closeConnections() {
         NIOConnection.abortPendingConnections();
-        for (SocketChannel sc : (SocketChannel[]) OPEN_CHANNELS.toArray()) {
+        for (Object o : OPEN_CHANNELS.toArray()) {
+            SocketChannel sc = (SocketChannel) o;
             if (closingConnection != null && closingConnection.getSocket() == sc) {
                 continue;
             }
@@ -248,25 +253,20 @@ public class NIOListener extends Thread {
 
     private void processKeys(Iterator<SelectionKey> selectedKeys) {
         while (selectedKeys.hasNext()) {
-            SelectionKey key = (SelectionKey) selectedKeys.next();
+            SelectionKey key = selectedKeys.next();
             selectedKeys.remove();
             if (!key.isValid()) {
                 continue;
             }
+
             if (key.isAcceptable()) {
                 accept(key);
-            } else {
-                if (key.isConnectable()) {
-                    connect(key);
-                } else {
-                    if (key.isReadable()) {
-                        read(key);
-                    } else {
-                        if (key.isWritable()) {
-                            write(key);
-                        }
-                    }
-                }
+            } else if (key.isConnectable()) {
+                connect(key);
+            } else if (key.isReadable()) {
+                read(key);
+            } else if (key.isWritable()) {
+                write(key);
             }
         }
     }
@@ -447,9 +447,9 @@ public class NIOListener extends Thread {
     private void write(SelectionKey key) {
         SocketChannel sc = (SocketChannel) key.channel();
         NIOConnection nc = (NIOConnection) key.attachment();
-        LinkedList<ByteBuffer> sendBuffer = nc.getSendBuffer();
+        LinkedList<ByteBuffer> sendBuffer = (LinkedList<ByteBuffer>) nc.getSendBuffer();
 
-        ByteBuffer writeBuffer = null;
+        ByteBuffer writeBuffer;
         synchronized (sendBuffer) {
             // If there is no data to write
             if (sendBuffer.isEmpty()) {
@@ -486,11 +486,9 @@ public class NIOListener extends Thread {
                     if (count == 0) {
                         changeInterest(nc, sc, SelectionKey.OP_READ);
                         eventManager.addEvent(new EmptyBufferEvent(nc));
-                    } else {
-                        if (count < NIOProperties.getMinBufferedPackets()) {
-                            // Ask TransferManager to enqueue more buffers
-                            eventManager.addEvent(new LowBufferEvent<NIOConnection>(nc));
-                        }
+                    } else if (count < NIOProperties.getMinBufferedPackets()) {
+                        // Ask TransferManager to enqueue more buffers
+                        eventManager.addEvent(new LowBufferEvent<NIOConnection>(nc));
                     }
                 }
             }

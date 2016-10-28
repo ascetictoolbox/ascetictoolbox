@@ -14,6 +14,7 @@ public class NIONode implements Node, Externalizable {
 
 
     public NIONode() {
+        // Only used for externalization
     }
 
     public NIONode(String ip, int port) {
@@ -35,23 +36,26 @@ public class NIONode implements Node, Externalizable {
     public int compareTo(Node no) {
         if (no instanceof NIONode) {
             NIONode n = (NIONode) no;
+            
             if (ip == null) {
                 if (n.ip == null) {
                     return n.port - port;
                 } else {
                     return 1;
                 }
+            }
+            
+            // IP is not null, check node IP
+            if (n.ip == null) {
+                return -1;
+            } 
+
+            // IP is not null, node IP is not null
+            int ipDiff = n.ip.compareTo(ip);
+            if (ipDiff == 0) {
+                return 0;
             } else {
-                if (n.ip == null) {
-                    return -1;
-                } else {
-                    int ipDiff = n.ip.compareTo(ip);
-                    if (ipDiff == 0) {
-                        return 0;
-                    } else {
-                        return n.port - port;
-                    }
-                }
+                return n.port - port;
             }
         } else {
             return no.getClass().getName().compareTo(this.getClass().getName());

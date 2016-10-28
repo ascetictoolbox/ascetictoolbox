@@ -20,6 +20,7 @@ public class EmptyBufferEvent extends NIOEvent {
         getConnection().emptySendBuffer();
     }
 
+    @Override
     public String toString() {
         return "Write Empty Event for socket@" + getConnection().hashCode();
     }
