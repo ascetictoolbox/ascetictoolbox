@@ -417,9 +417,12 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                 int coreCount = CoreManager.getCoreCount();
                 LinkedList<Implementation<T>>[] runningCoreImpls = worker.getExecutableImpls();
                 for (int coreId = 0; coreId < coreCount; coreId++) {
-                    for (Implementation<T> impl : runningCoreImpls[coreId]) {
-                        int implId = impl.getImplementationId();
-                        offVMsProfiles[coreId][implId].accumulate(worker.getProfile(impl));
+                    Implementation[] impls = CoreManager.getCoreImplementations(coreId);
+                    for (Implementation impl : impls) {
+                        Profile p = worker.getProfile(impl);
+                        if (p != null) {
+                            offVMsProfiles[coreId][impl.getImplementationId()].accumulate(p);
+                        }
                     }
                 }
             }
