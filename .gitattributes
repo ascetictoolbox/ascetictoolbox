@@ -4300,6 +4300,7 @@ saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/com
 saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/NIONode.java -text
 saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/NIOProperties.java -text
 saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/NIOServerConnection.java -text
+saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/NonInstantiableException.java -text
 saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/event/ClosedChannelEvent.java -text
 saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/event/ConnectionEstablished.java -text
 saas/programming_model/compss/runtime/adaptors/nio/comm/src/main/java/es/bsc/comm/nio/event/EmptyBufferEvent.java -text
