@@ -65,7 +65,6 @@ public class AllocatableActionTest<P extends Profile, T extends WorkerResourceDe
     /**
      * Test of execute method, of class AllocatableAction.
      */
-    @Test
     public void testExecute() throws BlockedActionException, UnassignedActionException, InvalidSchedulingException {
         //Create one instance 
         prepare(1);
@@ -80,7 +79,6 @@ public class AllocatableActionTest<P extends Profile, T extends WorkerResourceDe
     /**
      * Test of end method, of class AllocatableAction.
      */
-    @Test
     public void testEndSuccessors() {
         testEndNoSuccessors();
         testEndDataSuccessors();
@@ -430,7 +428,7 @@ public class AllocatableActionTest<P extends Profile, T extends WorkerResourceDe
         }
     }
 
-    @Test
+
     public void testError() {
         testOneError();
         testOneFail();
