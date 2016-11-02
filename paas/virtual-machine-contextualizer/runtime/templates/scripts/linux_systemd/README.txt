@@ -8,7 +8,6 @@ Install the scripts to the following directories:
 Make the files executable
 
 	chmod u+x /opt/vmc/network_setup.sh
-	chmod u+x /etc/systemd/system/vmc_network_setup.service 
 
 Install the script in Systemd: 
 
