@@ -36,7 +36,6 @@ import org.apache.log4j.PropertyConfigurator;
 
 import storage.StubItf;
 
-
 public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     // Exception constants definition
@@ -110,10 +109,10 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
          */
         logger = Logger.getLogger(Loggers.API);
         String log4j = System.getProperty(ITConstants.LOG4J);
-        if (log4j!= null){
-        	PropertyConfigurator.configure(System.getProperty(ITConstants.LOG4J));
-        }else{
-        	System.err.println(WARN_LOG4J_FILE_NOT_READ);
+        if (log4j != null) {
+            PropertyConfigurator.configure(System.getProperty(ITConstants.LOG4J));
+        } else {
+            System.err.println(WARN_LOG4J_FILE_NOT_READ);
         }
     }
 
@@ -170,6 +169,10 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
                 if (manager.getWorkerCP() != null && System.getProperty(ITConstants.IT_WORKER_CP) == null) {
                     System.setProperty(ITConstants.IT_WORKER_CP, manager.getWorkerCP());
                 }
+                if (System.getProperty(ITConstants.IT_ELASTICITY_ENABLED) == null || System.getProperty(ITConstants.IT_ELASTICITY_ENABLED).equals("")) {
+                    System.setProperty(ITConstants.IT_ELASTICITY_ENABLED, Boolean.toString(manager.isElasticityEnabled()));
+                }
+
                 if (manager.getServiceName() != null && System.getProperty(ITConstants.IT_SERVICE_NAME) == null) {
                     System.setProperty(ITConstants.IT_SERVICE_NAME, manager.getServiceName());
                 }
@@ -198,7 +201,6 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
                 if (System.getProperty(ITConstants.IT_TASK_EXECUTION) == null || System.getProperty(ITConstants.IT_TASK_EXECUTION).equals("")) {
                     System.setProperty(ITConstants.IT_TASK_EXECUTION, ITConstants.COMPSs);
                 }
-
                 if (manager.getContext() != null) {
                     System.setProperty(ITConstants.IT_CONTEXT, manager.getContext());
                 }
@@ -237,6 +239,9 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
         }
         if (System.getProperty(ITConstants.IT_TASK_EXECUTION) == null || System.getProperty(ITConstants.IT_TASK_EXECUTION).equals("")) {
             System.setProperty(ITConstants.IT_TASK_EXECUTION, ITConstants.COMPSs);
+        }
+        if (System.getProperty(ITConstants.IT_ELASTICITY_ENABLED) == null || System.getProperty(ITConstants.IT_ELASTICITY_ENABLED).equals("")) {
+            System.setProperty(ITConstants.IT_ELASTICITY_ENABLED, Boolean.toString(true));
         }
     }
 
@@ -287,7 +292,7 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
             }
         }
     }
-    
+
     /* ****************************************************
      * CONSTRUCTOR
      * ****************************************************/
@@ -321,16 +326,15 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
         ErrorManager.init(this);
     }
 
-    
     /* ****************************************************
      * COMPSsRuntime INTERFACE IMPLEMENTATION
      * ****************************************************/
     /**
      * Starts the COMPSs Runtime
-     * 
+     *
      */
     public synchronized void startIT() {
-    	if (tracing) {
+        if (tracing) {
             Tracer.emitEvent(Tracer.EVENT_END, Tracer.getRuntimeEventsType());
             Tracer.emitEvent(Tracer.Event.START.getId(), Tracer.Event.START.getType());
         }
@@ -367,7 +371,7 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
                 // Python and C++
                 String lang = System.getProperty(ITConstants.IT_LANG);
-                if (! lang.toUpperCase().equals(ITConstants.Lang.JAVA.toString()) ) {
+                if (!lang.toUpperCase().equals(ITConstants.Lang.JAVA.toString())) {
                     this.setObjectRegistry(new ObjectRegistry(this));
                 }
 
@@ -393,14 +397,13 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     /**
      * Stops the COMPSsRuntime
-     * 
+     *
      */
     public void stopIT(boolean terminate) {
         synchronized (this) {
             if (tracing) {
                 Tracer.emitEvent(Tracer.Event.STOP.getId(), Tracer.Event.STOP.getType());
             }
-
 
             // Stop monitor components
             logger.debug("Stop IT reached");
@@ -431,20 +434,19 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
             logger.debug("Stopping Comm...");
             Comm.stop();
             logger.debug("Runtime stopped");
-            
+
         }
         logger.info("Execution Finished");
     }
 
     /**
      * Returns the Application Directory
-     * 
+     *
      */
     public String getApplicationDirectory() {
         return Comm.appHost.getAppLogDirPath();
     }
-	
-    
+
     /**
      * Registers a new CoreElement in the COMPSs Runtime
      */
@@ -472,7 +474,7 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     /**
      * Execute task
-     * 
+     *
      */
     public int executeTask(Long appId, String methodClass, String methodName, boolean priority, boolean hasTarget, int parameterCount,
             Object... parameters) {
@@ -498,13 +500,13 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     /**
      * Execute task
-     * 
+     *
      */
     public int executeTask(Long appId, String namespace, String service, String port, String operation, boolean priority, boolean hasTarget,
             int parameterCount, Object... parameters) {
 
         if (tracing) {
-        	Tracer.emitEvent(Tracer.Event.TASK.getId(), Tracer.Event.TASK.getType());
+            Tracer.emitEvent(Tracer.Event.TASK.getId(), Tracer.Event.TASK.getType());
         }
 
         if (logger.isDebugEnabled()) {
@@ -523,8 +525,9 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
     }
 
     /**
-     * Notifies the Runtime that there are no more tasks created by the current appId
-     * 
+     * Notifies the Runtime that there are no more tasks created by the current
+     * appId
+     *
      */
     public void noMoreTasks(Long appId, boolean terminate) {
         if (tracing) {
@@ -542,28 +545,28 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
             Tracer.emitEvent(Tracer.EVENT_END, Tracer.getRuntimeEventsType());
         }
     }
-    
+
     /**
      * Freezes the task generation until all previous tasks have been executed
-     * 
+     *
      */
     public void waitForAllTasks(Long appId) {
-    	if (tracing) {
+        if (tracing) {
             Tracer.emitEvent(Tracer.Event.WAIT_FOR_ALL_TASKS.getId(), Tracer.Event.WAIT_FOR_ALL_TASKS.getType());
         }
-    	
-    	// Wait until all tasks have finished
-    	logger.info("Barrier for app " + appId);
-    	ap.waitForAllTasks(appId); 	
-    	
-    	if (tracing) {
+
+        // Wait until all tasks have finished
+        logger.info("Barrier for app " + appId);
+        ap.waitForAllTasks(appId);
+
+        if (tracing) {
             Tracer.emitEvent(Tracer.Event.WAIT_FOR_ALL_TASKS.getId(), Tracer.Event.WAIT_FOR_ALL_TASKS.getType());
         }
     }
-    
+
     /**
      * Deletes the specified version of a file
-     * 
+     *
      */
     public boolean deleteFile(String fileName) {
         if (tracing) {
@@ -585,22 +588,21 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
         return true;
     }
-    
+
     /**
      * Emit a tracing event (for bindings)
-     * 
+     *
      */
     public void emitEvent(int type, long id) {
         Tracer.emitEvent(id, type);
     }
 
-    
     /* ****************************************************
      * LoaderAPI INTERFACE IMPLEMENTATION
      * ****************************************************/
     /**
      * Returns a copy of the last file version
-     * 
+     *
      */
     public String getFile(String fileName, String destDir) {
         if (tracing) {
@@ -641,7 +643,7 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     /**
      * Returns a copy of the last object version
-     * 
+     *
      */
     public Object getObject(Object o, int hashCode, String destDir) {
         /* We know that the object has been accessed before by a task, otherwise
@@ -694,7 +696,7 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
          logger.fatal(ERROR_OBJECT_SERIALIZE + ": " + destDir + rename, e);
          System.exit(1);
          }*/
-    	//throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     /**
@@ -706,19 +708,18 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     /**
      * Returns the tmp dir configured by the Runtime
-     * 
+     *
      */
     public String getTempDir() {
         return Comm.appHost.getTempDirPath();
     }
-    
-    
+
     /* ****************************************************
      * COMMON IN BOTH APIs
-     * ****************************************************/ 
+     * ****************************************************/
     /**
      * Returns the renaming of the file version opened
-     * 
+     *
      */
     public String openFile(String fileName, DataDirection mode) {
         if (tracing) {
@@ -782,10 +783,9 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
         return path;
     }
 
-    
     /* ****************************************************
      * PRIVATE HELPER METHODS
-     * ****************************************************/    
+     * ****************************************************/
     private Parameter[] processParameters(int parameterCount, Object[] parameters) {
         Parameter[] pars = new Parameter[parameterCount];
         // Parameter parsing needed, object is not serializable
@@ -871,7 +871,7 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
              * Only used in grid-aware applications, using IT API and partial loader,
              * since total loader targets sequential applications that use local files.
              */
-            /*String name, path, host;
+ /*String name, path, host;
              java.net.URI u = new java.net.URI(fullName);
              host = u.getHost();
              String fullPath = u.getPath();

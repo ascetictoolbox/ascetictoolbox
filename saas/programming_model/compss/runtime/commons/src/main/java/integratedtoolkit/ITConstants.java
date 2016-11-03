@@ -43,6 +43,7 @@ public class ITConstants {
     public static final String IT_WORKER_PP = "it.worker.pythonpath";
     public static final String IT_WORKER_JVM_OPTS = "it.worker.jvm_opts";
     public static final String IT_CORE_COUNT = "it.core.count";
+    public static final String IT_ELASTICITY_ENABLED = "it.elasticity_enabled";
 
     public static final String COMM_ADAPTOR = "it.comm";
 

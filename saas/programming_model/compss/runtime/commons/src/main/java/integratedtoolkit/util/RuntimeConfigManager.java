@@ -9,7 +9,6 @@ import java.net.URL;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-
 public class RuntimeConfigManager {
 
     private final PropertiesConfiguration config;
@@ -30,33 +29,33 @@ public class RuntimeConfigManager {
     public RuntimeConfigManager(File file) throws ConfigurationException {
         config = new PropertiesConfiguration(file);
     }
-    
-    public String getDeploymentId(){
+
+    public String getDeploymentId() {
         return config.getString(ITConstants.IT_DEPLOYMENT_ID, ITConstants.DEFAULT_DEPLOYMENT_ID);
     }
-        
+
     public void setDeploymentId(String uuid) {
         config.setProperty(ITConstants.IT_DEPLOYMENT_ID, uuid);
     }
-    
-    public String getMasterPort(){
+
+    public String getMasterPort() {
         return config.getString(ITConstants.IT_MASTER_PORT);
     }
-        
+
     public void setMasterPort(String port) {
         config.setProperty(ITConstants.IT_MASTER_PORT, port);
     }
-    
+
     public String getAppName() {
         return config.getString(ITConstants.IT_APP_NAME);
     }
-    
+
     public String getCOMPSsBaseLogDir() {
         return config.getString(ITConstants.IT_BASE_LOG_DIR);
     }
-    
+
     public String getSpecificLogDir() {
-    	return config.getString(ITConstants.IT_SPECIFIC_LOG_DIR);
+        return config.getString(ITConstants.IT_SPECIFIC_LOG_DIR);
     }
 
     public void setAppName(String name) {
@@ -191,6 +190,10 @@ public class RuntimeConfigManager {
         config.setProperty(ITConstants.IT_CONTEXT, context);
     }
 
+    public boolean isElasticityEnabled() {
+        return config.getBoolean(ITConstants.IT_ELASTICITY_ENABLED, true);
+    }
+
     public String getGATAdaptor() {
         return config.getString(ITConstants.GAT_ADAPTOR_PATH, System.getenv("GAT_LOCATION") + "/lib/adaptors");
     }
@@ -222,13 +225,14 @@ public class RuntimeConfigManager {
     public boolean isToFile() {
         return config.getBoolean(ITConstants.IT_TO_FILE, false);
     }
-    
-    public String getProperty(String propertyName){
-    	Object prop = config.getProperty(propertyName);
-    	if (prop != null){
-    		return prop.toString();
-    	}else
-    		return null;
+
+    public String getProperty(String propertyName) {
+        Object prop = config.getProperty(propertyName);
+        if (prop != null) {
+            return prop.toString();
+        } else {
+            return null;
+        }
     }
 
 }

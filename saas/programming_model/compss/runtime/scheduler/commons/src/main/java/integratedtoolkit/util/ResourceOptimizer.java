@@ -1,5 +1,6 @@
 package integratedtoolkit.util;
 
+import integratedtoolkit.ITConstants;
 import integratedtoolkit.components.impl.TaskScheduler;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.types.Implementation;
@@ -29,6 +30,8 @@ public class ResourceOptimizer extends Thread {
 
     private static boolean cleanUp;
     private static boolean redo;
+
+    private static final boolean elasticityEnabled = Boolean.parseBoolean(System.getProperty(ITConstants.IT_ELASTICITY_ENABLED));
 
     // Loggers
     private static final Logger resourcesLogger = Logger.getLogger(Loggers.RESOURCES);
@@ -77,7 +80,7 @@ public class ResourceOptimizer extends Thread {
                     boolean potentialBlock = (blockedTasks > 0);
 
                     resourcesLogger.info(workload.toString());
-                    if (ResourceManager.useCloud()) {
+                    if (elasticityEnabled && ResourceManager.useCloud()) {
                         applyPolicies(workload);
                         // There is a potentialBlock in cloud only if all the possible VMs have been created
                         int VMsBeingCreated = CloudManager.getPendingRequests().size();
@@ -412,14 +415,12 @@ public class ResourceOptimizer extends Thread {
                             bestDifference = difference;
                         }
                     }
-                } else {
-                    if (difference < bestDifference) {
-                        List<String> avail_archs = option.getArchitectures();
-                        if (avail_archs != null && !avail_archs.isEmpty()) {
-                            bestArch = avail_archs.get(0);
-                        }
-                        bestDifference = difference;
+                } else if (difference < bestDifference) {
+                    List<String> avail_archs = option.getArchitectures();
+                    if (avail_archs != null && !avail_archs.isEmpty()) {
+                        bestArch = avail_archs.get(0);
                     }
+                    bestDifference = difference;
                 }
             }
 
@@ -469,7 +470,7 @@ public class ResourceOptimizer extends Thread {
          * entering methodConstraints in another method's machine
          *
          */
-        /*LinkedList<CloudWorkerDescription> requirements = new LinkedList<CloudWorkerDescription>();
+ /*LinkedList<CloudWorkerDescription> requirements = new LinkedList<CloudWorkerDescription>();
          for (int coreId = 0; coreId < CoreManager.coreCount; coreId++) {
          Implementation impl = CoreManager.getCoreImplementations(coreId)[0];
          if (impl.getType() == Type.METHOD) {
@@ -544,7 +545,7 @@ public class ResourceOptimizer extends Thread {
      * ********************************************************
      */
     protected void applyPolicies(WorkloadState workload) {
-    	logger.debug("Applying policies");
+        logger.debug("Applying policies");
         int currentCloudVMCount = CloudManager.getCurrentVMCount();
         Integer maxNumberOfVMs = (CloudManager.getMaxVMs() > 0) ? CloudManager.getMaxVMs() : null;
         Integer minNumberOfVMs = CloudManager.getMinVMs();
@@ -762,29 +763,23 @@ public class ResourceOptimizer extends Thread {
             } else {
                 criticalIsBetter = false;
             }
+        } else if (nonCriticalSolution == null) {
+            criticalIsBetter = true;
         } else {
-            if (nonCriticalSolution == null) {
-                criticalIsBetter = true;
-            } else {
-                criticalIsBetter = false;
-                float[] noncriticalValues = (float[]) nonCriticalSolution[1];
-                float[] criticalValues = (float[]) criticalSolution[1];
+            criticalIsBetter = false;
+            float[] noncriticalValues = (float[]) nonCriticalSolution[1];
+            float[] criticalValues = (float[]) criticalSolution[1];
 
-                if (noncriticalValues[0] == criticalValues[0]) {
-                    if (noncriticalValues[1] == criticalValues[1]) {
-                        if (noncriticalValues[2] < criticalValues[2]) {
-                            criticalIsBetter = true;
-                        }
-                    } else {
-                        if (noncriticalValues[1] > criticalValues[1]) {
-                            criticalIsBetter = true;
-                        }
-                    }
-                } else {
-                    if (noncriticalValues[0] > criticalValues[0]) {
+            if (noncriticalValues[0] == criticalValues[0]) {
+                if (noncriticalValues[1] == criticalValues[1]) {
+                    if (noncriticalValues[2] < criticalValues[2]) {
                         criticalIsBetter = true;
                     }
+                } else if (noncriticalValues[1] > criticalValues[1]) {
+                    criticalIsBetter = true;
                 }
+            } else if (noncriticalValues[0] > criticalValues[0]) {
+                criticalIsBetter = true;
             }
         }
 
@@ -964,18 +959,16 @@ public class ResourceOptimizer extends Thread {
                     logger.debug("\tembraceableLoad [ " + coreId + "] = " + limitTime + " * " + realSlots[coreId] + " = " + embraceableLoad);
                     logger.debug("\tdestructions [ " + coreId + "] = 0");
                 }
-            } else {
-                if (aggregatedMinCoreTime[coreId] > 0) {
-                    double unusedTime = (((double) embraceableLoad) / (double) 2) - (double) aggregatedMeanCoreTime[coreId];
-                    destructions[coreId] = (float) (unusedTime / (double) limitTime);
-                    if (debug) {
-                        logger.debug("\tembraceableLoad [ " + coreId + "] = " + limitTime + " * " + realSlots[coreId] + " = " + embraceableLoad);
-                        logger.debug("\tunused [ " + coreId + "] =  ( " + embraceableLoad + " / 2) - " + aggregatedMeanCoreTime[coreId] + " = " + unusedTime);
-                        logger.debug("\tdestructions [ " + coreId + "] = " + destructions[coreId]);
-                    }
-                } else {
-                    destructions[coreId] = embraceableLoad / limitTime;
+            } else if (aggregatedMinCoreTime[coreId] > 0) {
+                double unusedTime = (((double) embraceableLoad) / (double) 2) - (double) aggregatedMeanCoreTime[coreId];
+                destructions[coreId] = (float) (unusedTime / (double) limitTime);
+                if (debug) {
+                    logger.debug("\tembraceableLoad [ " + coreId + "] = " + limitTime + " * " + realSlots[coreId] + " = " + embraceableLoad);
+                    logger.debug("\tunused [ " + coreId + "] =  ( " + embraceableLoad + " / 2) - " + aggregatedMeanCoreTime[coreId] + " = " + unusedTime);
+                    logger.debug("\tdestructions [ " + coreId + "] = " + destructions[coreId]);
                 }
+            } else {
+                destructions[coreId] = embraceableLoad / limitTime;
             }
 
         }
