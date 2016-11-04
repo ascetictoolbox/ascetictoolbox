@@ -191,6 +191,7 @@ public class RuntimeConfigManager {
     }
 
     public boolean isElasticityEnabled() {
+        System.out.println("RAIMON: Getting elasticity enabled from file "+config.getBoolean(ITConstants.IT_ELASTICITY_ENABLED, true));
         return config.getBoolean(ITConstants.IT_ELASTICITY_ENABLED, true);
     }
 

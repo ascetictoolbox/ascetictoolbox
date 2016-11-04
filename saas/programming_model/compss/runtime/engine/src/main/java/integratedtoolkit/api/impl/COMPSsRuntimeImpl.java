@@ -118,8 +118,10 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
 
     //Code Added to support configuration files
     private static void setPropertiesFromRuntime(RuntimeConfigManager manager) {
+        System.out.println("RAIMON: Setting Properties From Runtime");
         try {
             if (manager != null) {
+                System.out.println("RAIMON: Properties Manager not null");
                 if (manager.getDeploymentId() != null && System.getProperty(ITConstants.IT_DEPLOYMENT_ID) == null) {
                     System.setProperty(ITConstants.IT_DEPLOYMENT_ID, manager.getDeploymentId());
                 }
@@ -169,8 +171,10 @@ public class COMPSsRuntimeImpl implements COMPSsRuntime, LoaderAPI {
                 if (manager.getWorkerCP() != null && System.getProperty(ITConstants.IT_WORKER_CP) == null) {
                     System.setProperty(ITConstants.IT_WORKER_CP, manager.getWorkerCP());
                 }
-                if (System.getProperty(ITConstants.IT_ELASTICITY_ENABLED) == null || System.getProperty(ITConstants.IT_ELASTICITY_ENABLED).equals("")) {
+                System.out.println("RAIMON: Check if already defined (.null. o .. expected) : ."+System.getProperty(ITConstants.IT_ELASTICITY_ENABLED)+".");
+                if (System.getProperty(ITConstants.IT_ELASTICITY_ENABLED) == null || System.getProperty(ITConstants.IT_ELASTICITY_ENABLED).equals("")) {                   
                     System.setProperty(ITConstants.IT_ELASTICITY_ENABLED, Boolean.toString(manager.isElasticityEnabled()));
+                    System.out.println("RAIMON: new property value defined: ."+System.getProperty(ITConstants.IT_ELASTICITY_ENABLED)+".");
                 }
 
                 if (manager.getServiceName() != null && System.getProperty(ITConstants.IT_SERVICE_NAME) == null) {
