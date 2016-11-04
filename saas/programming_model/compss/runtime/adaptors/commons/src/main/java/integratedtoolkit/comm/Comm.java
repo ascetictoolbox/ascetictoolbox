@@ -145,7 +145,7 @@ public class Comm {
 
     public static synchronized LogicalData registerValue(String dataId,
             Object value) {
-        logger.debug("Register value " + value + "for data " + dataId);
+        logger.debug("Register value " + (value == null ? null : value.getClass().toString()+"@"+value.hashCode()) + "for data " + dataId);
         DataLocation location = DataLocation.getLocation(appHost, dataId);
 
         LogicalData logicalData = data.get(dataId);

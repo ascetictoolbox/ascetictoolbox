@@ -57,9 +57,6 @@ public class ResourceOptimizer extends Thread {
     private int everythingBlockedRetryCount = -1;
 
     public ResourceOptimizer(TaskScheduler ts) {
-        System.out.println("RAIMON: Value obtained from getProperty on RO " + System.getProperty(ITConstants.IT_ELASTICITY_ENABLED));
-        System.out.println("RAIMON: Value stored on RO " + elasticityEnabled);
-
         if (debug) {
             logger.debug("Initializing Resource Optimizer");
         }
