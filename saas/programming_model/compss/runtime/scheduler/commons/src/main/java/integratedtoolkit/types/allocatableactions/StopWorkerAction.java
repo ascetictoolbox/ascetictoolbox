@@ -57,7 +57,6 @@ public class StopWorkerAction<T extends WorkerResourceDescription> extends Alloc
                     ErrorManager.warn("Exception stopping worker. Check runtime.log for more details", e);
                     notifyError();
                 }
-
                 notifyCompleted();
 
             }
@@ -121,21 +120,18 @@ public class StopWorkerAction<T extends WorkerResourceDescription> extends Alloc
     public void schedule(Score actionScore) throws BlockedActionException, UnassignedActionException {
         this.selectedResource = worker;
         assignImplementation(impl);
-        worker.initialSchedule(this);
     }
 
     @Override
     public void schedule(ResourceScheduler<Profile, T> targetWorker, Score actionScore) throws BlockedActionException, UnassignedActionException {
-        this.selectedResource = targetWorker;
+        this.selectedResource = worker;
         assignImplementation(impl);
-        targetWorker.initialSchedule(this);
     }
 
     @Override
     public void schedule(ResourceScheduler<Profile, T> targetWorker, Implementation impl) throws BlockedActionException, UnassignedActionException {
-        this.selectedResource = targetWorker;
+        this.selectedResource = worker;
         assignImplementation(impl);
-        targetWorker.initialSchedule(this);
     }
 
     public String toString() {
