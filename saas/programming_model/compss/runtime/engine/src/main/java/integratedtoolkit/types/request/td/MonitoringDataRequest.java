@@ -93,7 +93,7 @@ public class MonitoringDataRequest<P extends Profile, T extends WorkerResourceDe
             if (runnningActions != null) {
                 //Resource state = running
                 monitorData.append(prefix + "\t\t").append("<Status>").append("Running").append("</Status>").append("\n");
-                monitorData.append(prefix + "\t\t").append("<Actions>").append(runnningActions).append("</Actions>").append("\n");
+                monitorData.append(prefix + "\t\t").append("<Actions>\n").append(runnningActions).append(prefix+"\t\t</Actions>").append("\n");
             } else {
                 //Resource state = on destroy
                 monitorData.append(prefix + "\t\t").append("<Status>").append("On Destroy").append("</Status>").append("\n");

@@ -9,7 +9,6 @@ import integratedtoolkit.ITConstants;
 import integratedtoolkit.ascetic.Ascetic.OptimizationParameter;
 import integratedtoolkit.nio.master.configuration.NIOConfiguration;
 import integratedtoolkit.types.Implementation;
-import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.components.Processor;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.util.CoreManager;
@@ -185,6 +184,7 @@ public class Configuration {
             System.out.println("Component " + componentName);
             Integer storageElemSize = diskSize.get(componentName + "-disk");
             CloudMethodResourceDescription rd = createComponentDescription(componentName, vs, storageElemSize);
+            System.out.println("Description "+ rd.toString());
             int[] boundaries = new int[2];
             float[][] eventWeights = new float[CoreManager.getCoreCount()][];
             long[][] eventTimes = new long[CoreManager.getCoreCount()][];
@@ -295,6 +295,7 @@ public class Configuration {
         if (memory > 0) {
             rd.setMemorySize((float) memory / 1024f);
         }
+        rd.setProviderName("Ascetic");
         rd.setType(name);
         rd.setStorageSize(storage);
         return rd;
@@ -318,7 +319,7 @@ public class Configuration {
         return componentNames;
     }
 
-    public static MethodResourceDescription getComponentDescriptions(String component) {
+    public static CloudMethodResourceDescription getComponentDescriptions(String component) {
         return componentDescription.get(component);
     }
 

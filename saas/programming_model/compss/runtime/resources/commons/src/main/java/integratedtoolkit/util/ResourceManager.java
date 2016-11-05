@@ -650,9 +650,9 @@ public class ResourceManager {
             sb.append(prefix + "\t").append("<Memory>").append(r.getRequested().getMemorySize()).append("</Memory>").append("\n");
             sb.append(prefix + "\t").append("<Disk>").append(r.getRequested().getStorageSize()).append("</Disk>").append("\n");
             sb.append(prefix + "\t").append("<Provider>").append(r.getProvider()).append("</Provider>").append("\n");
-            sb.append(prefix + "\t").append("<Image>").append(r.getRequested().getImage()).append("</Image>").append("\n");
+            sb.append(prefix + "\t").append("<Image>").append(r.getRequested().getImage().getImageName()).append("</Image>").append("\n");
             sb.append(prefix + "\t").append("<Status>").append("Creating").append("</Status>").append("\n");
-            sb.append(prefix + "\t").append("<Tasks>").append("</Tasks>").append("\n");
+            sb.append(prefix + "\t").append("<Actions>").append("</Actions>").append("\n");
             sb.append(prefix).append("</Resource>").append("\n");
         }
         return sb.toString();

@@ -1,15 +1,12 @@
 package integratedtoolkit.ascetic;
 
 import eu.ascetic.paas.applicationmanager.model.Cost;
-import eu.ascetic.saas.application_uploader.ApplicationUploaderException;
-import eu.ascetic.utils.ovf.api.VirtualSystem;
 import integratedtoolkit.scheduler.types.AllocatableAction;
 import integratedtoolkit.types.resources.components.Processor;
 import integratedtoolkit.types.resources.description.CloudMethodResourceDescription;
 import integratedtoolkit.log.Loggers;
 import integratedtoolkit.nio.master.configuration.NIOConfiguration;
 import integratedtoolkit.types.Implementation;
-import integratedtoolkit.types.resources.MethodResourceDescription;
 import integratedtoolkit.types.resources.MethodWorker;
 import integratedtoolkit.types.resources.ResourceDescription;
 import integratedtoolkit.types.resources.Worker;
@@ -68,10 +65,11 @@ public class VM {
         }
         count++;
         componentCount.put(ovfId, count);
-        MethodResourceDescription rd = Configuration.getComponentDescriptions(ovfId);
+        CloudMethodResourceDescription rd = Configuration.getComponentDescriptions(ovfId);
         description = new CloudMethodResourceDescription(rd);
         description.setType(ovfId);
-        description.setImage(CloudManager.getProvider("Ascetic").getImage(ovfId));
+        String componentImageName = ovfId + "-img";
+        description.setImage(CloudManager.getProvider("Ascetic").getImage(componentImageName));
         updateComponentDescription(vm, description);
         configuration = new NIOConfiguration(Configuration.getComponentProperties(ovfId));
         configuration.setLimitOfTasks(rd.getProcessors().get(0).getComputingUnits());
@@ -94,7 +92,7 @@ public class VM {
                 }
             }
         }
-        
+
         times = Configuration.getComponentTimes(ovfId);
         eventWeights = Configuration.getEventWeights(ovfId);
         coresEnergy = 0;
@@ -126,7 +124,7 @@ public class VM {
     public String getComponentId() {
         return vm.getOvfId();
     }
-    
+
     public int getAMId() {
         return vm.getId();
     }
@@ -142,7 +140,7 @@ public class VM {
             for (int coreId = 0; coreId < CoreManager.getCoreCount(); coreId++) {
                 for (int implId = 0; implId < implCount[coreId]; implId++) {
 //                	System.out.println("\t\t CURRENT VALUES for " + getIPv4());
-                	Cost c = null;
+                    Cost c = null;
                     /*try {
                         c = appManager.getEstimations("" + vm.getId(), coreId, implId);
                     } catch (ApplicationUploaderException ex) {
@@ -157,7 +155,7 @@ public class VM {
                         }/*else{
                         	System.out.println("\t\t\t Obtained: Charges are "+c.getCharges());
                         }*/
-                        
+
                         if (power[coreId][implId] <= 0) {
                             power[coreId][implId] = c.getPowerValue();
                         }/*else{
@@ -178,23 +176,20 @@ public class VM {
             lastUpdate = System.currentTimeMillis();
         }
     }
-    
+
     private static void updateComponentDescription(eu.ascetic.paas.applicationmanager.model.VM vm, CloudMethodResourceDescription rd) {
         int coreCount = vm.getCpuActual();
         if (coreCount > 0) {
-        	System.out.println("Updating coreCount to "+coreCount);
             Processor proc = rd.getProcessors().get(0);
             proc.setComputingUnits(coreCount);
         }
-        
+
         long memory = vm.getRamActual();
         if (memory > 0) {
-        	System.out.println("Updating memory to "+memory);
             rd.setMemorySize((float) memory / 1024f);
         }
         long storage = vm.getDiskActual();
         if (storage > 0) {
-        	System.out.println("Updating storage to "+storage);
             rd.setStorageSize(storage);
         }
     }
@@ -213,7 +208,7 @@ public class VM {
         JobExecution je = runningJobs.get(action);
         int coreId = je.impl.getCoreId();
         int implId = je.impl.getImplementationId();
-        double time = ((double)(currentTime - je.startTime) / (double)(3600 * 1000));
+        double time = ((double) (currentTime - je.startTime) / (double) (3600 * 1000));
         coresEnergy += power[coreId][implId] * time;
         coresCost += price[coreId][implId] * time;
         runningJobs.remove(action);
@@ -235,23 +230,23 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            double time = ((double)(currentTime - je.startTime) / (double)(3600 * 1000));
+            double time = ((double) (currentTime - je.startTime) / (double) (3600 * 1000));
             cost += price[coreId][implId] * time;
         }
         return cost;
     }
 
     public double getAccumulatedCost() {
-    	long currentEndTime = System.currentTimeMillis();
-    	if (endTime>0){
-        	currentEndTime = endTime;
+        long currentEndTime = System.currentTimeMillis();
+        if (endTime > 0) {
+            currentEndTime = endTime;
         }
-    	double time = (((double)(currentEndTime - startTime) / (double)(3600 * 1000)));
-    	double runningCost = getRunningCost();
-    	double idleCost = idlePrice * time;
-    	double totalCost = idleCost + coresCost +runningCost;
-    	System.out.println("Acc. Cost for VM "+ getIPv4()+": "+totalCost+" ("+idleCost+","+coresCost+","+runningCost+")");
-    	return totalCost;
+        double time = (((double) (currentEndTime - startTime) / (double) (3600 * 1000)));
+        double runningCost = getRunningCost();
+        double idleCost = idlePrice * time;
+        double totalCost = idleCost + coresCost + runningCost;
+        System.out.println("Acc. Cost for VM " + getIPv4() + ": " + totalCost + " (" + idleCost + "," + coresCost + "," + runningCost + ")");
+        return totalCost;
     }
 
     public double getRunningPower() {
@@ -270,7 +265,7 @@ public class VM {
         for (JobExecution je : runningJobs.values()) {
             int coreId = je.impl.getCoreId();
             int implId = je.impl.getImplementationId();
-            double time = ((double)(currentTime - je.startTime) / (double) (3600 * 1000));
+            double time = ((double) (currentTime - je.startTime) / (double) (3600 * 1000));
             energy += power[coreId][implId] * time;
         }
         return energy;
@@ -278,15 +273,15 @@ public class VM {
 
     public double getAccumulatedEnergy() {
         long currentEndTime = System.currentTimeMillis();
-    	if (endTime>0){
-        	currentEndTime = endTime;
+        if (endTime > 0) {
+            currentEndTime = endTime;
         }
-    	double time = ((double)(currentEndTime - startTime) / (double)(3600 * 1000));
-    	double runningEnergy = getRunningEnergy();
-    	double idleEnergy = idlePower * time;
-    	double totalEnergy = idleEnergy + coresEnergy + runningEnergy;
-    	System.out.println("Acc. Energy for VM "+ getIPv4()+": "+totalEnergy+" ("+idleEnergy+","+coresEnergy+","+runningEnergy+") Time:"+ time);
-    	return totalEnergy;
+        double time = ((double) (currentEndTime - startTime) / (double) (3600 * 1000));
+        double runningEnergy = getRunningEnergy();
+        double idleEnergy = idlePower * time;
+        double totalEnergy = idleEnergy + coresEnergy + runningEnergy;
+        System.out.println("Acc. Energy for VM " + getIPv4() + ": " + totalEnergy + " (" + idleEnergy + "," + coresEnergy + "," + runningEnergy + ") Time:" + time);
+        return totalEnergy;
     }
 
     public long getExecutionTime(int coreId, int implId) {
@@ -364,24 +359,24 @@ public class VM {
         }
     }
 
-	public void setEndTime() {
-		this.endTime=System.currentTimeMillis();
-		
-	}
+    public void setEndTime() {
+        this.endTime = System.currentTimeMillis();
 
-	public double getCurrentPower() {
-		if (endTime>0){
-			return 0;
-		}else{
-			return idlePower + getRunningPower();
-		}
-	}
-	
-	public double getCurrentPrice() {
-		if (endTime>0){
-			return 0;
-		}else{
-			return idlePrice + getRunningPrice();
-		}
-	}
+    }
+
+    public double getCurrentPower() {
+        if (endTime > 0) {
+            return 0;
+        } else {
+            return idlePower + getRunningPower();
+        }
+    }
+
+    public double getCurrentPrice() {
+        if (endTime > 0) {
+            return 0;
+        } else {
+            return idlePrice + getRunningPrice();
+        }
+    }
 }
