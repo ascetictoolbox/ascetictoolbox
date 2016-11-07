@@ -531,6 +531,7 @@ public class OVFUtils {
 					termMeasurement.setEvent(productSection.getPropertyByKey("asceticTermMeasurementApplicationEvent_" + i).getValue());
 					termMeasurement.setMetric(productSection.getPropertyByKey("asceticTermMeasurementApplicationMetric_" + i).getValue());
 					termMeasurement.setAggregator(productSection.getPropertyByKey("asceticTermMeasurementAggregator_" + i).getValue());
+					termMeasurement.setComparator(productSection.getPropertyByKey("asceticAdaptationRuleComparator_" + i).getValue());
 					
 					String period = productSection.getPropertyByKey("asceticTermMeasurementPeriod_" + i).getValue();
 					if(NumberUtils.isNumber(period)) {

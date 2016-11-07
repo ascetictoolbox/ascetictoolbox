@@ -37,6 +37,7 @@ public class AsceticTermMeasurementTest {
 		termMeasurement.setMetric("metric");
 		termMeasurement.setParams(33);
 		termMeasurement.setPeriod(111);
+		termMeasurement.setComparator("LTE");
 		
 		assertEquals("aggregator", termMeasurement.getAggregator());
 		assertEquals(22.2, termMeasurement.getBoundary().doubleValue(), 0.001);
@@ -44,5 +45,6 @@ public class AsceticTermMeasurementTest {
 		assertEquals("metric", termMeasurement.getMetric());
 		assertEquals(33, termMeasurement.getParams().intValue());
 		assertEquals(111, termMeasurement.getPeriod().intValue());
+		assertEquals("LTE", termMeasurement.getClass());
 	}
 }

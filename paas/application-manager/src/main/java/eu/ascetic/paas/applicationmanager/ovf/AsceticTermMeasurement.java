@@ -29,6 +29,8 @@ public class AsceticTermMeasurement {
 	private String aggregator;
 	private Integer params;
 	private Double boundary;
+	private String comparator;
+	
 	public String getEvent() {
 		return event;
 	}
@@ -64,5 +66,11 @@ public class AsceticTermMeasurement {
 	}
 	public void setBoundary(Double boundary) {
 		this.boundary = boundary;
+	}
+	public String getComparator() {
+		return comparator;
+	}
+	public void setComparator(String comparator) {
+		this.comparator = comparator;
 	}
 }

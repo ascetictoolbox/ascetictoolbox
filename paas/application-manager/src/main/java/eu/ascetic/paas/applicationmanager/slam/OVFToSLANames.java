@@ -65,7 +65,8 @@ public class OVFToSLANames {
 	public static final Map<String, String> METRIC_UNITS = ImmutableMap.of(  
 				"WattHour", "http://www.w3.org/2001/XMLSchema#watthour",
 				"Watt", "http://www.w3.org/2001/XMLSchema#watt",
-				"EUR", "http://www.w3.org/2001/XMLSchema#EUR"
+				"EUR", "http://www.w3.org/2001/XMLSchema#EUR",
+				"decimal", "http://www.w3.org/2001/XMLSchema#decimal"
 			);
 	
 	// Metric Units

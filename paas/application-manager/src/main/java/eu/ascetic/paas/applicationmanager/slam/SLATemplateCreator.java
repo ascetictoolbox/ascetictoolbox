@@ -210,7 +210,7 @@ public class SLATemplateCreator {
 			
 			SimpleDomainExpr simpleDomainExprePowerUsage = new SimpleDomainExpr(
 								new CONST("" +measurementTerm.getBoundary().doubleValue(), new STND(DATATYPE_DECIMAL)), 
-								new STND(COMPARATORS.get("GT")));
+								new STND(COMPARATORS.get(measurementTerm.getComparator())));
 			
 			TypeConstraintExpr typeConstraintExprVMCores = new TypeConstraintExpr(aggregatedFuncExpr, simpleDomainExprePowerUsage);
 			
