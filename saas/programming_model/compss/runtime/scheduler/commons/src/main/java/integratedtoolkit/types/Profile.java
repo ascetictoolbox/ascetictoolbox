@@ -3,6 +3,7 @@ package integratedtoolkit.types;
 public class Profile {
 
     private long executions;
+    protected long sample;
     protected long startTime;
     protected long minTime;
     protected long averageTime;
@@ -13,6 +14,7 @@ public class Profile {
         this.minTime = Long.MAX_VALUE;
         this.averageTime = 100;
         this.maxTime = Long.MIN_VALUE;
+        this.sample = 0;
         startTime = System.currentTimeMillis();
     }
 
@@ -53,7 +55,16 @@ public class Profile {
             minTime = Math.min(minTime, profile.minTime);
             averageTime = (profile.executions * profile.averageTime + executions * averageTime) / totalExecutions;
             maxTime = Math.max(maxTime, profile.maxTime);
-            executions += profile.executions;
+            executions = totalExecutions;
+            sample += profile.sample;
+        } else {
+            long totalSamples = sample + profile.sample;
+            if (totalSamples > 0) {
+                minTime = Math.min(minTime, profile.minTime);
+                averageTime = (profile.sample * profile.averageTime + sample * averageTime) / totalSamples;
+                maxTime = Math.max(maxTime, profile.maxTime);
+                sample = totalSamples;
+            }
         }
     }
 
