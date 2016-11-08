@@ -198,6 +198,8 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		VMinfo VM;
 		for (int i=0;i<VMs.size();i++){
 			VM = VMs.get(i);
+			if (!depl.hasVM(VM))
+				System.out.println("ok");
 			price = price +billing.getVMPredictedPrice(VM, 3600);
 		}
 		return price;		

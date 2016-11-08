@@ -20,10 +20,10 @@ import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.Amqp
 import eu.ascetic.asceticarchitecture.paas.paaspricingmodeller.queue.client.PricingModellerQueueServiceManager;
 import eu.ascetic.asceticarchitecture.paas.type.*;
 
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Timer;
+
 
 
 import org.junit.After;
@@ -74,8 +74,8 @@ public class PaaSPricingModellerTestqueue{
     	VMinfo vm3 = new VMinfo(2,7680, 2, 32, 1, "1");
     	
     	LinkedList<VMinfo> test = new LinkedList<>();
-        test.add(vm1);
-        test.add(vm2);
+     //   test.add(vm1);
+      //  test.add(vm2);
         test.add(vm3);
 
         energyPerVM.put(2, 300.0);
@@ -83,12 +83,13 @@ public class PaaSPricingModellerTestqueue{
       //  System.out.println(prmodeller.getAppPredictedPrice(1, 3600, test));
         
         prmodeller.initializeApp("e", 0, test);
-        
+        System.out.println(test.size());
        // System.out.println("----------------------------------------WAITING-----------------------------");
-     //  prmodeller.initializeApp("e", 0, 0);
+        System.out.println("prediction" + prmodeller.predictAppPriceforNextHour(0, test));
+        //  prmodeller.initializeApp("e", 0, 0);
         
        System.out.println("----------------------------------------WAITING-----------------------------");
-       Thread.sleep(40000);
+     //  Thread.sleep(40000);
        System.out.println("----------------------------------------NOW AGAIN-----------------------------");
      // System.out.println("Energy" + prmodeller.getEventPredictedChargesOfApp(0,test,300));
       System.out.println("The total charges until now are"+prmodeller.getAppTotalCharges(0, 0, 0));

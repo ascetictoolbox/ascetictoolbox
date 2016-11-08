@@ -193,7 +193,8 @@ public class PaaSPricingModellerRegistration {
 				 int VMid = depl.getVM(i).getVMid();
 				 VMinfo VM = depl.getVM(i);
 				 if (VM.isActive()){
-					 vm.add(VMid);                       
+					 vm.add(VMid);    
+					// System.out.println(" VM scheme" +VM.getSchemeID()+"and"+ VM.getSchemeID());
 					 price = price + getVMPredictedPrice(VM, duration);
 				//	 System.out.println("Registration predict next hour : updating price of VM "+VM.getVMid()+" with "+ VM.getCurrentprice());
 					 // logger.error("PM: Could not set producer");
@@ -218,12 +219,11 @@ public class PaaSPricingModellerRegistration {
          return price;
    
 	 }
-	 
-
+	
 	//TESTED
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		 PaaSPricingModellerPricingScheme scheme = VM.getScheme();
-	      //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
+	     //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
 	     return scheme.getVMPredictedPrice(VM, duration);
 	}
 	

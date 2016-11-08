@@ -149,6 +149,10 @@ public class DeploymentInfo {
 		}
 	}
 	
+	public boolean hasVM(VMinfo VM){
+		return VMs.contains(VM);
+	}
+	
 	public void addVM(VMinfo vm){
 	//	System.out.println("DeloymentInfo: I added this VM "+ vm.getVMid());
 		VMs.add(vm);
