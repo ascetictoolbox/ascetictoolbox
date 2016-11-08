@@ -19,6 +19,19 @@ public class VmWithEquals extends Vm {
 			            boolean floatingIp) {
 		super(name, image, cpus, ramMb, diskGb, swapMb, initScript, applicationId, ovfId, slaId, floatingIp);
 	}
+	
+	public VmWithEquals(String name,
+            			String image,
+            			int cpus,
+            			int ramMb,
+            			int diskGb,
+            			String initScript,
+            			String applicationId,
+            			String ovfId,
+            			String slaId,
+            			String physicalHost) {
+		super(name, image, cpus, ramMb, diskGb, initScript, applicationId, ovfId, slaId, physicalHost);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -69,6 +82,14 @@ public class VmWithEquals extends Vm {
         		return false;
         	}
         } else if(!this.getApplicationId().equals(vm.getApplicationId())) {
+        	return false;
+        } 
+        
+        if(this.getPreferredHost() == null) {
+        	if(vm.getPreferredHost() != null) {
+        		return false;
+        	}
+        } else if(!this.getPreferredHost().equals(vm.getPreferredHost())) {
         	return false;
         } 
         

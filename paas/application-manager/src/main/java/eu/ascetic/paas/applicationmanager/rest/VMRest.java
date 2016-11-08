@@ -41,7 +41,6 @@ import eu.ascetic.paas.applicationmanager.em.amqp.EnergyModellerQueueController;
 import eu.ascetic.paas.applicationmanager.model.Agreement;
 import eu.ascetic.paas.applicationmanager.model.Cost;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
-import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.EnergyMeasurement;
 import eu.ascetic.paas.applicationmanager.model.Image;
 import eu.ascetic.paas.applicationmanager.model.PowerMeasurement;
@@ -255,7 +254,14 @@ public class VMRest extends AbstractRest {
 		int priceSchema = OVFUtils.getPriceSchema(virtualSystem.getProductSectionAtIndex(0));
 		
 		// We create the VM to Deploy
-		Vm virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), vm.getOvfId(), ""/*deployment.getSlaAgreement()*/ );
+		Vm virtMachine;
+		
+		if(vm.getPhysicalHost() == null || vm.getPhysicalHost().equals("")) {
+			virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, 0, iso , ovfDocument.getVirtualSystemCollection().getId(), vm.getOvfId(), ""/*deployment.getSlaAgreement()*/ );
+		} else {
+		    virtMachine = new Vm(vmName + suffix, image.getProviderImageId(), cpus, ramMb, capacity, iso, ovfDocument.getVirtualSystemCollection().getId(), vm.getOvfId(), "", vm.getPhysicalHost());
+		}
+	    
 		logger.debug("virtMachine: " + virtMachine);
 		
 		// We deploy the VM

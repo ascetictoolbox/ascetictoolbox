@@ -1904,6 +1904,119 @@ public class VMRestTest extends AbstractTest {
 	
 	@Test
 	@SuppressWarnings(value = { "static-access" }) 
+	public void postVMWithForceAndPhysicalHost() throws Exception {
+		// We set a listener to get the sent message from the MessageQueue
+		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);
+		AmqpListListener listener = new AmqpListListener();
+		receiver.setMessageConsumer(listener);
+		
+		PaaSEnergyModeller paasEnergyModeller = mock(PaaSEnergyModeller.class);
+		
+		// Pre Test 1 - Image already exits in the DB
+		DeploymentDAO deploymentDAO = mock(DeploymentDAO.class);
+		
+		Deployment deployment = new Deployment();
+		deployment.setId(11);
+		deployment.setOvf(threeTierWebAppOvfString);
+		deployment.setStatus("DEPLOYED");
+		deployment.setProviderId("prod-id");
+		
+		when(deploymentDAO.getById(11)).thenReturn(deployment);
+		
+		String vmRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" 
+						+ "<vm xmlns=\"http://application_manager.ascetic.eu/doc/schemas/xml\" >"
+							+ "<ovf-id>haproxy</ovf-id>"
+							+ "<physical-host>hostX</physical-host>"
+						+ "</vm>";
+		
+		Image image = new Image();
+		image.setId(22);
+		image.setOvfId("haproxy-img");
+		image.setOvfHref("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img");
+		image.setProviderId("haproxy-uuid");
+		image.setProviderImageId("haproxy-uuid");
+		
+		ImageDAO imageDAO = mock(ImageDAO.class);
+		when(imageDAO.getById(22)).thenReturn(image);
+		
+		VM vm1 = new VM();
+		vm1.addImage(image);
+		List<VM> vms = new ArrayList<VM>();
+		vms.add(vm1);
+		
+		VMDAO vmDAO = mock(VMDAO.class);
+		when(vmDAO.getVMsWithOVfIdForDeploymentNotDeleted("haproxy", 11)).thenReturn(vms);
+		
+		VmManagerClient vmMaClient = mock(VmManagerClient.class);
+		
+		List<Vm> vms1 = new ArrayList<Vm>();
+		VmWithEquals vm1e = new VmWithEquals("HAProxy_2","haproxy-uuid",1,1024,20, "/DFS/ascetic/vm-images/threeTierWebApp/haproxy.iso_2","threeTierWebApp", "haproxy", "sla-id", "hostX");
+		System.out.println("VM with equals: " + vm1e);
+		vms1.add(vm1e);
+		List<String> ids1 = new ArrayList<String>();
+		ids1.add("haproxy-vm1");
+		
+		when(vmMaClient.deployVMs(eq(vms1))).thenReturn(ids1);
+		
+		// We mock the calls to get VMs
+		when(vmMaClient.getVM("haproxy-vm1")).thenReturn(new VmDeployed("haproxyVM", "haproxy-img", 1, 2, 3, 0, "", "", "", "10.0.0.1", "ACTIVE", new Date(), ""));
+		
+		// Test 1
+		VMRest vmRest = new VMRest();
+		vmRest.deploymentDAO = deploymentDAO;
+		vmRest.vmDAO = vmDAO;
+		vmRest.vmManagerClient = vmMaClient;
+		vmRest.imageDAO = imageDAO;
+		vmRest.energyModeller = paasEnergyModeller;
+		
+		Response response = vmRest.postVM("threeTierWebApp", "11", true, vmRequest);
+		assertEquals(200, response.getStatus());
+		assertTrue(!(null == response.getEntity()));
+		VM vmFromRest = ModelConverter.xmlVMToObject((String) response.getEntity());
+		assertEquals("haproxy", vmFromRest.getOvfId());
+		assertEquals("ACTIVE", vmFromRest.getStatus());
+		assertEquals("haproxy-uuid", vmFromRest.getImages().get(0).getProviderImageId());
+		assertEquals(2l, vmFromRest.getNumberVMsMax());
+		assertEquals(1l, vmFromRest.getNumberVMsMin());
+		
+		//Post test 1 verifications:
+		// We verify that at the end we store in the database the right object
+		ArgumentCaptor<Deployment> deploymentCaptor = ArgumentCaptor.forClass(Deployment.class);
+		verify(deploymentDAO, times(1)).update(deploymentCaptor.capture());
+		assertEquals(1, deploymentCaptor.getValue().getVms().size());
+		assertEquals("haproxy", deploymentCaptor.getValue().getVms().get(0).getOvfId());
+		assertEquals("10.0.0.1", deploymentCaptor.getValue().getVms().get(0).getIp());
+		assertEquals("haproxy-vm1", deploymentCaptor.getValue().getVms().get(0).getProviderVmId());
+		assertEquals("prod-id", deploymentCaptor.getValue().getVms().get(0).getProviderId());
+		assertEquals("ACTIVE", deploymentCaptor.getValue().getVms().get(0).getStatus());
+		assertEquals(1, deploymentCaptor.getValue().getVms().get(0).getImages().size());
+		assertEquals("/DFS/ascetic/vm-images/threeTierWebApp/haproxy.img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfHref());
+		assertEquals("haproxy-img", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getOvfId());
+		assertEquals("haproxy-uuid", deploymentCaptor.getValue().getVms().get(0).getImages().get(0).getProviderImageId());
+		
+		// Verify that the VM was notify to EM
+//		verify(paasEnergyModeller, times(1)).writeDeploymentRequest("prod-id",
+//				                                                    "threeTierWebApp",
+//				                                                    "11", 
+//				                                                    "0", 
+//				                                                    "haproxy-vm1", 
+//				                                                    Dictionary.APPLICATION_STATUS_DEPLOYED);
+		
+		// We verify that the right messages were sent to the AMQP
+		Thread.sleep(500l);
+		assertEquals(1, listener.getTextMessages().size());
+		
+		assertEquals("APPLICATION.threeTierWebApp.DEPLOYMENT.11.VM.0.DEPLOYED", listener.getTextMessages().get(0).getJMSDestination().toString());
+		assertEquals("threeTierWebApp", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getApplicationId());
+		assertEquals("11", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getDeploymentId());
+		assertEquals("DEPLOYED", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getStatus());
+		assertEquals("haproxy", ModelConverter.jsonToApplicationManagerMessage(listener.getTextMessages().get(0).getText()).getVms().get(0).getOvfId());
+		
+		receiver.close();
+	}
+	
+	@Test
+	@SuppressWarnings(value = { "static-access" }) 
 	public void postVMWithForce() throws Exception {
 		// We set a listener to get the sent message from the MessageQueue
 		AmqpMessageReceiver receiver = new AmqpMessageReceiver(Configuration.amqpAddress, Configuration.amqpUsername, Configuration.amqpPassword,  "APPLICATION.>", true);

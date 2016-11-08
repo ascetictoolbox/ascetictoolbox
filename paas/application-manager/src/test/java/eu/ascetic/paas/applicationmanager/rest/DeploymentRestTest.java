@@ -901,7 +901,7 @@ public class DeploymentRestTest extends AbstractTest {
 								     isNull(Timestamp.class), 
 								     isNull(Timestamp.class))).thenReturn(22.0);
 
-		Response response = deploymentRest.getEnergyConsumption("111", "1", null, null);
+		Response response = deploymentRest.getEnergyConsumptionXML("111", "1", null, null);
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -942,7 +942,7 @@ public class DeploymentRestTest extends AbstractTest {
 			     eq(new Timestamp(111l)), 
 			     eq(new Timestamp(222l)))).thenReturn(22.0);
 
-			response = deploymentRest.getEnergyConsumption("111", "1", "111", "222");
+			response = deploymentRest.getEnergyConsumptionXML("111", "1", "111", "222");
 			assertEquals(200, response.getStatus());
 			
 			xml = (String) response.getEntity();
@@ -1010,7 +1010,7 @@ public class DeploymentRestTest extends AbstractTest {
 								     isNull(Timestamp.class), 
 								     isNull(Timestamp.class))).thenReturn(22.0);
 
-		Response response = deploymentRest.getPowerConsumption("111", "1", null, null);
+		Response response = deploymentRest.getPowerConsumptionXML("111", "1", null, null);
 		assertEquals(200, response.getStatus());
 		
 		String xml = (String) response.getEntity();
@@ -1051,7 +1051,7 @@ public class DeploymentRestTest extends AbstractTest {
 				eq(new Timestamp(111l)), 
 				eq(new Timestamp(222l)))).thenReturn(22.0);
 
-		response = deploymentRest.getPowerConsumption("111", "1", "111", "222");
+		response = deploymentRest.getPowerConsumptionXML("111", "1", "111", "222");
 		assertEquals(200, response.getStatus());
 
 		xml = (String) response.getEntity();

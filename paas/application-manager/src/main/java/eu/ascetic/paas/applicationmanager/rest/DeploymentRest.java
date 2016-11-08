@@ -503,16 +503,14 @@ public class DeploymentRest extends AbstractRest {
 	
 	@GET
 	@Path("{deployment_id}/energy-consumption")
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getEnergyConsumption(@PathParam("application_name") String applicationName, 
+	@Produces(MediaType.APPLICATION_XML + ";qs=1")
+	public Response getEnergyConsumptionXML(@PathParam("application_name") String applicationName, 
 										 @PathParam("deployment_id") String deploymentId,
 										 @QueryParam("startTime") String startTime,
 			                             @QueryParam("endTime") String endTime) {
-		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption" + " [XML]");
 		
-		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
-		
-		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment, startTime, endTime);
+		EnergyMeasurement energyMeasurement = getEnergyConsuption(applicationName, deploymentId, startTime, endTime);
 		
 		// We create the XMl response
 		String xml = XMLBuilder.getEnergyMeasurementForDeploymentXMLInfo(energyMeasurement, applicationName, deploymentId);
@@ -520,10 +518,37 @@ public class DeploymentRest extends AbstractRest {
 		return buildResponse(Status.OK, xml);
 	}
 	
+	private EnergyMeasurement getEnergyConsuption(String applicationName, 
+			 									   String deploymentId,
+			 									   String startTime,
+			 									   String endTime) {
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+
+		EnergyMeasurement energyMeasurement = getEnergyConsumptionFromEM(applicationName, deployment, startTime, endTime);
+		
+		return energyMeasurement;
+	}
+	
+	@GET
+	@Path("{deployment_id}/energy-consumption")
+	@Produces(MediaType.APPLICATION_JSON + ";qs=0.5")
+	public Response getEnergyConsumptionJSON(@PathParam("application_name") String applicationName, @PathParam("deployment_id") String deploymentId, @QueryParam("startTime") String startTime,
+            @QueryParam("endTime") String endTime) {
+				logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption" + " [JSON]");
+
+				EnergyMeasurement energyMeasurement = getEnergyConsuption(applicationName, deploymentId, startTime, endTime);
+
+				// We create the JSON response
+				String json = ModelConverter.objectEnergyMeasurementToJSON(energyMeasurement);
+
+				return buildResponse(Status.OK, json);
+	}
+	
 	@GET
 	@Path("{deployment_id}/power-consumption")
-	@Produces(MediaType.APPLICATION_XML)
-	public Response getPowerConsumption(@PathParam("application_name") String applicationName, 
+	@Produces(MediaType.APPLICATION_XML + ";qs=1")
+	public Response getPowerConsumptionXML(@PathParam("application_name") String applicationName, 
 										@PathParam("deployment_id") String deploymentId,
 										@QueryParam("startTime") String startTime,
 			                            @QueryParam("endTime") String endTime) {
@@ -538,6 +563,26 @@ public class DeploymentRest extends AbstractRest {
 				
 		return buildResponse(Status.OK, xml);
 	}
+	
+	@GET
+	@Path("{deployment_id}/power-consumption")
+	@Produces(MediaType.APPLICATION_JSON + ";qs=0,5")
+	public Response getPowerConsumptionJSON(@PathParam("application_name") String applicationName, 
+										@PathParam("deployment_id") String deploymentId,
+										@QueryParam("startTime") String startTime,
+			                            @QueryParam("endTime") String endTime) {
+		logger.info("GET request to path: /applications/" + applicationName + "/deployments/" + deploymentId + "/energy-consumption");
+		
+		Deployment deployment = deploymentDAO.getById(Integer.parseInt(deploymentId));
+		
+		PowerMeasurement powerMeasurement = getPowerConsumptionFromEM(applicationName, deployment, startTime, endTime);
+		
+		// We create the JSON response
+		String json = ModelConverter.objectPowerMeasurementToJSON(powerMeasurement);
+				
+		return buildResponse(Status.OK, json);
+	}
+	
 	
 	protected List<String> getVmsIds(Deployment deployment) {
 		List<String> ids = new ArrayList<String>();
