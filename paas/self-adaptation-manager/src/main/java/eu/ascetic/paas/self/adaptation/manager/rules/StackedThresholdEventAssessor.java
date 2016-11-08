@@ -120,9 +120,11 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         for (int i = 1; i < rulesFile.size(); i++) {
             ArrayList<String> current = rulesFile.getRow(i);
             FiringCriteria rule = new FiringCriteria(current.get(0), current.get(1), current.get(2));
+            String logString = "Term:" + current.get(0) + " Comparator: " + current.get(1) + " Response: " + current.get(2);
             try {
                 if (current.size() >= 4 && !current.get(3).isEmpty()) {
                     rule.setType(EventData.Type.valueOf(current.get(3)));
+                    logString = logString + " Type: " + current.get(3);
                 }
             } catch (IllegalArgumentException ex) {
                 /**
@@ -132,14 +134,18 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
             }
             if (current.size() >= 5) {
                 rule.setMinMagnitude(Double.parseDouble(current.get(4)));
+                logString = logString + " Min: " + current.get(4);
             }
             if (current.size() >= 6) {
                 rule.setMaxMagnitude(Double.parseDouble(current.get(5)));
+                logString = logString + " Max: " + current.get(5);
             }
             if (current.size() >= 7) {
                 rule.setParameters(current.get(6));
+                logString = logString + " Params: " + current.get(6);
             }            
             rules.add(rule);
+            Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "Adding Rule: " +logString);
         }
     }
 
