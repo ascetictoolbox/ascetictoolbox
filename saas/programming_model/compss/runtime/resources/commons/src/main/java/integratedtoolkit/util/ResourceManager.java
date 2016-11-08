@@ -413,6 +413,7 @@ public class ResourceManager {
     }
 
     public static void terminateResource(Worker worker, ResourceDescription reduction) {
+        pool.delete(worker);
         CloudManager.destroyResources(worker, reduction);
     }
 
