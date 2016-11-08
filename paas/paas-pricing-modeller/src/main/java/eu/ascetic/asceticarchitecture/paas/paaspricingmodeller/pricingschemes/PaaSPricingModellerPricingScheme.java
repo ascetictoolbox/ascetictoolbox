@@ -177,7 +177,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 		//the energy charges for the past period
 		
 		double price = getEnergyPrice(VM);
-		double energy = getEnergy(VM);
+		double energy = getEnergy(VM)/1000;
         double energyCharges = (double) Math.round(( energy* price) * 1000) / 1000;
    //     System.out.println("Pricing scheme: I am updating energy "+energy+"  with this price "+getEnergyPrice(VM));
         return energyCharges;
