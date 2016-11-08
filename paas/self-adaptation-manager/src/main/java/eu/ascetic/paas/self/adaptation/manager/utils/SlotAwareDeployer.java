@@ -79,7 +79,7 @@ public class SlotAwareDeployer {
 
                 if (sum == total && !results.contains(comb.toString())) {
                     results.add(comb.toString());
-                    System.out.println(comb.toString());
+                    //System.out.println(comb.toString());
                 }
             }
         }

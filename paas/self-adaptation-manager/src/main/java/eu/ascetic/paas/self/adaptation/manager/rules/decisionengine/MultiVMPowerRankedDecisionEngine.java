@@ -54,7 +54,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
      * @return The finalised response object
      */
     public Response deleteVM(Response response) {
-        Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Starting delete VM decision process");
+        //Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Starting delete VM decision process");
         if (getActuator() == null) {
             Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.WARNING, "Unable to find actuator.");            
             response.setAdaptationDetails("Unable to find actuator.");
@@ -79,7 +79,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);
         PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);
         while (valueRemoved < targetDifference) {
-            Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "In loop value remove = {0} target difference = {1}", new Object[]{valueRemoved, targetDifference});
+            //Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "In loop value remove = {0} target difference = {1}", new Object[]{valueRemoved, targetDifference});
             if (toRemove == null) {
                 Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");
                 break; //exit when no more vms to delete
@@ -111,7 +111,7 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
         if (response.getActionType().equals(Response.AdaptationType.SCALE_TO_N_VMS)) {
             response.setVmId("");
         }
-        Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Ending delete VM decision process");
+        //Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Ending delete VM decision process");
         return response;
     }
 
