@@ -1434,6 +1434,7 @@ paas/application-manager/src/test/resources/input-appManager-v15-swDependencies.
 paas/application-manager/src/test/resources/jndi.properties -text
 paas/application-manager/src/test/resources/log4j.properties -text
 paas/application-manager/src/test/resources/mysql-jpa-test-configuration.xml -text
+paas/application-manager/src/test/resources/na-1300-1.ovf.xml -text
 paas/application-manager/src/test/resources/na-1300.ovf.xml -text
 paas/application-manager/src/test/resources/na-ovf.xml -text
 paas/application-manager/src/test/resources/output-file-ovf-appPackager.ovf -text

@@ -49,7 +49,7 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 public class NegotiationWsClientNAIT {
 	private static Logger logger = Logger.getLogger(NegotiationWsClientNAIT.class);
 
-	private String na1300OvfFile = "na-1300.ovf.xml";
+	private String na1300OvfFile = "na-1300-1.ovf.xml";
 	private String na1300OvfString;
 	
 	private static final String serverAddress = "localhost";

@@ -66,6 +66,7 @@ public class OVFToSLANames {
 				"WattHour", "http://www.w3.org/2001/XMLSchema#watthour",
 				"Watt", "http://www.w3.org/2001/XMLSchema#watt",
 				"EUR", "http://www.w3.org/2001/XMLSchema#EUR",
+				"Euro", "http://www.w3.org/2001/XMLSchema#EUR",
 				"decimal", "http://www.w3.org/2001/XMLSchema#decimal"
 			);
 	

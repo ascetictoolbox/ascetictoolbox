@@ -5,9 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eu.ascetic.paas.applicationmanager.amqp.model.ApplicationManagerMessage;
 import eu.ascetic.paas.applicationmanager.conf.Configuration;
-import eu.ascetic.paas.applicationmanager.dao.ApplicationDAO;
 import eu.ascetic.paas.applicationmanager.dao.DeploymentDAO;
-import eu.ascetic.paas.applicationmanager.dao.VMDAO;
 import eu.ascetic.paas.applicationmanager.model.Deployment;
 import eu.ascetic.paas.applicationmanager.model.Dictionary;
 import eu.ascetic.paas.applicationmanager.model.converter.ModelConverter;
@@ -38,10 +36,7 @@ public class AmqpFakeMessageTestIT {
 		// Load Spring configuration
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("/mysql-jpa-test-configuration.xml");
-		ApplicationDAO applicationDAO = (ApplicationDAO) context.getBean("ApplicationService");	
 		DeploymentDAO deploymentDAO = (DeploymentDAO) context.getBean("DeploymentService");
-		VMDAO vmDAO = (VMDAO) context.getBean("VMService");
-		
 		
 		// We read the deployment from the db
 		Deployment deployment = deploymentDAO.getById(1300);

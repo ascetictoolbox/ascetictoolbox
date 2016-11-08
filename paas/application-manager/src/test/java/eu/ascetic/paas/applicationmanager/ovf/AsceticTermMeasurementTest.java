@@ -45,6 +45,6 @@ public class AsceticTermMeasurementTest {
 		assertEquals("metric", termMeasurement.getMetric());
 		assertEquals(33, termMeasurement.getParams().intValue());
 		assertEquals(111, termMeasurement.getPeriod().intValue());
-		assertEquals("LTE", termMeasurement.getClass());
+		assertEquals("LTE", termMeasurement.getComparator());
 	}
 }
