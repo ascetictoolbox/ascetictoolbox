@@ -360,6 +360,15 @@ public class ModelConverter {
 	}
 	
 	/**
+	 * Converts a EnergyMeasurement object to its String XML representation
+	 * @param energyMeasurement object to be converted
+	 * @return XML representation
+	 */
+	public static String objectEnergyMeasurementToJSON(EnergyMeasurement energyMeasurement) {	
+		return toJSON(EnergyMeasurement.class, energyMeasurement);
+	}
+	
+	/**
 	 * Converts an XML to a EnergyMeasurement object
 	 * @param xml Representation of an Collection of Applications
 	 * @return the EnergyMeasurement object or null if the xml is mal-formatted
@@ -378,6 +387,15 @@ public class ModelConverter {
 	}
 	
 	/**
+	 * Converts a PowerMeasurement object to its String XML representation
+	 * @param powerMeasurement object to be converted
+	 * @return XML representation
+	 */
+	public static String objectPowerMeasurementToJSON(PowerMeasurement powerMeasurement) {	
+		return toJSON(PowerMeasurement.class, powerMeasurement);
+	}
+	
+	/**
 	 * Converts an XML to a EnergyMeasurement object
 	 * @param xml Representation of an Collection of Applications
 	 * @return the PowerMeasurement object or null if the xml is mal-formatted
@@ -393,6 +411,15 @@ public class ModelConverter {
 	 */
 	public static String objectCostToXML(Cost cost) {	
 		return toXML(Cost.class, cost);
+	}
+	
+	/**
+	 * Converts a Cost object to its String XML representation
+	 * @param cost object to be converted
+	 * @return XML representation
+	 */
+	public static String objectCostToJSON(Cost cost) {	
+		return toJSON(Cost.class, cost);
 	}
 	
 	/**
