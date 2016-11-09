@@ -466,9 +466,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The upper bound
      */
     public int getUpperBound() {
-        return Integer.parseInt(
-                getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY)
-                .getValue());
+        ProductProperty value = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY + index);
+        if (value == null) {
+            return Integer.MAX_VALUE;
+        }        
+        return value.getValue();         
     }
 
     /**
@@ -495,9 +497,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The lower bound
      */
     public int getLowerBound() {
-        return Integer.parseInt(
-                getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY)
-                .getValue());
+        ProductProperty value = getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY + index);
+        if (value == null) {
+            return 0;
+        }        
+        return value.getValue();         
     }
 
     /**
