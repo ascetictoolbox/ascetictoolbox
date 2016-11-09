@@ -250,8 +250,9 @@ public class FiringCriteria {
     }
 
     /**
-     * This parses a product section either for a VM System Collection or for
-     * an individual VM.
+     * This parses a product section either for a VM System Collection or for an
+     * individual VM.
+     *
      * @param section The product section to read Self-adaptation rules from
      * @return The list of self-adaptation rules that have been extracted.
      */
@@ -259,27 +260,31 @@ public class FiringCriteria {
         ArrayList<FiringCriteria> answer = new ArrayList<>();
         int maxValue = section.getAdaptationRuleNumber();
         for (int ruleNumber = 0; ruleNumber < maxValue; ruleNumber++) {
-            FiringCriteria criteria = new FiringCriteria(
-                    section.getAdaptationRuleSLATerm(ruleNumber),
-                    section.getAdaptationRuleComparisonOperator(ruleNumber),
-                    section.getAdaptationRuleResponseType(ruleNumber));
-            if (criteria.getAgreementTerm() == null || criteria.getOperator() == null || criteria.getResponseType() == null) {
-                Logger.getLogger(FiringCriteria.class.getName()).log(Level.WARNING, "A rule from the OVF was not constructed correctly!");
-                continue;
+            try {
+                FiringCriteria criteria = new FiringCriteria(
+                        section.getAdaptationRuleSLATerm(ruleNumber),
+                        section.getAdaptationRuleComparisonOperator(ruleNumber),
+                        section.getAdaptationRuleResponseType(ruleNumber));
+                if (criteria.getAgreementTerm() == null || criteria.getOperator() == null || criteria.getResponseType() == null) {
+                    Logger.getLogger(FiringCriteria.class.getName()).log(Level.WARNING, "A rule from the OVF was not constructed correctly!");
+                    continue;
+                }
+                if (section.getAdaptationRuleLowerBound(ruleNumber) != null) {
+                    criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(ruleNumber)));
+                }
+                if (section.getAdaptationRuleUpperBound(ruleNumber) != null) {
+                    criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(ruleNumber)));
+                }
+                if (section.getAdaptationRuleNotificationType(ruleNumber) != null) {
+                    criteria.setType(EventData.getType(section.getAdaptationRuleNotificationType(ruleNumber)));
+                }
+                if (section.getAdaptationRuleParameters(ruleNumber) != null) {
+                    criteria.setParameters(section.getAdaptationRuleParameters(ruleNumber));
+                }
+                answer.add(criteria);
+            } catch (Exception ex) {
+                Logger.getLogger(FiringCriteria.class.getName()).log(Level.WARNING, "A rule from the OVF was not constructed correctly and caused a fault!", ex);
             }
-            if (section.getAdaptationRuleLowerBound(ruleNumber) != null) {
-                criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(ruleNumber)));
-            }
-            if (section.getAdaptationRuleUpperBound(ruleNumber) != null) {
-                criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(ruleNumber)));
-            }
-            if (section.getAdaptationRuleNotificationType(ruleNumber) != null) {
-                criteria.setType(EventData.getType(section.getAdaptationRuleNotificationType(ruleNumber)));
-            }
-            if (section.getAdaptationRuleParameters(ruleNumber) != null) {
-                criteria.setParameters(section.getAdaptationRuleParameters(ruleNumber));
-            }
-            answer.add(criteria);
         }
         return answer;
     }
@@ -327,14 +332,12 @@ public class FiringCriteria {
 
     @Override
     public String toString() {
-        return "Rule: " 
-                + agreementTerm + ":" + 
-                operator + ":" + 
-                type  + ":" + 
-                responseType  + ":" + 
-                parameters;
+        return "Rule: "
+                + agreementTerm + ":"
+                + operator + ":"
+                + type + ":"
+                + responseType + ":"
+                + parameters;
     }
-    
-    
 
 }
