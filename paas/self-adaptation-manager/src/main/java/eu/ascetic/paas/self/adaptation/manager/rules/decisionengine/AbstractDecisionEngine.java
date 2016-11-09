@@ -176,6 +176,8 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         String deploymentId = response.getDeploymentId();
         String vmType = response.getAdaptationDetail("VM_TYPE");
         int currentVmCount = getActuator().getVmCountOfGivenType(appId, deploymentId, vmType);
+        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING, "Adaptation Details {0}", response.getAdaptationDetails());
+        Logger.getLogger(AbstractDecisionEngine.class.getName()).log(Level.WARNING, "VM Type: {0} VM Count: {1}", new Object[]{vmType, response.getAdaptationDetail("VM_COUNT")});
         int targetCount = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
         int difference = targetCount - currentVmCount;
         OvfDefinition ovf = response.getCause().getOvf();

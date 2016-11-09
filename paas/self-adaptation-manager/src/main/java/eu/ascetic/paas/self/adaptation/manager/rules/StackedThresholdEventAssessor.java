@@ -117,7 +117,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         rulesFile = new ResultsStore(workingDir + RULES_FILE);
         writeOutDefaults(rulesFile);        
         rulesFile.load();
-        Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "There are " + rulesFile.size() + " to load.");
+        Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "There are {0} to load.", rulesFile.size());
         //ignore the header of the file
         for (int i = 1; i < rulesFile.size(); i++) {
             ArrayList<String> current = rulesFile.getRow(i);
@@ -221,7 +221,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         }
         for (FiringCriteria rule : rules) {
             if (rule.shouldFire(event)) {
-                 Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "A rule has been matched " + rule.toString());
+                 Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "A rule has been matched {0}", rule.toString());
                 answer.add(rule);
             }
         }
