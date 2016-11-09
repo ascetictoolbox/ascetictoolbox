@@ -147,7 +147,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                 logString = logString + " Params: " + current.get(6);
             }            
             rules.add(rule);
-            Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "Adding Rule: {0}", logString);
+            Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.WARNING, "Adding Rule: {0}", logString);
         }
     }
 
@@ -180,13 +180,16 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                      * attempted already and failed. (Some responses on further
                      * examination may be inappropriate and fail.
                      */
+                    Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.WARNING, "Rule Parameters {0}", rule.getParameters());                    
                     answer.setAdaptationDetails(rule.getParameters());
                     return answer;
                 } else {
+                    Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.WARNING, "A recently actioned rule could have fired"); 
                     return answer; //return as something has recently been actioned.
                 }
             }
         }
+        Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.WARNING, "The threshold for a rule firing was not reached!"); 
         return answer;
     }
 
