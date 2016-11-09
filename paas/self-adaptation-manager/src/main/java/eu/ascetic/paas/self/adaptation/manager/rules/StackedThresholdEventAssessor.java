@@ -106,6 +106,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
      * This loads the rules used by this event assessor in from disk.
      */
     private void loadRules() {
+        Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "Loading default rules for self adaptation");
         /**
          * Load in from file the following: Agreement Term, Guarantee Direction
          * and Response Type
@@ -116,6 +117,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
         rulesFile = new ResultsStore(workingDir + RULES_FILE);
         writeOutDefaults(rulesFile);        
         rulesFile.load();
+        Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "There are " + rulesFile.size() + " to load.");
         //ignore the header of the file
         for (int i = 1; i < rulesFile.size(); i++) {
             ArrayList<String> current = rulesFile.getRow(i);
@@ -145,7 +147,7 @@ public class StackedThresholdEventAssessor extends AbstractEventAssessor {
                 logString = logString + " Params: " + current.get(6);
             }            
             rules.add(rule);
-            Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "Adding Rule: " +logString);
+            Logger.getLogger(StackedThresholdEventAssessor.class.getName()).log(Level.INFO, "Adding Rule: {0}", logString);
         }
     }
 

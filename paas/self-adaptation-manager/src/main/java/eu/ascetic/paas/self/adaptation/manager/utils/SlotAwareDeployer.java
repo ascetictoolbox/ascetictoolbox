@@ -232,10 +232,10 @@ public class SlotAwareDeployer {
         System.out.println("numTries( 100*(" + slots.size() + ") ) = " + numTries);
         for(int i = 0; i < numTries; i++){
             Collections.shuffle(slotsClone);
-            System.out.println("slotsClone("  + slotsClone.hashCode() + ") = " + slotsClone.toString());
+            //System.out.println("slotsClone("  + slotsClone.hashCode() + ") = " + slotsClone.toString());
             if(!out.containsKey(slotsClone.hashCode())){
                 System.out.println("Added to out.");
-                out.put(slotsClone.hashCode(), this.cloneSlots(slotsClone));
+                //out.put(slotsClone.hashCode(), this.cloneSlots(slotsClone));
             }
         }
         
@@ -273,7 +273,7 @@ public class SlotAwareDeployer {
         List<SlotSolution> solutions = new ArrayList<>();
 
         for (String combination : combinations) {
-            System.out.println("Trying to find place for " + combination.toString());
+            //System.out.println("Trying to find place for " + combination.toString());
             String cpus[] = combination.split(",");
             
             for(int k : slotsInAllOrders.keySet()){
@@ -291,10 +291,10 @@ public class SlotAwareDeployer {
                 }
 
                 for (Slot s : slotsOrderProposal) {
-                    System.out.println(s.getFreeCpus() + " - " + s.getHostname());
+                    //System.out.println(s.getFreeCpus() + " - " + s.getHostname());
                 }
                 double consolidationScore = consolidationScore(slotsOrderProposal, nodes);
-                System.out.println("Score: " + consolidationScore);
+                //System.out.println("Score: " + consolidationScore);
                 solutions.add(new SlotSolution(consolidationScore, results, this.provider));
             }
         }
