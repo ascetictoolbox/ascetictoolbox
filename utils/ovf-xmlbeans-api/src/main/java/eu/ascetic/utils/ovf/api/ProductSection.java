@@ -2175,6 +2175,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The parameters of the adaptation rule
      */
     public String getAdaptationRuleParameters(int index) {
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index);
+        if (value == null) {
+            return null;
+        }
         return getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index)
                 .getValue();
     }
