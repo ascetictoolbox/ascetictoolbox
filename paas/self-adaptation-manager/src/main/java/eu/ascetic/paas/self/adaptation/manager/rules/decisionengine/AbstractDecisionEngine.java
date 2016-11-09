@@ -181,7 +181,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         int targetCount = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
         int difference = targetCount - currentVmCount;
         OvfDefinition ovf = response.getCause().getOvf();
-        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf, appId);
+        ProductSection details = OVFUtils.getProductionSectionFromOvfType(ovf, vmType);
         if (difference == 0) {
             response.setPerformed(true);
             response.setPossibleToAdapt(false);
