@@ -470,7 +470,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         if (value == null) {
             return Integer.MAX_VALUE;
         }        
-        return value.getValue();         
+        return Integer.parseInt(value.getValue());         
     }
 
     /**
@@ -501,7 +501,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         if (value == null) {
             return 0;
         }        
-        return value.getValue();         
+        return Integer.parseInt(value.getValue());         
     }
 
     /**
@@ -530,7 +530,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public int getStartingBound() {
         return Integer.parseInt(
                 getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY)
-                .getValue());
+                .getValue());        
     }
 
     /**
