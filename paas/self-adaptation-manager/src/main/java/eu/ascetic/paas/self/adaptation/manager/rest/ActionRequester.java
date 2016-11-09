@@ -249,9 +249,10 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
      * @param applicationId The application ID
      * @param deploymentId The deployment ID
      * @param ovfId The OVF id that indicates which VM type to instantiate
-     * @param cpuSize The size of the cpu to use, must be at least 1 else the 
+     * @param cpuSize The size of the cpu to use, must be at least 1 else the
      * ovf default will be used instead.
-     * @param location specifies the preference for the VMs location, may also be left blank or given a null value.
+     * @param location specifies the preference for the VMs location, may also
+     * be left blank or given a null value.
      */
     public void addVM(String applicationId, String deploymentId, String ovfId, int cpuSize, String location) {
         RestVMClient client = new RestVMClient(applicationId, deploymentId);
@@ -414,10 +415,10 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         double answer = 0.0;
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            double power = getPowerUsageVM(applicationId, deploymentId, vm.getId()+ "");
+            double power = getPowerUsageVM(applicationId, deploymentId, vm.getId() + "");
             //This avoids error values been added to the total power consumption
             if (power >= 0) {
-                answer = answer +  power;
+                answer = answer + power;
             }
         }
         return answer;
@@ -495,13 +496,11 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         String[] locations = null;
         if (vmLocationStr != null) {
             locations = vmLocationStr.split(",");
-        }        
+        }
         if (vmsToRemove == null) { //Add VMs
             int count = Integer.parseInt(response.getAdaptationDetail("VM_COUNT"));
             for (int i = 0; i < count; i++) {
-                if (cpuSizeStr != null && cpuSizeStr.isEmpty()) {
-                    addVM(applicationId, deploymentId, vmType);
-                } else {
+                if (cpuSizeStr != null && !cpuSizeStr.isEmpty()) {
                     //Set the cpu size here.
                     Double vmCount = Double.parseDouble(sizes[i]);
                     String location = "";
@@ -509,6 +508,8 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
                         location = locations[i];
                     }
                     addVM(applicationId, deploymentId, vmType, vmCount.intValue(), location);
+                } else {
+                    addVM(applicationId, deploymentId, vmType);
                 }
             }
         } else { //Remove VMs
