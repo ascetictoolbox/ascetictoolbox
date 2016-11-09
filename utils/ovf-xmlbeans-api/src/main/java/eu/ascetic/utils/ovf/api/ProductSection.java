@@ -1,17 +1,17 @@
 /**
- *  Copyright 2014 University of Leeds
+ * Copyright 2014 University of Leeds
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package eu.ascetic.utils.ovf.api;
 
@@ -68,7 +68,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystem}s to instantiate.
      */
     private static final String ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY = "asceticStartBound";
-
 
     /**
      * The static KEY used to get and set the deployment ID of a
@@ -235,20 +234,20 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     private static final String ASCETIC_SLA_INFO_TYPE_KEY = "asceticSlaInfoSlaType_";
 
     /**
-     * The static KEY used to get and set the deployment name of a {@link VirtualSystemCollection}
+     * The static KEY used to get and set the deployment name of a
+     * {@link VirtualSystemCollection}
      */
     private static final String ASCETIC_DEPLOYMENT_NAME = "asceticDeploymentName";
 
     /**
-    * The Price Schema por Each Virtual System
-    */
+     * The Price Schema por Each Virtual System
+     */
     private static final String ASCETIC_PRICE_SCHEMA = "asceticPriceSchema";
 
     /**
      * Default constructor.
      *
-     * @param base
-     *            The XMLBeans base type used for data storage
+     * @param base The XMLBeans base type used for data storage
      */
     public ProductSection(XmlBeanProductSectionType base) {
         super(base);
@@ -268,8 +267,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the Product element. The optional Product element specifies the name
      * of the product.
      *
-     * @param product
-     *            The product name to set
+     * @param product The product name to set
      */
     public void setProduct(String product) {
         delegate.setProduct(XmlSimpleTypeConverter.toMsgType(product));
@@ -289,8 +287,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the version element. The optional Version element specifies the
      * product version in short form.
      *
-     * @param version
-     *            The version to set
+     * @param version The version to set
      */
     public void setVersion(String version) {
         CimString cimString = CimString.Factory.newInstance();
@@ -312,8 +309,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the info element, a human readable description of the meaning of
      * this section.
      *
-     * @param info
-     *            The content to set within the info element
+     * @param info The content to set within the info element
      */
     public void setInfo(String info) {
         delegate.setInfo(XmlSimpleTypeConverter.toMsgType(info));
@@ -336,8 +332,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the {@link ProductProperty} array held in this object.
      *
-     * @param productPropertiesArray
-     *            The product property array to set
+     * @param productPropertiesArray The product property array to set
      */
     public void setPropertyArray(ProductProperty[] productPropertiesArray) {
         Vector<XmlBeanProductSectionType.Property> newPropertyArray = new Vector<XmlBeanProductSectionType.Property>();
@@ -353,8 +348,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets a {@link ProductProperty} by key held within an array stored in this
      * object.
      *
-     * @param key
-     *            The unique key of the property
+     * @param key The unique key of the property
      * @return The property
      */
     public ProductProperty getPropertyByKey(String key) {
@@ -370,8 +364,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets a {@link ProductProperty} at index i of the array of this object.
      *
-     * @param i
-     *            The index of the property
+     * @param i The index of the property
      * @return The property
      */
     public ProductProperty getPropertyAtIndex(int i) {
@@ -382,8 +375,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets the index into the internal {@link ProductProperty}[] for a
      * {@link ProductProperty} with a given key.
      *
-     * @param key
-     *            The key identifying the {@link ProductProperty}
+     * @param key The key identifying the {@link ProductProperty}
      * @return The index of the {@link ProductProperty}
      */
     public int getPropertyIndexByKey(String key) {
@@ -400,12 +392,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Adds a new {@link ProductProperty} to the end of the array held by this
      * object.
      *
-     * @param key
-     *            The unique property key
-     * @param type
-     *            The property type (see {@link ProductPropertyType})
-     * @param value
-     *            The property value
+     * @param key The unique property key
+     * @param type The property type (see {@link ProductPropertyType})
+     * @param value The property value
      * @return The ProductProperty added to the array.
      */
     public ProductProperty addNewProperty(String key, ProductPropertyType type,
@@ -420,8 +409,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Removes a new ProductProperty from the array at index i.
      *
-     * @param i
-     *            The index value to remove
+     * @param i The index value to remove
      */
     public void removeProperty(int i) {
         delegate.removeProperty(i);
@@ -430,8 +418,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Removes a {@link ProductProperty} identified by a given key.
      *
-     * @param key
-     *            The key of the {@link ProductProperty} to remove
+     * @param key The key of the {@link ProductProperty} to remove
      */
     public void removePropertyByKey(String key) {
         ProductProperty[] productProperties = getPropertyArray();
@@ -444,7 +431,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     // Start of ASCETiC specific helper functions
-
     /**
      * Test whether a public IP is to be associated with a {@link VirtualSystem}
      * after instantiation.
@@ -460,8 +446,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets whether a {@link VirtualSystem} should have a public IP associated
      * with it.
      *
-     * @param associate
-     *            The association of a public IP.
+     * @param associate The association of a public IP.
      */
     public void setAssociatePublicIp(Boolean associate) {
         ProductProperty productProperty = getPropertyByKey(
@@ -483,15 +468,14 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public int getUpperBound() {
         return Integer.parseInt(
                 getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_UPPER_BOUND_KEY)
-                        .getValue());
+                .getValue());
     }
 
     /**
      * Sets the upper bound on the number of virtual machines to instantiate on
      * a per {@link VirtualSystem} basis.
      *
-     * @param upperBound
-     *            The upper bound to set
+     * @param upperBound The upper bound to set
      */
     public void setUpperBound(Integer upperBound) {
         ProductProperty productProperty = getPropertyByKey(
@@ -513,15 +497,14 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     public int getLowerBound() {
         return Integer.parseInt(
                 getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_LOWER_BOUND_KEY)
-                        .getValue());
+                .getValue());
     }
 
     /**
      * Sets the lower bound on the number of virtual machines to instantiate on
      * a per {@link VirtualSystem} basis.
      *
-     * @param lowerBound
-     *            The lower bound to set
+     * @param lowerBound The lower bound to set
      */
     public void setLowerBound(Integer lowerBound) {
         ProductProperty productProperty = getPropertyByKey(
@@ -535,24 +518,23 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the starting bound on the number of virtual machines to instantiate on
-     * a per {@link VirtualSystem} basis.
+     * Gets the starting bound on the number of virtual machines to instantiate
+     * on a per {@link VirtualSystem} basis.
      *
      * @return The starting bound
      */
     public int getStartingBound() {
         return Integer.parseInt(
                 getPropertyByKey(ASCETIC_VIRTUAL_SYSTEM_STARTING_BOUND_KEY)
-                        .getValue());
+                .getValue());
     }
 
     /**
-     * Sets the starting bound on the number of virtual machines to instantiate on
-     * a per {@link VirtualSystem} basis.
+     * Sets the starting bound on the number of virtual machines to instantiate
+     * on a per {@link VirtualSystem} basis.
      *
-     * @param startingBound
-     *            The starting bound to set (i.e. the amount of VMs to create on
-     * initialisation of an application.
+     * @param startingBound The starting bound to set (i.e. the amount of VMs to
+     * create on initialisation of an application.
      */
     public void setStartingBound(Integer startingBound) {
         ProductProperty productProperty = getPropertyByKey(
@@ -578,8 +560,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the deployment ID for a {@link VirtualSystemCollection}.
      *
-     * @param id
-     *            The deployment ID to set
+     * @param id The deployment ID to set
      */
     public void setDeploymentId(String id) {
         ProductProperty productProperty = getPropertyByKey(
@@ -618,8 +599,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * <br>
      * TODO: Support {@link VirtualSystem}.
      *
-     * @param publicKey
-     *            The public SSH key to set
+     * @param publicKey The public SSH key to set
      */
     public void setPublicSshKey(String publicKey) {
         String encodedBytes = new String(
@@ -661,8 +641,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * <br>
      * TODO: Support {@link VirtualSystem}.
      *
-     * @param privateKey
-     *            The private SSH key to set
+     * @param privateKey The private SSH key to set
      */
     public void setPrivateSshKey(String privateKey) {
         String encodedBytes = new String(
@@ -692,8 +671,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the energy requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
      *
-     * @param energyRequirement
-     *            The energy requirement
+     * @param energyRequirement The energy requirement
      */
     public void setEnergyRequirement(String energyRequirement) {
         ProductProperty productProperty = getPropertyByKey(
@@ -720,8 +698,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the power requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
      *
-     * @param powerRequirement
-     *            The power requirement
+     * @param powerRequirement The power requirement
      */
     public void setPowerRequirement(String powerRequirement) {
         ProductProperty productProperty = getPropertyByKey(
@@ -748,8 +725,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the charges requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
      *
-     * @param chargesRequirement
-     *            The charges requirement
+     * @param chargesRequirement The charges requirement
      */
     public void setChargesRequirement(String chargesRequirement) {
         ProductProperty productProperty = getPropertyByKey(
@@ -776,8 +752,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the price requirement on a per {@link VirtualSystem} or
      * {@link VirtualSystemCollection} basis.
      *
-     * @param priceRequirement
-     *            The price requirement
+     * @param priceRequirement The price requirement
      */
     public void setPriceRequirement(String priceRequirement) {
         ProductProperty productProperty = getPropertyByKey(
@@ -807,8 +782,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
      * guide the negotiation.
      *
-     * @param energyBoundary
-     *            The energy boundary
+     * @param energyBoundary The energy boundary
      */
     public void setEnergyOptimizationBoundary(String energyBoundary) {
         ProductProperty productProperty = getPropertyByKey(
@@ -837,8 +811,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystemCollection} basis. Used by the PM runtime and to
      * guide the negotiation.
      *
-     * @param costBoundary
-     *            The cost boundary
+     * @param costBoundary The cost boundary
      */
     public void setCostOptimizationBoundary(String costBoundary) {
         ProductProperty productProperty = getPropertyByKey(
@@ -868,8 +841,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * or {@link VirtualSystemCollection} basis. Used by the PM runtime and to
      * guide the negotiation.
      *
-     * @param performanceBoundary
-     *            The performance boundary
+     * @param performanceBoundary The performance boundary
      */
     public void setPerformanceOptimizationBoundary(String performanceBoundary) {
         ProductProperty productProperty = getPropertyByKey(
@@ -898,8 +870,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * {@link VirtualSystem} or {@link VirtualSystemCollection} basis. Used by
      * the PM runtime and to guide the negotiation.
      *
-     * @param parameter
-     *            The parameter
+     * @param parameter The parameter
      */
     public void setOptimizationParameter(String parameter) {
         ProductProperty productProperty = getPropertyByKey(
@@ -915,19 +886,14 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Adds a new set of properties that define an end point.
      *
-     * @param id
-     *            The ID of the end point (e.g. "memory-probe")
-     * @param uri
-     *            The URI of the end point (e.g.
-     *            ("uri://some-end-point/application-monitor")
-     * @param type
-     *            The type of the end point (e.g. "probe")
-     * @param subtype
-     *            The subtype of the end point (e.g. "memory")
-     * @param interval
-     *            The interval at which to report to the end point
+     * @param id The ID of the end point (e.g. "memory-probe")
+     * @param uri The URI of the end point (e.g.
+     * ("uri://some-end-point/application-monitor")
+     * @param type The type of the end point (e.g. "probe")
+     * @param subtype The subtype of the end point (e.g. "memory")
+     * @param interval The interval at which to report to the end point
      * @return The index of the new end point (not to be confused with the index
-     *         of a {@link ProductProperty})
+     * of a {@link ProductProperty})
      */
     public int addEndPointProperties(String id, String uri, String type,
             String subtype, String interval) {
@@ -974,8 +940,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets an end point's index by its ID in the array of end point property
      * sets (not to be confused with the index of a {@link ProductProperty}).
      *
-     * @param id
-     *            The ID of the end point
+     * @param id The ID of the end point
      * @return The end point index
      */
     public int getEndPointIndexById(String id) {
@@ -996,21 +961,15 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets a set of properties that define an end point at a end point property
      * set index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param id
-     *            The ID of the end point (e.g. "memory-probe")
-     * @param uri
-     *            The URI of the end point (e.g.
-     *            ("uri://some-end-point/application-monitor")
-     * @param type
-     *            The type of the end point (e.g. "probe")
-     * @param subtype
-     *            The subtype of the end point (e.g. "memory")
-     * @param interval
-     *            The interval at which to report to the end point
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param id The ID of the end point (e.g. "memory-probe")
+     * @param uri The URI of the end point (e.g.
+     * ("uri://some-end-point/application-monitor")
+     * @param type The type of the end point (e.g. "probe")
+     * @param subtype The subtype of the end point (e.g. "memory")
+     * @param interval The interval at which to report to the end point
      */
     public void setEndPointProperties(int index, String id, String uri,
             String type, String subtype, String interval) {
@@ -1024,10 +983,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the ID of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The ID of the end point (e.g. "memory-probe")
      */
     public String getEndPointId(int index) {
@@ -1037,12 +995,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the ID of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param id
-     *            The ID of the end point (e.g. "memory-probe")
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param id The ID of the end point (e.g. "memory-probe")
      */
     public void setEndPointId(int index, String id) {
         getPropertyByKey(ASCETIC_ENDPOINT_ID_KEY + index).setValue(id);
@@ -1051,12 +1007,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the URI of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The URI of the end point (e.g.
-     *         ("uri://some-end-point/application-monitor")
+     * ("uri://some-end-point/application-monitor")
      */
     public String getEndPointUri(int index) {
         return getPropertyByKey(ASCETIC_ENDPOINT_URI_KEY + index).getValue();
@@ -1065,13 +1020,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the URI of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param uri
-     *            The URI of the end point (e.g.
-     *            ("uri://some-end-point/application-monitor")
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param uri The URI of the end point (e.g.
+     * ("uri://some-end-point/application-monitor")
      */
     public void setEndPointUri(int index, String uri) {
         getPropertyByKey(ASCETIC_ENDPOINT_URI_KEY + index).setValue(uri);
@@ -1080,10 +1033,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the type of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The type of the end point (e.g. "probe")
      */
     public String getEndPointType(int index) {
@@ -1093,12 +1045,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the type of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param type
-     *            The type of the end point (e.g. "probe")
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param type The type of the end point (e.g. "probe")
      */
     public void setEndPointType(int index, String type) {
         getPropertyByKey(ASCETIC_ENDPOINT_TYPE_KEY + index).setValue(type);
@@ -1107,10 +1057,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the subtype of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The subtype of the end point (e.g. "memory")
      */
     public String getEndPointSubtype(int index) {
@@ -1121,12 +1070,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the subtype of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param subtype
-     *            The subtype of the end point (e.g. "memory")
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param subtype The subtype of the end point (e.g. "memory")
      */
     public void setEndPointSubtype(int index, String subtype) {
         getPropertyByKey(ASCETIC_ENDPOINT_SUBTYPE_KEY + index)
@@ -1136,10 +1083,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the reporting interval of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The interval at which to report to the end point
      */
     public String getEndPointInterval(int index) {
@@ -1150,12 +1096,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the reporting interval of an end point at a specific index.
      *
-     * @param index
-     *            The index of the end point (not to be confused with the index
-     *            of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param interval
-     *            The interval at which to report to the end point
+     * @param index The index of the end point (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param interval The interval at which to report to the end point
      */
     public void setEndPointInterval(int index, String interval) {
         getPropertyByKey(ASCETIC_ENDPOINT_INTERVAL_KEY + index)
@@ -1165,10 +1109,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Remove a set of end point properties at a specific index.
      *
-     * @param index
-     *            The index of the end point to remove (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the end point to remove (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      */
     public void removeEndPointProperties(int index) {
         removePropertyByKey(ASCETIC_ENDPOINT_ID_KEY + index);
@@ -1179,7 +1122,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
-
         ProductProperty productProperty = getPropertyByKey(
                 ASCETIC_ENDPOINT_NUMBER);
         Integer newEndPointNumber = ((Integer) productProperty
@@ -1215,8 +1157,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the VMIC offline mode script for this {@link VirtualSystem}.
      *
-     * @param script
-     *            The VMIC script to set
+     * @param script The VMIC script to set
      */
     public void setVmicScript(String script) {
         ProductProperty productProperty = getPropertyByKey(
@@ -1241,8 +1182,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the VMIC mode, either "offline" or "online".
      *
-     * @param mode
-     *            The VMIC mode to set
+     * @param mode The VMIC mode to set
      */
     public void setVmicMode(String mode) {
         ProductProperty productProperty = getPropertyByKey(
@@ -1258,20 +1198,16 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Adds a new set of properties that define a software dependency.
      *
-     * @param id
-     *            The ID of the software dependency (e.g. "memory-probe")
-     * @param type
-     *            The type of the software dependency (e.g. "zip")
-     * @param packageUri
-     *            The URI to the software dependency package (e.g.
-     *            ("/some-end-point/probe-repository/memory-probe.zip")
-     * @param instalScriptUri
-     *            The installation script of the software dependency for the
-     *            VMIC "offline" mode (e.g.
-     *            "/some-end-point/probe-repository/memory-probe.sh"). Should be
-     *            set to "" if VMIC mode is set to "online"
+     * @param id The ID of the software dependency (e.g. "memory-probe")
+     * @param type The type of the software dependency (e.g. "zip")
+     * @param packageUri The URI to the software dependency package (e.g.
+     * ("/some-end-point/probe-repository/memory-probe.zip")
+     * @param instalScriptUri The installation script of the software dependency
+     * for the VMIC "offline" mode (e.g.
+     * "/some-end-point/probe-repository/memory-probe.sh"). Should be set to ""
+     * if VMIC mode is set to "online"
      * @return The index of the new software dependency (not to be confused with
-     *         the index of a {@link ProductProperty})
+     * the index of a {@link ProductProperty})
      */
     public int addSoftwareDependencyProperties(String id, String type,
             String packageUri, String instalScriptUri) {
@@ -1317,8 +1253,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * dependency property sets (not to be confused with the index of a
      * {@link ProductProperty}).
      *
-     * @param id
-     *            The ID of the software dependency
+     * @param id The ID of the software dependency
      * @return The software dependency's index
      */
     public int getSoftwareDependencyIndexById(String id) {
@@ -1339,22 +1274,17 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets a set of properties that define a software dependency at a software
      * dependency property index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param id
-     *            The ID of the software dependency (e.g. "memory-probe")
-     * @param type
-     *            The type of the software dependency (e.g. "zip")
-     * @param packageUri
-     *            The URI to the software dependency (e.g.
-     *            ("/some-end-point/probe-repository/memory-probe.zip")
-     * @param installScriptUri
-     *            The installation script of the software dependency for the
-     *            VMIC "offline" mode (e.g.
-     *            "/some-end-point/probe-repository/memory-probe.sh"). Should be
-     *            set to "" if VMIC mode is set to "online"
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param id The ID of the software dependency (e.g. "memory-probe")
+     * @param type The type of the software dependency (e.g. "zip")
+     * @param packageUri The URI to the software dependency (e.g.
+     * ("/some-end-point/probe-repository/memory-probe.zip")
+     * @param installScriptUri The installation script of the software
+     * dependency for the VMIC "offline" mode (e.g.
+     * "/some-end-point/probe-repository/memory-probe.sh"). Should be set to ""
+     * if VMIC mode is set to "online"
      */
     public void setSoftwareDependencyProperties(int index, String id,
             String type, String packageUri, String installScriptUri) {
@@ -1367,10 +1297,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the ID of a software dependency at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @return The ID of the software dependency (e.g. "memory-probe")
      */
     public String getSoftwareDependencyId(int index) {
@@ -1381,12 +1310,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the ID of an software dependency at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param id
-     *            The ID of the software dependency (e.g. "memory-probe")
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param id The ID of the software dependency (e.g. "memory-probe")
      */
     public void setSoftwareDependencyId(int index, String id) {
         getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + index)
@@ -1396,10 +1323,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the type of a software dependency at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @return The type of the software dependency (e.g. "zip")
      */
     public String getSoftwareDependencyType(int index) {
@@ -1410,12 +1336,10 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the type of a software dependency at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param type
-     *            The type of the software dependency (e.g. "zip")
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param type The type of the software dependency (e.g. "zip")
      */
     public void setSoftwareDependencyType(int index, String type) {
         getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_TYPE_KEY + index)
@@ -1425,12 +1349,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the URI of an software dependency package at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @return The URI to the software dependency package (e.g.
-     *         ("/some-end-point/probe-repository/memory-probe.zip")
+     * ("/some-end-point/probe-repository/memory-probe.zip")
      */
     public String getSoftwareDependencyPackageUri(int index) {
         return getPropertyByKey(
@@ -1440,13 +1363,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the URI of an software dependency package at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param packageUri
-     *            The URI to the software dependency package (e.g.
-     *            ("/some-end-point/probe-repository/memory-probe.zip")
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param packageUri The URI to the software dependency package (e.g.
+     * ("/some-end-point/probe-repository/memory-probe.zip")
      */
     public void setSoftwareDependencyPackageUri(int index, String packageUri) {
         getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_URI_KEY + index)
@@ -1457,57 +1378,51 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets the URI of the installation script of a software dependency at a
      * specific index. VMIC "offline" mode only.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @return The URI to the installation script of the software dependency
-     *         (e.g. ("/some-end-point/probe-repository/memory-probe.sh")
+     * (e.g. ("/some-end-point/probe-repository/memory-probe.sh")
      */
     public String getSoftwareDependencyInstallScriptUri(int index) {
         return getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
-                        .getValue();
+                .getValue();
     }
 
     /**
      * Sets the URI of the installation script of a software dependency at a
      * specific index. VMIC "offline" mode only.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param installScriptUri
-     *            The URI to the installation script of the software dependency
-     *            (e.g. ("/some-end-point/probe-repository/memory-probe.sh")
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param installScriptUri The URI to the installation script of the
+     * software dependency (e.g.
+     * ("/some-end-point/probe-repository/memory-probe.sh")
      */
     public void setSoftwareDependencyInstallScriptUri(int index,
             String installScriptUri) {
         getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_INSTALL_SCRIPT_URI_KEY + index)
-                        .setValue(installScriptUri);
+                .setValue(installScriptUri);
     }
 
     /**
      * Adds an new attribute for a given software dependency package. VMIC
      * online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with which should exist before using any of the
-     *            attribute property accessor and mutator functions (not to be
-     *            confused with the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeId
-     *            The ID of the attribute (e.g. "chef-workload")
-     * @param attributeName
-     *            The name of the attribute
-     * @param attributeValue
-     *            The value of the attribute
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with which should exist before using any of the
+     * attribute property accessor and mutator functions (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeId The ID of the attribute (e.g. "chef-workload")
+     * @param attributeName The name of the attribute
+     * @param attributeValue The value of the attribute
      *
      * @return The index of the new attribute for the given software dependency
-     *         package
+     * package
      */
     public int addSoftwareDependencyPackageAttribute(
             int softwareDependencyIndex, String attributeId,
@@ -1518,7 +1433,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         while (true) {
             ProductProperty productProperty = getPropertyByKey(
                     ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                            + softwareDependencyIndex + "_" + i);
+                    + softwareDependencyIndex + "_" + i);
             if (productProperty == null) {
                 break;
             }
@@ -1527,25 +1442,25 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         addNewProperty(
                 ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                        + softwareDependencyIndex + "_" + i,
+                + softwareDependencyIndex + "_" + i,
                 ProductPropertyType.STRING, attributeId);
         addNewProperty(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
-                        + softwareDependencyIndex + "_" + i,
+                + softwareDependencyIndex + "_" + i,
                 ProductPropertyType.STRING, attributeName);
         addNewProperty(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
-                        + softwareDependencyIndex + "_" + i,
+                + softwareDependencyIndex + "_" + i,
                 ProductPropertyType.STRING, attributeValue);
 
         // Increment the number of software dependency attributes stored
         ProductProperty productProperty = getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                        + softwareDependencyIndex);
+                + softwareDependencyIndex);
         if (productProperty == null) {
             addNewProperty(
                     ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                            + softwareDependencyIndex,
+                    + softwareDependencyIndex,
                     ProductPropertyType.UINT32, "1");
         } else {
             Integer newSoftwareDependencyAttributeNumber = ((Integer) productProperty
@@ -1563,15 +1478,13 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * the array of attribute for a given software dependency property set. VMIC
      * online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with (not to be confused with the index of a
-     *            {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeId
-     *            The ID of the attribute
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with (not to be confused with the index of a
+     * {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeId The ID of the attribute
      * @return The index of the attribute for a given software dependency
-     *         package
+     * package
      */
     public int getSoftwareDependencyPackageAttributeIndexById(
             int softwareDependencyIndex, String attributeId) {
@@ -1579,7 +1492,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         for (int i = 0; i < getSoftwareDependencyNumber(); i++) {
             ProductProperty productProperty = getPropertyByKey(
                     ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
-                            + softwareDependencyIndex + "_" + i);
+                    + softwareDependencyIndex + "_" + i);
 
             if (productProperty != null
                     && attributeId.equals(productProperty.getValue())) {
@@ -1593,19 +1506,14 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the name and value of an attribute for a given software dependency
      * package. VMIC online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with (not to be confused with the index of a
-     *            {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The index of the attribute
-     * @param attributeId
-     *            The ID of the attribute (e.g. "memory-probe")
-     * @param attributeName
-     *            The name of the attribute
-     * @param attributeValue
-     *            The value of the attribute
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with (not to be confused with the index of a
+     * {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The index of the attribute
+     * @param attributeId The ID of the attribute (e.g. "memory-probe")
+     * @param attributeName The name of the attribute
+     * @param attributeValue The value of the attribute
      */
     public void setSoftwareDependencyPackageAttribute(
             int softwareDependencyIndex, int attributeIndex, String attributeId,
@@ -1623,13 +1531,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets the ID of an attribute for a given software dependency at a specific
      * index. VMIC online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with (not to be confused with the index of a
-     *            {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The index of the attribute
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with (not to be confused with the index of a
+     * {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The index of the attribute
      * @return The ID of the software dependency (e.g. "memory-probe")
      */
     public String getSoftwareDependencyPackageAttributeId(
@@ -1642,34 +1548,30 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets the ID of an attribute for a given software dependency at a specific
      * index. VMIC online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with (not to be confused with the index of a
-     *            {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The index of the attribute
-     * @param attributeid
-     *            The ID of the software dependency (e.g. "memory-probe")
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with (not to be confused with the index of a
+     * {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The index of the attribute
+     * @param attributeid The ID of the software dependency (e.g.
+     * "memory-probe")
      */
     public void setSoftwareDependencyPackageAttributeId(
             int softwareDependencyIndex, int attributeIndex,
             String attributeid) {
         getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_ID_KEY
                 + softwareDependencyIndex + "_" + attributeIndex)
-                        .setValue(attributeid);
+                .setValue(attributeid);
     }
 
     /**
      * Gets an attribute's name of a software dependency package. VMIC online
      * mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The attribute index of a software dependency
+     * @param softwareDependencyIndex The index of the software dependency (not
+     * to be confused with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The attribute index of a software dependency
      * @return The name an attribute of a software dependency package
      */
     public String getSoftwareDependencyPackageAttributeName(
@@ -1677,42 +1579,37 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         return getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex)
-                                .getValue();
+                + softwareDependencyIndex + "_" + attributeIndex)
+                .getValue();
     }
 
     /**
      * Sets the name of an attribute for a given software dependency at a
      * specific index. VMIC online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with (not to be confused with the index of a
-     *            {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The index of the attribute
-     * @param attributeName
-     *            The name of the attribute
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with (not to be confused with the index of a
+     * {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The index of the attribute
+     * @param attributeName The name of the attribute
      */
     public void setSoftwareDependencyPackageAttributeName(
             int softwareDependencyIndex, int attributeIndex,
             String attributeName) {
         getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
                 + softwareDependencyIndex + "_" + attributeIndex)
-                        .setValue(attributeName);
+                .setValue(attributeName);
     }
 
     /**
      * Gets an attribute's value of a software dependency package. VMIC online
      * mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The attribute index of a software dependency
+     * @param softwareDependencyIndex The index of the software dependency (not
+     * to be confused with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The attribute index of a software dependency
      * @return The value of an attribute of a software dependency package
      */
     public String getSoftwareDependencyPackageAttributeValue(
@@ -1720,42 +1617,37 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         return getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex)
-                                .getValue();
+                + softwareDependencyIndex + "_" + attributeIndex)
+                .getValue();
     }
 
     /**
      * Sets the value of an attribute for a given software dependency at a
      * specific index. VMIC online mode only.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency this attribute is
-     *            associated with (not to be confused with the index of a
-     *            {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The index of the attribute
-     * @param attributeValue
-     *            The value of the attribute
+     * @param softwareDependencyIndex The index of the software dependency this
+     * attribute is associated with (not to be confused with the index of a
+     * {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The index of the attribute
+     * @param attributeValue The value of the attribute
      */
     public void setSoftwareDependencyPackageAttributeValue(
             int softwareDependencyIndex, int attributeIndex,
             String attributeValue) {
         getPropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
                 + softwareDependencyIndex + "_" + attributeIndex)
-                        .setValue(attributeValue);
+                .setValue(attributeValue);
     }
 
     /**
      * Remove a set of attribute properties for a given software dependency at a
      * specific index.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
-     * @param attributeIndex
-     *            The index of the attribute
+     * @param softwareDependencyIndex The index of the software dependency (not
+     * to be confused with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param attributeIndex The index of the attribute
      */
     public void removeSoftwareDependencyPackageAttribute(
             int softwareDependencyIndex, int attributeIndex) {
@@ -1763,17 +1655,16 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                 + softwareDependencyIndex + "_" + attributeIndex);
         removePropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_NAME_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex);
+                + softwareDependencyIndex + "_" + attributeIndex);
         removePropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_PACKAGE_ATTRIBUTE_VALUE_KEY
-                        + softwareDependencyIndex + "_" + attributeIndex);
+                + softwareDependencyIndex + "_" + attributeIndex);
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
-
         ProductProperty productProperty = getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                        + softwareDependencyIndex);
+                + softwareDependencyIndex);
         Integer newSoftwareDependencyNumber = ((Integer) productProperty
                 .getValueAsJavaObject()) - 1;
         productProperty.setValue(newSoftwareDependencyNumber.toString());
@@ -1783,17 +1674,16 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Gets the number of attributes for a given software dependency stored in
      * this {@link ProductSection}.
      *
-     * @param softwareDependencyIndex
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param softwareDependencyIndex The index of the software dependency (not
+     * to be confused with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
      * @return The number of attributes for a given software dependency
      */
     public int getSoftwareDependencyPackageAttributeNumber(
             int softwareDependencyIndex) {
         ProductProperty productProperty = getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_ATTRIBUTE_NUMBER
-                        + softwareDependencyIndex);
+                + softwareDependencyIndex);
         if (productProperty == null) {
             return 0;
         } else {
@@ -1804,10 +1694,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Remove a set of software dependency properties at a specific index.
      *
-     * @param index
-     *            The index of the software dependency (not to be confused with
-     *            the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getSoftwareDependencyIndexById(String)})
+     * @param index The index of the software dependency (not to be confused
+     * with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getSoftwareDependencyIndexById(String)})
      */
     public void removeSoftwareDependencyProperties(int index) {
         removePropertyByKey(ASCETIC_SOFTWARE_DEPENDENCY_ID_KEY + index);
@@ -1819,7 +1708,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
-
         ProductProperty productProperty = getPropertyByKey(
                 ASCETIC_SOFTWARE_DEPENDENCY_NUMBER);
         Integer newSoftwareDependencyNumber = ((Integer) productProperty
@@ -1846,16 +1734,14 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Adds a new set of properties that define an adaptation rule.
      *
-     * @param agreementTerm
-     *            The agreement term of the rule (e.g. (
-     *            "energy_usage_per_app or power_usage_per_app etc")
-     * @param direction
-     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
-     *            )
-     * @param responseType
-     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param agreementTerm The agreement term of the rule (e.g. (
+     * "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ,
+     * GTE, GT" )
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM,
+     * ADD_VM")
      * @return The index of the new adaptation rule (not to be confused with the
-     *         index of a {@link ProductProperty})
+     * index of a {@link ProductProperty})
      */
     public int addAdaptationRule(String agreementTerm, String direction,
             String responseType) {
@@ -1881,22 +1767,18 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Adds a new set of properties that define an adaptation rule.
      *
-     * @param agreementTerm
-     *            The agreement term of the rule (e.g. (
-     *            "energy_usage_per_app or power_usage_per_app etc")
-     * @param direction
-     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
-     *            )
-     * @param responseType
-     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
-     * @param lowerBound
-     *            The lower bound for the magnitude, i.e. different between
-     *            guaranteed value and actual value.
-     * @param upperBound
-     *            The upper bound for the magnitude, i.e. different between
-     *            guaranteed value and actual value.
+     * @param agreementTerm The agreement term of the rule (e.g. (
+     * "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ,
+     * GTE, GT" )
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM,
+     * ADD_VM")
+     * @param lowerBound The lower bound for the magnitude, i.e. different
+     * between guaranteed value and actual value.
+     * @param upperBound The upper bound for the magnitude, i.e. different
+     * between guaranteed value and actual value.
      * @return The index of the new adaptation rule (not to be confused with the
-     *         index of a {@link ProductProperty})
+     * index of a {@link ProductProperty})
      */
     public int addAdaptationRule(String agreementTerm, String direction,
             String responseType, String lowerBound, String upperBound) {
@@ -1913,23 +1795,19 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Adds a new set of properties that define an adaptation rule.
      *
-     * @param agreementTerm
-     *            The agreement term of the rule (e.g. (
-     *            "energy_usage_per_app or power_usage_per_app etc")
-     * @param direction
-     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
-     *            )
-     * @param responseType
-     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
-     * @param lowerBound
-     *            The lower bound for the magnitude, i.e. different between
-     *            guaranteed value and actual value.
-     * @param upperBound
-     *            The upper bound for the magnitude, i.e. different between
-     *            guaranteed value and actual value.
+     * @param agreementTerm The agreement term of the rule (e.g. (
+     * "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ,
+     * GTE, GT" )
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM,
+     * ADD_VM")
+     * @param lowerBound The lower bound for the magnitude, i.e. different
+     * between guaranteed value and actual value.
+     * @param upperBound The upper bound for the magnitude, i.e. different
+     * between guaranteed value and actual value.
      * @param notificationType If its information a warning or a violation event
      * @return The index of the new adaptation rule (not to be confused with the
-     *         index of a {@link ProductProperty})
+     * index of a {@link ProductProperty})
      */
     public int addAdaptationRule(String agreementTerm, String direction,
             String responseType, String lowerBound, String upperBound, String notificationType) {
@@ -1949,18 +1827,15 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * Sets a set of properties that define an adaptation rule at a specific
      * adaptation rule property set index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param agreementTerm
-     *            The agreement term of the rule (e.g. (
-     *            "energy_usage_per_app or power_usage_per_app etc")
-     * @param direction
-     *            The direction the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
-     *            )
-     * @param responseType
-     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param agreementTerm The agreement term of the rule (e.g. (
+     * "energy_usage_per_app or power_usage_per_app etc")
+     * @param direction The direction the rule applies to (e.g. "LT, LTE, EQ,
+     * GTE, GT" )
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM,
+     * ADD_VM")
      */
     public void setAdaptationRule(int index, String agreementTerm,
             String direction, String responseType) {
@@ -1972,28 +1847,28 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the sla term of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The sla term of the rule (e.g. (
-     *         "energy_usage_per_app or power_usage_per_app etc")
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @return The sla term of the rule (e.g. ( "energy_usage_per_app or
+     * power_usage_per_app etc")
      */
     public String getAdaptationRuleSLATerm(int index) {
-        return getPropertyByKey(
-                ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();          
     }
 
     /**
      * Sets the sla term of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param agreementTerm
-     *            The sla term of the rule (e.g. (
-     *            "energy_usage_per_app or power_usage_per_app etc")
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param agreementTerm The sla term of the rule (e.g. (
+     * "energy_usage_per_app or power_usage_per_app etc")
      */
     public void setAdaptationRuleSLATerm(int index,
             String agreementTerm) {
@@ -2002,29 +1877,32 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the comparison operator of an adaptation rule set at a specific index.
+     * Gets the comparison operator of an adaptation rule set at a specific
+     * index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The comparison operator the rule applies to (e.g. "LT, LTE, EQ, GTE, GT")
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @return The comparison operator the rule applies to (e.g. "LT, LTE, EQ,
+     * GTE, GT")
      */
     public String getAdaptationRuleComparisonOperator(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + index)
-                .getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();           
     }
 
     /**
-     * Sets the comparison operator of an adaptation rule set at a specific index.
+     * Sets the comparison operator of an adaptation rule set at a specific
+     * index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param comparator
-     *            The comparison operator the rule applies to (e.g. "LT, LTE, EQ, GTE, GT"
-     *            )
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param comparator The comparison operator the rule applies to (e.g. "LT,
+     * LTE, EQ, GTE, GT" )
      */
     public void setAdaptationRuleComparisonOperator(int index, String comparator) {
         getPropertyByKey(ASCETIC_ADAPTATION_RULE_COMPARISON_OPERATOR_KEY + index)
@@ -2034,27 +1912,28 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the response type of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The response type of adaptation to apply (e.g.
-     *         "REMOVE_VM, ADD_VM")
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @return The response type of adaptation to apply (e.g. "REMOVE_VM,
+     * ADD_VM")
      */
     public String getAdaptationRuleResponseType(int index) {
-        return getPropertyByKey(
-                ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();           
     }
 
     /**
      * Sets the response type of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param responseType
-     *            The type of adaptation to apply (e.g. "REMOVE_VM, ADD_VM")
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param responseType The type of adaptation to apply (e.g. "REMOVE_VM,
+     * ADD_VM")
      */
     public void setAdaptationRuleResponseType(int index, String responseType) {
         getPropertyByKey(ASCETIC_ADAPTATION_RULE_RESPONSETYPE_KEY + index)
@@ -2064,26 +1943,26 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the lower bound of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The lower bound of the adaptation rule
      */
     public String getAdaptationRuleLowerBound(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index)
-                .getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();        
     }
 
     /**
      * Sets the lower bound of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param lowerBound
-     *            The lower bound of the adaptation rule
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param lowerBound The lower bound of the adaptation rule
      */
     public void setAdaptationRuleLowerBound(int index, String lowerBound) {
         if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_LOWER_BOUND_KEY + index) == null) {
@@ -2098,26 +1977,26 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Gets the upper bound of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The upper bound of the adaptation rule
      */
     public String getAdaptationRuleUpperBound(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index)
-                .getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();
     }
 
     /**
      * Sets the upper bound of an adaptation rule set at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param upperBound
-     *            The upper bound of the adaptation rule
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param upperBound The upper bound of the adaptation rule
      */
     public void setAdaptationRuleUpperBound(int index, String upperBound) {
         if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_UPPER_BOUND_KEY + index) == null) {
@@ -2130,28 +2009,32 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     /**
-     * Gets the notification type of the adaptation rule set at a specific index.
+     * Gets the notification type of the adaptation rule set at a specific
+     * index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @return The notification type of the adaptation rule i.e. SLA_BREACH, WARNING
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @return The notification type of the adaptation rule i.e. SLA_BREACH,
+     * WARNING
      */
     public String getAdaptationRuleNotificationType(int index) {
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index)
-                .getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index);
+        if (value == null) {
+            return null;
+        }
+        return value.getValue();
     }
 
     /**
-     * Sets the notification type of the adaptation rule set at a specific index.
+     * Sets the notification type of the adaptation rule set at a specific
+     * index.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param notificationType
-     *            The notification type of the adaptation rule i.e. SLA_BREACH, WARNING
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param notificationType The notification type of the adaptation rule i.e.
+     * SLA_BREACH, WARNING
      */
     public void setAdaptationRuleNotificationType(int index, String notificationType) {
         if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_NOTIFICATION_TYPE_KEY + index) == null) {
@@ -2165,13 +2048,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
     /**
      * Gets the parameters of the response given the firing of the adaptation
-     * rule set at a specific index. These parameters indicate how respond to
-     * to the firing of the SLA rule.
+     * rule set at a specific index. These parameters indicate how respond to to
+     * the firing of the SLA rule.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      * @return The parameters of the adaptation rule
      */
     public String getAdaptationRuleParameters(int index) {
@@ -2179,21 +2061,18 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
         if (value == null) {
             return null;
         }
-        return getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index)
-                .getValue();
+        return value.getValue();
     }
 
     /**
      * Sets the parameters of the response given the firing of the adaptation
-     * rule set at a specific index. These parameters indicate how respond to
-     * to the firing of the SLA rule.
+     * rule set at a specific index. These parameters indicate how respond to to
+     * the firing of the SLA rule.
      *
-     * @param index
-     *            The index of the adaptation rule (not to be confused with the
-     *            index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
-     * @param parameters
-     *            The parameters of the adaptation rule
+     * @param index The index of the adaptation rule (not to be confused with
+     * the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
+     * @param parameters The parameters of the adaptation rule
      */
     public void setAdaptationRuleParameters(int index, String parameters) {
         if (getPropertyByKey(ASCETIC_ADAPTATION_RULE_PARAMETERS_KEY + index) == null) {
@@ -2208,10 +2087,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Remove a set of adaptation rule properties at a specific index.
      *
-     * @param index
-     *            The index of the adaptation rule to remove (not to be confused
-     *            with the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the adaptation rule to remove (not to be
+     * confused with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      */
     public void removeAdaptationRule(int index) {
         removePropertyByKey(ASCETIC_ADAPTATION_RULE_SLA_TERM_KEY + index);
@@ -2224,7 +2102,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
-
         decrementIndexPropertyNumber(ASCETIC_ADAPTATION_RULE_NUMBER);
     }
 
@@ -2240,6 +2117,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
     /**
      * This adds a new measurement term
+     *
      * @param event The event
      * @param metric The metric name
      * @param period The period
@@ -2293,8 +2171,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     public String getTermMeasurementApplicationEvent(int index) {
-        return getPropertyByKey(
-                ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_EVENT_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();
     }
 
     public void setTermMeasurementApplicationEvent(int index,
@@ -2304,8 +2185,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     public String getTermMeasurementApplicationMetric(int index) {
-        return getPropertyByKey(
-                ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_TERM_MEASUREMENT_APPLICATION_METRIC_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();
     }
 
     public void setTermMeasurementApplicationMetric(int index,
@@ -2315,8 +2199,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     public String getTermMeasurementPeriod(int index) {
-        return getPropertyByKey(
-                ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_TERM_MEASUREMENT_PERIOD_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();
     }
 
     public void setTermMeasurementPeriod(int index,
@@ -2326,8 +2213,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     public String getTermMeasurementBoundaryValue(int index) {
-        return getPropertyByKey(
-                ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_TERM_MEASUREMENT_BOUNDARY_VALUE_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();        
     }
 
     public void setTermMeasurementBoundaryValue(int index,
@@ -2337,8 +2227,11 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     }
 
     public String getTermMeasurementAggregator(int index) {
-        return getPropertyByKey(
-                ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index).getValue();
+        ProductProperty value = getPropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();
     }
 
     public void setTermMeasurementAggregator(int index,
@@ -2347,9 +2240,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                 .setValue(aggregator);
     }
 
-     public String getTermMeasurementAggregatorParams(int index) {
-        return getPropertyByKey(
-                ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index).getValue();
+    public String getTermMeasurementAggregatorParams(int index) {
+        ProductProperty value = getPropertyByKey(ASCETIC_TERM_MEASUREMENT_AGGREGATOR_PARAMS_KEY + index);
+        if (value == null) {
+            return null;
+        }        
+        return value.getValue();
     }
 
     public void setTermMeasurementAggregatorParams(int index,
@@ -2361,10 +2257,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Remove a set of term measurement properties at a specific index.
      *
-     * @param index
-     *            The index of the term measurement to remove (not to be confused
-     *            with the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of the term measurement to remove (not to be
+     * confused with the index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      */
     public void removeTermMeasurement(int index) {
 
@@ -2377,12 +2272,12 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
-
         decrementIndexPropertyNumber(ASCETIC_TERM_MEASUREMENT_NUMBER);
     }
 
     /**
      * This adds SLA info to the OVF
+     *
      * @param slaTerm The SLA term
      * @param unit The unit
      * @param comparator The comparator for the sla term
@@ -2415,6 +2310,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
     /**
      * This sets SLA info to the OVF
+     *
      * @param index The index of the sla info record to overwrite
      * @param slaTerm The SLA term
      * @param unit The unit
@@ -2475,7 +2371,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
                 .setValue(agreementTerm);
     }
 
-     public String getSlaInfoSlaType(int index) {
+    public String getSlaInfoSlaType(int index) {
         return getPropertyByKey(
                 ASCETIC_SLA_INFO_TYPE_KEY + index).getValue();
     }
@@ -2489,10 +2385,9 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Remove a set of sla info properties at a specific index.
      *
-     * @param index
-     *            The index of sla info to remove (not to be confused
-     *            with the index of a {@link ProductProperty}, see
-     *            {@link ProductSection#getEndPointIndexById(String)})
+     * @param index The index of sla info to remove (not to be confused with the
+     * index of a {@link ProductProperty}, see
+     * {@link ProductSection#getEndPointIndexById(String)})
      */
     public void removeSlaInfo(int index) {
         removePropertyByKey(ASCETIC_SLA_INFO_SLA_TERM_KEY + index);
@@ -2503,7 +2398,6 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
 
         // FIXME: We should decrement by 1 the index of all subsequent property
         // sets
-
         decrementIndexPropertyNumber(ASCETIC_SLA_INFO_NUMBER);
     }
 
@@ -2519,8 +2413,7 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
     /**
      * Sets the deployment name for a {@link VirtualSystemCollection}.
      *
-     * @param deploymentName
-     *            The deployment name to set
+     * @param deploymentName The deployment name to set
      */
     public void setDeploymentName(String deploymentName) {
         ProductProperty productProperty = getPropertyByKey(
@@ -2555,16 +2448,15 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * @return The deployment name
      */
     public int getPriceSchema() {
-      return Integer.parseInt(getPropertyByKey(ASCETIC_PRICE_SCHEMA).getValue());
+        return Integer.parseInt(getPropertyByKey(ASCETIC_PRICE_SCHEMA).getValue());
     }
 
     /**
      * This gets from the XML the number of items that are held in an array like
      * structure.
      *
-     * @param keyOfCountingField
-     *            The key of the field that is used for counting the amount of
-     *            items that are in the array structure.
+     * @param keyOfCountingField The key of the field that is used for counting
+     * the amount of items that are in the array structure.
      * @return The number of items held in the array structure.
      */
     private int getIndexPropertyNumber(String keyOfCountingField) {
@@ -2580,9 +2472,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * This increments the number of items that are held in an array like
      * structure that is held within the xml.
      *
-     * @param keyOfCountingField
-     *            The key of the field that is used for counting the amount of
-     *            items that are in the array structure.
+     * @param keyOfCountingField The key of the field that is used for counting
+     * the amount of items that are in the array structure.
      * @return The number of items held in the array structure.
      */
     private int incrementIndexPropertyNumber(String keyOfCountingField) {
@@ -2602,9 +2493,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * This decrements the number of items that are held in an array like
      * structure that is held within the xml.
      *
-     * @param keyOfCountingField
-     *            The key of the field that is used for counting the amount of
-     *            items that are in the array structure.
+     * @param keyOfCountingField The key of the field that is used for counting
+     * the amount of items that are in the array structure.
      * @return The number of items held in the array structure.
      */
     private int decrementIndexPropertyNumber(String keyOfCountingField) {
@@ -2619,9 +2509,8 @@ public class ProductSection extends AbstractElement<XmlBeanProductSectionType> {
      * This scans through a named property field and finds the next free index
      * value
      *
-     * @param property
-     *            The property to search (e.g.
-     *            ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY)
+     * @param property The property to search (e.g.
+     * ASCETIC_ADAPTATION_RULE_AGREEMENTTERM_KEY)
      * @return The next free index value for inserting a new item
      */
     private int getNextFreeIndexKeyValue(String property) {
