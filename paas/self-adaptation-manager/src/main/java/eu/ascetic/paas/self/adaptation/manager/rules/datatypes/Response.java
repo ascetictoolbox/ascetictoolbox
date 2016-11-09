@@ -60,12 +60,13 @@ public class Response implements Comparable<Response> {
      */
     public enum AdaptationType {
 
-        ADD_VM, REMOVE_VM, INFLATE_VM, DEFLATE_VM, 
-        ADD_CPU, REMOVE_CPU, ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP, 
+        ADD_VM, REMOVE_VM, INFLATE_VM, DEFLATE_VM,
+        ADD_CPU, REMOVE_CPU, ADD_MEMORY, REMOVE_MEMORY, SHUTDOWN_APP,
         HARD_SHUTDOWN_APP, REQUEST_VM_CONSOLIDATION, SCALE_TO_N_VMS, RENEGOTIATE
     }
-    
+
     private enum AdaptationDetailKeys {
+
         VM_TYPE, VM_COUNT
     }
 
@@ -88,11 +89,17 @@ public class Response implements Comparable<Response> {
      * This provides the mapping between the string representation of a response
      * type and the adaptation type.
      *
-     * @param ruleName The name of the rule.
+     * @param responseType The name of the rule.
      * @return The Adaptation type required.
      */
-    public static Response.AdaptationType getAdaptationType(String ruleName) {
-        return ADAPTATION_TYPE_MAPPING.get(ruleName);
+    public static Response.AdaptationType getAdaptationType(String responseType) {
+        Response.AdaptationType answer = ADAPTATION_TYPE_MAPPING.get(responseType);
+        if (answer == null) {
+            if (responseType.contains("SCALE_TO_")) {
+                return AdaptationType.SCALE_TO_N_VMS;
+            }
+        }
+        return answer;
     }
 
     /**
@@ -149,9 +156,10 @@ public class Response implements Comparable<Response> {
     public String getAdaptationDetails() {
         return adaptationDetails;
     }
-    
+
     /**
      * Given the key value of the adaption detail this returns its value.
+     *
      * @param key The key name for the actuation parameter
      * @return The value of the adaptation detail else null.
      */
@@ -163,7 +171,7 @@ public class Response implements Comparable<Response> {
             }
         }
         return null;
-    }       
+    }
 
     /**
      * This sets additional information about the adaptation, that might be
@@ -173,7 +181,7 @@ public class Response implements Comparable<Response> {
      */
     public void setAdaptationDetails(String adaptationDetails) {
         this.adaptationDetails = adaptationDetails;
-    } 
+    }
 
     /**
      * This indicates if on deciding to adapt if a possible solution was found.

@@ -19,6 +19,8 @@ import eu.ascetic.utils.ovf.api.OvfDefinition;
 import eu.ascetic.utils.ovf.api.ProductSection;
 import eu.ascetic.utils.ovf.api.VirtualSystem;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This is the firing criteria for a threshold based event assessor. It contains
@@ -261,6 +263,10 @@ public class FiringCriteria {
                     section.getAdaptationRuleSLATerm(ruleNumber),
                     section.getAdaptationRuleComparisonOperator(ruleNumber),
                     section.getAdaptationRuleResponseType(ruleNumber));
+            if (criteria.getAgreementTerm() == null || criteria.getOperator() == null || criteria.getResponseType() == null) {
+                Logger.getLogger(FiringCriteria.class.getName()).log(Level.WARNING, "A rule from the OVF was not constructed correctly!");
+                continue;
+            }
             if (section.getAdaptationRuleLowerBound(ruleNumber) != null) {
                 criteria.setMinMagnitude(Double.parseDouble(section.getAdaptationRuleLowerBound(ruleNumber)));
             }
@@ -269,6 +275,9 @@ public class FiringCriteria {
             }
             if (section.getAdaptationRuleNotificationType(ruleNumber) != null) {
                 criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(ruleNumber)));
+                if (criteria.getType() == null) {
+                    criteria.setType(EventData.Type.OTHER);
+                }
             }
             if (section.getAdaptationRuleParameters(ruleNumber) != null) {
                 criteria.setParameters(section.getAdaptationRuleParameters(ruleNumber));
