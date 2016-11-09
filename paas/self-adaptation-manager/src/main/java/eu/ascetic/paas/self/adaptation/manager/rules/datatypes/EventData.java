@@ -38,7 +38,7 @@ public class EventData implements Comparable<EventData> {
     private String agreementTerm;
     private String guaranteeid; //sla gurantee id
     //augments information about the event, with the original deployment information
-    private OvfDefinition ovf; 
+    private OvfDefinition ovf;
 
     private static final Map<String, Operator> OPERATOR_MAPPING
             = new HashMap<>();
@@ -257,9 +257,10 @@ public class EventData implements Comparable<EventData> {
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
-    
+
     /**
      * This gets the OVF definition of the original deployment.
+     *
      * @return the ovf definition of the original deployment
      */
     public OvfDefinition getOvf() {
@@ -268,11 +269,12 @@ public class EventData implements Comparable<EventData> {
 
     /**
      * This sets the OVF definition of the original deployment.
+     *
      * @param ovf the ovf description of the original deployment.
      */
     public void setOvf(OvfDefinition ovf) {
         this.ovf = ovf;
-    }    
+    }
 
     @Override
     public int compareTo(EventData event) {
@@ -359,6 +361,27 @@ public class EventData implements Comparable<EventData> {
      */
     public static double getChangeInSlack(EventData earlier, EventData later) {
         return earlier.getGuaranteeSlack() - later.getGuaranteeSlack();
+    }
+
+    /**
+     * This safely converts a string into an Type. In the event the type isn't
+     * recognised the other type is returned.
+     *
+     * @param type The string representation of the type
+     * @return
+     */
+    public static Type getType(String type) {
+        if (type == null) {
+            return EventData.Type.OTHER;
+        }
+        //SLA_BREACH, WARNING, OTHER
+        if (type.equalsIgnoreCase("SLA_BREACH") || type.toLowerCase().contains("breach")) {
+            return Type.SLA_BREACH;
+        }
+        if (type.equalsIgnoreCase("WARNING") || type.toLowerCase().contains("warning")) {
+            return Type.WARNING;
+        }
+        return Type.OTHER; //This is an information type event.
     }
 
 }

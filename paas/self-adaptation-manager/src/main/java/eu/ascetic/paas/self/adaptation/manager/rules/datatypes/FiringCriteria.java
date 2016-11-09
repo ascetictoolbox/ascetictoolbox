@@ -274,10 +274,7 @@ public class FiringCriteria {
                 criteria.setMaxMagnitude(Double.parseDouble(section.getAdaptationRuleUpperBound(ruleNumber)));
             }
             if (section.getAdaptationRuleNotificationType(ruleNumber) != null) {
-                criteria.setType(EventData.Type.valueOf(section.getAdaptationRuleNotificationType(ruleNumber)));
-                if (criteria.getType() == null) {
-                    criteria.setType(EventData.Type.OTHER);
-                }
+                criteria.setType(EventData.getType(section.getAdaptationRuleNotificationType(ruleNumber)));
             }
             if (section.getAdaptationRuleParameters(ruleNumber) != null) {
                 criteria.setParameters(section.getAdaptationRuleParameters(ruleNumber));
