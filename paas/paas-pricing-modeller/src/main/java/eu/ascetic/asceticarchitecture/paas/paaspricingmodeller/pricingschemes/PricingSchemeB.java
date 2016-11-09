@@ -64,7 +64,7 @@ public double predictTotalCharges(VMinfo vm, boolean energySet){
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		double price1 = predictResourcePrice (VM, getResourcePrice(VM), getDistribution(VM), duration);
 
-	//	System.out.println("Pricing B: "+ price1);
+		//System.out.println("Pricing B: "+ price1);
 		double price2 = predictEnergyPrice (VM, duration);
 		VM.setCurrentPrice(price1+price2);
 		try{

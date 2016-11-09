@@ -87,14 +87,14 @@ public abstract class PaaSPricingModellerPricingScheme {
 	public double predictEnergyPrice (VMinfo VM, double duration){
 		double price = getEnergyPrice(VM);
 		 double energyCharges = getPredictedEnergy(VM, duration) * price;
-	//	 System.out.println("PRModellerScheme predictEnergyPrice: " + energyCharges);
+		// System.out.println("PRModellerScheme predictEnergyPrice: " + energyCharges);
 		//double energycharges = (energy/1000)*price; 
 		return (double) Math.round(energyCharges * 1000) / 1000;
 	}
 	
 	//TESTED
 	private double getPredictedEnergy(VMinfo VM, double duration) {
-		 	double difference=0;
+		 	double difference=1595/1000;
 	        try{
 	        	EMInteraction response = new EMInteraction();
 	        	double energy = response.getPredictedEnergyofVM(VM.getAppID(), Integer.toString(VM.getDepID()), Integer.toString(VM.getVMid()), Double.toString(duration));
@@ -110,9 +110,8 @@ public abstract class PaaSPricingModellerPricingScheme {
 	      //  if (VM.getEnergyConsumptionofLastPeriod()!=0){
 	    //    	difference= VM.getEnergyConsumptionofLastPeriod();
 	     //   }
-	      // System.out.println("Pricing scheme: I am updating energy difference"+difference);
+	     //  System.out.println("Pricing scheme: I am updating energy difference "+ difference);
 	        return difference;
-
 	}
 
 //TESTED
@@ -129,7 +128,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	}
 	
 	public double updateAverageEnergyPrice(){
-		double price =0.007;
+		double price =0.15;
 		return price;
 		
 	}
@@ -187,7 +186,7 @@ public abstract class PaaSPricingModellerPricingScheme {
 	//TESTED
 	 private double getEnergyPrice(VMinfo vM) {
 		 double price =  vM.getIaaSProvider().getEnergyPriceForBilling();
-	//	 System.out.println("Scheme the energy price is: " + price);
+		// System.out.println("Scheme the energy price is: " + price);
 		 return price;
 
 	}

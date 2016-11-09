@@ -141,7 +141,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @param schemeId: the pricing scheme followed
 	 * @throws Exception 
 	 */
-	//TESTED
+	//TESTED!!
 	public double getAppTotalCharges(int deplID, int schemeID, double IaaSCharges) throws Exception{
 		logger.info("ChargesCalculator calculation of charges");
 		double charges;
@@ -190,7 +190,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		return billing.predictPriceofNextHour(depl, duration);
 	}
 	
-	//TESTED
+	//TESTED!!
 	public double predictAppPriceforNextHour(int depID, LinkedList<VMinfo> VMs){
 		DeploymentInfo depl = billing.getApp(depID);
 		double price = 0.0;
@@ -198,9 +198,9 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 		VMinfo VM;
 		for (int i=0;i<VMs.size();i++){
 			VM = VMs.get(i);
-			if (!depl.hasVM(VM))
-				System.out.println("ok");
-			price = price +billing.getVMPredictedPrice(VM, 3600);
+			if (!depl.hasVM(VM)){
+				System.out.println("not ok");
+			price = price +billing.getVMPredictedPrice(VM, 3600);}
 		}
 		return price;		
 	}
@@ -275,7 +275,7 @@ public class PaaSPricingModeller implements PaaSPricingModellerInterface{
 	 * @param numberOfevents: the number of the events on the same VM (given from EM)
 	 * @return
 	 */
-	//TESTED
+	//TESTED!!
 	public double getEventPredictedChargesOfApp(int deplID, LinkedList<VMinfo> VMs, double energy) throws Exception{
 		//int VMschemeId= VMs.getFirst().getSchemeID();
 		//try{

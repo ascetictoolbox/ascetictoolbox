@@ -31,30 +31,30 @@ public class IaaSProvider {
 	double averageEnergyPrice;
 	
 	double EnergyPrice;
-	double oldEnergyPrice = 0.008;
+	double oldEnergyPrice = 0.18;
 	
 	public IaaSProvider(String id) {
 		
 		IaaSID = id;
-		distribution.setDistribution(0.6, 0.3, 0.1); 
+		distribution.setDistribution(0.004984, 0.009968, 0.0002759); 
 		//int IaaSid = Integer.parseInt(IaaSID.trim());
 		
 		//int even= IaaSid%2;
 		//if (even == 0){
 		if (IaaSID.contains("0")){
-			staticResourcePrice = 0.14;}
+			staticResourcePrice = 1;}
 			else{
-				staticResourcePrice = 0.20;
+				staticResourcePrice = 1.20;
 			}
 	
 			if (IaaSID.contains("0")){
-				resourcePrice = 0.07;}
+				resourcePrice = 0.5;}
 			else{
-				resourcePrice = 0.1;
+				resourcePrice = 0.6;
 			}
 	
 		
-		averageEnergyPrice = 0.13; //per kwat per hour
+		averageEnergyPrice = 0.15; //per kwat per hour
 		EnergyPrice = 0.08;
 	}
 	
@@ -70,15 +70,18 @@ public class IaaSProvider {
 	}
 	
 	public double getPriceSec(double price){
-		if (price == 0.14)
-			return 0.00004;
-		if (price == 0.20)
-			return 0.00006;
-		if (price == 0.1)
-			return 0.00003;
-		if (price == 0.07)
-			return 0.00002;
-		return 0.00004;
+		if (price == 1){
+		//	System.out.println("here1");
+			return 0.00028;}
+		if (price == 1.20)
+			return 0.00034;
+		if (price == 0.5){
+		//	System.out.println("her2e");
+			return 0.00014;}
+		if (price == 0.6){
+		//	System.out.println("here3");
+			return 0.00017;}
+		return 0.00028;
 	}
 	
 	public double getAverageEnergyPrice(){

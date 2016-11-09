@@ -223,7 +223,7 @@ public class PaaSPricingModellerRegistration {
 	//TESTED
 	public double getVMPredictedPrice(VMinfo VM, double duration) {
 		 PaaSPricingModellerPricingScheme scheme = VM.getScheme();
-	     //  System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
+	      System.out.println("Billing: the scheme of VM "+VM.getVMid()+" is "+scheme.getSchemeId());
 	     return scheme.getVMPredictedPrice(VM, duration);
 	}
 	
