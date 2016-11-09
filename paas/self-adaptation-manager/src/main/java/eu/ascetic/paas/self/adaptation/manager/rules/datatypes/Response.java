@@ -166,7 +166,7 @@ public class Response implements Comparable<Response> {
     public String getAdaptationDetail(String key) {
         String[] args = adaptationDetails.split(";");
         for (String arg : args) {
-            if (arg.split("=")[0].equals(key)) {
+            if (arg.split("=")[0].trim().equalsIgnoreCase(key)) {
                 return arg.split("=")[1].trim();
             }
         }
