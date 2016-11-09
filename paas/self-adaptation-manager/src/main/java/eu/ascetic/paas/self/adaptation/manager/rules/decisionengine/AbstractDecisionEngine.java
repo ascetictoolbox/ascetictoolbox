@@ -185,6 +185,7 @@ public abstract class AbstractDecisionEngine implements DecisionEngine {
         if (difference == 0) {
             response.setPerformed(true);
             response.setPossibleToAdapt(false);
+            response.setAdaptationDetails("Unable to adapt, the VM count is already at the target value");
             return response;
         }
         if (ovf != null && details != null) {

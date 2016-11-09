@@ -192,9 +192,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             }
             /**
              * This causes a looping behaviour when the action is not possible
-             * to carry out.
+             * to carry out. The test at the end ensures that if the history is
+             * wiped out the loop is not infinite. 
              */
-            if (answer != null && !answer.isPossibleToAdapt()) {
+            if (answer != null && !answer.isPossibleToAdapt() && historyLengthSeconds > 30) {
                 assessEvent(event, eventData);
             }
             return answer;
