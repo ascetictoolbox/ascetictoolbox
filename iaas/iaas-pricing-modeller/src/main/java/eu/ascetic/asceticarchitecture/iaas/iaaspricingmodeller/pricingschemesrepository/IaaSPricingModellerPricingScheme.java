@@ -49,7 +49,7 @@ public abstract class IaaSPricingModellerPricingScheme implements IaaSPricingMod
 	
 	public IaaSPricingModellerPricingScheme(int id){
 		scheme=id;
-		distribution.setDistribution(0.05, 0.1, 0.014); 	
+		distribution.setDistribution(0.004984, 0.009968, 0.0002759); 	
 	}
 	
 	public void setEnergyModeller(EnergyModeller energyModeller){

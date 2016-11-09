@@ -67,10 +67,10 @@ public abstract class Price {
 	
 	public double getPriceSecOnly(double price){
 		
-		if (price == 0.14){
-			return 0.00004;}
+		if (price == 1){
+			return 0.00028;}
 		else{
-			return 0.00006;
+			return 0.00034;
 		}
 	}
 }

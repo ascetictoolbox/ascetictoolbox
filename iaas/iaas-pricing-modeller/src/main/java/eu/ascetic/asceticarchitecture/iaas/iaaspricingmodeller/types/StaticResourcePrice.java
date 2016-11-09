@@ -25,16 +25,16 @@ public class StaticResourcePrice extends Price{
 		int even= IaaSID%2;
 		if (scheme == 0){
 			if (even == 0){
-				Price = 0.14;}
+				Price = 1;}
 			else{
-				Price = 0.20;
+				Price = 1.20;
 			}
 		}
 		else {
 			if (even == 0){
-				Price = 0.07;}
+				Price = 0.5;}
 			else{
-				Price = 0.1;
+				Price = 0.6;
 			}
 		}
 	 }
@@ -65,15 +65,17 @@ public class StaticResourcePrice extends Price{
 	}
 	
 	public double getPriceSecOnly(double price){
-
-		if (price == 0.14)
-			return 0.00004;
-		if (price == 0.20)
-			return 0.00006;
-		if (price == 0.1)
-			return 0.00003;
-		if (price == 0.07)
-			return 0.00002;
-		return 0.00004;
+		if (price == 1){
+			//	System.out.println("here1");
+				return 0.00028;}
+			if (price == 1.20)
+				return 0.00034;
+			if (price == 0.5){
+			//	System.out.println("her2e");
+				return 0.00014;}
+			if (price == 0.6){
+			//	System.out.println("here3");
+				return 0.00017;}
+			return 0.00028;
 	}
 }

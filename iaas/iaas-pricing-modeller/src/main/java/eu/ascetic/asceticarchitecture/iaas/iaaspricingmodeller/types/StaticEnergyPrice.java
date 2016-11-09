@@ -27,7 +27,7 @@ public class StaticEnergyPrice extends Price{
 	 
 	
 	public StaticEnergyPrice() {
-		Price = 0.13; //per kWatt per hour 
+		Price = 0.15; //per kWatt per hour 
 	 }
 	
 	
