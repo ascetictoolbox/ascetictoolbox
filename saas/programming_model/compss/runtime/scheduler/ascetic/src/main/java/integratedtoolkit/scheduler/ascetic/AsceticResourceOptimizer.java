@@ -289,7 +289,7 @@ public class AsceticResourceOptimizer extends ResourceOptimizer {
             if (!isAcceptable(cCost.cost, rCost.cost, costBudget)) {
                 addToLog("\t\t Surpasses the cost budget\n");
             }
-            return isAcceptable(cCost.time, rCost.time, timeBudget) && !isAcceptable(cCost.cost, rCost.cost, costBudget);
+            return isAcceptable(cCost.time, rCost.time, timeBudget) && isAcceptable(cCost.cost, rCost.cost, costBudget);
         } else {
             if (cCost.energy == rCost.energy) {
                 if (cCost.time < rCost.time) {
