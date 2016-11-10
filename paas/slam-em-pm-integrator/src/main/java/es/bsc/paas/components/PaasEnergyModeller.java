@@ -32,6 +32,17 @@ public class PaasEnergyModeller {
         //log.trace("douvleValueStr = " + doubleStr);
         return Double.parseDouble(doubleStr.trim());
     }
+    
+    private double chargesFromXml(String response){
+        log.trace(response);
+        String doubleStr = response.substring(
+            response.indexOf("<charges>") + 9, 
+            response.indexOf("</charges>")
+        );
+
+        //log.trace("douvleValueStr = " + doubleStr);
+        return Double.parseDouble(doubleStr.trim());
+    }
 
     public double getEnergyEstimation(String applicationId, String deploymentId, long duration) {
         String energyEstimation = rest.getForObject(URI.create(applicationManagerUrl
@@ -70,6 +81,6 @@ public class PaasEnergyModeller {
             + "/applications/" + applicationId
             + "/deployments/" + deploymentId
             + "/predict-price-next-hour"), String.class);
-        return valueFromXml(pricePrediction);
+        return chargesFromXml(pricePrediction);
     }
 }
