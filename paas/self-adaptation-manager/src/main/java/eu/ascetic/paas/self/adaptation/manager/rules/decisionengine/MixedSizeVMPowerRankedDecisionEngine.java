@@ -45,7 +45,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
 
     private static final String CONFIG_FILE = "paas-self-adaptation-manager.properties";
     private int cpusToAdd = 10;
-    
+
     public MixedSizeVMPowerRankedDecisionEngine() {
         super();
         try {
@@ -89,7 +89,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
      */
     public Response deleteVM(Response response) {
         if (getActuator() == null) {
-            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.WARNING, "Unable to find actuator.");            
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.WARNING, "Unable to find actuator.");
             response.setAdaptationDetails("Unable to find actuator.");
             response.setPossibleToAdapt(false);
             return response;
@@ -102,9 +102,10 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             return response;
         }
         if (vmIds.isEmpty()) {
-            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Could not find a VM to delete");             
-            response.setAdaptationDetails("Could not find a VM to delete");   
+            Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Could not find a VM to delete");
+            response.setAdaptationDetails("Could not find a VM to delete");
             response.setPossibleToAdapt(false);
+            return response;
         }
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
         double valueRemoved = 0.0;
@@ -135,7 +136,7 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
                 toRemove = vmsList.get(vmsList.size() - 1);
                 vmsList.remove(toRemove);
             } else {
-                Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");                
+                Logger.getLogger(MixedSizeVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Reached the limit of how many VMs can be removed");
                 break; //exit when no more vms to delete
             }
         }
@@ -252,8 +253,8 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
         int locCount = 0;
         for (String location : typeLocationToAdd) {
             typesToAddLocation = typesToAddLocation + (locCount == 0 ? "" : ",") + location;
-            locCount = locCount + 1; 
-        }        
+            locCount = locCount + 1;
+        }
         typesToAddSize = ";VM_SIZE=" + typesToAddSize;
         typesToAddLocation = ";VM_LOCATION=" + typesToAddLocation;
         //In order to specify CPU size, even if one VM is added a SCALE TO N VMS action is used.

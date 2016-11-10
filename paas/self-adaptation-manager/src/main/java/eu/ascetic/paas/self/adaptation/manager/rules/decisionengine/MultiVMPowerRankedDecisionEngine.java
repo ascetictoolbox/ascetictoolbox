@@ -72,12 +72,13 @@ public class MultiVMPowerRankedDecisionEngine extends AbstractDecisionEngine {
             Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "Could not find a VM to delete");
             response.setAdaptationDetails("Could not find a VM to delete");
             response.setPossibleToAdapt(false);
+            return response;
         }
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
         double valueRemoved = 0.0;
         String vmsToRemove = ""; //i.e. VMs_TO_REMOVE= ....
         ArrayList<PowerVmMapping> vmsList = getVMPowerList(response, vmIds);
-        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);
+        PowerVmMapping toRemove = vmsList.get(vmsList.size() - 1);      
         while (valueRemoved < targetDifference) {
             //Logger.getLogger(MultiVMPowerRankedDecisionEngine.class.getName()).log(Level.INFO, "In loop value remove = {0} target difference = {1}", new Object[]{valueRemoved, targetDifference});
             if (toRemove == null) {
