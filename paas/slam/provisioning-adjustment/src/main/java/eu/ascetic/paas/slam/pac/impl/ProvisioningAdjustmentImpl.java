@@ -167,8 +167,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 
 		logger.debug("Properties file loaded...");
 
-		
-		
+
+
 		//recover old monitorings...
 		logger.debug("Recovering old monitorings...");
 		String monitoringPath = confPath + sepr	+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr + "activeMonitorings";
@@ -185,8 +185,8 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 				logger.info("PaaS Violation Checker - recovering an active monitoring with this parameters: topicId "+parameters[0]+", appId "+parameters[1]+", deploymentId "+parameters[2]+", slaId "+parameters[3]);
 				new Thread(new PaasViolationChecker(properties, parameters[0], parameters[1], parameters[2], parameters[3], true)).start();
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -202,7 +202,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	private void retrieveApplicationEvents() {
 		try{
 
-			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.16:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
+			AmqpMessageReceiver receiver = new AmqpMessageReceiver("192.168.3.222:5673", "guest", "guest",  properties.getProperty(DEPLOYED_APPS_QUEUE), true);
 
 
 
@@ -245,12 +245,15 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 							logger.info("Retrieving application Details from the Application Manager with these parameters: "+amMessage.getApplicationId()+", "+amMessage.getDeploymentId());
 							String slaId = retrieveApplicationDetails(amMessage.getApplicationId(),amMessage.getDeploymentId());
 
+							if (slaId!=null && !slaId.equals("UNKNOWN")) {
+							
 							logger.info("Asking ApplicationMonitor to initiateMonitoring...");
 							String topicId = initiateMonitoring(amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId);
 
 							logger.info("Creating an instance of Paas Violation Checker...");
 							new Thread(new PaasViolationChecker(properties, topicId, amMessage.getApplicationId(), amMessage.getDeploymentId(), slaId, false)).start();
 
+							}
 						}
 					} catch (Exception e) {
 						logger.error("Caught:" + e);
@@ -313,78 +316,79 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 	 */
 	private String initiateMonitoring(String appId, String deploymentId, String slaId) {
 		int monitoringFrequency = 10000; //msec
-		
+
 		//possiamo impostare l'intervallo di misura almeno al doppio della monitoringFrequency
 		Timestamp Start_time =  new Timestamp(new java.util.Date().getTime()-2*monitoringFrequency);
 		try {
-			
+
 			/*
 			 * TODO: Verificare versione di ActiveMQ da utilizzare
 			 */
-//			AmqpMessageProducer producer = new AmqpMessageProducer("192.168.3.16:5673", "guest", "guest", "appmon", false);
-			
-			
-			
-						ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
-						javax.jms.Connection connection = connectionFactory.createConnection();
-						connection.start();
-			
-						// JMS messages are sent and received using a Session. We will
-						// create here a non-transactional session object. If you want
-						// to use transactions you should set the first parameter to 'true'
-						Session session = connection.createSession(false,
-								Session.AUTO_ACKNOWLEDGE);
-			
-						Topic topic = session.createTopic("appmonitoring");
-			
-						MessageProducer producer = session.createProducer(topic);
-			
-			
-			
+			//			AmqpMessageProducer producer = new AmqpMessageProducer("192.168.3.16:5673", "guest", "guest", "appmon", false);
 
-			
-//			Context context;
-//			//			ConnectionFactory connectionFActory;
-//			TopicSession session;
-//			MessageProducer messageProducer;
-//
-//			String topicName = "application-monitor.monitoring." + appId + ".measurement";
-//
-//			//        String nodeId = "TheSinusNode";
-//
-//			System.out.println("Initiating " + appId);
-//			Properties p = new Properties();
-//
-//			String sepr = System.getProperty("file.separator");
-//			String confPath = System.getenv("SLASOI_HOME");
-//			p.load(new FileInputStream(confPath + sepr
-//					+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr
-//					+ "jndi.properties"));
-//			p.put("topic.topic",topicName);
-//			context = new InitialContext(p);
-//
-//			TopicConnectionFactory connectionFactory
-//			= (TopicConnectionFactory) context.lookup("asceticpaas");
-//
-//
-//			TopicConnection connection = 
-//					connectionFactory.createTopicConnection();
-//
-//			session = connection.createTopicSession(false, 
-//					Session.AUTO_ACKNOWLEDGE);
-//
-//
-//			Queue sendQueue = (Queue) context.lookup("appmon");
-//			Topic topic = (Topic) context.lookup("topic");
-//
-//
-//			TopicSubscriber clientTopic = session.createSubscriber(topic);
-//			connection.start();
-//
-//			messageProducer = 
-//					session.createProducer(sendQueue);
+
+
+			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(properties.getProperty(ACTIVEMQ_URL));
+			javax.jms.Connection connection = connectionFactory.createConnection();
+			connection.start();
+
+			// JMS messages are sent and received using a Session. We will
+			// create here a non-transactional session object. If you want
+			// to use transactions you should set the first parameter to 'true'
+			Session session = connection.createSession(false,
+					Session.AUTO_ACKNOWLEDGE);
+
+			Topic topic = session.createTopic("appmonitoring");
+
+			MessageProducer producer = session.createProducer(topic);
+
+
+
+
+
+			//			Context context;
+			//			//			ConnectionFactory connectionFActory;
+			//			TopicSession session;
+			//			MessageProducer messageProducer;
+			//
+			//			String topicName = "application-monitor.monitoring." + appId + ".measurement";
+			//
+			//			//        String nodeId = "TheSinusNode";
+			//
+			//			System.out.println("Initiating " + appId);
+			//			Properties p = new Properties();
+			//
+			//			String sepr = System.getProperty("file.separator");
+			//			String confPath = System.getenv("SLASOI_HOME");
+			//			p.load(new FileInputStream(confPath + sepr
+			//					+ "ascetic-slamanager" + sepr + "provisioning-adjustment" + sepr
+			//					+ "jndi.properties"));
+			//			p.put("topic.topic",topicName);
+			//			context = new InitialContext(p);
+			//
+			//			TopicConnectionFactory connectionFactory
+			//			= (TopicConnectionFactory) context.lookup("asceticpaas");
+			//
+			//
+			//			TopicConnection connection = 
+			//					connectionFactory.createTopicConnection();
+			//
+			//			session = connection.createTopicSession(false, 
+			//					Session.AUTO_ACKNOWLEDGE);
+			//
+			//
+			//			Queue sendQueue = (Queue) context.lookup("appmon");
+			//			Topic topic = (Topic) context.lookup("topic");
+			//
+			//
+			//			TopicSubscriber clientTopic = session.createSubscriber(topic);
+			//			connection.start();
+			//
+			//			messageProducer = 
+			//					session.createProducer(sendQueue);
 
 			String termsString = "";
+			String termsStringAggregated = "";
 			String period = "";
 
 			String[] monitorableTerms = properties.getProperty(MONITORABLE_TERMS).split(",");
@@ -417,9 +421,9 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 											String[] parameters = g.toString().split("\"");
 
 											switch (parameters[7]) {
-											case "percentile": if (!termsString.equals("")) termsString+=", ";termsString+="\\\"percentile("+parameters[1]+"_"+parameters[3]+","+parameters[9]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
-											case "max": if (!termsString.equals("")) termsString+=", ";termsString+="\\\"max("+parameters[1]+"_"+parameters[3]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
-											case "last": if (!termsString.equals("")) termsString+=", ";termsString+="\\\"last("+parameters[1]+"_"+parameters[3]+")\\\"";break;
+											case "percentile": if (!termsStringAggregated.equals("")) termsStringAggregated+=", ";termsStringAggregated+="\"percentile("+parameters[1]+"_"+parameters[3]+","+parameters[9]+")\"";period=""+60000*new Integer(parameters[5]);break;
+											case "max": if (!termsStringAggregated.equals("")) termsStringAggregated+=", ";termsStringAggregated+="\"max("+parameters[1]+"_"+parameters[3]+")\"";period=""+60000*new Integer(parameters[5]);break;
+											case "last": if (!termsStringAggregated.equals("")) termsStringAggregated+=", ";termsStringAggregated+="\"last("+parameters[1]+"_"+parameters[3]+")\"";break;
 											}
 										}
 									}
@@ -427,50 +431,92 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 							}
 							else {
 								if (!termsString.equals("")) termsString+=", ";
-//								termsString+="\\\""+monitorableTerm+"\\\"";
+								//								termsString+="\\\""+monitorableTerm+"\\\"";
 								termsString+="\""+monitorableTerm+"\"";
 							}
 						}
 					}
 				}
+
+
+				logger.debug("Terms to be monitored: "+termsString);
+
+				TextMessage message = session.createTextMessage("{\n" +
+						"\t\"Command\" : \"initiateMonitoring\",\n" +
+						"\t\"ApplicationId\" : \""+ appId + "\",\n" +
+						"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
+						"\t\"SlaId\" : \""+ slaId + "\",\n" +
+						(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+						"\t\"Start_time\" : \""+ Start_time + "\",\n" +
+						"\t\"Terms\" : ["+termsString+" ],\n" +
+						"\t\"Frequency\" : "+monitoringFrequency+"\n" +
+						"}");
+				//			messageProducer.send(message);
+
+				//			String message = "{\n" +
+				//					"\t\"Command\" : \"initiateMonitoring\",\n" +
+				//					"\t\"ApplicationId\" : \""+ appId + "\",\n" +
+				//					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
+				//					"\t\"SlaId\" : \""+ slaId + "\",\n" +
+				//					(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+				//					"\t\"Terms\" : ["+termsString+" ],\n" +
+				//					"\t\"Frequency\" : 10000\n" +
+				//					"}";
+				//			
+				//			producer.sendMessage(message);
+
+				logger.debug("Message: "+message.getText());
+				producer.send(message);
+
+				logger.debug("Message sent: "+message);
+
+				System.out.println("Message sent");
+				
+				
+				logger.debug("Terms aggregated to be monitored: "+termsStringAggregated);
+
+				TextMessage messageAggregated = session.createTextMessage("{\n" +
+						"\t\"Command\" : \"initiateMonitoring\",\n" +
+						"\t\"ApplicationId\" : \""+ appId + "\",\n" +
+						"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
+						(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+						"\t\"Start_time\" : \""+ Start_time + "\",\n" +
+						"\t\"Terms\" : ["+termsStringAggregated+" ],\n" +
+						"\t\"Frequency\" : "+monitoringFrequency+"\n" +
+						"}");
+
+				logger.debug("Message Aggregated: "+messageAggregated.getText());
+				producer.send(messageAggregated);
+
+				logger.debug("Message aggregated sent: "+messageAggregated);
+
+				System.out.println("Message aggregated sent");
+				
+				Topic topic2 = session.createTopic("appmonitoring-mp");
+
+				MessageProducer producer2 = session.createProducer(topic2);
+				
+				TextMessage messagePusher = session.createTextMessage("{\n" +
+						"\t\"Command\" : \"initiateMonitoring\",\n" +
+						"\t\"ApplicationId\" : \""+ appId + "\",\n" +
+						"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
+						"\t\"SlaId\" : \""+ slaId + "\",\n" +
+						(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
+						"\t\"Start_time\" : \""+ Start_time + "\",\n" +
+						"\t\"Frequency\" : "+monitoringFrequency+"\n" +
+						"}");
+				
+				logger.debug("Message Pusher: "+messagePusher.getText());
+				producer2.send(messagePusher);
+
+				logger.debug("Message pusher sent: "+messagePusher);
+
+				System.out.println("Message pusher sent");
+				
+				
 			}
-
-			logger.debug("Terms to be monitored: "+termsString);
-
-			TextMessage message = session.createTextMessage("{\n" +
-					"\t\"Command\" : \"initiateMonitoring\",\n" +
-					"\t\"ApplicationId\" : \""+ appId + "\",\n" +
-					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
-					"\t\"SlaId\" : \""+ slaId + "\",\n" +
-					(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
-					"\t\"Start_time\" : \""+ Start_time + "\",\n" +
-					"\t\"Terms\" : ["+termsString+" ],\n" +
-					"\t\"Frequency\" : "+monitoringFrequency+"\n" +
-					"}");
-//			messageProducer.send(message);
-			
-//			String message = "{\n" +
-//					"\t\"Command\" : \"initiateMonitoring\",\n" +
-//					"\t\"ApplicationId\" : \""+ appId + "\",\n" +
-//					"\t\"DeploymentId\" : \""+ deploymentId + "\",\n" +
-//					"\t\"SlaId\" : \""+ slaId + "\",\n" +
-//					(period.equals("")?"":"\t\"Period\" : \""+ period + "\",\n")+
-//					"\t\"Terms\" : ["+termsString+" ],\n" +
-//					"\t\"Frequency\" : 10000\n" +
-//					"}";
-//			
-//			producer.sendMessage(message);
-
-			logger.debug("Message: "+message.getText());
-			producer.send(message);
-			
-			logger.debug("Message sent: "+message);
-
-			System.out.println("Message sent");
-
-
 			connection.close();
-//			context.close();
+			//			context.close();
 		}catch(Exception e){
 			e.printStackTrace();
 			logger.error(e.getMessage());
@@ -620,7 +666,7 @@ public class ProvisioningAdjustmentImpl extends ProvisioningAndAdjustment {
 											System.out.println(s.getValue());
 											System.out.println(g.getPropertyValue(s));
 										}
-										
+
 										switch (parameters[7]) {
 										case "percentile": termsString+="\\\"percentile("+parameters[1]+"_"+parameters[3]+","+parameters[9]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
 										case "max": termsString+="\\\"max("+parameters[1]+"_"+parameters[3]+")\\\"";period=""+60000*new Integer(parameters[5]);break;
