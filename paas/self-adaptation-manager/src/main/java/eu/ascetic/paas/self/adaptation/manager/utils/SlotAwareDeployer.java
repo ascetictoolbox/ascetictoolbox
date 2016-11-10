@@ -234,8 +234,8 @@ public class SlotAwareDeployer {
             Collections.shuffle(slotsClone);
             //System.out.println("slotsClone("  + slotsClone.hashCode() + ") = " + slotsClone.toString());
             if(!out.containsKey(slotsClone.hashCode())){
-                System.out.println("Added to out.");
-                //out.put(slotsClone.hashCode(), this.cloneSlots(slotsClone));
+                //System.out.println("Added to out.");
+                out.put(slotsClone.hashCode(), this.cloneSlots(slotsClone));
             }
         }
         
