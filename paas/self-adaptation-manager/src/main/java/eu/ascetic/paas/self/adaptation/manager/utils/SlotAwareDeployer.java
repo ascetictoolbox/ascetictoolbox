@@ -18,7 +18,6 @@ package eu.ascetic.paas.self.adaptation.manager.utils;
 import es.bsc.vmmclient.models.Node;
 import es.bsc.vmmclient.models.Slot;
 import eu.ascetic.paas.self.adaptation.manager.rules.datatypes.SlotSolution;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,13 +33,15 @@ import org.apache.commons.lang.StringUtils;
  * @author Raimon Bosch (raimon.bosch@bsc.es)
  */
 public class SlotAwareDeployer {
-    String provider;
+    private String provider;
+    private Map<String, Boolean> usedHostnames;
     
     /**
      * Empty constructor.
      */
     public SlotAwareDeployer(){
         this.provider = "providerA";
+        this.usedHostnames = new HashMap<>();
     }
     
     /**
@@ -173,8 +174,27 @@ public class SlotAwareDeployer {
                 consolidationScore += 0.1;
             }
         }
-
+        
         return consolidationScore;
+    }
+    
+    /**
+     * Scores how many VMs are deployed in the same host.
+     * 
+     * @param results
+     * @return 
+     */
+    private double hostAffinityScore(List<Slot> results) {
+        usedHostnames.clear();
+        for (Slot s : results) {
+            if(!usedHostnames.containsKey(s.getHostname())){
+                usedHostnames.put(s.getHostname(), Boolean.TRUE);
+            }
+        }
+        
+        //System.out.println("usedHostnames=" + usedHostnames.toString());
+        //System.out.println("hostAffinityScore=" + (double)(-0.1*usedHostnames.size()));
+        return (double)(-0.1*usedHostnames.size());
     }
 
     /**
@@ -229,7 +249,7 @@ public class SlotAwareDeployer {
         
         List<Slot> slotsClone = this.cloneSlots(slots);
         int numTries = 100*slots.size();
-        System.out.println("numTries( 100*(" + slots.size() + ") ) = " + numTries);
+        //System.out.println("numTries( 100*(" + slots.size() + ") ) = " + numTries);
         for(int i = 0; i < numTries; i++){
             Collections.shuffle(slotsClone);
             //System.out.println("slotsClone("  + slotsClone.hashCode() + ") = " + slotsClone.toString());
@@ -253,6 +273,32 @@ public class SlotAwareDeployer {
         System.out.println(out.toString());
         return out;
     }
+    
+    /**
+     * Removing negative numbers from free resources.
+     * 
+     * @param slots
+     * @return 
+     */
+    private List<Slot> removeNegativeResources(List<Slot> slots){
+        List<Slot> slotsNew = new ArrayList<>();
+        for(int i = 0; i < slots.size(); i++){
+            Slot s = slots.get(i);
+            if(s.getFreeCpus() < 0){
+                s.setFreeCpus(0);
+            }
+            else if(s.getFreeDiskGb() < 0){
+                s.setFreeDiskGb(0);
+            }
+            else if(s.getFreeMemoryMb() < 0){
+                s.setFreeMemoryMb(0);
+            }
+            
+            slotsNew.add( s );
+        }
+        
+        return slotsNew;
+    }
 
     /**
      * Returns a list of SolutionSlot sorted by consolidation criteria.
@@ -268,6 +314,7 @@ public class SlotAwareDeployer {
      */
     public List<SlotSolution> getSlotsSortedByConsolidationScore(
             List<Slot> slots, Map<String, Node> nodes, int totalCpusToAdd, int minCpu, int maxCpu, int ramMb, int diskGb) {
+        slots = removeNegativeResources(slots);
         Set<String> combinations = subsetSumBruteForce(getAllowedCpuSizes(minCpu, maxCpu), totalCpusToAdd);
         Map<Integer, List<Slot>> slotsInAllOrders = getAllListOrders(slots);
         List<SlotSolution> solutions = new ArrayList<>();
@@ -289,13 +336,11 @@ public class SlotAwareDeployer {
                         results.add(slotAssigned);
                     }
                 }
-
-                for (Slot s : slotsOrderProposal) {
-                    //System.out.println(s.getFreeCpus() + " - " + s.getHostname());
-                }
+                
                 double consolidationScore = consolidationScore(slotsOrderProposal, nodes);
+                double hostAffinityScore = hostAffinityScore(results);
                 //System.out.println("Score: " + consolidationScore);
-                solutions.add(new SlotSolution(consolidationScore, results, this.provider));
+                solutions.add(new SlotSolution(consolidationScore + hostAffinityScore, results, this.provider));
             }
         }
 

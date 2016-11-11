@@ -114,6 +114,69 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         System.out.println(solutions.get(0));
     }
     
+    public void testSlotAwareDeploymentFakeWallyservers() {
+        Map<String, Node> nodesTable = new HashMap<String, Node>();
+        nodesTable.put("wally158", new Node("wally158", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally161", new Node("wally161", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally165", new Node("wally165", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally166", new Node("wally166", 8, 8*1024, 80, 4, 4*1024, 40, 0));
+        nodesTable.put("wally167", new Node("wally167", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally168", new Node("wally168", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally169", new Node("wally169", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally170", new Node("wally170", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally171", new Node("wally171", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally172", new Node("wally172", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally173", new Node("wally173", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally174", new Node("wally174", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally175", new Node("wally175", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally176", new Node("wally176", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally177", new Node("wally177", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally178", new Node("wally178", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally179", new Node("wally179", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally180", new Node("wally180", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally181", new Node("wally181", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally182", new Node("wally182", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally193", new Node("wally193", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally195", new Node("wally195", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally196", new Node("wally196", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        nodesTable.put("wally197", new Node("wally197", 8, 8*1024, 80, 8, 8*1024, 80, 0));
+        
+        List<Slot> slots = new ArrayList<>();
+        slots.add(new Slot("wally158", 0, 0, 0));
+        slots.add(new Slot("wally161", 0, 0, 0));
+        slots.add(new Slot("wally165", 0, 0, 0));
+        slots.add(new Slot("wally166", 5, 500, 5000));
+        slots.add(new Slot("wally167", 4, 400, 4000));
+        slots.add(new Slot("wally168", 4, 400, 4000));
+        slots.add(new Slot("wally169", 0, 0, 0));
+        slots.add(new Slot("wally170", 0, 0, 0));
+        slots.add(new Slot("wally171", -1, -100, -1000));
+        slots.add(new Slot("wally172", 0, 0, 0));
+        slots.add(new Slot("wally173", 3, 300, 3000));
+        slots.add(new Slot("wally174", 7, 700, 7000));
+        slots.add(new Slot("wally175", 3, 300, 3000));
+        slots.add(new Slot("wally176", -1, -100, -1000));
+        slots.add(new Slot("wally177", 5, 500, 5000));
+        slots.add(new Slot("wally178", -1, -100, -1000));
+        slots.add(new Slot("wally179", 6, 600, 6000));
+        slots.add(new Slot("wally180", 0, 0, 0));
+        slots.add(new Slot("wally181", 5, 500, 5000));
+        slots.add(new Slot("wally182", 4, 400, 4000));
+        slots.add(new Slot("wally193", -1, -100, -1000));
+        slots.add(new Slot("wally195", -3, -300, -3000));
+        slots.add(new Slot("wally196", 4, 400, 4000));
+        slots.add(new Slot("wally197", -15, -1500, -15000));
+
+        int minCpus = 2;
+        int maxCpus = 4;
+        int totalCpusToAdd = 10;
+        
+        SlotAwareDeployer deployer = new SlotAwareDeployer();
+        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10);
+        System.out.println(solutions);
+        System.out.println(solutions.get(0));
+    }
+    
     public void testSlotAwareDeploymentMultiProviderFake() {
         boolean bestProvider = true;
         
@@ -250,6 +313,31 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
                 Vm vm = new Vm("slotAwareInstance", imageId, slotRequeriments, this.generateScript(slotRequeriments.getCpus()), "slotAwareTest", "", "sla", slot.getHostname());
                 providerVMM.deployVms(Arrays.asList(vm));
             }
+        }
+    }
+    
+    public void testDemoWebinar() throws Exception {
+        boolean prepareExperiment = false;
+        boolean runExperiment = false;
+        String imageId = "1e8d335f-e797-4d3b-aa28-20154d77006f";
+        
+        if(prepareExperiment){
+            Vm vm01 = new Vm(
+                    "webinarTest01", imageId, 
+                    new VmRequirements( 4, 4*1024, 10, 0), 
+                    generateScript(4), "slotAwareTest", "", "sla", 
+                    "bscgrid30");
+            vmm.deployVms(Arrays.asList(vm01));
+            Vm vm02 = new Vm(
+                    "webinarTest02", imageId, 
+                    new VmRequirements( 8, 8*1024, 10, 0), 
+                    generateScript(8), "slotAwareTest", "", "sla", 
+                    "bscgrid29");
+            vmm.deployVms(Arrays.asList(vm02));
+        }
+        
+        if(runExperiment){
+            
         }
     }
     
