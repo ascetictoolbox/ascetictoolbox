@@ -50,6 +50,7 @@ public class SlotAwareDeployer {
      */
     public SlotAwareDeployer(String provider){
         this.provider = provider;
+        this.usedHostnames = new HashMap<>();
     }
     
     /**
@@ -164,14 +165,14 @@ public class SlotAwareDeployer {
      * @param nodes information about the nodes to extract total cpus per host.
      * @return the consolidation score
      */
-    private double consolidationScore(List<Slot> slots, Map<String,Node> nodes) {
-        double consolidationScore = 0.0;
+    private int consolidationScore(List<Slot> slots, Map<String,Node> nodes) {
+        int consolidationScore = 0;
         for (Slot s : slots) {
             if (s.getFreeCpus() == nodes.get(s.getHostname()).getTotalCpus()) {
-                consolidationScore += 1.0;
+                consolidationScore += 10;
             }
             else if (s.getFreeCpus() == 0) {
-                consolidationScore += 0.1;
+                consolidationScore += 1;
             }
         }
         
@@ -184,7 +185,7 @@ public class SlotAwareDeployer {
      * @param results
      * @return 
      */
-    private double hostAffinityScore(List<Slot> results) {
+    private int hostAffinityScore(List<Slot> results) {
         usedHostnames.clear();
         for (Slot s : results) {
             if(!usedHostnames.containsKey(s.getHostname())){
@@ -194,7 +195,7 @@ public class SlotAwareDeployer {
         
         //System.out.println("usedHostnames=" + usedHostnames.toString());
         //System.out.println("hostAffinityScore=" + (double)(-0.1*usedHostnames.size()));
-        return (double)(-0.1*usedHostnames.size());
+        return -2*usedHostnames.size();
     }
 
     /**
@@ -337,8 +338,8 @@ public class SlotAwareDeployer {
                     }
                 }
                 
-                double consolidationScore = consolidationScore(slotsOrderProposal, nodes);
-                double hostAffinityScore = hostAffinityScore(results);
+                int consolidationScore = consolidationScore(slotsOrderProposal, nodes);
+                int hostAffinityScore = hostAffinityScore(results);
                 //System.out.println("Score: " + consolidationScore);
                 solutions.add(new SlotSolution(consolidationScore + hostAffinityScore, results, this.provider));
             }

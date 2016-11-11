@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class SlotSolution {
     private List<Slot> slots;
-    private double consolidationScore;
+    private int consolidationScore;
     private String provider;
     
     /**
@@ -34,7 +34,7 @@ public class SlotSolution {
      * @param slots list of slots with the solution proposed.
      * @param provider the provider of the solution.
      */
-    public SlotSolution(double consolidationScore, List<Slot> slots, String provider){
+    public SlotSolution(int consolidationScore, List<Slot> slots, String provider){
         this.consolidationScore = consolidationScore;
         this.slots = slots;
         this.provider = provider;
@@ -57,14 +57,14 @@ public class SlotSolution {
     /**
      * @return the consolidationScore
      */
-    public double getConsolidationScore() {
+    public int getConsolidationScore() {
         return consolidationScore;
     }
 
     /**
      * @param consolidationScore the consolidationScore to set
      */
-    public void setConsolidationScore(double consolidationScore) {
+    public void setConsolidationScore(int consolidationScore) {
         this.consolidationScore = consolidationScore;
     }
     

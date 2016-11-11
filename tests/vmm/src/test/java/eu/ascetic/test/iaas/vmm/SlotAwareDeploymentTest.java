@@ -177,6 +177,25 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         System.out.println(solutions.get(0));
     }
     
+    /*public void testSlotAwareDeploymentWallyServers() {
+        Map<String, Node> nodesTable = getNodesTable(vmm.getNodes());
+        List<Slot> slots = vmm.getSlots();
+        for(Slot s : slots){
+            System.out.println(
+                "Slot= " + s.getHostname() + " " + s.getFreeCpus() + " " + s.getFreeMemoryMb() + " " + s.getFreeDiskGb()
+            );
+        }
+
+        int minCpus = 2;
+        int maxCpus = 4;
+        int totalCpusToAdd = 10;
+        
+        SlotAwareDeployer deployer = new SlotAwareDeployer();
+        List<SlotSolution> solutions = deployer.getSlotsSortedByConsolidationScore(slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10);
+        System.out.println(solutions);
+        System.out.println(solutions.get(0));
+    }*/
+    
     public void testSlotAwareDeploymentMultiProviderFake() {
         boolean bestProvider = true;
         
