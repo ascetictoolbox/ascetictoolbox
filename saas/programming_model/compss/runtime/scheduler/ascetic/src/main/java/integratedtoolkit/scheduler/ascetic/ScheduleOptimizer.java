@@ -5,6 +5,7 @@ import integratedtoolkit.scheduler.exceptions.BlockedActionException;
 import integratedtoolkit.scheduler.exceptions.InvalidSchedulingException;
 import integratedtoolkit.scheduler.exceptions.UnassignedActionException;
 import integratedtoolkit.scheduler.types.AllocatableAction;
+import integratedtoolkit.types.AsceticProfile;
 import integratedtoolkit.types.AsceticScore;
 import integratedtoolkit.types.Implementation;
 import integratedtoolkit.types.OptimizationWorker;
@@ -191,6 +192,7 @@ public class ScheduleOptimizer extends Thread {
     }
 
     private boolean move(AllocatableAction action, OptimizationWorker donor, OptimizationWorker receiver) {
+        System.out.println("Trying to move " + action + " from " + donor + " to " + "receiver");
         LinkedList<AllocatableAction> dataPreds = action.getDataPredecessors();
         long dataAvailable = 0;
         try {
@@ -207,12 +209,23 @@ public class ScheduleOptimizer extends Thread {
         long bestTime = Long.MAX_VALUE;
 
         LinkedList<Implementation> impls = action.getCompatibleImplementations(receiver.getResource());
+
+        AsceticScore bestScore = null;
         for (Implementation impl : impls) {
-            Profile p = receiver.getResource().getProfile(impl);
-            long avgTime = p.getAverageExecutionTime();
-            if (avgTime < bestTime) {
-                bestTime = avgTime;
+            AsceticProfile p = (AsceticProfile) receiver.getResource().getProfile(impl);
+            long implScore = 0;
+            if (p != null) {
+                implScore = p.getAverageExecutionTime();
+            } else {
+                implScore = 0;
+            }
+            double energy = p.getPower() * implScore;
+            double cost = p.getPrice();
+            AsceticScore score = new AsceticScore(0, 0, 0, implScore, energy, cost);
+            if (Score.isBetter(score, bestScore)) {
                 bestImpl = impl;
+                bestScore = score;
+                bestTime= p.getAverageExecutionTime();
             }
         }
 
