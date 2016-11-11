@@ -367,7 +367,6 @@ public class TaskScheduler<P extends Profile, T extends WorkerResourceDescriptio
                 if (!action.hasDataPredecessors()) {
                     if (action.getImplementations().length > 0) {
                         int coreId = action.getImplementations()[0].getCoreId();
-                        readyCounts[coreId]++;
                     }
                 }
                 try {
