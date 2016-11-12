@@ -339,53 +339,67 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         int minCpus = 2;
         int maxCpus = 4;
         int totalCpusToAdd = 24;
-
+        
+        boolean deployFixedSizeVMsExample = false;
         boolean deployFixedSizeVMs = false;
         boolean deploySlotAwareVMs = false;
-        String imageId = "95e31d94-db43-478c-a684-6972c8586bec";
+        //String imageId = "d1fd8a5b-6450-4659-9107-b30037cb56bc";
+        String imageId = "9a1074f4-8a74-43e2-b04d-21682251215a";
+        
+        if(deployFixedSizeVMsExample) {
+            List<Vm> fixedSize2CPUs = new ArrayList<>();
+            for(int i = 0; i < 1; i++) {
+                Vm vm = new Vm(
+                    "fixedSize2CPUs" + i, 
+                    imageId, 
+                    4, 512, 2, 
+                    "", 
+                    "fixedSize2CPUsDeployment", 
+                    null, "sla", 
+                    true
+                );
+                fixedSize2CPUs.add(vm);
+            }
+            
+            vmm.deployVms(fixedSize2CPUs);
+        }
         
         if(deployFixedSizeVMs){
             List<Vm> fixedSize2CPUs = new ArrayList<>();
             for(int i = 0; i < totalCpusToAdd/2; i++) {
-                VmRequirements slotRequeriments = new VmRequirements(2, 512, 10, 0);
                 Vm vm = new Vm(
                     "fixedSize2CPUs" + i, 
                     imageId, 
-                    slotRequeriments, 
-                    "", 
+                    2, 512, 3, "", 
                     "fixedSize2CPUsDeployment", 
-                    "", 
-                    "sla"
+                    null, "sla", 
+                    true
                 );
                 fixedSize2CPUs.add(vm);
             }
 
             List<Vm> fixedSize3CPUs = new ArrayList<>();
             for(int i = 0; i < totalCpusToAdd/3; i++) {
-                VmRequirements slotRequeriments = new VmRequirements(3, 512, 10, 0);
                 Vm vm = new Vm(
                     "fixedSize3CPUs" + i, 
                     imageId, 
-                    slotRequeriments, 
-                    "", 
+                    3, 512, 3, "", 
                     "fixedSize3CPUsDeployment", 
-                    "", 
-                    "sla"
+                    null, "sla", 
+                    true
                 );
                 fixedSize3CPUs.add(vm);
             }
 
             List<Vm> fixedSize4CPUs = new ArrayList<>();
             for(int i = 0; i < totalCpusToAdd/4; i++) {
-                VmRequirements slotRequeriments = new VmRequirements(4, 512, 10, 0);
                 Vm vm = new Vm(
                     "fixedSize4CPUs" + i, 
                     imageId, 
-                    slotRequeriments, 
-                    "", 
+                    4, 512, 3, "", 
                     "fixedSize4CPUsDeployment", 
-                    "", 
-                    "sla"
+                    null, "sla", 
+                    true
                 );
                 fixedSize4CPUs.add(vm);
             }
@@ -412,10 +426,11 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
             SlotAwareDeployer deployer = new SlotAwareDeployer();
             List<SlotSolution> solutions = 
                 deployer.getSlotsSortedByConsolidationScore(
-                    slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10
+                    slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 512, 3
                 );
             System.out.println(solutions);
             System.out.println(solutions.get(0));
+            //System.exit(-1);
 
             SlotSolution chosenSolution = solutions.get(0);
             System.out.println(chosenSolution);
@@ -424,23 +439,14 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
             List<Vm> slotAwareVms = new ArrayList<>();
             for(int i = 0; i < chosenSlots.size(); i++) {
                 Slot slot = chosenSlots.get(i);
-                System.out.println("Requirements: " + slot.toString());
-                VmRequirements slotRequeriments = new VmRequirements( 
-                    (int)slot.getFreeCpus(), 
-                    (int)slot.getFreeMemoryMb(), 
-                    (int)slot.getFreeDiskGb(), 
-                    0
-                );
-
                 Vm vm = new Vm(
                     "slotAwareInstance" + i, 
                     imageId, 
-                    slotRequeriments, 
-                    "", 
-                    "slotAwareDeployment", 
-                    "", 
-                    "sla", 
-                    slot.getHostname()
+                    new VmRequirements((int)slot.getFreeCpus(), (int)slot.getFreeMemoryMb(), (int)slot.getFreeDiskGb(), 0), 
+                    "", "slotAwareDeployment", 
+                    null, "sla", 
+                    slot.getHostname(), 
+                    true
                 );
                 slotAwareVms.add(vm);
             }
