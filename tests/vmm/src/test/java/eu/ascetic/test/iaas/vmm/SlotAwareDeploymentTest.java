@@ -335,6 +335,121 @@ public class SlotAwareDeploymentTest extends VmmTestBase{
         }
     }
     
+    public void testSlotAwareVsFixedSize() {
+        int minCpus = 2;
+        int maxCpus = 4;
+        int totalCpusToAdd = 24;
+
+        boolean deployFixedSizeVMs = false;
+        boolean deploySlotAwareVMs = false;
+        String imageId = "95e31d94-db43-478c-a684-6972c8586bec";
+        
+        if(deployFixedSizeVMs){
+            List<Vm> fixedSize2CPUs = new ArrayList<>();
+            for(int i = 0; i < totalCpusToAdd/2; i++) {
+                VmRequirements slotRequeriments = new VmRequirements(2, 512, 10, 0);
+                Vm vm = new Vm(
+                    "fixedSize2CPUs" + i, 
+                    imageId, 
+                    slotRequeriments, 
+                    "", 
+                    "fixedSize2CPUsDeployment", 
+                    "", 
+                    "sla"
+                );
+                fixedSize2CPUs.add(vm);
+            }
+
+            List<Vm> fixedSize3CPUs = new ArrayList<>();
+            for(int i = 0; i < totalCpusToAdd/3; i++) {
+                VmRequirements slotRequeriments = new VmRequirements(3, 512, 10, 0);
+                Vm vm = new Vm(
+                    "fixedSize3CPUs" + i, 
+                    imageId, 
+                    slotRequeriments, 
+                    "", 
+                    "fixedSize3CPUsDeployment", 
+                    "", 
+                    "sla"
+                );
+                fixedSize3CPUs.add(vm);
+            }
+
+            List<Vm> fixedSize4CPUs = new ArrayList<>();
+            for(int i = 0; i < totalCpusToAdd/4; i++) {
+                VmRequirements slotRequeriments = new VmRequirements(4, 512, 10, 0);
+                Vm vm = new Vm(
+                    "fixedSize4CPUs" + i, 
+                    imageId, 
+                    slotRequeriments, 
+                    "", 
+                    "fixedSize4CPUsDeployment", 
+                    "", 
+                    "sla"
+                );
+                fixedSize4CPUs.add(vm);
+            }
+            
+            //Deploying fixed-size plans
+            vmm.deployVms(fixedSize4CPUs);
+            vmm.deployVms(fixedSize3CPUs);
+            vmm.deployVms(fixedSize2CPUs);
+        }
+        
+        if(deploySlotAwareVMs){
+            Map<String, Node> nodesTable = getNodesTable(vmm.getNodes());
+            List<Slot> slots = vmm.getSlots();
+            for(Slot s : slots){
+                System.out.println(
+                    "Slot= " + 
+                        s.getHostname() + " " + 
+                        s.getFreeCpus() + " " + 
+                        s.getFreeMemoryMb() + " " + 
+                        s.getFreeDiskGb()
+                );
+            }
+
+            SlotAwareDeployer deployer = new SlotAwareDeployer();
+            List<SlotSolution> solutions = 
+                deployer.getSlotsSortedByConsolidationScore(
+                    slots, nodesTable, totalCpusToAdd, minCpus, maxCpus, 1024, 10
+                );
+            System.out.println(solutions);
+            System.out.println(solutions.get(0));
+
+            SlotSolution chosenSolution = solutions.get(0);
+            System.out.println(chosenSolution);
+            List<Slot> chosenSlots = chosenSolution.getSlots();
+
+            List<Vm> slotAwareVms = new ArrayList<>();
+            for(int i = 0; i < chosenSlots.size(); i++) {
+                Slot slot = chosenSlots.get(i);
+                System.out.println("Requirements: " + slot.toString());
+                VmRequirements slotRequeriments = new VmRequirements( 
+                    (int)slot.getFreeCpus(), 
+                    (int)slot.getFreeMemoryMb(), 
+                    (int)slot.getFreeDiskGb(), 
+                    0
+                );
+
+                Vm vm = new Vm(
+                    "slotAwareInstance" + i, 
+                    imageId, 
+                    slotRequeriments, 
+                    "", 
+                    "slotAwareDeployment", 
+                    "", 
+                    "sla", 
+                    slot.getHostname()
+                );
+                slotAwareVms.add(vm);
+            }
+            
+            //Deploying slot-aware plan
+            vmm.deployVms(slotAwareVms);
+        }
+    }
+    
     public void testDemoWebinar() throws Exception {
         boolean prepareExperiment = false;
         boolean runExperiment = false;

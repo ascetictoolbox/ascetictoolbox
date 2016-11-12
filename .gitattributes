@@ -6494,6 +6494,11 @@ tests/vmm/src/main/resources/config.bsc.properties -text
 tests/vmm/src/main/resources/config.properties -text
 tests/vmm/src/main/resources/config.stable.properties -text
 tests/vmm/src/main/resources/config.test.properties -text
+tests/vmm/src/main/resources/experiments-README.txt -text
+tests/vmm/src/main/resources/install_stress.sh -text
+tests/vmm/src/main/resources/stress_all.sh -text
+tests/vmm/src/main/resources/stress_stop.sh -text
+tests/vmm/src/main/resources/stress_test.sh -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/DeployAndMigrateTest.java -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/DeploySpecificHardwareTest.java -text
 tests/vmm/src/test/java/eu/ascetic/test/iaas/vmm/SLAViolationTest.java -text
