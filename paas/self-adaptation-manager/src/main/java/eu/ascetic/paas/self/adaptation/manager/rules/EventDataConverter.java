@@ -71,8 +71,13 @@ public class EventDataConverter {
 
         answer.setApplicationId(event.getAppId());
         answer.setDeploymentId(event.getDeploymentId());
-
+        
         answer.setTime(event.getTime().getTimeInMillis() / 1000);
+        long now = System.currentTimeMillis();
+        now = now / 1000;
+        if (answer.getTime() > now) {
+            answer.setTime(now);
+        }
         if (event.getAlert().getType().equals("violation")) {
             answer.setType(EventData.Type.SLA_BREACH);
         } else if (event.getAlert().getType().equals("warning")) {
