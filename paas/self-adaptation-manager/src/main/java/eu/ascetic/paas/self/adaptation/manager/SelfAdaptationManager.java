@@ -22,6 +22,7 @@ import eu.ascetic.paas.self.adaptation.manager.rest.ActionRequester;
 import eu.ascetic.paas.self.adaptation.manager.rules.AbstractEventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.EventAssessor;
 import eu.ascetic.paas.self.adaptation.manager.rules.FuzzyEventAssessor;
+import eu.ascetic.paas.self.adaptation.manager.rules.ThresholdEventAssessor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -109,7 +110,9 @@ public class SelfAdaptationManager {
                 eventAssessor = (EventAssessor) (Class.forName(eventAssessorName).newInstance());
             } catch (ClassNotFoundException ex) {
                 if (eventAssessor == null) {
-                    eventAssessor = new FuzzyEventAssessor();
+                    Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE,
+                    "The event assessor class was not found: " + eventAssessorName, ex);
+                    eventAssessor = new ThresholdEventAssessor();
                 }
                 Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "The decision engine specified was not found");
             } catch (InstantiationException | IllegalAccessException ex) {
@@ -132,7 +135,7 @@ public class SelfAdaptationManager {
      * @param args The args are not used.
      */
     public static void main(String[] args) {
-        try {
+        try {             
             new SelfAdaptationManager();
         } catch (JMSException ex) {
             Logger.getLogger(SelfAdaptationManager.class.getName()).log(Level.SEVERE, null, ex);

@@ -181,9 +181,9 @@ public abstract class AbstractEventAssessor implements EventAssessor {
                 answer = decisionEngine.decide(answer);
                 if (actuator != null && answer.isPossibleToAdapt()) {
                     actuator.actuate(answer);
-                    Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "Actuator - Performing Work");                    
+                    Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "Actuator - Performing Work");
                     if (responseBroadcaster != null && responseBroadcasterThread.isAlive()) {
-                    responseBroadcaster.broadcastChange(answer);
+                        responseBroadcaster.broadcastChange(answer);
                     }
                 }
                 if (logging) {
@@ -193,9 +193,10 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             /**
              * This causes a looping behaviour when the action is not possible
              * to carry out. The test at the end ensures that if the history is
-             * wiped out the loop is not infinite. 
+             * wiped out the loop is not infinite.
              */
             if (answer != null && !answer.isPossibleToAdapt() && historyLengthSeconds > 30) {
+                Logger.getLogger(AbstractEventAssessor.class.getName()).log(Level.WARNING, "Performing another try at assessing the event.");
                 assessEvent(event, eventData);
             }
             return answer;
@@ -365,18 +366,19 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         private List<Response> filterAdaptationHistory() {
             ArrayList<Response> answer = new ArrayList<>();
             if (historyLengthSeconds == 0) {
-            //Ensure automatic removal of all previous history records, without further testing.
+                //Ensure automatic removal of all previous history records, without further testing.
                 return answer;
-            }            
+            }
             long now = System.currentTimeMillis();
             now = now / 1000;
             long filterTime = now - historyLengthSeconds;
-            synchronized (this) {
-                for (Response response : adaptations) {
-                    if (response.getTime() >= filterTime) {
-                        answer.add(response);
-                    }
+            for (Response response : adaptations) {
+                if (response.getTime() >= filterTime) {
+                    answer.add(response);
                 }
+            }
+            if (answer.size() != adaptations.size()) {
+                Logger.getLogger(HistoryClearer.class.getName()).log(Level.INFO, "Cleaning History Performed: Old size: {0} New Size: {1}", new Object[]{adaptations.size(), answer.size()});
             }
             return answer;
         }
