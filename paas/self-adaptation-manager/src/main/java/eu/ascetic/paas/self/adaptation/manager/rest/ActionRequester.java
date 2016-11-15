@@ -162,7 +162,7 @@ public class ActionRequester implements Runnable, ActuatorInvoker {
         ArrayList<Integer> answer = new ArrayList<>();
         List<VM> vms = getVMs(applicationId, deploymentId);
         for (VM vm : vms) {
-            if (vm.getNumberVMsMin() > 0
+            if (vm.getNumberVMsMin() > 0 && vm.getStatus().equals("ACTIVE")
                     && getVmCountOfGivenType(vms, vm.getOvfId()) > vm.getNumberVMsMin()) {
                 answer.add(vm.getId());
             }

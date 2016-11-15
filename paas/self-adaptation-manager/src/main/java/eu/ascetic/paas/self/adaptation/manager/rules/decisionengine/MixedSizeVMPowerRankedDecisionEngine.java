@@ -107,6 +107,15 @@ public class MixedSizeVMPowerRankedDecisionEngine extends AbstractDecisionEngine
             response.setPossibleToAdapt(false);
             return response;
         }
+        if (!response.getCause().getAgreementTerm().toLowerCase().contains("power")) {
+        //This is the none power oriented case. i.e. delete just one VM.    
+            Collections.sort(vmIds);
+            Collections.reverse(vmIds);
+            //Remove the last VM to be created from the list of possible VMs
+            response.setVmId(vmIds.get(0) + "");
+            return response;
+        }
+        //This is the goal seeking case for power
         double targetDifference = response.getCause().getDeviationBetweenRawAndGuarantee(true);
         double valueRemoved = 0.0;
         String vmsToRemove = ""; //i.e. VMs_TO_REMOVE= ....
