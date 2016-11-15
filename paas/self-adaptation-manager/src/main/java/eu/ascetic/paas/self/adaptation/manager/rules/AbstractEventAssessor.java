@@ -345,6 +345,8 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             while (running) {
                 if (!eventHistory.isEmpty()) {
                     eventHistory = EventDataAggregator.filterEventDataByTime(eventHistory, historyLengthSeconds);
+                }
+                if (!adaptations.isEmpty()) {
                     synchronized (this) {
                         adaptations = filterAdaptationHistory();
                     }
