@@ -156,6 +156,7 @@ public abstract class AbstractEventAssessor implements EventAssessor {
         List<EventData> eventData = EventDataAggregator.filterEventData(eventHistory, event.getSlaUuid(), event.getAgreementTerm());
         //Purge old event map data
         eventData = EventDataAggregator.filterEventDataByTime(eventData, historyLengthSeconds);
+        adaptations = filterAdaptationHistory();
         return assessEvent(event, eventData);
     }
 
@@ -326,6 +327,32 @@ public abstract class AbstractEventAssessor implements EventAssessor {
             historyClearer = null;
             historyClearerThread = null;
         }
+    }
+
+    /**
+     * This filters the current adaptation history and return a new list that
+     * has all of the old entries removed.
+     *
+     * @return The list of recent adaptations made by the event assessor.
+     */
+    private List<Response> filterAdaptationHistory() {
+        ArrayList<Response> answer = new ArrayList<>();
+        if (historyLengthSeconds == 0) {
+            //Ensure automatic removal of all previous history records, without further testing.
+            return answer;
+        }
+        long now = System.currentTimeMillis();
+        now = now / 1000;
+        long filterTime = now - historyLengthSeconds;
+        for (Response response : adaptations) {
+            if (response.getTime() >= filterTime) {
+                answer.add(response);
+            }
+        }
+        if (answer.size() != adaptations.size()) {
+            Logger.getLogger(HistoryClearer.class.getName()).log(Level.INFO, "Cleaning History Performed: Old size: {0} New Size: {1}", new Object[]{adaptations.size(), answer.size()});
+        }
+        return answer;
     }
 
     /**
