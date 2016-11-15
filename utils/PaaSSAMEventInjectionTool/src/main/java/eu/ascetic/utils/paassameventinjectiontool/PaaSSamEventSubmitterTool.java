@@ -145,7 +145,8 @@ public class PaaSSamEventSubmitterTool extends javax.swing.JFrame {
         labelAgreementTerm.setText("Agreement Term:");
         centre.add(labelAgreementTerm);
 
-        agreementTerm.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "power_usage_per_app", "energy_usage_per_app" }));
+        agreementTerm.setEditable(true);
+        agreementTerm.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "power_usage_per_app", "energy_usage_per_app", "app_price_for_next_hour" }));
         centre.add(agreementTerm);
 
         labelActualValue.setText("Actual Value:");
@@ -177,7 +178,7 @@ public class PaaSSamEventSubmitterTool extends javax.swing.JFrame {
 
     private void buttonOnceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOnceActionPerformed
         try {
-            SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.16:5673", messageQueue.getText());
+            SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.222:5673", messageQueue.getText());
             generator.setAppId(appId.getText());
             generator.setDeploymentId(deploymentId.getText());
             generator.setSlaUuid(slauuid.getText());
@@ -197,7 +198,7 @@ public class PaaSSamEventSubmitterTool extends javax.swing.JFrame {
 
     private void buttonSubmitEventsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitEventsActionPerformed
         try {
-            SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.16:5673", messageQueue.getText());
+            SLAManagerMessageGenerator generator = new SLAManagerMessageGenerator("guest", "guest", "192.168.3.222:5673", messageQueue.getText());
             generator.setAppId(appId.getText());
             generator.setDeploymentId(deploymentId.getText());
             generator.setSlaUuid(slauuid.getText());
